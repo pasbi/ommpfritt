@@ -6,9 +6,10 @@ namespace omm
 {
 PathTag::PathTag(Object& owner) : Tag(owner), path_properties("", *this)
 {
+  static constexpr double POSITION_STEP = 0.001;
   const auto category = QObject::tr("path");
   create_property<FloatProperty>(POSITION_PROPERTY_KEY)
-      .set_step(0.001)
+      .set_step(POSITION_STEP)
       .set_range(0.0, 1.0)
       .set_label(QObject::tr("position"))
       .set_category(category);

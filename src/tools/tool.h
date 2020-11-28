@@ -56,6 +56,7 @@ public:
   static bool integer_transformation();
   QString name() const override;
   virtual SceneMode scene_mode() const = 0;
+  static QRectF centered_rectangle(const Vec2f& center, double radius);
 
 public Q_SLOTS:
   virtual void reset()

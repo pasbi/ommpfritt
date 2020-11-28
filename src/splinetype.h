@@ -109,10 +109,6 @@ private:
 public:
   using ControlPoint = ControlPoint_<knot_map_type, knot_map_type::iterator>;
   ControlPoint begin();
-  static ControlPoint invalid()
-  {
-    return ControlPoint();
-  }
 
   enum class Initialization { Linear, Ease, Valley };
 

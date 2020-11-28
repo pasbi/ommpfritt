@@ -197,7 +197,8 @@ double SplineType::Interpolation::local_t() const
   const double left = this->left.has_value() ? this->left->first : 0.0;
   const double right = this->right.has_value() ? this->right->first : 1.0;
   assert(left <= right);
-  if (abs(left - right) < 0.00001) {
+  static constexpr double eps = 0.00001;
+  if (abs(left - right) < eps) {
     return 0.0;
   } else {
     return (t - left) / (right - left);

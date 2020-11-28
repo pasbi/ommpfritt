@@ -48,6 +48,7 @@ namespace omm
 {
 SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
+  static constexpr double THRESHOLD_STEP = 0.1;
   const auto category = QObject::tr("tool");
   create_property<OptionProperty>(MODE_PROPERTY_KEY, 0)
       .set_options(
@@ -61,7 +62,7 @@ SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
       .set_category(category)
       .set_animatable(false);
   create_property<FloatProperty>(THRESHOLD_PROPERTY_KEY, 1.0)
-      .set_step(0.1)
+      .set_step(THRESHOLD_STEP)
       .set_label(QObject::tr("threshold"))
       .set_category(category)
       .set_animatable(false);
@@ -167,14 +168,14 @@ void SelectSimilarTool::start()
 void SelectSimilarTool::update_property_appearance()
 {
   const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
-  auto* const threshold_property = static_cast<FloatProperty*>(property(THRESHOLD_PROPERTY_KEY));
+  auto* const threshold_property = dynamic_cast<FloatProperty*>(property(THRESHOLD_PROPERTY_KEY));
   static const std::map<Mode, std::tuple<QString, double>> threshold_config{
       {Mode::Normal, {"°", 180.0}},  // NOLINT(cppcoreguidelines-avoid-magic-numbers)
       {Mode::X, {"", std::numeric_limits<double>::max()}},
       {Mode::Y, {"", std::numeric_limits<double>::max()}},
       {Mode::Distance, {"", std::numeric_limits<double>::max()}},
   };
-  const auto [suffix, upper_limit] = threshold_config.at(mode);
+  const auto& [suffix, upper_limit] = threshold_config.at(mode);
   threshold_property->set_suffix(suffix);
   threshold_property->set_range(0.0, upper_limit);
 }

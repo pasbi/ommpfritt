@@ -54,7 +54,7 @@ public:
   virtual void set_value(std::size_t, const Pointer& pointer) = 0;
   virtual void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) = 0;
   virtual void set_value(const SplineType&, const Pointer& pointer) = 0;
-  void set_value(const AbstractPropertyOwner* id, const Pointer& pointer);
+  void set_value(const AbstractPropertyOwner* ref, const Pointer& pointer);
   void set_value(const variant_type& variant, const Pointer& pointer);
   void set_value(const Serializable& serializable, const Pointer& pointer);
   template<typename T> std::enable_if_t<std::is_enum_v<T>> set_value(const T& t, const Pointer& ptr)

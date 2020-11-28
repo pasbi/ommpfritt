@@ -37,6 +37,8 @@ Style::Style(Scene* scene)
       end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size),
       m_offscreen_renderer(OffscreenRenderer::make())
 {
+  static constexpr double DEFAULT_PEN_WIDTH = 5.0;
+  static constexpr double PEN_WIDTH_STEP = 0.1;
   const auto pen_category = QObject::tr("pen");
   const auto brush_category = QObject::tr("brush");
   const auto decoration_category = QObject::tr("decoration");
@@ -50,8 +52,8 @@ Style::Style(Scene* scene)
   create_property<ColorProperty>(PEN_COLOR_KEY, Colors::BLACK)
       .set_label(QObject::tr("color"))
       .set_category(pen_category);
-  create_property<FloatProperty>(PEN_WIDTH_KEY, 5.0)
-      .set_step(0.1)
+  create_property<FloatProperty>(PEN_WIDTH_KEY, DEFAULT_PEN_WIDTH)
+      .set_step(PEN_WIDTH_STEP)
       .set_range(0, std::numeric_limits<double>::infinity())
       .set_label(QObject::tr("width"))
       .set_category(pen_category);

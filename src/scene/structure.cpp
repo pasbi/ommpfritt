@@ -9,7 +9,8 @@ namespace omm
 {
 template<typename T> T* Structure<T>::predecessor(T& sibling) const
 {
-  return const_cast<T*>(predecessor(static_cast<const T&>(sibling)));
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+  return const_cast<T*>(predecessor(const_cast<const T&>(sibling)));
 }
 
 template class Structure<Object>;

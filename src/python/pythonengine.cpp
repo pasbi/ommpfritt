@@ -29,9 +29,13 @@ public:
 
   ~PythonStreamRedirect()
   {
-    auto sysm = py::module::import("sys");
-    sysm.attr("stdout") = m_stdout;
-    sysm.attr("stderr") = m_stderr;
+    const auto cleanup = [this]() noexcept {
+      // We don't expect any exceptions here.
+      auto sysm = py::module::import("sys");
+      sysm.attr("stdout") = m_stdout;
+      sysm.attr("stderr") = m_stderr;
+    };
+    cleanup();
   }
 
   QString stdout_()

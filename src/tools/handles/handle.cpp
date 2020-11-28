@@ -60,18 +60,22 @@ void Handle::deactivate()
 
 double Handle::draw_epsilon() const
 {
-  return 4.0;
+  static constexpr double DRAW_EPSILON = 4.0;
+  return DRAW_EPSILON;
 }
+
 double Handle::interact_epsilon() const
 {
-  return 4.0;
+  static constexpr double INTERACT_EPSILON = 4.0;
+  return INTERACT_EPSILON;
 }
+
 Vec2f Handle::press_pos() const
 {
   return m_press_pos;
 }
 
-double Handle::discretize(double s, double step) const
+double Handle::discretize(double s, double step)
 {
   if (Tool::integer_transformation()) {
     LINFO << s << " " << step;
@@ -89,7 +93,7 @@ Vec2f Handle::discretize(const Vec2f& vec, bool local, double step) const
       dvec = tool.viewport_transformation.inverted().apply_to_direction(vec);
     }
     for (auto i : {0u, 1u}) {
-      dvec[i] = discretize(dvec[i], step);
+      dvec[i] = Handle::discretize(dvec[i], step);
     }
     if (!local) {
       dvec = tool.viewport_transformation.apply_to_direction(vec);

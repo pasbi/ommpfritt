@@ -137,9 +137,7 @@ pybind11::object variant_to_python(const variant_type& variant)
           return py::cast(v.toStdString());
         } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
           return static_cast<py::object>(py::none());
-        } else if constexpr (std::is_same_v<T, Vec2f>) {
-          return py::cast(v.to_stdvec());
-        } else if constexpr (std::is_same_v<T, Vec2i>) {
+        } else if constexpr (std::is_same_v<T, Vec2f> || std::is_same_v<T, Vec2i>) {
           return py::cast(v.to_stdvec());
         } else if constexpr (std::is_same_v<T, Color>) {
           return py::cast(v.components(Color::Model::RGBA));

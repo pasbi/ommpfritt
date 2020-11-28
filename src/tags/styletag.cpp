@@ -48,7 +48,7 @@ void StyleTag::on_property_value_changed(Property* property)
       // if manager is the PropertyManager hosting the button which has been pressed, it must
       // not be changed now.
       QTimer::singleShot(0, &manager, [&manager, style]() {
-        static_cast<PropertyManager&>(manager).set_selection({style});
+        dynamic_cast<PropertyManager&>(manager).set_selection({style});
       });
     }
   }

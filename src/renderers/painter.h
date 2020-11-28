@@ -58,7 +58,7 @@ public:
   static QBrush make_simple_brush(const Style& style);
   static QPen make_simple_pen(const Style& style);
 
-  void set_style(const Style& style, const Object& object, const Options& options);
+  void set_style(const Style& style, const Object& object, const Options& options) const;
 
   Scene& scene;
   Category category_filter;

@@ -34,7 +34,7 @@ protected:
   [[nodiscard]] Vec2f press_pos() const;
 
   [[nodiscard]] Vec2f discretize(const Vec2f& vec, bool local, double step) const;
-  [[nodiscard]] double discretize(double s, double step) const;
+  [[nodiscard]] static double discretize(double s, double step);
 
   [[nodiscard]] static QColor ui_color(HandleStatus status, const QString& name);
   [[nodiscard]] QColor ui_color(const QString& name) const;
