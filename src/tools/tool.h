@@ -22,7 +22,6 @@ class Tool
   Q_OBJECT
 public:
   explicit Tool(Scene& scene);
-  ~Tool() override = default;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tool", "Tool");
 
   /**
@@ -65,7 +64,7 @@ public Q_SLOTS:
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;
-  double epsilon = 10.0;
+  static constexpr double epsilon = 10.0;
 };
 
 }  // namespace omm

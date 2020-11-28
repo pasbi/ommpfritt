@@ -24,6 +24,9 @@ public:
   explicit Style(Scene* scene = nullptr);
   ~Style() override;
   Style(const Style& other);
+  Style(Style&&) = delete;
+  Style& operator=(const Style&) = delete;
+  Style& operator=(Style&&) = delete;
   QString type() const override;
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency

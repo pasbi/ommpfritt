@@ -10,11 +10,11 @@
 namespace
 {
 using namespace omm::NodeCompilerTypes;
-std::set<QString> supported_glsl_types{FLOATVECTOR_TYPE,
-                                       INTEGER_TYPE,
-                                       FLOAT_TYPE,
-                                       COLOR_TYPE,
-                                       INTEGERVECTOR_TYPE};
+const std::set<QString> supported_glsl_types{FLOATVECTOR_TYPE,
+                                             INTEGER_TYPE,
+                                             FLOAT_TYPE,
+                                             COLOR_TYPE,
+                                             INTEGERVECTOR_TYPE};
 
 const QString glsl_definition_template(R"(
 %1 %2_0(int op, %1 a, %1 b) {

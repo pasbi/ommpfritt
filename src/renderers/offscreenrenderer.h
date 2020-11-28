@@ -32,10 +32,12 @@ public:
   {
     return m_context;
   }
+
   [[nodiscard]] QOpenGLShaderProgram* program() const
   {
     return m_program.get();
   }
+
   void make_current();
 
   void set_uniform(const QString& name, const variant_type& value);

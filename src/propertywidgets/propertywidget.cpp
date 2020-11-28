@@ -74,10 +74,10 @@ void AbstractPropertyWidget::LabelLayout::remove_old_thing()
     QLayoutItem* item = itemAt(1);
     if (QLayout* layout = item->layout(); layout != nullptr) {
       removeItem(layout);
-      delete layout;
+      delete layout;  // NOLINT(cppcoreguidelines-owning-memory)
     } else if (QWidget* widget = item->widget(); widget != nullptr) {
       removeWidget(widget);
-      delete widget;
+      delete widget;  // NOLINT(cppcoreguidelines-owning-memory)
     }
   }
 }

@@ -61,7 +61,7 @@ public:
     m_proxy->setSourceModel(model);
     m_selection_proxy.reset();
     ViewT::setModel(m_proxy.get());
-    ItemProxyView::setSelectionModel(new QItemSelectionModel(model, this));
+    ItemProxyView::setSelectionModel(std::make_unique<QItemSelectionModel>(model, this).release());
   }
 
   void setSelectionModel(QItemSelectionModel* model) override

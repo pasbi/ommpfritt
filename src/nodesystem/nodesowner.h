@@ -17,6 +17,9 @@ protected:
   NodesOwner(AbstractNodeCompiler::Language language, Scene& scene);
   NodesOwner(const NodesOwner& other);
   ~NodesOwner();
+  NodesOwner(NodesOwner&& other) = delete;
+  NodesOwner& operator=(NodesOwner&& other) = delete;
+  NodesOwner& operator=(const NodesOwner& other) = delete;
 
   void connect_edit_property(TriggerProperty& property, QObject& self);
 

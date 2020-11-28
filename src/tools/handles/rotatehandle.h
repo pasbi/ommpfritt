@@ -26,13 +26,16 @@ public:
     QPen pen;
     pen.setCosmetic(true);
 
+    static constexpr double FILL_WIDTH = 8.0;
+    static constexpr double OUTLINE_WIDTH = 2.0;
+
     pen.setColor(ui_color("rotate-ring-fill"));
-    pen.setWidthF(8.0);
+    pen.setWidthF(FILL_WIDTH);
     painter.setPen(pen);
     painter.drawPath(path);
 
     pen.setColor(ui_color("rotate-ring-outline"));
-    pen.setWidthF(2.0);
+    pen.setWidthF(OUTLINE_WIDTH);
     painter.setPen(pen);
     painter.drawPath(path);
   }
@@ -60,7 +63,7 @@ public:
       const auto origin = ti.apply_to_position(press_pos());
 
       double angle = global_pos.arg() - origin.arg();
-      if (tool.integer_transformation()) {
+      if (Tool::integer_transformation()) {
         static constexpr double step = 15 * M_PI_180;
         angle = step * static_cast<int>(angle / step);
       }

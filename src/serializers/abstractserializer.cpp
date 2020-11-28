@@ -41,8 +41,6 @@ void AbstractDeserializer::add_references(const std::set<AbstractPropertyOwner*>
   }
 }
 
-AbstractDeserializer::~AbstractDeserializer() = default;
-
 void AbstractDeserializer::polish()
 {
   // polish reference properties

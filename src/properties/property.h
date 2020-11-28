@@ -110,7 +110,6 @@ public:
 
   Property() = default;
   explicit Property(const Property& other);
-  ~Property() override = default;
 
   static constexpr auto LABEL_POINTER = "label";
   static constexpr auto CATEGORY_POINTER = "category";

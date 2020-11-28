@@ -28,24 +28,25 @@ public:
     painter.setPen(ui_color("band"));
     painter.setBrush(ui_color("band fill"));
     painter.setTransform(tool.transformation().to_qtransform(), true);
-    const QPointF polyline[] = {QPointF(stop, r - width / 2.0 - stop),
-                                QPointF(stop, r + width / 2.0 - stop),
-                                QPointF(r + width / 2.0 - stop, stop),
-                                QPointF(r - width / 2.0 - stop, stop),
-                                QPointF(stop, r - width / 2.0 - stop)};
-    painter.drawPolygon(polyline, 5);
+    static constexpr std::array<QPointF, 5> polyline = {QPointF(stop, r - width / 2.0 - stop),
+                                                        QPointF(stop, r + width / 2.0 - stop),
+                                                        QPointF(r + width / 2.0 - stop, stop),
+                                                        QPointF(r - width / 2.0 - stop, stop),
+                                                        QPointF(stop, r - width / 2.0 - stop)};
+    painter.drawPolygon(polyline.data(), polyline.size());
   }
 
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == HandleStatus::Active) {
+      static constexpr double STEP = 0.1;
       const auto ti = tool.transformation().inverted();
       const auto global_pos = ti.apply_to_position(pos);
       const auto origin = ti.apply_to_position(press_pos());
 
       double s = global_pos.euclidean_norm() / origin.euclidean_norm();
-      s = discretize(s, 0.1);
+      s = discretize(s, STEP);
 
       if (constexpr auto eps = 10e-10; std::abs(s) < eps) {
         s = std::copysign(eps, s);

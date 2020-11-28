@@ -19,6 +19,11 @@ class Handle
 public:
   explicit Handle(Tool& tool);
   virtual ~Handle() = default;
+  Handle(Handle&&) = delete;
+  Handle(const Handle&) = delete;
+  Handle& operator=(Handle&&) = delete;
+  Handle& operator=(const Handle&) = delete;
+
   virtual void draw(QPainter& renderer) const = 0;
   virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event);
   virtual bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&);

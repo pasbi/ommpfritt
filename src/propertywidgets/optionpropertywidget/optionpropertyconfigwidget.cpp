@@ -70,7 +70,7 @@ void OptionPropertyConfigWidget::add_option(const QString& label)
 void OptionPropertyConfigWidget::remove_option(int index)
 {
   if (m_list_widget->count() > 1) {
-    delete m_list_widget->takeItem(index);
+    delete m_list_widget->takeItem(index);  // NOLINT(cppcoreguidelines-owning-memory)
   } else {
     LWARNING << "Prevented attempt to remove last option";
     QMessageBox::warning(this,

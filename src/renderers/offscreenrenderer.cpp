@@ -217,7 +217,7 @@ OffscreenRenderer::OffscreenRenderer()
 
 OffscreenRenderer::~OffscreenRenderer()
 {
-  // destroy the textures before m_context is destroyed.
+  // destroy the textures *before* m_context is destroyed.
   textures.clear();
 }
 

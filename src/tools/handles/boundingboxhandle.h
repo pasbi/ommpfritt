@@ -62,7 +62,7 @@ public:
     }
     auto& tool = static_cast<ToolT&>(this->tool);
     const bool discrete = tool.integer_transformation();
-    const bool isotropic = e.modifiers() & (Qt::ControlModifier != 0u);
+    const bool isotropic = (e.modifiers() & Qt::ControlModifier) != 0u;
 
     Vec2f anchor;
     if (m_symmetric) {
@@ -161,7 +161,7 @@ public:
   BoundingBox m_bounding_box;
   bool m_symmetric = false;
   mutable Vec2f m_tool_origin = Vec2f::o();
-  Fringe m_active_fringe;
+  Fringe m_active_fringe{};
 };
 
 }  // namespace omm

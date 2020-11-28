@@ -38,7 +38,6 @@ public:
   explicit AbstractSerializer(std::ostream&)
   {
   }
-  ~AbstractSerializer() override = default;
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual void start_array(size_t size, const Pointer& pointer) = 0;
@@ -110,7 +109,6 @@ public:
   explicit AbstractDeserializer(std::istream&)
   {
   }
-  ~AbstractDeserializer() override;
 
   /**
    * @brief polish sets all registered references.

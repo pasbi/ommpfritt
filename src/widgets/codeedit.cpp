@@ -44,14 +44,15 @@ CodeEdit::CodeEdit(QWidget* parent) : QWidget(parent)
 {
   auto text_edit = std::make_unique<TextEdit>(this);
   m_text_edit = text_edit.get();
-  std::make_unique<QHBoxLayout>(this).release();
+  setLayout(std::make_unique<QHBoxLayout>().release());
   layout()->addWidget(text_edit.release());
   layout()->setContentsMargins(0, 0, 0, 0);
 
   // see https://stackoverflow.com/a/54605709/4248972
 
+  static constexpr int DEFAULT_FONT_SIZE = 12;
   static constexpr int tab_width_char = 2;
-  m_text_edit->setFont(QFont("Courier", 12));
+  m_text_edit->setFont(QFont("Courier", DEFAULT_FONT_SIZE));
   const auto font_metrics = m_text_edit->fontMetrics();
   m_text_edit->setLineWrapMode(QTextEdit::NoWrap);
 

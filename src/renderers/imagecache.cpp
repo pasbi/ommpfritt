@@ -26,11 +26,11 @@ QPicture ImageCache::retrieve(const std::pair<QString, int>& key) const
         if (!success) {
           LERROR << "Failed to render pdf.";
         }
-        delete page;
+        delete page;  // NOLINT(cppcoreguidelines-owning-memory)
       } else {
         LERROR << "Failed to load page";
       }
-      delete doc;
+      delete doc;  // NOLINT(cppcoreguidelines-owning-memory)
     } else {
       LERROR << "Failed to load doc";
     }

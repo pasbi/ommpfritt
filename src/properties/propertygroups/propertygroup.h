@@ -11,9 +11,13 @@ class PropertyGroup
 {
 public:
   explicit PropertyGroup(const QString& prefix, AbstractPropertyOwner& property_owner);
-  PropertyGroup(const PropertyGroup& other) = delete;
-  virtual void make_properties(const QString& group) const = 0;
   virtual ~PropertyGroup() = default;
+  PropertyGroup(const PropertyGroup&) = delete;
+  PropertyGroup(PropertyGroup&&) = delete;
+  PropertyGroup& operator=(const PropertyGroup&) = delete;
+  PropertyGroup& operator=(PropertyGroup&&) = delete;
+
+  virtual void make_properties(const QString& group) const = 0;
 
 private:
   const QString m_prefix;

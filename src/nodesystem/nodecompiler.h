@@ -118,28 +118,33 @@ public:
       }
     };
 
-#define CHECK(statement) \
-  if (!check(statement)) { \
-    return false; \
-  }
-
-    CHECK(self.generate_header(lines))
+    if (!check(self.generate_header(lines))) {
+      return false;
+    }
     for (const QString& type : used_node_types) {
-      CHECK(self.define_node(type, lines));
+      if (!check(self.define_node(type, lines))) {
+        return false;
+      }
     }
 
-    CHECK(self.start_program(lines));
+    if (!check(self.start_program(lines))) {
+      return false;
+    }
 
     for (const Statement& statement : statements) {
       if (statement.is_connection) {
-        CHECK(self.compile_connection(*statement.source, *statement.target, lines))
+        if (!check(self.compile_connection(*statement.source, *statement.target, lines))) {
+          return false;
+        }
       } else {
-        CHECK(self.compile_node(*statement.node, lines))
+        if (!check(self.compile_node(*statement.node, lines))) {
+          return false;
+        }
       }
     }
-    CHECK(self.end_program(lines));
-
-#undef CHECK
+    if (!check(self.end_program(lines))) {
+      return false;
+    }
 
     m_code = lines.join("\n");
     Q_EMIT compilation_succeeded(m_code);
