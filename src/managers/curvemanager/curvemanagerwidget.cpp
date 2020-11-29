@@ -18,8 +18,7 @@ namespace
 {
 double multiplier(const omm::Track& track)
 {
-  const auto value = track.property().configuration[omm::NumericPropertyDetail::MULTIPLIER_POINTER];
-  return std::get<double>(value);
+  return track.property().configuration.get<double>(omm::NumericPropertyDetail::MULTIPLIER_POINTER);
 }
 
 void draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rect)

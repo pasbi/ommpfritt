@@ -34,7 +34,7 @@ OptionPropertyConfigWidget ::OptionPropertyConfigWidget()
   setLayout(layout.release());
 }
 
-void OptionPropertyConfigWidget::init(const Property::Configuration& configuration)
+void OptionPropertyConfigWidget::init(const PropertyConfiguration& configuration)
 {
   m_list_widget->clear();
   const auto items = configuration.get<std::vector<QString>>(OptionProperty::OPTIONS_POINTER, {});
@@ -47,7 +47,7 @@ void OptionPropertyConfigWidget::init(const Property::Configuration& configurati
   }
 }
 
-void OptionPropertyConfigWidget::update(Property::Configuration& configuration) const
+void OptionPropertyConfigWidget::update(PropertyConfiguration& configuration) const
 {
   std::vector<QString> items;
   const int n = m_list_widget->count();
@@ -56,7 +56,7 @@ void OptionPropertyConfigWidget::update(Property::Configuration& configuration) 
     const auto label = m_list_widget->item(row)->data(Qt::DisplayRole).toString();
     items.push_back(label);
   }
-  configuration[OptionProperty::OPTIONS_POINTER] = items;
+  configuration.set(OptionProperty::OPTIONS_POINTER, items);
 }
 
 void OptionPropertyConfigWidget::add_option(const QString& label)

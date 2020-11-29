@@ -19,7 +19,7 @@ Instance::Instance(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Instance");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
-      .set_filter(ReferenceProperty::Filter({Kind::Object}, {{}}))
+      .set_filter(PropertyFilter({Kind::Object}, {{}}))
       .set_label(QObject::tr("reference", "Instance"))
       .set_category(category);
   create_property<BoolProperty>(IDENTICAL_PROPERTY_KEY)

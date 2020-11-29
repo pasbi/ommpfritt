@@ -24,7 +24,7 @@ void OptionProperty::deserialize(AbstractDeserializer& deserializer, const Point
         const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
         options.push_back(option);
       }
-      configuration[OPTIONS_POINTER] = options;
+      configuration.set(OPTIONS_POINTER, options);
     }
   }
 }
@@ -66,7 +66,7 @@ std::vector<QString> OptionProperty::options() const
 
 OptionProperty& OptionProperty::set_options(const std::vector<QString>& options)
 {
-  configuration[OPTIONS_POINTER] = options;
+  configuration.set(OPTIONS_POINTER, options);
   assert(!options.empty());
   set(std::clamp(value(), std::size_t(0), options.size()));
   Q_EMIT this->configuration_changed();

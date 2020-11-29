@@ -51,7 +51,7 @@ public:
     this->setLayout(layout.release());
   }
 
-  void init(const Property::Configuration& configuration) override
+  void init(const PropertyConfiguration& configuration) override
   {
     const ElementT llower = NumericProperty<ElementT>::lowest_possible_value();
     const ElementT uupper = NumericProperty<ElementT>::highest_possible_value();
@@ -81,18 +81,17 @@ public:
         ->set_value(mult);
   }
 
-  void update(Property::Configuration& configuration) const override
+  void update(PropertyConfiguration& configuration) const override
   {
     for (const QString& key : {NumericPropertyDetail::LOWER_VALUE_POINTER,
                                NumericPropertyDetail::UPPER_VALUE_POINTER,
                                NumericPropertyDetail::STEP_POINTER}) {
       const auto* x_edit = static_cast<NumericEdit<ElementT>*>(m_edits.at("x" + key));
       const auto* y_edit = static_cast<NumericEdit<ElementT>*>(m_edits.at("y" + key));
-      configuration[key] = T(x_edit->value(), y_edit->value());
-      configuration[NumericPropertyDetail::MULTIPLIER_POINTER]
-          = dynamic_cast<NumericEdit<double>*>(
-                m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER))
-                ->value();
+      configuration.set(key, T(x_edit->value(), y_edit->value()));
+      auto* multiplier_edit = m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER);
+      auto* multiplier_edit_double = dynamic_cast<NumericEdit<double>*>(multiplier_edit);
+      configuration.set(NumericPropertyDetail::MULTIPLIER_POINTER, multiplier_edit_double->value());
     }
   }
 

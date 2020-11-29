@@ -30,12 +30,12 @@ public:
 
   explicit NumericProperty(const T& default_value = T()) : TypedProperty<T>(default_value)
   {
-    this->configuration[D::MULTIPLIER_POINTER] = 1.0;
-    this->configuration[D::STEP_POINTER] = default_step();
-    this->configuration[D::LOWER_VALUE_POINTER] = lowest_possible_value();
-    this->configuration[D::UPPER_VALUE_POINTER] = highest_possible_value();
-    this->configuration[D::PREFIX_POINTER] = QString();
-    this->configuration[D::SUFFIX_POINTER] = QString();
+    this->configuration.set(D::MULTIPLIER_POINTER, 1.0);
+    this->configuration.set(D::STEP_POINTER, default_step());
+    this->configuration.set(D::LOWER_VALUE_POINTER, lowest_possible_value());
+    this->configuration.set(D::UPPER_VALUE_POINTER, highest_possible_value());
+    this->configuration.set(D::PREFIX_POINTER, QString());
+    this->configuration.set(D::SUFFIX_POINTER, QString());
   }
 
   void set(const variant_type& variant) override
@@ -49,36 +49,36 @@ public:
 
   NumericProperty<T>& set_range(const T& lower, const T& upper)
   {
-    this->configuration[D::LOWER_VALUE_POINTER] = lower;
-    this->configuration[D::UPPER_VALUE_POINTER] = upper;
+    this->configuration.set(D::LOWER_VALUE_POINTER, lower);
+    this->configuration.set(D::UPPER_VALUE_POINTER, upper);
     Q_EMIT this->configuration_changed();
     return *this;
   }
 
   NumericProperty<T>& set_prefix(const QString& prefix)
   {
-    this->configuration[D::PREFIX_POINTER] = prefix;
+    this->configuration.at(D::PREFIX_POINTER) = prefix;
     Q_EMIT this->configuration_changed();
     return *this;
   }
 
   NumericProperty<T>& set_suffix(const QString& suffix)
   {
-    this->configuration[D::SUFFIX_POINTER] = suffix;
+    this->configuration.set(D::SUFFIX_POINTER, suffix);
     Q_EMIT this->configuration_changed();
     return *this;
   }
 
   NumericProperty<T>& set_step(const T& step)
   {
-    this->configuration[D::STEP_POINTER] = step;
+    this->configuration.set(D::STEP_POINTER, step);
     Q_EMIT this->configuration_changed();
     return *this;
   }
 
   NumericProperty<T>& set_multiplier(double multiplier)
   {
-    this->configuration[D::MULTIPLIER_POINTER] = multiplier;
+    this->configuration.set(D::MULTIPLIER_POINTER, multiplier);
     Q_EMIT this->configuration_changed();
     return *this;
   }
@@ -88,10 +88,10 @@ public:
     TypedProperty<T>::deserialize(deserializer, root);
     if (this->is_user_property()) {
       for (const QString& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
-        this->configuration[key] = deserializer.get<T>(Serializable::make_pointer(root, key));
+        this->configuration.set(key, deserializer.get<T>(Serializable::make_pointer(root, key)));
       }
-      this->configuration[D::MULTIPLIER_POINTER]
-          = deserializer.get<double>(Serializable::make_pointer(root, D::MULTIPLIER_POINTER));
+      this->configuration.set(D::MULTIPLIER_POINTER,
+          deserializer.get<double>(Serializable::make_pointer(root, D::MULTIPLIER_POINTER)));
     }
   }
 

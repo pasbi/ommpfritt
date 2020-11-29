@@ -21,7 +21,7 @@ namespace omm
 UserPropertyCommand ::UserPropertyCommand(
     const std::vector<QString>& deletions,
     std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
-    const std::map<Property*, Property::Configuration>& changes,
+    const std::map<Property*, PropertyConfiguration>& changes,
     AbstractPropertyOwner& owner)
     : Command(QObject::tr("User Property")), m_deletions(transform(deletions)),
       m_additions(std::move(additions)), m_changes(changes), m_owner(owner)

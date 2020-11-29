@@ -13,6 +13,10 @@ target_sources(libommpfritt PRIVATE
   optionproperty.h
   property.cpp
   property.h
+  propertyconfiguration.cpp
+  propertyconfiguration.h
+  propertyfilter.cpp
+  propertyfilter.h
   referenceproperty.cpp
   referenceproperty.h
   stringproperty.cpp

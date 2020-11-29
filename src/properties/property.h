@@ -16,6 +16,7 @@
 #include "geometry/vec2.h"
 #include "logging.h"
 #include "variant.h"
+#include "propertyconfiguration.h"
 
 namespace omm
 {
@@ -32,84 +33,12 @@ class Property
   Q_OBJECT
 
 public:
-  struct Filter : public Serializable {
-    explicit Filter(const Disjunction<Kind>& kind, const DNF<Flag>& flag);
-    Filter();
-    explicit Filter(const DNF<Flag>& flag);
-    void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-    void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-    Disjunction<Kind> kind;
-    DNF<Flag> flag;
-    [[nodiscard]] bool accepts(const AbstractPropertyOwner& apo) const;
-    [[nodiscard]] bool accepts(Kind kind, Flag flag) const;
-    bool operator==(const Filter& other) const;
-    bool operator!=(const Filter& other) const
-    {
-      return !(*this == other);
-    }
-    bool operator<(const Filter& other) const;
-
-    static Filter accept_anything();
-  };
-
-  struct Configuration
-      : std::map<QString,
-                 std::variant<bool,
-                              int,
-                              double,
-                              Vec2i,
-                              Vec2f,
-                              std::size_t,
-                              QString,
-                              std::vector<QString>,
-                              Filter>> {
-    using variant_type = value_type::second_type;
-    template<typename T> [[nodiscard]] T get(const QString& key) const
-    {
-      if constexpr (std::is_enum_v<T>) {
-        return static_cast<T>(get<std::size_t>(key));
-      } else {
-        const auto cit = find(key);
-        assert(cit != end());
-
-        const T* value = std::get_if<T>(&cit->second);
-        assert(value != nullptr);
-        return *value;
-      }
-    }
-
-    template<typename T> T get(const QString& key, const T& default_value) const
-    {
-      if constexpr (std::is_enum_v<T>) {
-        return static_cast<T>(get<std::size_t>(key, default_value));
-      } else {
-        const auto cit = find(key);
-        if (cit == end()) {
-          return default_value;
-        } else {
-          const T* value = std::get_if<T>(&cit->second);
-          if (value != nullptr) {
-            return *value;
-          } else {
-            return default_value;
-          }
-        }
-      }
-    }
-
-    template<typename T>
-    void deserialize_field(const QString& field,
-                           AbstractDeserializer& deserializer,
-                           const Serializable::Pointer& root)
-    {
-      if (this->find(field) == this->end()) {
-        (*this)[field] = deserializer.get<T>(Serializable::make_pointer(root, field));
-      }
-    }
-  };
-
   Property() = default;
   explicit Property(const Property& other);
+  ~Property() override = default;
+  Property(Property&&) = delete;
+  Property& operator=(Property&&) = delete;
+  Property& operator=(const Property&) = delete;
 
   static constexpr auto LABEL_POINTER = "label";
   static constexpr auto CATEGORY_POINTER = "category";
@@ -179,7 +108,7 @@ public:
   Property& set_label(const QString& label);
   Property& set_category(const QString& category);
   Property& set_animatable(bool animatable);
-  Configuration configuration;
+  PropertyConfiguration configuration;
 
 private:
   bool m_is_visible = true;
@@ -258,7 +187,5 @@ private:
 public:
   static std::map<QString, const PropertyDetail*> m_details;
 };
-
-std::ostream& operator<<(std::ostream& ostream, const Property::Filter& filter);
 
 }  // namespace omm

@@ -46,7 +46,7 @@ public:
     this->setLayout(layout.release());
   }
 
-  void init(const Property::Configuration& configuration) override
+  void init(const PropertyConfiguration& configuration) override
   {
     const auto llower = NumericProperty<T>::lowest_possible_value();
     const auto uupper = NumericProperty<T>::highest_possible_value();
@@ -68,14 +68,14 @@ public:
     m_suff_edit->setText(suff);
   }
 
-  void update(Property::Configuration& configuration) const override
+  void update(PropertyConfiguration& configuration) const override
   {
-    configuration[NumericPropertyDetail::LOWER_VALUE_POINTER] = m_min_edit->value();
-    configuration[NumericPropertyDetail::UPPER_VALUE_POINTER] = m_max_edit->value();
-    configuration[NumericPropertyDetail::STEP_POINTER] = m_step_edit->value();
-    configuration[NumericPropertyDetail::MULTIPLIER_POINTER] = m_mult_edit->value();
-    configuration[NumericPropertyDetail::PREFIX_POINTER] = m_pref_edit->text();
-    configuration[NumericPropertyDetail::SUFFIX_POINTER] = m_suff_edit->text();
+    configuration.set(NumericPropertyDetail::LOWER_VALUE_POINTER, m_min_edit->value());
+    configuration.set(NumericPropertyDetail::UPPER_VALUE_POINTER, m_max_edit->value());
+    configuration.set(NumericPropertyDetail::STEP_POINTER, m_step_edit->value());
+    configuration.set(NumericPropertyDetail::MULTIPLIER_POINTER, m_mult_edit->value());
+    configuration.set(NumericPropertyDetail::PREFIX_POINTER, m_pref_edit->text());
+    configuration.set(NumericPropertyDetail::SUFFIX_POINTER, m_suff_edit->text());
   }
 
 private:

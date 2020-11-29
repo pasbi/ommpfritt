@@ -16,7 +16,7 @@
 namespace omm
 {
 ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
-    : QComboBox(parent), m_filter(ReferenceProperty::Filter::accept_anything())
+    : QComboBox(parent), m_filter(PropertyFilter::accept_anything())
 {
   setEditable(true);
   setAcceptDrops(true);
@@ -132,7 +132,7 @@ ReferenceLineEdit::value_type ReferenceLineEdit::value() const
   return m_value;
 }
 
-void ReferenceLineEdit::set_filter(const ReferenceProperty::Filter& filter)
+void ReferenceLineEdit::set_filter(const PropertyFilter& filter)
 {
   if (m_filter != filter) {
     m_filter = filter;

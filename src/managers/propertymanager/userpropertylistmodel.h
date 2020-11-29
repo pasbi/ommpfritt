@@ -15,7 +15,7 @@ public:
   [[nodiscard]] QString label() const;
   [[nodiscard]] QString type() const;
 
-  Property::Configuration configuration;
+  PropertyConfiguration configuration;
   [[nodiscard]] Property* property() const
   {
     return m_property;

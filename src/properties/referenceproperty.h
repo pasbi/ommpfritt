@@ -29,21 +29,21 @@ public:
 
   static constexpr auto FILTER_POINTER = "filter";
 
-  ReferenceProperty& set_filter(const Filter& filter);
+  ReferenceProperty& set_filter(const PropertyFilter& filter);
   void revise() override;
   void set(AbstractPropertyOwner* const& value) override;
 
   [[nodiscard]] bool is_compatible(const Property& other) const override;
 
   static std::vector<omm::AbstractPropertyOwner*>
-  collect_candidates(const Scene& scene, const Kind kinds, const Flag flags);
+  collect_candidates(const Scene& scene, Kind kinds, Flag flags);
 
   static const std::map<Kind, QString> KIND_KEYS;
   static const std::map<Flag, QString> FLAG_KEYS;
   void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& references) override;
 
   static const PropertyDetail detail;
-  [[nodiscard]] Filter filter() const;
+  [[nodiscard]] PropertyFilter filter() const;
 
 Q_SIGNALS:
   void reference_changed(omm::AbstractPropertyOwner* old_ref, omm::AbstractPropertyOwner* new_ref);

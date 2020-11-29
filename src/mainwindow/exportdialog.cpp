@@ -109,7 +109,7 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
     update_preview();
   });
 
-  m_ui->cb_view->set_filter(ReferenceProperty::Filter({Kind::Object}, {{Flag::IsView}}));
+  m_ui->cb_view->set_filter(PropertyFilter({Kind::Object}, {{Flag::IsView}}));
 
   m_ui->cb_view->set_null_label(tr("Viewport"));
   m_ui->cb_view->set_scene(scene);

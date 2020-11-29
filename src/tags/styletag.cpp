@@ -15,7 +15,7 @@ StyleTag::StyleTag(Object& owner) : Tag(owner)
 {
   const QString category = QObject::tr("Basic");
   create_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
-      .set_filter(ReferenceProperty::Filter({Kind::Style}, {{}}))
+      .set_filter(PropertyFilter({Kind::Style}, {{}}))
       .set_label(QObject::tr("style"))
       .set_category(category);
 

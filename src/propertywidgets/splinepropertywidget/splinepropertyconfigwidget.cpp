@@ -4,11 +4,11 @@ namespace omm
 {
 SplinePropertyConfigWidget::SplinePropertyConfigWidget() = default;
 
-void SplinePropertyConfigWidget::init(const Property::Configuration&)
+void SplinePropertyConfigWidget::init(const PropertyConfiguration&)
 {
 }
 
-void SplinePropertyConfigWidget::update(Property::Configuration&) const
+void SplinePropertyConfigWidget::update(PropertyConfiguration&) const
 {
 }
 

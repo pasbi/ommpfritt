@@ -20,14 +20,14 @@ StringPropertyConfigWidget::StringPropertyConfigWidget()
   setLayout(layout.release());
 }
 
-void StringPropertyConfigWidget::init(const Property::Configuration& configuration)
+void StringPropertyConfigWidget::init(const PropertyConfiguration& configuration)
 {
   m_mode_selector->setCurrentIndex(configuration.get("mode", std::size_t(3)));
 }
 
-void StringPropertyConfigWidget::update(Property::Configuration& configuration) const
+void StringPropertyConfigWidget::update(PropertyConfiguration& configuration) const
 {
-  configuration["mode"] = static_cast<std::size_t>(m_mode_selector->currentIndex());
+  configuration.set("mode", static_cast<std::size_t>(m_mode_selector->currentIndex()));
 }
 
 }  // namespace omm

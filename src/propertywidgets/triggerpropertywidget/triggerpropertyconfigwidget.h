@@ -9,10 +9,10 @@ class TriggerPropertyConfigWidget : public PropertyConfigWidget<TriggerProperty>
 {
 public:
   using PropertyConfigWidget::PropertyConfigWidget;
-  void init(const Property::Configuration&) override
+  void init(const PropertyConfiguration&) override
   {
   }
-  void update(Property::Configuration&) const override
+  void update(PropertyConfiguration&) const override
   {
   }
 };

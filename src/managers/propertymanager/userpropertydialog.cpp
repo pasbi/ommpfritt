@@ -30,11 +30,11 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner& owner,
     return tr(s.toUtf8().constData(), "Property");
   }));
   connect(m_ui->cb_type, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
-    m_current_item->configuration["type"] = m_property_types[index];
+    m_current_item->configuration.set("type", m_property_types[index]);
     update_property_config_page(m_current_item);
   });
   connect(m_ui->cb_animatable, &QCheckBox::toggled, [this](bool checked) {
-    m_current_item->configuration[Property::ANIMATABLE_POINTER] = checked;
+    m_current_item->configuration.set(Property::ANIMATABLE_POINTER, checked);
   });
 
   connect(m_ui->pb_add, &QPushButton::clicked, [this]() {
@@ -56,7 +56,7 @@ void UserPropertyDialog::submit()
 {
   std::vector<std::pair<QString, std::unique_ptr<Property>>> additions;
   std::list<QString> deletions;
-  std::map<Property*, Property::Configuration> changes;
+  std::map<Property*, PropertyConfiguration> changes;
   const auto keys = m_owner.properties().keys();
   for (const QString& property_key : keys) {
     Property* p = m_owner.property(property_key);

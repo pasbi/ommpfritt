@@ -16,11 +16,11 @@ class UserPropertyCommand : public Command
 {
 public:
   using pmap = std::map<QString, std::unique_ptr<Property>>;
-  using cmap = std::map<QString, Property::Configuration>;
+  using cmap = std::map<QString, PropertyConfiguration>;
 
   UserPropertyCommand(const std::vector<QString>& deletions,
                       std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
-                      const std::map<Property*, Property::Configuration>& changes,
+                      const std::map<Property*, PropertyConfiguration>& changes,
                       AbstractPropertyOwner& owner);
   ~UserPropertyCommand() override;
   void undo() override;
@@ -30,7 +30,7 @@ private:
   using Properties = std::vector<std::pair<QString, std::unique_ptr<Property>>>;
   Properties m_deletions;
   Properties m_additions;
-  using Configurations = std::map<Property*, Property::Configuration>;
+  using Configurations = std::map<Property*, PropertyConfiguration>;
   Configurations m_changes;
 
   AbstractPropertyOwner& m_owner;

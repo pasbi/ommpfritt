@@ -19,8 +19,8 @@ class AbstractPropertyConfigWidget
 
 public:
   explicit AbstractPropertyConfigWidget() = default;
-  virtual void init(const Property::Configuration& configuration) = 0;
-  virtual void update(Property::Configuration& configuration) const = 0;
+  virtual void init(const PropertyConfiguration& configuration) = 0;
+  virtual void update(PropertyConfiguration& configuration) const = 0;
 
 protected:
   void hideEvent(QHideEvent* event) override;
