@@ -103,10 +103,16 @@ bool PreferencesTree::load_from_file(const QString& filename)
     {
       begin_reset();
     }
+
     ~ResetModel()
     {
       m_end_reset();
     }
+
+    ResetModel(ResetModel&&) = delete;
+    ResetModel(const ResetModel&) = delete;
+    ResetModel& operator=(ResetModel&&) = delete;
+    ResetModel& operator=(const ResetModel&) = delete;
 
   private:
     const std::function<void()> m_end_reset;

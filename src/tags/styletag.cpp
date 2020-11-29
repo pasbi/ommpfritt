@@ -38,6 +38,7 @@ Flag StyleTag::flags() const
 
 void StyleTag::on_property_value_changed(Property* property)
 {
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (property == this->property(STYLE_REFERENCE_PROPERTY_KEY)) {
     Q_EMIT owner->scene()->mail_box().object_appearance_changed(*owner);
   } else if (property == this->property(EDIT_STYLE_PROPERTY_KEY)) {
@@ -47,7 +48,6 @@ void StyleTag::on_property_value_changed(Property* property)
 
       // if manager is the PropertyManager hosting the button which has been pressed, it must
       // not be changed now.
-      // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
       QTimer::singleShot(0, &manager, [&manager, style]() {
         dynamic_cast<PropertyManager&>(manager).set_selection({style});
       });

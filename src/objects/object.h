@@ -182,8 +182,8 @@ private:
 private:
   mutable bool m_visibility_cache_is_dirty = true;
   mutable bool m_visibility_cache_value = false;
-  static QPen m_bounding_box_pen;
-  static QBrush m_bounding_box_brush;
+  static const QPen m_bounding_box_pen;
+  static const QBrush m_bounding_box_brush;
 
 protected:
   template<typename Iterable> static Geom::PathVector join(const Iterable& items)

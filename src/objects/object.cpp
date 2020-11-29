@@ -88,8 +88,8 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
 
 namespace omm
 {
-QPen Object::m_bounding_box_pen = make_bounding_box_pen();
-QBrush Object::m_bounding_box_brush = Qt::NoBrush;
+const QPen Object::m_bounding_box_pen = make_bounding_box_pen();
+const QBrush Object::m_bounding_box_brush = Qt::NoBrush;
 
 Object::Object(Scene* scene)
     : PropertyOwner(scene), painter_path(*this), geom_paths(*this), tags(*this)

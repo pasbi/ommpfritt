@@ -119,12 +119,12 @@ public:
     for (auto&& statement : statements) {
       if (statement->is_connection()) {
         const auto& cs = dynamic_cast<const ConnectionStatement&>(*statement);
-        if (!check(self.compile_connection(*cs.source, *cs.target, lines))) {
+        if (!check(self.compile_connection(cs.source, cs.target, lines))) {
           return false;
         }
       } else {
         const auto& ns = dynamic_cast<const NodeStatement&>(*statement);
-        if (!check(self.compile_node(*ns.node, lines))) {
+        if (!check(self.compile_node(ns.node, lines))) {
           return false;
         }
       }

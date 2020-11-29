@@ -21,6 +21,11 @@ class AbstractPort
 public:
   AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index);
   virtual ~AbstractPort();
+  AbstractPort(AbstractPort&&) = delete;
+  AbstractPort(const AbstractPort&) = delete;
+  AbstractPort& operator=(AbstractPort&&) = delete;
+  AbstractPort& operator=(const AbstractPort&) = delete;
+
   bool is_connected(const AbstractPort* other) const;
   [[nodiscard]] bool is_connected() const;
   const PortType port_type;

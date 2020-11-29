@@ -41,9 +41,9 @@ public:
     }
   }
 
-  const value_type& get(const QString& key) const;
+  [[nodiscard]] const value_type& get(const QString& key) const;
 
-  template<typename T> T get(const QString& key, const T& default_value) const
+  template<typename T> [[nodiscard]] T get(const QString& key, const T& default_value) const
   {
     if constexpr (std::is_enum_v<T>) {
       return static_cast<T>(get<std::size_t>(key, default_value));
@@ -82,8 +82,8 @@ public:
   }
 
   std::size_t count(const QString& key) const;
-  map_type::const_iterator find(const QString& key) const;
-  map_type::const_iterator end() const;
+  map_type::const_iterator [[nodiscard]] find(const QString& key) const;
+  map_type::const_iterator [[nodiscard]] end() const;
 };
 
 }  // namespace omm

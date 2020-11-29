@@ -30,7 +30,7 @@ class NodeStatement : public Statement
 {
 public:
   NodeStatement(const Node& node);
-  const Node* const node = nullptr;
+  const Node& node;
   [[nodiscard]] bool is_connection() const override;
 private:
   [[nodiscard]] std::set<const AbstractPort*> defines() const override;
@@ -41,8 +41,8 @@ class ConnectionStatement : public Statement
 {
 public:
   ConnectionStatement(const OutputPort& source, const InputPort& target);
-  const OutputPort* const source = nullptr;
-  const InputPort* const target = nullptr;
+  const OutputPort& source;
+  const InputPort& target;
   [[nodiscard]] bool is_connection() const override;
 private:
   [[nodiscard]] std::set<const AbstractPort*> defines() const override;

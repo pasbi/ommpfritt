@@ -28,10 +28,10 @@ class RememberSelectionMacro : public Macro
 public:
   explicit RememberSelectionMacro(Scene& scene, const QString& text, QUndoStack& stack);
   ~RememberSelectionMacro() override;
-  RememberSelectionMacro(Macro&&) = delete;
-  RememberSelectionMacro(const Macro&) = delete;
-  RememberSelectionMacro& operator=(Macro&&) = delete;
-  RememberSelectionMacro& operator=(const Macro&) = delete;
+  RememberSelectionMacro(RememberSelectionMacro&&) = delete;
+  RememberSelectionMacro(const RememberSelectionMacro&) = delete;
+  RememberSelectionMacro& operator=(RememberSelectionMacro&&) = delete;
+  RememberSelectionMacro& operator=(const RememberSelectionMacro&) = delete;
 
 private:
   Scene& m_scene;

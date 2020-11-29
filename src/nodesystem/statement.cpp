@@ -5,18 +5,18 @@
 
 namespace omm
 {
-NodeStatement::NodeStatement(const Node& node) : node(&node)
+NodeStatement::NodeStatement(const Node& node) : node(node)
 {
 }
 
 std::set<const AbstractPort*> NodeStatement::defines() const
 {
-  return ::transform<const AbstractPort*>(node->ports<OutputPort>(), ::identity);
+  return ::transform<const AbstractPort*>(node.ports<OutputPort>(), ::identity);
 }
 
 std::set<const AbstractPort*> NodeStatement::uses() const
 {
-  return ::transform<const AbstractPort*>(node->ports<InputPort>(), ::identity);
+  return ::transform<const AbstractPort*>(node.ports<InputPort>(), ::identity);
 }
 
 bool NodeStatement::is_connection() const
@@ -25,18 +25,18 @@ bool NodeStatement::is_connection() const
 }
 
 ConnectionStatement::ConnectionStatement(const OutputPort& source, const InputPort& target)
-  : source(&source), target(&target)
+  : source(source), target(target)
 {
 }
 
 std::set<const AbstractPort*> ConnectionStatement::defines() const
 {
-  return {target};
+  return {&target};
 }
 
 std::set<const AbstractPort*> ConnectionStatement::uses() const
 {
-  return {source};
+  return {&source};
 }
 
 bool ConnectionStatement::is_connection() const

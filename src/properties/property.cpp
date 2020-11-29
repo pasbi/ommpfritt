@@ -9,6 +9,7 @@
 
 namespace omm
 {
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::map<QString, const Property::PropertyDetail*> Property::m_details;
 
 // NOLINTNEXTLINE(readability-redundant-member-init)
