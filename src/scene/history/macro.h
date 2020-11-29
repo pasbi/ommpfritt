@@ -30,8 +30,8 @@ public:
   ~RememberSelectionMacro() override;
   RememberSelectionMacro(Macro&&) = delete;
   RememberSelectionMacro(const Macro&) = delete;
-  RememberSelectionMacro& operator=(const Macro&) = delete;
   RememberSelectionMacro& operator=(Macro&&) = delete;
+  RememberSelectionMacro& operator=(const Macro&) = delete;
 
 private:
   Scene& m_scene;

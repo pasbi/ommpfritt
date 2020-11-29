@@ -227,9 +227,15 @@ std::unique_ptr<omm::Options> make_options(const omm::SubcommandLineParser& args
   return std::make_unique<omm::Options>(true, have_opengl);
 }
 
-QString level = "";
-QFile logfile;
-bool print_long_message = true;
+const bool print_long_message = true;
+
+// The logfile must be non-const and globally accessible, because the message handler lambda
+// must not capture anything (see qInstallMessageHandler).
+QFile logfile;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+
+// The level must be non-const and globally accessible, because the message handler lambda
+// must not capture anything (see qInstallMessageHandler).
+QString level = "";  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 int main(int argc, char* argv[])
 {

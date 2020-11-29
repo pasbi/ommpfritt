@@ -155,9 +155,9 @@ QString Color::component_name(const Color::Model& model, std::size_t component)
   };
   switch (model) {
   case Model::HSVA:
-    return QString(HSVA_COMPONENT_NAMES[component].data());
+    return QString(HSVA_COMPONENT_NAMES.at(component).data());
   case Model::RGBA:
-    return QString(RGBA_COMPONENT_NAMES[component].data());
+    return QString(RGBA_COMPONENT_NAMES.at(component).data());
   case Model::Named:
     return "invalid (named)";
   default:
@@ -443,7 +443,7 @@ std::ostream& operator<<(std::ostream& ostream, const Color& color)
       const auto components = color.components(color.model());
       for (std::size_t i = 0; i < components.size(); ++i) {
         const auto component_name = Color::component_name(color.model(), i);
-        cs.append(QString("%1: %2").arg(component_name, components[i]));
+        cs.append(QString("%1: %2").arg(component_name, components.at(i)));
       }
       return cs.join(", ");
     }

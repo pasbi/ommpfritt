@@ -23,6 +23,11 @@ class OffscreenRenderer
 public:
   OffscreenRenderer();
   ~OffscreenRenderer();
+  OffscreenRenderer(const OffscreenRenderer&) = delete;
+  OffscreenRenderer(OffscreenRenderer&&) = delete;
+  OffscreenRenderer& operator=(const OffscreenRenderer&) = delete;
+  OffscreenRenderer& operator=(OffscreenRenderer&&) = delete;
+
   Texture render(const Object& object,
                  const QSize& size,
                  const QRectF& roi,

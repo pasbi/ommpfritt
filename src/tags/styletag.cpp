@@ -47,6 +47,7 @@ void StyleTag::on_property_value_changed(Property* property)
 
       // if manager is the PropertyManager hosting the button which has been pressed, it must
       // not be changed now.
+      // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
       QTimer::singleShot(0, &manager, [&manager, style]() {
         dynamic_cast<PropertyManager&>(manager).set_selection({style});
       });

@@ -110,7 +110,7 @@ void ColorCircle::set_color(const QPoint& p)
     auto components = Color(Model::HSVA, {hue, 1.0, 1.0, alpha}).components(Model::RGBA);
 
     for (std::size_t i = 0; i < 3; ++i) {
-      components[i] = w * components[i] + u * 0.0 + v * 1.0;
+      components.at(i) = w * components.at(i) + u * 0.0 + v * 1.0;
     }
     Color color(Model::RGBA, components);
     color.set(Color::Role::Hue, hue);

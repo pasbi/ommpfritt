@@ -28,6 +28,9 @@ public:
   static std::unique_ptr<NodeModel> make(AbstractNodeCompiler::Language language, Scene& scene);
   NodeModel(const NodeModel& other);
   ~NodeModel() override;
+  NodeModel(NodeModel&&) = delete;
+  NodeModel& operator=(NodeModel&&) = delete;
+  NodeModel& operator=(const NodeModel&) = delete;
 
   Node& add_node(std::unique_ptr<Node> node);
   std::unique_ptr<Node> extract_node(Node& node);
@@ -59,10 +62,12 @@ public:
   {
     return m_compiler->language;
   }
+
   [[nodiscard]] Scene& scene() const
   {
     return m_scene;
   }
+
   [[nodiscard]] AbstractNodeCompiler& compiler() const;
   [[nodiscard]] QString error() const
   {
@@ -75,6 +80,11 @@ public:
   public:
     explicit TopologyChangeSignalBlocker(NodeModel& model);
     ~TopologyChangeSignalBlocker();
+    TopologyChangeSignalBlocker() = delete;
+    TopologyChangeSignalBlocker(const TopologyChangeSignalBlocker&) = delete;
+    TopologyChangeSignalBlocker(TopologyChangeSignalBlocker&&) = delete;
+    TopologyChangeSignalBlocker& operator=(const TopologyChangeSignalBlocker&) = delete;
+    TopologyChangeSignalBlocker& operator=(TopologyChangeSignalBlocker&&) = delete;
 
   private:
     NodeModel& m_model;

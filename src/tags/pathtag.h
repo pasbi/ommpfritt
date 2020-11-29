@@ -11,6 +11,10 @@ class PathTag : public Tag
 public:
   explicit PathTag(Object& owner);
   explicit PathTag(const PathTag& other);
+  ~PathTag() override = default;
+  PathTag(PathTag&&) = delete;
+  PathTag& operator=(PathTag&&) = delete;
+  PathTag& operator=(const PathTag&) = delete;
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PathTag");
   static constexpr auto PATH_REFERENCE_PROPERTY_KEY = "path";

@@ -114,7 +114,7 @@ SubcommandLineParser::SubcommandLineParser() = default;
 
 template<> QString SubcommandLineParser::get<QString>(const QString& name) const
 {
-  const QString value = this->value(name);
+  QString value = this->value(name);
   if (value.isEmpty()) {
     LERROR << QString("<%1> must be specified.").arg(name);
     std::cout << helpText().toStdString();

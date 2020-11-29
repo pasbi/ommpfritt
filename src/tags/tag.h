@@ -18,6 +18,11 @@ class Tag
 public:
   explicit Tag(Object& owner);
   ~Tag() override;
+  Tag(const Tag&) = default;
+  Tag(Tag&&) = delete;
+  Tag& operator=(const Tag&) = delete;
+  Tag& operator=(Tag&&) = delete;
+
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tag", "Tag");
   std::unique_ptr<Tag> clone(Object& owner) const;
   std::unique_ptr<Tag> clone() const

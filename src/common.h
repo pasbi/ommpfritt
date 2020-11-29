@@ -215,6 +215,7 @@ template<template<typename...> typename Container, typename S, typename... Ts>
 bool contains(const Container<Ts...>& set, S&& key)
 {
   if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     return std::find(set.begin(), set.end(), const_cast<std::remove_const_t<S>>(key)) != set.end();
   } else {
     return std::find(set.begin(), set.end(), key) != set.end();

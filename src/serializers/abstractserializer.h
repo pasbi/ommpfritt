@@ -61,8 +61,6 @@ public:
     set_value(static_cast<std::size_t>(t), ptr);
   }
 
-  [[nodiscard]] std::set<AbstractPropertyOwner*> serialized_references() const;
-
   template<typename A, typename B> void set_value(const std::pair<A, B>& pair, const Pointer& ptr)
   {
     set_value(pair.first, Serializable::make_pointer(ptr, "key"));
@@ -83,9 +81,6 @@ public:
 
 protected:
   void register_serialzied_reference(AbstractPropertyOwner* reference);
-
-private:
-  std::set<AbstractPropertyOwner*> m_serialized_references;
 };
 
 template<class T> struct always_false : std::false_type {
@@ -95,6 +90,11 @@ class ReferencePolisher
 {
 public:
   virtual ~ReferencePolisher() = default;
+  ReferencePolisher() = default;
+  ReferencePolisher(ReferencePolisher&&) = delete;
+  ReferencePolisher(const ReferencePolisher&) = default;
+  ReferencePolisher& operator=(ReferencePolisher&&) = delete;
+  ReferencePolisher& operator=(const ReferencePolisher&) = delete;
 
 protected:
   virtual void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;

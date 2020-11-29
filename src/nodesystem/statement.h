@@ -13,6 +13,13 @@ class InputPort;
 
 class Statement {
 public:
+  Statement() = default;
+  virtual ~Statement() = default;
+  Statement(Statement&&) = delete;
+  Statement(const Statement&) = delete;
+  Statement& operator=(Statement&&) = delete;
+  Statement& operator=(const Statement&) = delete;
+
   bool operator<(const Statement& other) const;
   [[nodiscard]] virtual bool is_connection() const = 0;
   [[nodiscard]] virtual std::set<const AbstractPort*> defines() const = 0;

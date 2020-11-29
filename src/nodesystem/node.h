@@ -23,6 +23,9 @@ class Node
 public:
   explicit Node(NodeModel& model);
   ~Node() override;
+  Node(NodeModel&&) = delete;
+  Node& operator=(const NodeModel&) = delete;
+  Node& operator=(NodeModel&&) = delete;
 
   Flag flags() const override
   {
