@@ -6,6 +6,7 @@
 #include <QStringList>
 #include <list>
 #include <set>
+#include "nodesystem/statement.h"
 
 namespace omm
 {
@@ -48,25 +49,9 @@ public:
 protected:
   AbstractNodeCompiler(Language language, const NodeModel& model);
   [[nodiscard]] std::set<Node*> nodes() const;
-  struct Statement {
-    Statement(const OutputPort& source, const InputPort& target);
-    Statement(const Node& node);
-    const bool is_connection;
-    const OutputPort* const source = nullptr;
-    const InputPort* const target = nullptr;
-    const Node* const node = nullptr;
-    bool operator<(const Statement& other) const;
-    friend std::ostream& operator<<(std::ostream& ostream, const Statement& statement);
 
-  private:
-    [[nodiscard]] std::set<const AbstractPort*> defines() const;
-    [[nodiscard]] std::set<const AbstractPort*> uses() const;
-  };
-
-  friend std::ostream& operator<<(std::ostream& ostream,
-                                  const omm::AbstractNodeCompiler::Statement& statement);
   void generate_statements(std::set<QString>& used_node_types,
-                           std::list<Statement>& statements) const;
+                           std::list<std::unique_ptr<Statement> >& statements) const;
 
 public:
   const Language language;
@@ -104,7 +89,7 @@ public:
     m_last_error = "";
     QStringList lines;
     std::set<QString> used_node_types;
-    std::list<Statement> statements;
+    std::list<std::unique_ptr<Statement>> statements;
     generate_statements(used_node_types, statements);
     const auto& self = static_cast<const ConcreteCompiler&>(*this);
 
@@ -131,13 +116,15 @@ public:
       return false;
     }
 
-    for (const Statement& statement : statements) {
-      if (statement.is_connection) {
-        if (!check(self.compile_connection(*statement.source, *statement.target, lines))) {
+    for (auto&& statement : statements) {
+      if (statement->is_connection()) {
+        const auto& cs = dynamic_cast<const ConnectionStatement&>(*statement);
+        if (!check(self.compile_connection(*cs.source, *cs.target, lines))) {
           return false;
         }
       } else {
-        if (!check(self.compile_node(*statement.node, lines))) {
+        const auto& ns = dynamic_cast<const NodeStatement&>(*statement);
+        if (!check(self.compile_node(*ns.node, lines))) {
           return false;
         }
       }

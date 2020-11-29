@@ -17,6 +17,8 @@ target_sources(libommpfritt PRIVATE
   port.h
   ordinaryport.cpp
   ordinaryport.h
+  statement.cpp
+  statement.h
 )
 
 add_subdirectory(nodes)
