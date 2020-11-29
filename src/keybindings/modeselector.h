@@ -15,10 +15,10 @@ public:
                const QString& name,
                const QString& cycle_action,
                const std::vector<QString>& activation_actions);
-  std(std&&) = delet;
-  std(const std&) = delet;
-  std& operator=(std&&) = delet;
-  std& operator=(const std&) = delet;
+  ModeSelector(ModeSelector&&) = delete;
+  ModeSelector(const ModeSelector&) = delete;
+  ModeSelector& operator=(ModeSelector&&) = delete;
+  ModeSelector& operator=(const ModeSelector&) = delete;
   ~ModeSelector() override;
 
 public:
@@ -26,6 +26,7 @@ public:
   {
     return m_mode;
   }
+
   [[nodiscard]] QString translated_name() const;
   bool handle(const QString& action_name);
 

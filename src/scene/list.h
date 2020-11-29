@@ -15,7 +15,10 @@ public:
   constexpr static bool is_tree = false;
   using Structure<T>::Structure;
   explicit List(const List<T>& other);
-  List& operator=(const List& other) = delete;
+  ~List() = default;
+  List& operator=(const List&) = delete;
+  List& operator=(List&&) = delete;
+  List(List&&) = delete;
   virtual void insert(ListOwningContext<T>& context);
   virtual void remove(ListOwningContext<T>& t);
   std::unique_ptr<T> remove(T& item) override;

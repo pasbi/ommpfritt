@@ -432,7 +432,7 @@ std::ostream& operator<<(std::ostream& ostream, const Color& color)
       const auto components = color.components(color.model());
       for (std::size_t i = 0; i < components.size(); ++i) {
         const auto component_names = Color::component_names.at(color.model());
-        cs.append(QString("%1: %2").arg(component_names[i]).arg(components[i]));
+        cs.append(QString("%1: %2").arg(component_names[i], components[i]));
       }
       return cs.join(", ");
     }

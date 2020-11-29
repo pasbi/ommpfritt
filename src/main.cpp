@@ -11,9 +11,12 @@
 #include <QVariant>
 #include <iostream>
 
-QString level = "debug";
-QFile logfile;
-bool print_long_message = true;
+const QString level = "debug";
+const bool print_long_message = true;
+
+// The logfile must be non-const and globally accessible, because the message handler lambda
+// must not capture anything (see qInstallMessageHandler).
+QFile logfile;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 int main(int argc, char* argv[])
 {
@@ -36,7 +39,7 @@ int main(int argc, char* argv[])
 
   if (argc > 1) {
     // https://stackoverflow.com/q/45718389/
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetics)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     app.scene.load_from(argv[1]);
   }
 

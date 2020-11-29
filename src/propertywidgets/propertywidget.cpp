@@ -29,6 +29,7 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
 void AbstractPropertyWidget::on_property_value_changed(Property*) const
 {
   // wait until other properties have updated (important for MultiValueEdit)
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(1, this, &AbstractPropertyWidget::update_edit);
 }
 

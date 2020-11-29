@@ -74,7 +74,10 @@ public:
   }
 
 private:
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static creator_map_type m_creator_map;
+
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static clone_map_type m_clone_map;
 };
 

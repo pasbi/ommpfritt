@@ -98,7 +98,8 @@ public:
       } else {
         auto bg = data.template value<QColor>();
         if (role == Qt::ForegroundRole) {
-          if (bg.valueF() < 0.5) {
+          static constexpr double VALUE_THRESHOLD = 0.5;
+          if (bg.valueF() < VALUE_THRESHOLD) {
             return QColor(Qt::white);
           } else {
             return QColor(Qt::black);

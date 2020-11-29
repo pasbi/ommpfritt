@@ -17,13 +17,13 @@ protected:
   NodesOwner(AbstractNodeCompiler::Language language, Scene& scene);
   NodesOwner(const NodesOwner& other);
   ~NodesOwner();
+  void connect_edit_property(TriggerProperty& property, QObject& self);
+
+public:
   NodesOwner(NodesOwner&& other) = delete;
   NodesOwner& operator=(NodesOwner&& other) = delete;
   NodesOwner& operator=(const NodesOwner& other) = delete;
 
-  void connect_edit_property(TriggerProperty& property, QObject& self);
-
-public:
   [[nodiscard]] NodeModel* node_model() const;
 
 private:
