@@ -228,27 +228,29 @@ bool OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
     m_program.reset();
     return false;
   } else {
-#define CHECK(X) \
-  if (!(X)) { \
-    LERROR << #X " failed."; \
-    return false; \
-  }
-
-    //    QStringList lines = fragment_code.split("\n");
-    //    for (int i = 0; i < lines.size(); ++i) {
-    //      lines[i] = QString("%1 %2").arg(i+1, log(lines.size()+1)/log(10) + 1).arg(lines[i]);
-    //    }
-    //    LINFO << "code:\n" << lines.join("\n");
-
     m_program = std::make_unique<QOpenGLShaderProgram>();
-    CHECK(m_context.makeCurrent(&m_surface));
-    CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_code));
-    CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code));
+    if (!m_context.makeCurrent(&m_surface)) {
+      LERROR << "Failed to activate context.";
+      return false;
+    }
+    if (!m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_code)) {
+      LERROR << "Failed to add vertex shader from source code.";
+      return false;
+    }
+    if (!m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code)) {
+      LERROR << "Failed to add fragment shader from source code.";
+      return false;
+    }
     m_program->bindAttributeLocation(vertex_position_attribute_name, 0);
-    CHECK(m_program->link());
-    CHECK(m_program->isLinked());
+    if (!m_program->link()) {
+      LERROR << "Failed to link program.";
+      return false;
+    }
+    if (!m_program->isLinked()) {
+      LERROR << "Program is not linked.";
+      return false;
+    }
     return true;
-#undef CHECK
   }
 }
 
