@@ -18,6 +18,10 @@ public:
   enum class Mode { Object, Path };
   explicit Mirror(Scene* scene);
   Mirror(const Mirror& other);
+  Mirror(Mirror&&) = delete;
+  Mirror& operator=(Mirror&&) = delete;
+  Mirror& operator=(const Mirror&) = delete;
+
   void draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;

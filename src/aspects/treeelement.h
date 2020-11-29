@@ -15,6 +15,8 @@ public:
   TreeElement() = default;
   virtual ~TreeElement() = default;
   explicit TreeElement(const TreeElement& other);
+  TreeElement(TreeElement&&) = delete;
+  TreeElement& operator=(TreeElement&&) = delete;
   TreeElement& operator=(const TreeElement& other) = delete;
   [[nodiscard]] bool is_root() const;
   [[nodiscard]] T& tree_parent() const;

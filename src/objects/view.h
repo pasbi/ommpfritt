@@ -9,6 +9,10 @@ class View : public Object
 public:
   explicit View(Scene* scene);
   explicit View(const View& other);
+  View(View&&) = delete;
+  View& operator=(View&&) = delete;
+  View& operator=(const View&) = delete;
+
   void draw_handles(Painter& renderer) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;

@@ -219,10 +219,10 @@ Point Path::smoothen_point(const Path::Segment& segment, bool is_closed, std::si
     left = segment[i - 1].position;
     right = segment[i + 1].position;
   }
-  const Vec2f d = left - right;
   auto copy = segment[i];
-  copy.right_tangent = PolarCoordinates(-d / 6.0);
-  copy.left_tangent = PolarCoordinates(d / 6.0);
+  const Vec2f d = (left - right) / 6.0;
+  copy.right_tangent = PolarCoordinates(-d);
+  copy.left_tangent = PolarCoordinates(d);
   return copy;
 }
 

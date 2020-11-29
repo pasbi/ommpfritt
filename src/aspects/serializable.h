@@ -31,7 +31,7 @@ public:
     constexpr char SEPARATOR = '/';
     std::ostringstream ostream;
     ostream << pointer;
-    const auto str = QString::fromStdString(ostream.str());
+    auto str = QString::fromStdString(ostream.str());
     assert(str.size() > 0);
     if (str.at(0) == SEPARATOR) {
       return str;

@@ -17,6 +17,10 @@ class Cloner : public Object
 public:
   explicit Cloner(Scene* scene);
   explicit Cloner(const Cloner& other);
+  Cloner(Cloner&&) = delete;
+  Cloner& operator=(Cloner&&) = delete;
+  Cloner& operator=(const Cloner&) = delete;
+
   void draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const override;

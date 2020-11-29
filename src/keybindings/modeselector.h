@@ -15,6 +15,10 @@ public:
                const QString& name,
                const QString& cycle_action,
                const std::vector<QString>& activation_actions);
+  std(std&&) = delet;
+  std(const std&) = delet;
+  std& operator=(std&&) = delet;
+  std& operator=(const std&) = delet;
   ~ModeSelector() override;
 
 public:

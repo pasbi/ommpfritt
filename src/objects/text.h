@@ -14,6 +14,10 @@ class Text : public Object
 public:
   explicit Text(Scene* scene);
   Text(const Text& other);
+  Text(Text&&) = delete;
+  Text& operator=(Text&&) = delete;
+  Text& operator=(const Text&) = delete;
+
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Text");
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;

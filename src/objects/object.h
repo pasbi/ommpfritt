@@ -33,6 +33,9 @@ public:
   explicit Object(Scene* scene);
   explicit Object(const Object& other);
   ~Object() override;
+  Object(Object&&) = delete;
+  Object& operator=(Object&&) = delete;
+  Object& operator=(const Object&) = delete;
 
   enum class Visibility { Default, Hidden, Visible };
 

@@ -36,6 +36,10 @@ protected:
 
 public:
   ~AbstractPropertyOwner() override;
+  AbstractPropertyOwner(AbstractPropertyOwner&&) = delete;
+  AbstractPropertyOwner& operator=(const AbstractPropertyOwner&) = delete;
+  AbstractPropertyOwner& operator=(AbstractPropertyOwner&&) = delete;
+
   Property* property(const QString& key) const;
   bool has_property(const QString& key) const;
   template<typename ValueT> bool has_property(const QString& key) const

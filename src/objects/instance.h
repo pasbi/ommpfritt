@@ -16,6 +16,10 @@ class Instance : public Object
 public:
   explicit Instance(Scene* scene);
   Instance(const Instance& other);
+  Instance(Instance&&) = delete;
+  Instance& operator=(Instance&&) = delete;
+  Instance& operator=(const Instance&) = delete;
+
   void draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;
