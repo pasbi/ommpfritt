@@ -62,8 +62,10 @@ int img_mean(const QImage& image)
   double sum = 0.0;
   for (int y = 0; y < image.height(); ++y) {
     assert(image.format() == QImage::Format_ARGB32_Premultiplied);
+    // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
     const QRgb* rgba_line = reinterpret_cast<const QRgb*>(image.scanLine(y));
     for (int x = 0; x < image.width(); ++x) {
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
       const auto& rgba = rgba_line[x];
       const double alpha = qAlpha(rgba) / 255.0;
       sum += qRed(rgba) * alpha;
@@ -279,12 +281,14 @@ void Application::reset()
 
   LINFO << "reset scene.";
   scene.set_selection({});
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(0, &scene, &Scene::reset);
 }
 
 void Application::load(const QString& filename, bool force)
 {
   if (force || can_close()) {
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     QTimer::singleShot(0, this, [this, filename]() {
       if (!scene.load_from(filename)) {
         QMessageBox::critical(m_main_window,
@@ -331,10 +335,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "load document ...") {
     load();
   } else if (action_name == "export") {
-    static ExportDialog* export_dialog = nullptr;
-    if (export_dialog == nullptr) {
-      export_dialog = new omm::ExportDialog(scene, main_window());
-    }
+    static const auto export_dialog = std::make_unique<ExportDialog>(scene, main_window());
     export_dialog->exec();
   } else if (action_name == "evaluate") {
     evaluate();
@@ -530,7 +531,7 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
 void Application::register_auto_invert_icon_button(QAbstractButton& button)
 {
   const auto update_button_icon = [&button]() {
-    const QColor text_color = qApp->palette().color(QPalette::Active, QPalette::ButtonText);
+    const QColor text_color = QApplication::palette().color(QPalette::Active, QPalette::ButtonText);
     static constexpr int ICON_SIZE = 1024;
     static constexpr int ICON_THRESHOLD = 100;
     QImage img = button.icon().pixmap(QSize(ICON_SIZE, ICON_SIZE)).toImage();

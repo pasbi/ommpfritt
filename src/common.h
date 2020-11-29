@@ -225,6 +225,7 @@ bool contains(const Container<Ts...>& set, S&& key)
 template<typename S, typename... Ts> bool contains(const std::map<Ts...>& map, S&& key)
 {
   if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     return map.find(const_cast<std::remove_const_t<S>>(key)) != map.end();
   } else {
     return map.find(key) != map.end();

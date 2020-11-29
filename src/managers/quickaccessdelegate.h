@@ -26,6 +26,10 @@ public:
   public:
     explicit Area(const QRectF& area);
     virtual ~Area() = default;
+    Area(Area&&) = delete;
+    Area(const Area&) = delete;
+    Area& operator=(Area&&) = delete);
+    Area& operator=(const Area&) = delete;
     virtual void draw(QPainter& painter, const QModelIndex& index) = 0;
     const QRectF area;
     bool is_active = false;

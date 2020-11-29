@@ -34,6 +34,11 @@ class Viewport : public ViewportBase
 public:
   Viewport(Scene& scene);
   ~Viewport() override = default;
+  Viewport(Viewport&&) = delete;
+  Viewport(const Viewport&) = delete;
+  Viewport& operator=(Viewport&&) = delete;
+  Viewport& operator=(const Viewport&) = delete;
+
   Scene& scene() const;
   void reset();
   void set_transformation(const ObjectTransformation& transformation);

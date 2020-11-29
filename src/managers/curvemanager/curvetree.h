@@ -22,6 +22,10 @@ class CurveTree : public ItemProxyView<QTreeView>
 public:
   explicit CurveTree(Scene& scene);
   ~CurveTree() override;
+  CurveTree(CurveTree&&) = delete;
+  CurveTree(const CurveTree&) = delete;
+  CurveTree& operator=(CurveTree&&) = delete;
+  CurveTree& operator=(const CurveTree&) = delete;
   static constexpr int quick_access_delegate_width = 20;
   enum class Visibility { Undetermined, Visible, Hidden };
 

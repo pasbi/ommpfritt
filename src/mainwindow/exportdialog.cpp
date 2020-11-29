@@ -22,24 +22,6 @@
 
 namespace
 {
-class XLabel : public QLabel
-{
-public:
-  XLabel() : QLabel("x")
-  {
-    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
-  }
-};
-
-class Line : public QFrame
-{
-public:
-  explicit Line(QFrame::Shape shape)
-  {
-    setFrameShape(shape);
-    setFrameShadow(QFrame::Sunken);
-  }
-};
 
 omm::Viewport& viewport()
 {

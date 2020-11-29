@@ -115,7 +115,7 @@ protected:
                         event->button(),
                         event->buttons(),
                         event->modifiers());
-      qApp->sendEvent(leaf_widget, &mdbce);
+      QApplication::sendEvent(leaf_widget, &mdbce);
     }
   }
 
@@ -394,16 +394,16 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
       pw_item->setWidget(nullptr);
       combobox->QComboBox::showPopup();
       combobox->view()->parentWidget()->move(global_pos);
-      auto* connection_destroyer = new QObject();
+      auto connection_destroyer = std::make_unique<QObject>();
       QObject::connect(
           combobox,
           &OptionsEdit::popup_hidden,
-          connection_destroyer,
-          [pw_item, widget, facade = std::move(facade), connection_destroyer]() mutable {
+          connection_destroyer.get(),
+          [pw_item, widget, facade = std::move(facade), &connection_destroyer]() mutable {
             pw_item->setWidget(widget);
             facade->scene()->removeItem(facade.get());
             facade.reset();
-            delete connection_destroyer;
+            connection_destroyer.reset();
           });
     });
   }

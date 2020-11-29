@@ -23,6 +23,10 @@ class ToolBarDialog : public QDialog
 public:
   ToolBarDialog(ToolBarItemModel& model, QWidget* parent = nullptr);
   ~ToolBarDialog() override;
+  ToolBarDialog(ToolBarDialog&&) = delete;
+  ToolBarDialog(const ToolBarDialog&) = delete;
+  ToolBarDialog& operator=(ToolBarDialog&&) = delete;
+  ToolBarDialog& operator=(const ToolBarDialog&) = delete;
   static constexpr auto mime_type = "application/command";
 
 private:

@@ -20,6 +20,10 @@ class NodeScene : public QGraphicsScene
 public:
   explicit NodeScene(Scene& scene);
   ~NodeScene() override;
+  NodeScene(NodeScene&&) = delete;
+  NodeScene(const NodeScene&) = delete;
+  NodeScene& operator=(NodeScene&&) = delete;
+  NodeScene& operator=(const NodeScene&) = delete;
   NodeItem& node_item(Node& node) const;
   void set_model(omm::NodeModel* model);
   [[nodiscard]] NodeModel* model() const

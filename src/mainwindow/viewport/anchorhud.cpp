@@ -63,6 +63,8 @@ bool AnchorHUD::mouse_press(QMouseEvent& event)
 {
   const QPointF pos = event.pos() - this->pos;
   const QRectF grid = anchor_grid();
+
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   return std::any_of(PROPER_ANCHORS.begin(),
                      PROPER_ANCHORS.end(),
                      [this, pos, grid](auto&& anchor) {

@@ -39,6 +39,12 @@ private:
 public:
   Application(QCoreApplication& app, std::unique_ptr<Options> options);
   ~Application() override;
+
+  Application(Application&&) = delete;
+  Application(const Application&) = delete;
+  Application& operator=(Application&&) = delete;
+  Application& operator=(const Application&) = delete;
+
   bool save();
   bool save_as();
   bool save(const QString& filename);

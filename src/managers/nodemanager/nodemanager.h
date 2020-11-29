@@ -17,6 +17,10 @@ class NodeManager : public Manager
 public:
   explicit NodeManager(Scene& scene);
   ~NodeManager() override;
+  NodeManager(NodeManager&&) = delete;
+  NodeManager(const NodeManager&) = delete;
+  NodeManager& operator=(NodeManager&&) = delete;
+  NodeManager& operator=(const NodeManager&) = delete;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "NodeManager");
   [[nodiscard]] QString type() const override;

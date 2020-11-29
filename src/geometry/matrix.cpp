@@ -19,25 +19,25 @@ Matrix::Matrix(const std::initializer_list<std::initializer_list<double>>& ll) :
 Matrix::Matrix(Initialization initialization)
 {
   if (initialization == Initialization::Identity) {
-    m[0][0] = 1.0;
-    m[0][1] = 0.0;
-    m[0][2] = 0.0;
-    m[1][0] = 0.0;
-    m[1][1] = 1.0;
-    m[1][2] = 0.0;
-    m[2][0] = 0.0;
-    m[2][1] = 0.0;
-    m[2][2] = 1.0;
+    m.at(0).at(0) = 1.0;
+    m.at(0).at(1) = 0.0;
+    m.at(0).at(2) = 0.0;
+    m.at(1).at(0) = 0.0;
+    m.at(1).at(1) = 1.0;
+    m.at(1).at(2) = 0.0;
+    m.at(2).at(0) = 0.0;
+    m.at(2).at(1) = 0.0;
+    m.at(2).at(2) = 1.0;
   } else if (initialization == Initialization::Zeros) {
-    m[0][0] = 0.0;
-    m[0][1] = 0.0;
-    m[0][2] = 0.0;
-    m[1][0] = 0.0;
-    m[1][1] = 0.0;
-    m[1][2] = 0.0;
-    m[2][0] = 0.0;
-    m[2][1] = 0.0;
-    m[2][2] = 0.0;
+    m.at(0).at(0) = 0.0;
+    m.at(0).at(1) = 0.0;
+    m.at(0).at(2) = 0.0;
+    m.at(1).at(0) = 0.0;
+    m.at(1).at(1) = 0.0;
+    m.at(1).at(2) = 0.0;
+    m.at(2).at(0) = 0.0;
+    m.at(2).at(1) = 0.0;
+    m.at(2).at(2) = 0.0;
   } else {
     assert(initialization == Initialization::None);
   }
@@ -46,21 +46,21 @@ Matrix::Matrix(Initialization initialization)
 Matrix Matrix::inverted() const
 {
   // https://stackoverflow.com/a/18504573/4248972
-  const double det = m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
-                     - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
-                     + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+  const double det = m.at(0).at(0) * (m.at(1).at(1) * m.at(2).at(2) - m.at(2).at(1) * m.at(1).at(2))
+                   - m.at(0).at(1) * (m.at(1).at(0) * m.at(2).at(2) - m.at(1).at(2) * m.at(2).at(0))
+                   + m.at(0).at(2) * (m.at(1).at(0) * m.at(2).at(1) - m.at(1).at(1) * m.at(2).at(0));
   const double i_det = 1.0 / det;
 
   Matrix inv(Initialization::None);  // inverse of matrix m
-  inv.m[0][0] = (m[1][1] * m[2][2] - m[2][1] * m[1][2]) * i_det;
-  inv.m[0][1] = (m[0][2] * m[2][1] - m[0][1] * m[2][2]) * i_det;
-  inv.m[0][2] = (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * i_det;
-  inv.m[1][0] = (m[1][2] * m[2][0] - m[1][0] * m[2][2]) * i_det;
-  inv.m[1][1] = (m[0][0] * m[2][2] - m[0][2] * m[2][0]) * i_det;
-  inv.m[1][2] = (m[1][0] * m[0][2] - m[0][0] * m[1][2]) * i_det;
-  inv.m[2][0] = (m[1][0] * m[2][1] - m[2][0] * m[1][1]) * i_det;
-  inv.m[2][1] = (m[2][0] * m[0][1] - m[0][0] * m[2][1]) * i_det;
-  inv.m[2][2] = (m[0][0] * m[1][1] - m[1][0] * m[0][1]) * i_det;
+  inv.m.at(0).at(0) = (m.at(1).at(1) * m.at(2).at(2) - m.at(2).at(1) * m.at(1).at(2)) * i_det;
+  inv.m.at(0).at(1) = (m.at(0).at(2) * m.at(2).at(1) - m.at(0).at(1) * m.at(2).at(2)) * i_det;
+  inv.m.at(0).at(2) = (m.at(0).at(1) * m.at(1).at(2) - m.at(0).at(2) * m.at(1).at(1)) * i_det;
+  inv.m.at(1).at(0) = (m.at(1).at(2) * m.at(2).at(0) - m.at(1).at(0) * m.at(2).at(2)) * i_det;
+  inv.m.at(1).at(1) = (m.at(0).at(0) * m.at(2).at(2) - m.at(0).at(2) * m.at(2).at(0)) * i_det;
+  inv.m.at(1).at(2) = (m.at(1).at(0) * m.at(0).at(2) - m.at(0).at(0) * m.at(1).at(2)) * i_det;
+  inv.m.at(2).at(0) = (m.at(1).at(0) * m.at(2).at(1) - m.at(2).at(0) * m.at(1).at(1)) * i_det;
+  inv.m.at(2).at(1) = (m.at(2).at(0) * m.at(0).at(1) - m.at(0).at(0) * m.at(2).at(1)) * i_det;
+  inv.m.at(2).at(2) = (m.at(0).at(0) * m.at(1).at(1) - m.at(1).at(0) * m.at(0).at(1)) * i_det;
   return inv;
 }
 
@@ -70,7 +70,7 @@ Matrix Matrix::operator*(const Matrix& other) const
   for (std::size_t i = 0; i < 3; ++i) {
     for (std::size_t j = 0; j < 3; ++j) {
       for (std::size_t k = 0; k < 3; ++k) {
-        p.m[i][j] += m[i][k] * other.m[k][j];
+        p.m.at(i).at(j) += m.at(i).at(k) * other.m.at(k).at(j);
       }
     }
   }
@@ -92,7 +92,7 @@ Vec2f Matrix::apply(const std::vector<double>& vec) const
   std::vector<double> result{0.0, 0.0, 0.0};
   for (std::size_t i = 0; i < 3; ++i) {
     for (std::size_t j = 0; j < 3; ++j) {
-      result[i] += vec[j] * m[i][j];
+      result.at(i) += vec.at(j) * m.at(i).at(j);
     }
   }
   // usually, this is true. but it fails if scale.y becomes zero.
@@ -105,7 +105,7 @@ bool Matrix::has_nan() const
 {
   for (std::size_t i = 0; i < 3; ++i) {
     for (std::size_t j = 0; j < 3; ++j) {
-      if (std::isnan(m[i][j])) {
+      if (std::isnan(m.at(i).at(j))) {
         return true;
       }
     }
@@ -123,7 +123,7 @@ QMatrix3x3 Matrix::to_qmatrix3x3() const
   QMatrix3x3 mat;
   for (std::size_t i = 0; i < 3; ++i) {
     for (std::size_t j = 0; j < 3; ++j) {
-      mat(i, j) = m[i][j];
+      mat(i, j) = m.at(i).at(j);
     }
   }
   return mat;
