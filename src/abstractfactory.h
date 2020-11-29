@@ -81,10 +81,12 @@ private:
   static clone_map_type m_clone_map;
 };
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 template<typename Key, bool enable_clone, typename GeneralT, typename... Args>
 typename AbstractFactory<Key, enable_clone, GeneralT, Args...>::creator_map_type
     AbstractFactory<Key, enable_clone, GeneralT, Args...>::m_creator_map;
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 template<typename Key, bool enable_clone, typename GeneralT, typename... Args>
 typename AbstractFactory<Key, enable_clone, GeneralT, Args...>::clone_map_type
     AbstractFactory<Key, enable_clone, GeneralT, Args...>::m_clone_map;

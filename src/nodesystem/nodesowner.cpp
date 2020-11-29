@@ -24,6 +24,7 @@ void NodesOwner::connect_edit_property(TriggerProperty& property, QObject& self)
   QObject::connect(&property, &Property::value_changed, &self, [this]() {
     Manager& manager = Application::instance().get_active_manager(NodeManager::TYPE);
     if (m_node_model) {
+      // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
       QTimer::singleShot(1, &manager, [this, &manager]() {
         dynamic_cast<NodeManager&>(manager).set_model(m_node_model.get());
       });
