@@ -28,7 +28,7 @@ std::unique_ptr<omm::Application> get_application(int kill_after_msec = 1)
   );
   auto omm_app = std::make_unique<omm::Application>(app, std::move(options));
 
-  QTimer::singleShot(kill_after_msec, &app, [&app]() {
+  QTimer::singleShot(kill_after_msec, &app, [] {
     QApplication::quit();
   });
   return omm_app;

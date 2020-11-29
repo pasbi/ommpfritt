@@ -13,8 +13,8 @@ public:
   ~JSONSerializer() override;
   JSONSerializer(const JSONSerializer&) = delete;
   JSONSerializer(JSONSerializer&&) = delete;
-  JSONSerializer& operator==(const JSONSerializer&) = delete;
-  JSONSerializer& operator==(JSONSerializer&&) = delete;
+  JSONSerializer& operator=(const JSONSerializer&) = delete;
+  JSONSerializer& operator=(JSONSerializer&&) = delete;
 
   void start_array(size_t size, const Pointer& pointer) override;
   void end_array() override;
