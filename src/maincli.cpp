@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
 {
   using namespace omm;
   QGuiApplication app(argc, argv);
-  SubcommandLineParser args(argc, argv);
+  SubcommandLineParser args(QApplication::arguments());
 
   level = args.get<QString>("verbosity", "warning");
   if (!::contains(omm::LogLevel::loglevels, level)) {
