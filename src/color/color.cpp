@@ -135,24 +135,35 @@ bool decode_hex(const QString& code, std::array<double, 4>& rgb)
 
 namespace omm
 {
-const std::map<Color::Model, std::array<QString, 4>> Color::component_names{
-    {Color::Model::HSVA,
-     {
+Color::Color() : Color(Model::RGBA, {0.0, 0.0, 0.0, 1.0})
+{
+}
+
+QString Color::component_name(const Color::Model& model, std::size_t component)
+{
+  static constexpr std::array<std::string_view, 4> HSVA_COMPONENT_NAMES {
          QT_TRANSLATE_NOOP("Color", "Hue"),
          QT_TRANSLATE_NOOP("Color", "Saturation"),
          QT_TRANSLATE_NOOP("Color", "Value"),
          QT_TRANSLATE_NOOP("Color", "Alpha"),
-     }},
-    {Color::Model::RGBA,
-     {
+  };
+  static constexpr std::array<std::string_view, 4> RGBA_COMPONENT_NAMES {
          QT_TRANSLATE_NOOP("Color", "Red"),
          QT_TRANSLATE_NOOP("Color", "Green"),
          QT_TRANSLATE_NOOP("Color", "Blue"),
          QT_TRANSLATE_NOOP("Color", "Alpha"),
-     }}};
-
-Color::Color() : Color(Model::RGBA, {0.0, 0.0, 0.0, 1.0})
-{
+  };
+  switch (model) {
+  case Model::HSVA:
+    return QString(HSVA_COMPONENT_NAMES[component].data());
+  case Model::RGBA:
+    return QString(RGBA_COMPONENT_NAMES[component].data());
+  case Model::Named:
+    return "invalid (named)";
+  default:
+    Q_UNREACHABLE();
+    return "";
+  }
 }
 
 Color::Color(Color::Model model, const std::array<double, 3>& components, double alpha)
@@ -431,8 +442,8 @@ std::ostream& operator<<(std::ostream& ostream, const Color& color)
       QStringList cs;
       const auto components = color.components(color.model());
       for (std::size_t i = 0; i < components.size(); ++i) {
-        const auto component_names = Color::component_names.at(color.model());
-        cs.append(QString("%1: %2").arg(component_names[i], components[i]));
+        const auto component_name = Color::component_name(color.model(), i);
+        cs.append(QString("%1: %2").arg(component_name, components[i]));
       }
       return cs.join(", ");
     }

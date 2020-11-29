@@ -23,6 +23,7 @@ public:
   explicit Color(const QString& name);
   explicit Color(const QColor& c);
   explicit Color();
+  static QString component_name(const Model& model, std::size_t component);
 
   [[nodiscard]] QString to_html() const;
   static Color from_html(const QString& html, bool* ok = nullptr);
@@ -47,8 +48,6 @@ public:
   {
     return m_current_model;
   }
-
-  static const std::map<Model, std::array<QString, 4>> component_names;
 
 private:
   Model m_current_model;

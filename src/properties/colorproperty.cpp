@@ -5,7 +5,7 @@ namespace omm
 const Property::PropertyDetail ColorProperty::detail{
     [](const Property& property, std::size_t channel) -> QString {
       const auto color = std::get<Color>(property.variant_value());
-      const auto name = Color::component_names.at(color.model())[channel];
+      const auto name = Color::component_name(color.model(), channel);
       return QCoreApplication::translate("Color", name.toStdString().c_str());
     }};
 
