@@ -181,10 +181,14 @@ public:
   void insert_knot(Track& track, int frame, std::unique_ptr<Track::Knot> knot);
   void move_knot(Track& track, int old_frame, int new_frame);
 
+  static constexpr int DEFAULT_START_FRAME = 1;
+  static constexpr int DEFAULT_END_FRAME = 100;
+  static constexpr int DEFAULT_CURRENT_FRAME = 1;
+
 private:
-  int m_start_frame = 1;
-  int m_end_frame = 100;
-  int m_current_frame = 1;
+  int m_start_frame = DEFAULT_START_FRAME;
+  int m_end_frame = DEFAULT_END_FRAME;
+  int m_current_frame = DEFAULT_CURRENT_FRAME;
   PlayDirection m_current_play_direction = PlayDirection::Stopped;
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;
