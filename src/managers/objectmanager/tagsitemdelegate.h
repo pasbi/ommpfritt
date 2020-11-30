@@ -33,7 +33,7 @@ public:
   [[nodiscard]] static QSize tag_icon_size();
   [[nodiscard]] static int advance();
   [[nodiscard]] std::set<Tag*> tags(const QModelIndex& index, const QRect& rect) const;
-  [[nodiscard]] QRect tag_rect(const QPoint& base, std::size_t i) const;
+  [[nodiscard]] static QRect tag_rect(const QPoint& base, std::size_t i);
 
   QRect rubberband;
   QItemSelectionModel::SelectionFlag selection_flag = QItemSelectionModel::Select;

@@ -218,7 +218,7 @@ std::set<Tag*> TagsItemDelegate::tags(const QModelIndex& index, const QRect& rec
   return tags;
 }
 
-QRect TagsItemDelegate::tag_rect(const QPoint& base, std::size_t i) const
+QRect TagsItemDelegate::tag_rect(const QPoint& base, std::size_t i)
 {
   return QRect(base + QPoint(static_cast<int>(i * advance()), 0), tag_icon_size());
 }
