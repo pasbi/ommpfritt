@@ -16,10 +16,10 @@ namespace
 {
 using namespace omm;
 
-static constexpr QSizeF half_size_hv{0.5, 0.5};
-static constexpr QSizeF half_size_v{0.5, 1.0};
-static constexpr QPointF pos_upper_visibility{0.5, 0.0};
-static constexpr QPointF pos_lower_visibility{0.5, 0.5};
+constexpr QSizeF half_size_hv{0.5, 0.5};
+constexpr QSizeF half_size_v{0.5, 1.0};
+constexpr QPointF pos_upper_visibility{0.5, 0.0};
+constexpr QPointF pos_lower_visibility{0.5, 0.5};
 
 class PropertyArea : public ObjectQuickAccessDelegate::Area
 {
