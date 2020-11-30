@@ -9,13 +9,25 @@
 #  error Failed to define logging-macros due to name collision.
 #endif
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define STRINGIZE_DETAIL(x) #x
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
 #define LDEBUG qDebug().nospace().noquote()
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
 #define LINFO qInfo().nospace().noquote()
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
 #define LWARNING qCritical().nospace().noquote()
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
 #define LERROR qCritical().nospace().noquote()
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
 #define LFATAL(...) qFatal(__VA_ARGS__)
 
 class QFile;
