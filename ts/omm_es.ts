@@ -1964,10 +1964,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished">Texto</translation>
     </message>
     <message>
-        <source>Line</source>
-        <translation type="unfinished">Línea</translation>
-    </message>
-    <message>
         <source>StyleTag</source>
         <translation type="unfinished">Tag Estilo</translation>
     </message>
@@ -2113,6 +2109,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>SelectSimilarTool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LineObject</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

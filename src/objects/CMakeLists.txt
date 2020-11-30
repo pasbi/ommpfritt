@@ -9,8 +9,8 @@ target_sources(libommpfritt PRIVATE
   empty.h
   instance.cpp
   instance.h
-  line.cpp
-  line.h
+  lineobject.cpp
+  lineobject.h
   mirror.cpp
   mirror.h
   object.cpp

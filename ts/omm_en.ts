@@ -1964,10 +1964,6 @@ Remove the selected items anyway?</translation>
         <translation>Text</translation>
     </message>
     <message>
-        <source>Line</source>
-        <translation>Line</translation>
-    </message>
-    <message>
         <source>StyleTag</source>
         <translation>Style tag</translation>
     </message>
@@ -2114,6 +2110,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>SelectSimilarTool</source>
         <translation>Select similar</translation>
+    </message>
+    <message>
+        <source>LineObject</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

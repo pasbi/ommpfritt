@@ -7,7 +7,7 @@
     "Ellipse",
     "Empty",
     "Instance",
-    "Line",
+    "LineObject",
     "Mirror",
     "Path",
     "ProceduralPath",

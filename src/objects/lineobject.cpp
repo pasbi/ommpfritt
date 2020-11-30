@@ -1,4 +1,4 @@
-#include "objects/line.h"
+#include "objects/lineobject.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include <QObject>
@@ -7,7 +7,7 @@ namespace omm
 {
 class Style;
 
-Line::Line(Scene* scene) : Object(scene)
+LineObject::LineObject(Scene* scene) : Object(scene)
 {
   static constexpr double DEFAULT_LENGTH = 100.0;
   static const auto category = QObject::tr("Line");
@@ -24,17 +24,17 @@ Line::Line(Scene* scene) : Object(scene)
   update();
 }
 
-QString Line::type() const
+QString LineObject::type() const
 {
   return TYPE;
 }
 
-Flag Line::flags() const
+Flag LineObject::flags() const
 {
   return Object::flags() | Flag::Convertible;
 }
 
-Geom::PathVector Line::paths() const
+Geom::PathVector LineObject::paths() const
 {
   const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
   const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
@@ -45,7 +45,7 @@ Geom::PathVector Line::paths() const
   return segments_to_path_vector({segment}, false);
 }
 
-void Line::on_property_value_changed(Property* property)
+void LineObject::on_property_value_changed(Property* property)
 {
   if (property == this->property(LENGTH_PROPERTY_KEY)
       || property == this->property(ANGLE_PROPERTY_KEY)

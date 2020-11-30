@@ -1964,10 +1964,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Text</translation>
     </message>
     <message>
-        <source>Line</source>
-        <translation>Linie</translation>
-    </message>
-    <message>
         <source>StyleTag</source>
         <translation>Style-Tag</translation>
     </message>
@@ -2114,6 +2110,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>SelectSimilarTool</source>
         <translation>Ähnliche selektieren</translation>
+    </message>
+    <message>
+        <source>LineObject</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
