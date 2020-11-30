@@ -22,7 +22,7 @@ PythonConsole::PythonConsole(Scene& scene)
   auto widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>(widget.get());
   m_layout = layout.get();
-  layout.release();  // ownership is managed by Qt
+  widget->setLayout(layout.release());
 
   auto* header_layout = std::make_unique<QHBoxLayout>().release();
   m_layout->addLayout(header_layout);
