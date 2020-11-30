@@ -1,31 +1,32 @@
 #pragma once
 
-#include <map>
-#include <QString>
-#include <variant>
 #include "geometry/vec2.h"
-#include <cctype>
 #include "properties/propertyfilter.h"
 #include "serializers/abstractserializer.h"
+#include <QString>
+#include <cctype>
+#include <map>
+#include <variant>
 
 namespace omm
 {
-
 class PropertyConfiguration
 {
 public:
   using value_type = std::variant<bool,
-                            int,
-                            double,
-                            Vec2i,
-                            Vec2f,
-                            std::size_t,
-                            QString,
-                            std::vector<QString>,
-                            PropertyFilter>;
+                                  int,
+                                  double,
+                                  Vec2i,
+                                  Vec2f,
+                                  std::size_t,
+                                  QString,
+                                  std::vector<QString>,
+                                  PropertyFilter>;
+
 private:
   using map_type = std::map<QString, value_type>;
   map_type m_store;
+
 public:
   template<typename T> [[nodiscard]] T get(const QString& key) const
   {

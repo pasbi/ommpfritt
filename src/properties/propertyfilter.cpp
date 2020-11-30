@@ -16,7 +16,7 @@ PropertyFilter::PropertyFilter(const DNF<Flag>& flag)
 }
 
 void PropertyFilter::deserialize(AbstractDeserializer& deserializer,
-                                   const Serializable::Pointer& root)
+                                 const Serializable::Pointer& root)
 {
   deserializer.get(kind, make_pointer(root, "kind"));
   deserializer.get(flag, make_pointer(root, "flag"));

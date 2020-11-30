@@ -47,8 +47,9 @@ std::set<Node*> AbstractNodeCompiler::nodes() const
   return m_model.nodes();
 }
 
-void AbstractNodeCompiler::generate_statements(std::set<QString>& used_node_types,
-                                               std::list<std::unique_ptr<Statement>>& statements) const
+void AbstractNodeCompiler::generate_statements(
+    std::set<QString>& used_node_types,
+    std::list<std::unique_ptr<Statement>>& statements) const
 {
   const auto successors = [](Node* node) {
     std::set<Node*> descendants;

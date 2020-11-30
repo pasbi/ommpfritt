@@ -179,9 +179,7 @@ std::unique_ptr<Command> VisibilityPropertyArea::make_command(const QModelIndex&
 }
 
 IsEnabledPropertyArea::IsEnabledPropertyArea(ObjectTreeView& view)
-    : PropertyArea(QRectF(QPointF(0.0, 0.0), half_size_v),
-                   view,
-                   Object::IS_ACTIVE_PROPERTY_KEY)
+    : PropertyArea(QRectF(QPointF(0.0, 0.0), half_size_v), view, Object::IS_ACTIVE_PROPERTY_KEY)
 {
 }
 

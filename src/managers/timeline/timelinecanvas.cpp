@@ -265,11 +265,11 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
                                     std::clamp<int>(pos.y(), rect.top(), rect.bottom()));
     }
 
-    const auto compute_x = [this, left=rect.left()](int pos) {
+    const auto compute_x = [this, left = rect.left()](int pos) {
       return static_cast<int>(std::lround(frame_range.pixel_to_unit(pos) - left));
     };
 
-    const int left =  compute_x(rubber_band().left());
+    const int left = compute_x(rubber_band().left());
     const int right = compute_x(rubber_band().right());
 
     for (Property* property : animator.accelerator().properties()) {
@@ -478,11 +478,10 @@ void TimelineCanvas ::draw_keyframe(QPainter& painter,
   static constexpr double MIN_X_SCALE = 4.0;
   static constexpr double MAX_X_SCALE = 4.0;
   static constexpr double MIN_Y_SCALE = 20.0;
-  const QPointF scale(
-      std::clamp(rect.width() / (frame_range.end - frame_range.begin) / 2.0,
-                 MIN_X_SCALE,
-                 MAX_X_SCALE),
-      std::min(footer_y() / 2.0, MIN_Y_SCALE));
+  const QPointF scale(std::clamp(rect.width() / (frame_range.end - frame_range.begin) / 2.0,
+                                 MIN_X_SCALE,
+                                 MAX_X_SCALE),
+                      std::min(footer_y() / 2.0, MIN_Y_SCALE));
   static constexpr double PEN_WIDTH_SCALE = 0.2;
   pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y()) * PEN_WIDTH_SCALE));
   painter.setPen(pen);

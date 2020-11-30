@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 #include "common.h"
+#include "nodesystem/statement.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <list>
 #include <set>
-#include "nodesystem/statement.h"
 
 namespace omm
 {
@@ -51,7 +51,7 @@ protected:
   [[nodiscard]] std::set<Node*> nodes() const;
 
   void generate_statements(std::set<QString>& used_node_types,
-                           std::list<std::unique_ptr<Statement> >& statements) const;
+                           std::list<std::unique_ptr<Statement>>& statements) const;
 
 public:
   const Language language;

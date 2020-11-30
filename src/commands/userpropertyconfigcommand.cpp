@@ -6,9 +6,8 @@ namespace omm
 UserPropertyConfigCommand::UserPropertyConfigCommand(
     AbstractPropertyOwner& owner,
     std::vector<std::unique_ptr<Property>> properties)
-    : Command(QObject::tr("Modify user properties"))
-    , m_owner(owner)
-    , m_swapped_properties(std::move(properties))
+    : Command(QObject::tr("Modify user properties")), m_owner(owner),
+      m_swapped_properties(std::move(properties))
 {
 }
 

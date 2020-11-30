@@ -141,17 +141,17 @@ Color::Color() : Color(Model::RGBA, {0.0, 0.0, 0.0, 1.0})
 
 QString Color::component_name(const Color::Model& model, std::size_t component)
 {
-  static constexpr std::array<std::string_view, 4> HSVA_COMPONENT_NAMES {
-         QT_TRANSLATE_NOOP("Color", "Hue"),
-         QT_TRANSLATE_NOOP("Color", "Saturation"),
-         QT_TRANSLATE_NOOP("Color", "Value"),
-         QT_TRANSLATE_NOOP("Color", "Alpha"),
+  static constexpr std::array<std::string_view, 4> HSVA_COMPONENT_NAMES{
+      QT_TRANSLATE_NOOP("Color", "Hue"),
+      QT_TRANSLATE_NOOP("Color", "Saturation"),
+      QT_TRANSLATE_NOOP("Color", "Value"),
+      QT_TRANSLATE_NOOP("Color", "Alpha"),
   };
-  static constexpr std::array<std::string_view, 4> RGBA_COMPONENT_NAMES {
-         QT_TRANSLATE_NOOP("Color", "Red"),
-         QT_TRANSLATE_NOOP("Color", "Green"),
-         QT_TRANSLATE_NOOP("Color", "Blue"),
-         QT_TRANSLATE_NOOP("Color", "Alpha"),
+  static constexpr std::array<std::string_view, 4> RGBA_COMPONENT_NAMES{
+      QT_TRANSLATE_NOOP("Color", "Red"),
+      QT_TRANSLATE_NOOP("Color", "Green"),
+      QT_TRANSLATE_NOOP("Color", "Blue"),
+      QT_TRANSLATE_NOOP("Color", "Alpha"),
   };
   switch (model) {
   case Model::HSVA:

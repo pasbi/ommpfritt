@@ -34,8 +34,8 @@ const std::map<QPalette::ColorRole, QString> role_map{
 };
 
 const std::map<std::size_t, QPalette::ColorGroup> group_map{{0, QPalette::Active},
-                                                                   {1, QPalette::Inactive},
-                                                                   {2, QPalette::Disabled}};
+                                                            {1, QPalette::Inactive},
+                                                            {2, QPalette::Disabled}};
 
 omm::Color color_from_html(const QString& html)
 {

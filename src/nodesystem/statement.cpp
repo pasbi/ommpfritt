@@ -25,7 +25,7 @@ bool NodeStatement::is_connection() const
 }
 
 ConnectionStatement::ConnectionStatement(const OutputPort& source, const InputPort& target)
-  : source(source), target(target)
+    : source(source), target(target)
 {
 }
 

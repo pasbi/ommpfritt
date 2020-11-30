@@ -126,7 +126,9 @@ const Object* Cloner::path_object_reference() const
   return kind_cast<const Object*>(property->value<AbstractPropertyOwner*>());
 }
 
-void Cloner::draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const
+void Cloner::draw_object(Painter& renderer,
+                         const Style& style,
+                         const Painter::Options& options) const
 {
   assert(&renderer.scene == scene());
   auto options_copy = options;

@@ -22,7 +22,6 @@
 
 namespace
 {
-
 omm::Viewport& viewport()
 {
   return omm::Application::instance().main_window()->viewport();

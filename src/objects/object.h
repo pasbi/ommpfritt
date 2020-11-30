@@ -53,7 +53,8 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual void draw_handles(Painter& renderer) const;
 
-  virtual void draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const;
+  virtual void
+  draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const;
   void draw_recursive(Painter& renderer, Painter::Options options) const;
 
   /**

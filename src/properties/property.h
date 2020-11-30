@@ -15,8 +15,8 @@
 #include "external/json.hpp"
 #include "geometry/vec2.h"
 #include "logging.h"
-#include "variant.h"
 #include "propertyconfiguration.h"
+#include "variant.h"
 
 namespace omm
 {

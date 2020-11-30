@@ -208,7 +208,9 @@ QPen Painter::make_simple_pen(const Style& style)
   }
 }
 
-void Painter::set_style(const Style& style, const Object& object, const Painter::Options& options) const
+void Painter::set_style(const Style& style,
+                        const Object& object,
+                        const Painter::Options& options) const
 {
   painter->setPen(make_pen(style, object));
   painter->setBrush(make_brush(style, object, options));

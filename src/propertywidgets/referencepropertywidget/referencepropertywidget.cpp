@@ -35,9 +35,10 @@ ReferencePropertyWidget ::ReferencePropertyWidget(Scene& scene,
     set_properties_value(o);
   });
 
-  const auto filter = get<ReferenceProperty, PropertyFilter>(
-      properties,
-      [](const ReferenceProperty* p) { return p->filter(); });
+  const auto filter
+      = get<ReferenceProperty, PropertyFilter>(properties, [](const ReferenceProperty* p) {
+          return p->filter();
+        });
 
   line_edit->set_filter(filter);
 

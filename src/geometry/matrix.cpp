@@ -46,9 +46,10 @@ Matrix::Matrix(Initialization initialization)
 Matrix Matrix::inverted() const
 {
   // https://stackoverflow.com/a/18504573/4248972
-  const double det = m.at(0).at(0) * (m.at(1).at(1) * m.at(2).at(2) - m.at(2).at(1) * m.at(1).at(2))
-                   - m.at(0).at(1) * (m.at(1).at(0) * m.at(2).at(2) - m.at(1).at(2) * m.at(2).at(0))
-                   + m.at(0).at(2) * (m.at(1).at(0) * m.at(2).at(1) - m.at(1).at(1) * m.at(2).at(0));
+  const double det
+      = m.at(0).at(0) * (m.at(1).at(1) * m.at(2).at(2) - m.at(2).at(1) * m.at(1).at(2))
+        - m.at(0).at(1) * (m.at(1).at(0) * m.at(2).at(2) - m.at(1).at(2) * m.at(2).at(0))
+        + m.at(0).at(2) * (m.at(1).at(0) * m.at(2).at(1) - m.at(1).at(1) * m.at(2).at(0));
   const double i_det = 1.0 / det;
 
   Matrix inv(Initialization::None);  // inverse of matrix m

@@ -388,7 +388,7 @@ void MainWindow::load_layout(QSettings& settings)
         if (manager->isFloating()) {
           manager->setFloating(true);
         }
-        (void) manager.release();  // ownership is handled by qt
+        (void)manager.release();  // ownership is handled by qt
       } else {
         LWARNING << "Failed to restore geometry of manager.";
         // delete the dock widget.

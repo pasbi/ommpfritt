@@ -5,13 +5,13 @@
 
 namespace omm
 {
-
 class AbstractPort;
 class Node;
 class OutputPort;
 class InputPort;
 
-class Statement {
+class Statement
+{
 public:
   Statement() = default;
   virtual ~Statement() = default;
@@ -32,6 +32,7 @@ public:
   NodeStatement(const Node& node);
   const Node& node;
   [[nodiscard]] bool is_connection() const override;
+
 private:
   [[nodiscard]] std::set<const AbstractPort*> defines() const override;
   [[nodiscard]] std::set<const AbstractPort*> uses() const override;
@@ -44,6 +45,7 @@ public:
   const OutputPort& source;
   const InputPort& target;
   [[nodiscard]] bool is_connection() const override;
+
 private:
   [[nodiscard]] std::set<const AbstractPort*> defines() const override;
   [[nodiscard]] std::set<const AbstractPort*> uses() const override;

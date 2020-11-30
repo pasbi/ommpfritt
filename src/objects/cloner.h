@@ -22,7 +22,9 @@ public:
   Cloner& operator=(const Cloner&) = delete;
   ~Cloner() = default;
 
-  void draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const override;
+  void draw_object(Painter& renderer,
+                   const Style& style,
+                   const Painter::Options& options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;

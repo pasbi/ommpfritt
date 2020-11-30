@@ -12,7 +12,8 @@ std::size_t PropertyConfiguration::count(const QString& key) const
   return m_store.count(key);
 }
 
-PropertyConfiguration::map_type::const_iterator PropertyConfiguration::find(const QString& key) const
+PropertyConfiguration::map_type::const_iterator
+PropertyConfiguration::find(const QString& key) const
 {
   return m_store.find(key);
 }

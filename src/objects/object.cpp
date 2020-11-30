@@ -644,7 +644,9 @@ QString Object::tree_path() const
   return path + "/" + name();
 }
 
-void Object::draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const
+void Object::draw_object(Painter& renderer,
+                         const Style& style,
+                         const Painter::Options& options) const
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     if (const auto painter_path = this->painter_path(); !painter_path.isEmpty()) {

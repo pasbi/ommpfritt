@@ -55,8 +55,8 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
 void ReferencePropertyConfigWidget::init(const PropertyConfiguration& configuration)
 {
   using Filter = PropertyFilter;
-  const auto filter
-      = configuration.get<PropertyFilter>(ReferenceProperty::FILTER_POINTER, Filter::accept_anything());
+  const auto filter = configuration.get<PropertyFilter>(ReferenceProperty::FILTER_POINTER,
+                                                        Filter::accept_anything());
   for (auto&& [_, checkbox] : m_allowed_kind_checkboxes) {
     checkbox->setChecked(false);
   }

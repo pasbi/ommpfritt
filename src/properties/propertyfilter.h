@@ -1,14 +1,12 @@
 #pragma once
 
 #include "aspects/serializable.h"
-#include "dnf.h"
 #include "common.h"
+#include "dnf.h"
 
 namespace omm
 {
-
-struct PropertyFilter : public Serializable
-{
+struct PropertyFilter : public Serializable {
   explicit PropertyFilter(const Disjunction<Kind>& kind, const DNF<Flag>& flag);
   PropertyFilter();
   explicit PropertyFilter(const DNF<Flag>& flag);

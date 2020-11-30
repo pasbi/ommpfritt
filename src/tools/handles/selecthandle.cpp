@@ -124,7 +124,7 @@ bool PointSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
     return true;
   } else if (tangents_active()) {
     return m_left_tangent_handle->mouse_press(pos, event)
-        || m_right_tangent_handle->mouse_press(pos, event);
+           || m_right_tangent_handle->mouse_press(pos, event);
   } else {
     return false;
   }
@@ -136,7 +136,7 @@ bool PointSelectHandle ::mouse_move(const Vec2f& delta, const Vec2f& pos, const 
     return true;
   } else if (tangents_active()) {
     return m_left_tangent_handle->mouse_move(delta, pos, event)
-        || m_right_tangent_handle->mouse_move(delta, pos, event);
+           || m_right_tangent_handle->mouse_move(delta, pos, event);
   } else {
     return false;
   }

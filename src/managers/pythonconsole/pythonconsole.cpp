@@ -30,8 +30,7 @@ PythonConsole::PythonConsole(Scene& scene)
   auto ref_filter_widget = std::make_unique<ReferenceLineEdit>();
   ref_filter_widget->set_scene(scene);
   using Flag = Flag;
-  ref_filter_widget->set_filter(
-      PropertyFilter({{Flag::HasScript}, {Flag::HasPythonNodes}}));
+  ref_filter_widget->set_filter(PropertyFilter({{Flag::HasScript}, {Flag::HasPythonNodes}}));
   m_associated_item_widget = ref_filter_widget.get();
   m_associated_item_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   header_layout->addWidget(ref_filter_widget.release());

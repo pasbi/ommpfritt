@@ -90,7 +90,8 @@ public:
       for (const QString& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
         this->configuration.set(key, deserializer.get<T>(Serializable::make_pointer(root, key)));
       }
-      this->configuration.set(D::MULTIPLIER_POINTER,
+      this->configuration.set(
+          D::MULTIPLIER_POINTER,
           deserializer.get<double>(Serializable::make_pointer(root, D::MULTIPLIER_POINTER)));
     }
   }

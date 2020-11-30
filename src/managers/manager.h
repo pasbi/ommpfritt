@@ -19,6 +19,7 @@ class Manager
     , virtual public AbstractFactory<QString, false, Manager, Scene&>
     , virtual public CommandInterface
 {
+  // clang-format off
   Q_OBJECT  // Required for MainWindow::save_state
 
 public:
@@ -33,7 +34,7 @@ public:
   {
     return m_is_locked;
   }
-
+  // clang-format on
 protected:
   Manager(const QString& title, Scene& scene);
 

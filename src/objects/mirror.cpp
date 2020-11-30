@@ -85,7 +85,9 @@ void Mirror::polish()
   Mirror::update();
 }
 
-void Mirror::draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const
+void Mirror::draw_object(Painter& renderer,
+                         const Style& style,
+                         const Painter::Options& options) const
 {
   assert(&renderer.scene == scene());
   if (is_active()) {
