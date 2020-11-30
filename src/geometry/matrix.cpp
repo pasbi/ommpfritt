@@ -11,7 +11,7 @@ Matrix::Matrix(const std::initializer_list<std::initializer_list<double>>& ll) :
 {
   for (std::size_t i = 0; i < 3; ++i) {
     for (std::size_t j = 0; j < 3; ++j) {
-      m[i][j] = ll.begin()[i].begin()[j];
+      m.at(i).at(j) = ll.begin()[i].begin()[j];
     }
   }
 }

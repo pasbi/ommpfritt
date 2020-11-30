@@ -99,7 +99,7 @@ QPalette UiColors::make_palette() const
   const auto get_widget_color = [this](std::size_t column, const QString& name) {
     return color_from_html(value("Widget", name)->value(column)).to_qcolor();
   };
-  QPalette palette = qApp->palette();
+  QPalette palette = QApplication::palette();
   for (auto&& [role, name] : role_map) {
     for (auto&& [column, group] : group_map) {
       palette.setBrush(group, role, get_widget_color(column, name));
@@ -191,7 +191,7 @@ void UiColors::draw_background(QPainter& painter, const QRectF& rect)
     for (int y = rect.top(); y < rect.bottom(); y += size) {
       QRect transformed_rect(QPoint(x, y), QPoint(std::min(mx, x + size), std::min(my, y + size)));
       const auto bg_color
-          = bg_colors[static_cast<std::size_t>(x / size + y / size) % bg_colors.size()];
+          = bg_colors.at(static_cast<std::size_t>(x / size + y / size) % bg_colors.size());
       painter.fillRect(transformed_rect, bg_color);
     }
   }
