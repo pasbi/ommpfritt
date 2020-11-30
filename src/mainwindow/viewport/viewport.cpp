@@ -67,7 +67,7 @@ Viewport::Viewport(Scene& scene)
     m_fps_limiter.stop();
     if (m_update_later) {
       m_update_later = false;
-      ViewportBase::update();
+      QWidget::update();
       Q_EMIT updated();
     }
   });
@@ -196,7 +196,7 @@ void Viewport::mousePressEvent(QMouseEvent* event)
   } else if (m_scene.tool_box().active_tool().mouse_press(cursor_pos, *event)) {
     event->accept();
   } else {
-    ViewportBase::mousePressEvent(event);
+    QWidget::mousePressEvent(event);
     return;
   }
   update();
@@ -227,7 +227,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
         m_pan_controller.apply(delta, m_viewport_transformation);
         event->accept();
       } else {
-        ViewportBase::mouseMoveEvent(event);
+        QWidget::mouseMoveEvent(event);
       }
     }
   }
@@ -245,12 +245,12 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
         menu->exec(event->globalPos());
       }
     }
-    ViewportBase::mouseReleaseEvent(event);
+    QWidget::mouseReleaseEvent(event);
   }
   for (const auto& hud : m_headup_displays) {
     hud->mouse_release(*event);
   }
-  ViewportBase::mouseReleaseEvent(event);
+  QWidget::mouseReleaseEvent(event);
   update();
 }
 
@@ -279,7 +279,7 @@ void Viewport::set_transformation(const ObjectTransformation& transformation)
 void Viewport::keyPressEvent(QKeyEvent* event)
 {
   if (!m_scene.tool_box().active_tool().key_press(*event)) {
-    ViewportBase::keyPressEvent(event);
+    QWidget::keyPressEvent(event);
   }
 }
 
@@ -304,7 +304,7 @@ void Viewport::update()
   if (m_fps_limiter.isActive()) {
     m_update_later = true;
   } else {
-    ViewportBase::update();
+    QWidget::update();
     Q_EMIT updated();
     m_fps_limiter.start(static_cast<int>(SECOND_MS / fps));
   }
