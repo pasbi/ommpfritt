@@ -174,6 +174,7 @@ public:
   static QString fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t);
 
 public:
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static std::map<QString, const Detail*> m_details;
 };
 

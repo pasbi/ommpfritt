@@ -95,6 +95,8 @@ public:
 
 private:
   QCoreApplication& m_app;
+
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static Application* m_instance;
   MainWindow* m_main_window = nullptr;
 

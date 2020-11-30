@@ -62,7 +62,7 @@ int img_mean(const QImage& image)
   double sum = 0.0;
   for (int y = 0; y < image.height(); ++y) {
     assert(image.format() == QImage::Format_ARGB32_Premultiplied);
-    // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
     const QRgb* rgba_line = reinterpret_cast<const QRgb*>(image.scanLine(y));
     for (int x = 0; x < image.width(); ++x) {
       // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
@@ -136,6 +136,8 @@ const std::set<int> Application::keyboard_modifiers{Qt::Key_Shift,
                                                     Qt::Key_Control,
                                                     Qt::Key_Alt,
                                                     Qt::Key_Meta};
+
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,-warnings-as-errors)
 Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
@@ -511,6 +513,9 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
   using move_command_t = MoveCommand<ObjectTree>;
   using move_context_t = move_command_t::context_type;
   if (!children.empty()) {
+    // it's illogical to be parent of no children.
+    // This assertion is enforced by the conditions before.
+    assert(parent != nullptr);
     const auto move_contextes = ::transform<move_context_t>(children, [&ref](auto* c) {
       return move_context_t(*c, ref, nullptr);
     });

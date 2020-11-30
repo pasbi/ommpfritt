@@ -28,6 +28,7 @@ public:
 
 private:
   void* m_scoped_interpreter;
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static ScopedInterpreterWrapper* m_instance;
 };
 

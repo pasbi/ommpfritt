@@ -33,9 +33,11 @@ public:
   using creator_map_type = std::map<QString, creator_type>;
 
 private:
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static creator_map_type m_creator_map;
 };
 
 template<typename GeneralWrappedT, typename GeneralWrapperT>
 typename WrapperFactory<GeneralWrappedT, GeneralWrapperT>::creator_map_type
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
     WrapperFactory<GeneralWrappedT, GeneralWrapperT>::m_creator_map;

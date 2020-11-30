@@ -53,6 +53,7 @@ void StyleListView::update_text_height()
   QPainter painter(&picture);
   static constexpr auto large_number = 1000000;
   const QRect rectangle(QPoint(0, 0), QSize(m_icon_size.width(), large_number));
+  // NOLINTNEXTLINE(clang-analyzer-cplusplu.NewDeleteLeaks)
   if (const auto* model = this->model(); model != nullptr) {
     const auto heights = ::transform<int>(model->items(), [&painter, &rectangle](auto&& item) {
       QRect actual_rectangle;

@@ -185,6 +185,7 @@ private:
   bool m_is_enabled = true;
 
 public:
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static std::map<QString, const PropertyDetail*> m_details;
 };
 

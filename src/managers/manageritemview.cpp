@@ -69,7 +69,7 @@ void ManagerItemView<ItemViewT, ItemModelT>::keyPressEvent(QKeyEvent* e)
     default:
       // don't use the QAbstractItemView key press handler for all other keys.
       // They break many keybindings.
-      // NOLINT(bugprone-parent-virtual-call)
+      // NOLINTNEXTLINE(bugprone-parent-virtual-call)
       QWidget::keyPressEvent(e);
       return;
     }

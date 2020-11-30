@@ -63,6 +63,7 @@ private:
 
 namespace omm
 {
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 PYBIND11_EMBEDDED_MODULE(omm, m)
 {
   Q_UNUSED(m);

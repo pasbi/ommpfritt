@@ -116,6 +116,7 @@ std::vector<QString> MainWindow::path_menu_entries()
 std::vector<QString> MainWindow::main_menu_entries()
 {
   std::list<QString> entries = {
+      // NOLINTNEXTLINE(bugprone-suspicious-missing-comma)
       QT_TRANSLATE_NOOP("menu_name", "file") "/new document",
       "file/save document",
       "file/save document as ...",

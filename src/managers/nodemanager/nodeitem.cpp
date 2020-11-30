@@ -132,6 +132,7 @@ NodeItem::NodeItem(Node& node) : node(node)
     setPos(pos);
   });
   QObject::connect(&node, &Node::ports_changed, &m_context, [this]() { update_children(); });
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(0, &node, [this]() { update_children(); });
 }
 
