@@ -8,17 +8,18 @@ Checks: '-*,
          performance-*,
          portability-*,
          readability-*,
+         -bugprone-branch-clone,
          -misc-no-recursion,
-         -cppcoreguidelines-non-private-member-variables-in-classes,
          -misc-non-private-member-variables-in-classes,
+         -cppcoreguidelines-non-private-member-variables-in-classes,
          -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
          -cppcoreguidelines-pro-type-vararg,
-         -modernize-use-trailing-return-type,
          -modernize-pass-by-value,
-         -readability-redundant-access-specifiers,
+         -modernize-use-trailing-return-type,
          -readability-else-after-return,
-         -readability-uppercase-literal-suffix,
-         -readability-named-parameter'
+         -readability-named-parameter,
+         -readability-redundant-access-specifiers,
+         -readability-uppercase-literal-suffix'
 
 CheckOptions:
 - key: readability-magic-numbers.IgnoredFloatingPointValues
