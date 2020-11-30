@@ -334,7 +334,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
   }
 
   if (role == Qt::ForegroundRole) {
-    return qApp->palette().color(QPalette::Active, QPalette::WindowText);
+    return QApplication::palette().color(QPalette::Active, QPalette::WindowText);
   }
 
   if (is_group(index)) {

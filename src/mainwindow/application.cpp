@@ -542,7 +542,9 @@ void Application::register_auto_invert_icon_button(QAbstractButton& button)
     }
   };
 
-  const auto connection = connect(qApp, &QApplication::paletteChanged, update_button_icon);
+  const auto connection = connect(dynamic_cast<QApplication*>(QCoreApplication::instance()),
+                                  &QApplication::paletteChanged,
+                                  update_button_icon);
   connect(&button, &QObject::destroyed, this, [connection]() { disconnect(connection); });
   update_button_icon();
 }
