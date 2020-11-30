@@ -29,13 +29,10 @@ public:
 
   ~PythonStreamRedirect()
   {
-    const auto cleanup = [this]() noexcept {
-      // We don't expect any exceptions here.
-      auto sysm = py::module::import("sys");
-      sysm.attr("stdout") = m_stdout;
-      sysm.attr("stderr") = m_stderr;
-    };
-    cleanup();
+    // We don't expect any exceptions here.
+    auto sysm = py::module::import("sys");
+    sysm.attr("stdout") = m_stdout;
+    sysm.attr("stderr") = m_stderr;
   }
 
   PythonStreamRedirect(PythonStreamRedirect&&) = delete;

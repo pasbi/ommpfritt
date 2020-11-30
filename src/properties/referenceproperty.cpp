@@ -26,10 +26,8 @@ ReferenceProperty::ReferenceProperty(const ReferenceProperty& other)
 
 ReferenceProperty::~ReferenceProperty()
 {
-  [this]() noexcept {
-    QSignalBlocker blocker(this);
-    ReferenceProperty::set(nullptr);
-  }();
+  QSignalBlocker blocker(this);
+  ReferenceProperty::set(nullptr);
 }
 
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
