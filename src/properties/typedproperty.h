@@ -46,10 +46,12 @@ public:
   {
     return m_value;
   }
+
   ValueT value() const
   {
     return Property::value<ValueT>();
   }
+
   void set(const variant_type& variant) override
   {
     set(std::get<ValueT>(variant));
@@ -78,9 +80,11 @@ public:
 
   [[nodiscard]] bool is_numerical() const override
   {
-    return std::is_same_v<
-               bool,
-               ValueT> || std::is_same_v<double, ValueT> || std::is_same_v<int, ValueT> || std::is_same_v<Vec2f, ValueT> || std::is_same_v<Vec2i, ValueT>;
+    return std::is_same_v< bool, ValueT>
+        || std::is_same_v<double, ValueT>
+        || std::is_same_v<int, ValueT>
+        || std::is_same_v<Vec2f, ValueT>
+        || std::is_same_v<Vec2i, ValueT>;
   }
 
 private:

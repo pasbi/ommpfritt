@@ -89,10 +89,12 @@ public:
   {
     set(static_cast<std::size_t>(value));
   }
+
   template<typename ValueT> std::enable_if_t<!std::is_enum_v<ValueT>, ValueT> value() const
   {
     return std::get<ValueT>(variant_value());
   }
+
   template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT> value() const
   {
     return static_cast<ValueT>(std::get<std::size_t>(variant_value()));
