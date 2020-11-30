@@ -30,7 +30,6 @@ private:
   void from_viewport();
   void to_viewport();
   void make_output_unique();
-  static QPen m_pen;
 };
 
 }  // namespace omm

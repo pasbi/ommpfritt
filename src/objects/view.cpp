@@ -9,23 +9,8 @@
 #include "renderers/style.h"
 #include <QObject>
 
-namespace
-{
-QPen make_pen()
-{
-  QPen pen;
-  pen.setWidth(1.0);
-  pen.setCosmetic(true);
-  pen.setColor(Qt::black);
-  return pen;
-}
-
-}  // namespace
-
 namespace omm
 {
-QPen View::m_pen = make_pen();
-
 View::View(Scene* scene) : Object(scene)
 {
   static constexpr double DEFAULT_SIZE = 100.0;
