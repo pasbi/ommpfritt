@@ -16,6 +16,11 @@ class PythonEngine : public QObject
   Q_OBJECT
 public:
   explicit PythonEngine();
+  PythonEngine(PythonEngine&&) = delete;
+  PythonEngine(const PythonEngine&) = delete;
+  PythonEngine& operator=(PythonEngine&&) = delete;
+  PythonEngine& operator=(const PythonEngine&) = delete;
+  ~PythonEngine() = default;
   bool exec(const QString& code, pybind11::object& locals, const void* associated_item);
   pybind11::object eval(const QString& code, pybind11::object& locals, const void* associated_item);
 
@@ -24,9 +29,6 @@ private:
   // otherwise, e.g., importing numpy causes crashed.
   // see https://pybind11.readthedocs.io/en/stable/advanced/embedding.html#interpreter-lifetime
   ScopedInterpreterWrapper m_guard;
-
-  PythonEngine(const PythonEngine&) = delete;
-  PythonEngine(PythonEngine&&) = delete;
 
 Q_SIGNALS:
   void output(const void* associated_item, const QString& text, Stream stream);

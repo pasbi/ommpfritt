@@ -23,6 +23,10 @@ public:
                       const std::map<Property*, PropertyConfiguration>& changes,
                       AbstractPropertyOwner& owner);
   ~UserPropertyCommand() override;
+  UserPropertyCommand(UserPropertyCommand&&) = delete;
+  UserPropertyCommand(const UserPropertyCommand&) = delete;
+  UserPropertyCommand& operator=(UserPropertyCommand&&) = delete;
+  UserPropertyCommand& operator=(const UserPropertyCommand&) = delete;
   void undo() override;
   void redo() override;
 

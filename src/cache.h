@@ -15,6 +15,7 @@ public:
   Cache() = default;
   Cache(Cache&&) = delete;
   Cache(const Cache&) = delete;
+  Cache& operator=(Cache&& other) = delete;
   Cache& operator=(const Cache& other) = delete;
   const V& get(const K& key) const
   {

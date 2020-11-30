@@ -21,8 +21,9 @@ public:
   ScopedInterpreterWrapper();
   ~ScopedInterpreterWrapper();
 
-  ScopedInterpreterWrapper(const ScopedInterpreterWrapper&) = delete;
   ScopedInterpreterWrapper(ScopedInterpreterWrapper&&) = delete;
+  ScopedInterpreterWrapper(const ScopedInterpreterWrapper&) = delete;
+  ScopedInterpreterWrapper& operator=(ScopedInterpreterWrapper&&) = delete;
   ScopedInterpreterWrapper& operator=(const ScopedInterpreterWrapper&) = delete;
 
 private:

@@ -20,6 +20,10 @@ class NodeItem : public QGraphicsItem
 public:
   explicit NodeItem(Node& node);
   ~NodeItem() override;
+  NodeItem(NodeItem&&) = delete;
+  NodeItem(const NodeItem&) = delete;
+  NodeItem& operator=(NodeItem&&) = delete;
+  NodeItem& operator=(const NodeItem&) = delete;
   [[nodiscard]] QRectF boundingRect() const override;
   void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* widget) override;
   [[nodiscard]] PortItem* port_item(const AbstractPort& port) const;

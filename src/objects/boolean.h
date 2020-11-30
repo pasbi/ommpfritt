@@ -15,6 +15,7 @@ public:
   Boolean(Boolean&&) = delete;
   Boolean& operator=(Boolean&&) = delete;
   Boolean& operator=(const Boolean&) = delete;
+  ~Boolean() = default;
 
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Boolean");

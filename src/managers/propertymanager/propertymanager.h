@@ -24,6 +24,10 @@ class PropertyManager : public Manager
   Q_OBJECT
 public:
   explicit PropertyManager(Scene& scene);
+  PropertyManager(PropertyManager&&) = delete;
+  PropertyManager(const PropertyManager&) = delete;
+  PropertyManager& operator=(PropertyManager&&) = delete;
+  PropertyManager& operator=(const PropertyManager&) = delete;
   ~PropertyManager() override;
 
   PropertyView property(const QString& key);

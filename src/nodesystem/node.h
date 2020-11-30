@@ -24,6 +24,7 @@ public:
   explicit Node(NodeModel& model);
   ~Node() override;
   Node(Node&&) = delete;
+  Node(const Node&) = default;
   Node& operator=(const Node&) = delete;
   Node& operator=(Node&&) = delete;
 

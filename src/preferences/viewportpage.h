@@ -17,6 +17,10 @@ class ViewportPage : public PreferencePage
 public:
   explicit ViewportPage(Preferences& preferences);
   ~ViewportPage() override;
+  ViewportPage(ViewportPage&&) = delete;
+  ViewportPage(const ViewportPage&) = delete;
+  ViewportPage& operator=(ViewportPage&&) = delete;
+  ViewportPage& operator=(const ViewportPage&) = delete;
 
   void about_to_accept() override;
 

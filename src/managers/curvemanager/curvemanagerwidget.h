@@ -73,11 +73,8 @@ private:
   void draw_knots(QPainter& painter) const;
 
   struct TangentHandle {
+    TangentHandle() = default;
     TangentHandle(const KeyFrameHandleKey* key, Track::Knot::Side side) : key(key), side(side)
-    {
-    }
-
-    TangentHandle()
     {
     }
 

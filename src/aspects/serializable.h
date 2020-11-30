@@ -18,10 +18,16 @@ public:
   using Pointer = QString;
   using ByteArray = std::vector<char>;
   virtual ~Serializable() = default;
+  Serializable(Serializable&&) = default;
+  Serializable(const Serializable&) = default;
+  Serializable& operator=(Serializable&&) = default;
+  Serializable& operator=(const Serializable&) = default;
+  Serializable() = default;
 
   virtual void serialize(AbstractSerializer&, const Pointer&) const
   {
   }
+
   virtual void deserialize(AbstractDeserializer&, const Pointer&)
   {
   }

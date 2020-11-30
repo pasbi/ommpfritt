@@ -17,6 +17,10 @@ class GeneralPage : public PreferencePage
 public:
   explicit GeneralPage(Preferences& preferences);
   ~GeneralPage() override;
+  GeneralPage(GeneralPage&&) = delete;
+  GeneralPage(const GeneralPage&) = delete;
+  GeneralPage& operator=(GeneralPage&&) = delete;
+  GeneralPage& operator=(const GeneralPage&) = delete;
   void about_to_accept() override;
 
 private:

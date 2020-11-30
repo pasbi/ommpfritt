@@ -32,6 +32,11 @@ class AbstractPyWrapper
 {
 public:
   virtual ~AbstractPyWrapper() = default;
+  AbstractPyWrapper() = default;
+  AbstractPyWrapper(AbstractPyWrapper&&) = default;
+  AbstractPyWrapper(const AbstractPyWrapper&) = default;
+  AbstractPyWrapper& operator=(AbstractPyWrapper&&) = default;
+  AbstractPyWrapper& operator=(const AbstractPyWrapper&) = default;
 };
 
 template<typename WrappedT> class PyWrapper : AbstractPyWrapper

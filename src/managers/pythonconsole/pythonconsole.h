@@ -18,6 +18,10 @@ class PythonConsole : public Manager
 public:
   explicit PythonConsole(Scene& scene);
   ~PythonConsole() override;
+  PythonConsole(PythonConsole&&) = delete;
+  PythonConsole(const PythonConsole&) = delete;
+  PythonConsole& operator=(PythonConsole&&) = delete;
+  PythonConsole& operator=(const PythonConsole&) = delete;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
   [[nodiscard]] QString type() const override;

@@ -27,6 +27,10 @@ class ExportDialog : public QDialog
 public:
   ExportDialog(Scene& scene, QWidget* parent);
   ~ExportDialog() override;
+  ExportDialog(ExportDialog&&) = delete;
+  ExportDialog(const ExportDialog&) = delete;
+  ExportDialog& operator=(ExportDialog&&) = delete;
+  ExportDialog& operator=(const ExportDialog&) = delete;
 
   static void render(Scene& scene, const View* view, QPaintDevice& device, double scale = 1.0);
 

@@ -13,6 +13,7 @@ public:
   Tip(Tip&&) = delete;
   Tip& operator=(Tip&&) = delete;
   Tip& operator=(const Tip&) = delete;
+  ~Tip() = default;
 
   QString type() const override
   {

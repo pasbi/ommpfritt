@@ -18,6 +18,10 @@ class PreferenceDialog : public QDialog
 public:
   explicit PreferenceDialog();
   ~PreferenceDialog() override;
+  PreferenceDialog(PreferenceDialog&&) = delete;
+  PreferenceDialog(const PreferenceDialog&) = delete;
+  PreferenceDialog& operator=(PreferenceDialog&&) = delete;
+  PreferenceDialog& operator=(const PreferenceDialog&) = delete;
 
 public Q_SLOTS:
   void accept() override;

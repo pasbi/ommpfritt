@@ -28,6 +28,10 @@ public:
   enum class PlayDirection { Forward, Backward, Stopped };
   explicit Animator(Scene& scene);
   ~Animator() override;
+  Animator(Animator&&) = delete;
+  Animator(const Animator&) = delete;
+  Animator& operator=(Animator&&) = delete;
+  Animator& operator=(const Animator&) = delete;
   void serialize(AbstractSerializer&, const Pointer&) const override;
   void deserialize(AbstractDeserializer&, const Pointer&) override;
 

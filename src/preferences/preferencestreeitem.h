@@ -12,12 +12,13 @@ class PreferencesTreeItem
 protected:
   explicit PreferencesTreeItem(const QString& name, const QString& translation_context);
   virtual ~PreferencesTreeItem() = default;
+
+public:
   PreferencesTreeItem(PreferencesTreeItem&&) = delete;
   PreferencesTreeItem(const PreferencesTreeItem&) = delete;
   PreferencesTreeItem& operator=(PreferencesTreeItem&&) = delete;
   PreferencesTreeItem& operator=(const PreferencesTreeItem&) = delete;
 
-public:
   [[nodiscard]] virtual bool is_group() const = 0;
   const QString name;
   [[nodiscard]] virtual QString translated_name() const = 0;

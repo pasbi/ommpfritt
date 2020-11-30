@@ -17,6 +17,10 @@ class PreferencesTreeView : public QTreeView
 public:
   explicit PreferencesTreeView(QWidget* parent = nullptr);
   ~PreferencesTreeView() override;
+  PreferencesTreeView(PreferencesTreeView&&) = delete;
+  PreferencesTreeView(const PreferencesTreeView&) = delete;
+  PreferencesTreeView& operator=(PreferencesTreeView&&) = delete;
+  PreferencesTreeView& operator=(const PreferencesTreeView&) = delete;
   void set_model(QAbstractItemModel& model,
                  std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates);
   void transfer_editor_data_to_model();

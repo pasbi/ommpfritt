@@ -20,11 +20,13 @@ class Manager
     , virtual public CommandInterface
 {
   Q_OBJECT  // Required for MainWindow::save_state
-      public
-      : Manager(const Manager&)
-        = delete;
+
+public:
   Manager(Manager&&) = delete;
+  Manager(const Manager&) = delete;
   ~Manager() override;
+  Manager& operator=(const Manager&) = delete;
+  Manager& operator=(Manager&&) = delete;
   [[nodiscard]] Scene& scene() const;
   [[nodiscard]] bool is_visible() const;
   [[nodiscard]] bool is_locked() const

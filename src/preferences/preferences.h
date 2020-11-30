@@ -16,6 +16,10 @@ class Preferences : public QObject
 public:
   Preferences();
   ~Preferences() override;
+  Preferences(Preferences&&) = delete;
+  Preferences(const Preferences&) = delete;
+  Preferences& operator=(Preferences&&) = delete;
+  Preferences& operator=(const Preferences&) = delete;
 
   struct MouseModifier {
     MouseModifier(const QString& label,

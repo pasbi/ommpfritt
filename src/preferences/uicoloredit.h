@@ -16,6 +16,10 @@ class UiColorEdit : public QWidget
 public:
   explicit UiColorEdit(QWidget* parent = nullptr);
   ~UiColorEdit() override;
+  UiColorEdit(UiColorEdit&&) = delete;
+  UiColorEdit(const UiColorEdit&) = delete;
+  UiColorEdit& operator=(UiColorEdit&&) = delete;
+  UiColorEdit& operator=(const UiColorEdit&) = delete;
   void set_default_color(const Color& color);
   void set_color(const Color& color);
   [[nodiscard]] Color color() const;

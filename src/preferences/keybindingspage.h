@@ -19,6 +19,10 @@ class KeyBindingsPage : public PreferencePage
 public:
   explicit KeyBindingsPage(KeyBindings& key_bindings, QWidget* parent = nullptr);
   ~KeyBindingsPage() override;
+  KeyBindingsPage(KeyBindingsPage&&) = delete;
+  KeyBindingsPage(const KeyBindingsPage&) = delete;
+  KeyBindingsPage& operator=(KeyBindingsPage&&) = delete;
+  KeyBindingsPage& operator=(const KeyBindingsPage&) = delete;
 
   static constexpr auto KEYBINDINGS_DIALOG_SETTINGS_GROUP = "keybindingsdialog";
   static constexpr auto GEOMETRY_SETTINGS_KEY = "geometry";

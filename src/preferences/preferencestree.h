@@ -22,6 +22,10 @@ class PreferencesTree : public QAbstractItemModel
 public:
   PreferencesTree(const QString& translation_context, const QString& filename);
   ~PreferencesTree() override;
+  PreferencesTree(PreferencesTree&&) = delete;
+  PreferencesTree(const PreferencesTree&) = delete;
+  PreferencesTree& operator=(PreferencesTree&&) = delete;
+  PreferencesTree& operator=(const PreferencesTree&&) = delete;
   void reset();
 
   void save_in_qsettings(const QString& q_settings_group) const;

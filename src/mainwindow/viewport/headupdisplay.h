@@ -13,6 +13,12 @@ class HeadUpDisplay
 public:
   QPoint pos;
   virtual ~HeadUpDisplay() = default;
+  HeadUpDisplay() = default;
+  HeadUpDisplay(HeadUpDisplay&&) = delete;
+  HeadUpDisplay(const HeadUpDisplay&) = delete;
+  HeadUpDisplay& operator=(HeadUpDisplay&&) = delete;
+  HeadUpDisplay& operator=(const HeadUpDisplay&) = delete;
+
   [[nodiscard]] virtual QSize size() const = 0;
   virtual void draw(QPainter& painter) const = 0;
   virtual bool mouse_press(QMouseEvent& event) = 0;

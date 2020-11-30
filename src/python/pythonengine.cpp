@@ -38,6 +38,11 @@ public:
     cleanup();
   }
 
+  PythonStreamRedirect(PythonStreamRedirect&&) = delete;
+  PythonStreamRedirect(const PythonStreamRedirect&) = delete;
+  PythonStreamRedirect& operator=(PythonStreamRedirect&&) = delete;
+  PythonStreamRedirect& operator=(const PythonStreamRedirect&) = delete;
+
   QString stdout_()
   {
     m_stdout_buffer.attr("seek")(0);

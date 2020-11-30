@@ -26,7 +26,9 @@ public:
   struct Knot : public ReferencePolisher {
     Knot(AbstractDeserializer& deserializer, const Pointer& pointer, const QString& type);
     Knot(const variant_type& value);
-    Knot& operator=(const Knot& other) = delete;
+    Knot(Knot&&) = delete;
+    Knot& operator=(Knot&&) = delete;
+    Knot& operator=(const Knot&) = delete;
     void swap(Knot& other);
     [[nodiscard]] std::unique_ptr<Knot> clone() const;
 
@@ -56,6 +58,10 @@ public:
   static QString interpolation_label(Interpolation interpolation);
 
   explicit Track(Property& property);
+  Track(Track&&) = delete;
+  Track(const Track&) = delete;
+  Track& operator=(Track&&) = delete;
+  Track& operator=(const Track&) = delete;
   ~Track() override;
   [[nodiscard]] std::unique_ptr<Track> clone() const;
   static constexpr auto PROPERTY_KEY_KEY = "property";
