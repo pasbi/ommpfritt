@@ -81,9 +81,9 @@ public:
     }
   }
 
-  std::size_t count(const QString& key) const;
-  map_type::const_iterator [[nodiscard]] find(const QString& key) const;
-  map_type::const_iterator [[nodiscard]] end() const;
+  [[nodiscard]] std::size_t count(const QString& key) const;
+  [[nodiscard]] map_type::const_iterator find(const QString& key) const;
+  [[nodiscard]] map_type::const_iterator end() const;
 };
 
 }  // namespace omm
