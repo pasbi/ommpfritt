@@ -95,7 +95,7 @@ void Painter::toast(const Vec2f& pos, const QString& text) const
   const double margin = 10.0;
   actual_rect.adjust(-margin, -margin, margin, margin);
 
-  static constexpr QColor TOAST_BACKGROUND_COLOR{80, 60, 40, 120};
+  static const QColor TOAST_BACKGROUND_COLOR{80, 60, 40, 120};
   static constexpr double TOAST_RADIUS = 25;
   painter->setBrush(QBrush(TOAST_BACKGROUND_COLOR));
   painter->setPen(QPen(Qt::white));

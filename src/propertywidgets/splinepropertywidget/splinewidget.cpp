@@ -117,7 +117,7 @@ void SplineWidget::draw_spline(QPainter& painter)
   }
 
   painter.save();
-  static constexpr QColor HALF_TRANSPARENT{0, 0, 0, 128};
+  static const QColor HALF_TRANSPARENT{0, 0, 0, 128};
   static constexpr double SPLINE_PEN_WIDTH = 0.5;
   for (auto cp = m_spline.begin(); cp.is_valid(); cp.advance()) {
     if (cp.side() != Side::Middle) {
