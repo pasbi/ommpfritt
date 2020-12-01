@@ -20,7 +20,7 @@ public:
   Cloner(Cloner&&) = delete;
   Cloner& operator=(Cloner&&) = delete;
   Cloner& operator=(const Cloner&) = delete;
-  ~Cloner() = default;
+  ~Cloner() override = default;
 
   void draw_object(Painter& renderer,
                    const Style& style,

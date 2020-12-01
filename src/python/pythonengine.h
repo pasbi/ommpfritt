@@ -20,7 +20,7 @@ public:
   PythonEngine(const PythonEngine&) = delete;
   PythonEngine& operator=(PythonEngine&&) = delete;
   PythonEngine& operator=(const PythonEngine&) = delete;
-  ~PythonEngine() = default;
+  ~PythonEngine() override = default;
   bool exec(const QString& code, pybind11::object& locals, const void* associated_item);
   pybind11::object eval(const QString& code, pybind11::object& locals, const void* associated_item);
 

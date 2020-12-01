@@ -29,6 +29,7 @@ public:
     Knot(Knot&&) = delete;
     Knot& operator=(Knot&&) = delete;
     Knot& operator=(const Knot&) = delete;
+    ~Knot() override = default;
     void swap(Knot& other);
     [[nodiscard]] std::unique_ptr<Knot> clone() const;
 

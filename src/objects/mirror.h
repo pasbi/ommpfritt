@@ -21,6 +21,7 @@ public:
   Mirror(Mirror&&) = delete;
   Mirror& operator=(Mirror&&) = delete;
   Mirror& operator=(const Mirror&) = delete;
+  ~Mirror() override = default;
 
   void draw_object(Painter& renderer,
                    const Style& style,

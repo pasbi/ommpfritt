@@ -12,7 +12,7 @@ public:
   View(View&&) = delete;
   View& operator=(View&&) = delete;
   View& operator=(const View&) = delete;
-  ~View() = default;
+  ~View() override = default;
 
   void draw_handles(Painter& renderer) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;

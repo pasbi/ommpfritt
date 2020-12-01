@@ -19,7 +19,7 @@ public:
   Instance(Instance&&) = delete;
   Instance& operator=(Instance&&) = delete;
   Instance& operator=(const Instance&) = delete;
-  ~Instance() = default;
+  ~Instance() override = default;
 
   void draw_object(Painter& renderer,
                    const Style& style,

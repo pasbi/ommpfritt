@@ -17,7 +17,7 @@ public:
   Text(Text&&) = delete;
   Text& operator=(Text&&) = delete;
   Text& operator=(const Text&) = delete;
-  ~Text() = default;
+  ~Text() override = default;
 
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Text");
