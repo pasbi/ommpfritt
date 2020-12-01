@@ -104,7 +104,7 @@ bool decode_hex(const QString& code, std::array<double, 4>& rgb)
   };
 
   static constexpr std::size_t RRGGBBAA_LENGTH = 9;
-  static constexpr std::size_t RRGGBB_LENGTH = 9;
+  static constexpr std::size_t RRGGBB_LENGTH = 7;
   static constexpr double DEFAULT_ALPHA_VALUE = 1.0;
   if (code.at(0) != '#' || (code.size() != RRGGBBAA_LENGTH && code.size() != RRGGBB_LENGTH)) {
     return false;

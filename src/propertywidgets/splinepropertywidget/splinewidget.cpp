@@ -117,14 +117,14 @@ void SplineWidget::draw_spline(QPainter& painter)
   }
 
   painter.save();
-  static constexpr QColor GRAY{0, 0, 0, 128};
+  static constexpr QColor HALF_TRANSPARENT{0, 0, 0, 128};
   static constexpr double SPLINE_PEN_WIDTH = 0.5;
   for (auto cp = m_spline.begin(); cp.is_valid(); cp.advance()) {
     if (cp.side() != Side::Middle) {
       const QPointF origin = knot_pos(cp.iterator(), Side::Middle);
       const QPointF sat_pos = knot_pos(cp.iterator(), cp.side());
       QPen pen;
-      pen.setColor(GRAY);
+      pen.setColor(HALF_TRANSPARENT);
       pen.setCosmetic(true);
       pen.setWidthF(SPLINE_PEN_WIDTH);
       painter.setPen(pen);
