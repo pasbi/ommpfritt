@@ -88,6 +88,65 @@ bool PreferencesTree::save_to_file(const QString& filename) const
   return true;
 }
 
+bool PreferencesTree::handle_group_line(const QString& group_name, const QString& line, bool insert_mode)
+{
+  const auto tokens = line.split(":");
+  if (tokens.size() != 2) {
+    LWARNING << "ignoring line '" << line.toStdString()
+             << "'. Expected format: <name>: <key value>.";
+    return false;
+  }
+  const auto name = tokens[0].trimmed();
+  const auto value = tokens[1].trimmed();
+  const auto git
+      = std::find_if(m_groups.begin(),
+                     m_groups.end(),
+                     [group_name](const std::unique_ptr<PreferencesTreeGroupItem>& group) {
+                       return group->name == group_name;
+                     });
+
+  PreferencesTreeGroupItem* group = nullptr;
+  if (git == m_groups.end()) {
+    if (insert_mode) {
+      auto item = std::make_unique<PreferencesTreeGroupItem>(group_name, m_translation_context);
+      m_groups.push_back(std::move(item));
+    } else {
+      LWARNING << "Ignore unexpected group '" << group_name << "'.";
+      return false;
+    }
+    group = m_groups.back().get();
+  } else {
+    group = git->get();
+  }
+
+  const auto vit = std::find_if(group->values.begin(),
+                                group->values.end(),
+                                [name](auto&& value_item) { return value_item->name == name; });
+
+  if (vit == group->values.end()) {
+    if (insert_mode) {
+      auto item = std::make_unique<PreferencesTreeValueItem>(group->name,
+                                                             name,
+                                                             value,
+                                                             m_translation_context);
+      group->values.push_back(std::move(item));
+    } else {
+      LWARNING << "No such item '" << group_name << "'::'" << name << "'.";
+    }
+  } else {
+    if (insert_mode) {
+      LWARNING << "Duplicate value for '" << group_name << "'::'" << name << "'."
+               << "Drop '" << value << "', "
+               << "keep '" << (*vit)->value() << "'.";
+      LFATAL("Duplicate key.");
+    } else {
+      (*vit)->set_default(value);
+    }
+  }
+
+  return true;
+}
+
 bool PreferencesTree::load_from_file(const QString& filename)
 {
   const bool insert_mode = m_groups.empty();
@@ -129,7 +188,6 @@ bool PreferencesTree::load_from_file(const QString& filename)
 
   QTextStream stream(&file);
   while (!stream.atEnd()) {
-line_loop:
     const QString line = stream.readLine().trimmed();
     if (line.startsWith("#") || line.isEmpty()) {
       continue;  // line is a comment
@@ -138,58 +196,8 @@ line_loop:
     if (context_regexp.exactMatch(line)) {
       group_name = line.mid(1, line.size() - 2);
     } else if (!group_name.isEmpty()) {
-      const auto tokens = line.split(":");
-      if (tokens.size() != 2) {
-        LWARNING << "ignoring line '" << line.toStdString()
-                 << "'. Expected format: <name>: <key value>.";
+      if (!handle_group_line(group_name, line, insert_mode)) {
         continue;
-      }
-      const auto name = tokens[0].trimmed();
-      const auto value = tokens[1].trimmed();
-      const auto git
-          = std::find_if(m_groups.begin(),
-                         m_groups.end(),
-                         [group_name](const std::unique_ptr<PreferencesTreeGroupItem>& group) {
-                           return group->name == group_name;
-                         });
-
-      PreferencesTreeGroupItem* group = nullptr;
-      if (git == m_groups.end()) {
-        if (insert_mode) {
-          auto item = std::make_unique<PreferencesTreeGroupItem>(group_name, m_translation_context);
-          m_groups.push_back(std::move(item));
-        } else {
-          LWARNING << "Ignore unexpected group '" << group_name << "'.";
-          goto line_loop;
-        }
-        group = m_groups.back().get();
-      } else {
-        group = git->get();
-      }
-
-      const auto vit = std::find_if(group->values.begin(),
-                                    group->values.end(),
-                                    [name](auto&& value_item) { return value_item->name == name; });
-
-      if (vit == group->values.end()) {
-        if (insert_mode) {
-          auto item = std::make_unique<PreferencesTreeValueItem>(group->name,
-                                                                 name,
-                                                                 value,
-                                                                 m_translation_context);
-          group->values.push_back(std::move(item));
-        } else {
-          LWARNING << "No such item '" << group_name << "'::'" << name << "'.";
-        }
-      } else {
-        if (insert_mode) {
-          LWARNING << "Duplicate value for '" << group_name << "'::'" << name << "'."
-                   << "Drop '" << value << "', "
-                   << "keep '" << (*vit)->value() << "'.";
-          LFATAL("Duplicate key.");
-        } else {
-          (*vit)->set_default(value);
-        }
       }
     } else {
       LWARNING << "line '" << line << "' ignored since no group is active.";

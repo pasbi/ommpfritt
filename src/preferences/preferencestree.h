@@ -73,6 +73,7 @@ private:
   mutable std::vector<std::unique_ptr<PreferencesTreeGroupItem>> m_groups;
   std::map<QString, std::map<QString, QString>> m_stored_values;
   const QString m_translation_context;
+  bool handle_group_line(const QString& group_name, const QString& line, bool insert_mode);
 };
 
 }  // namespace omm
