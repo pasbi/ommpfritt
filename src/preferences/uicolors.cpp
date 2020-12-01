@@ -56,7 +56,7 @@ UiColors::UiColors() : PreferencesTree("uicolors", ":/uicolors/ui-colors-dark.cf
 
 #ifdef PRINT_DEFAULT_COLOR_SCHEMA
   for (auto&& [role, name] : role_map) {
-    std::cout << name << ": " << Color(qApp->palette().color(QPalette::Active, role)).to_hex()
+    std::cout << name << ": " << Color(QApplication::palette().color(QPalette::Active, role)).to_hex()
               << "/" << Color(qApp->palette().color(QPalette::Active, role)).to_hex() << "/"
               << Color(qApp->palette().color(QPalette::Active, role)).to_hex() << std::endl;
   }
@@ -145,7 +145,7 @@ Color UiColors ::color(QPalette::ColorGroup pgroup, const QString& group, const 
 void UiColors::apply()
 {
   PreferencesTree::apply();
-  qApp->setPalette(make_palette());
+  QApplication::setPalette(make_palette());
 }
 
 QStringList UiColors::skin_names() const
