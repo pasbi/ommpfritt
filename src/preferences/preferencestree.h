@@ -25,7 +25,7 @@ public:
   PreferencesTree(PreferencesTree&&) = delete;
   PreferencesTree(const PreferencesTree&) = delete;
   PreferencesTree& operator=(PreferencesTree&&) = delete;
-  PreferencesTree& operator=(const PreferencesTree&&) = delete;
+  PreferencesTree& operator=(const PreferencesTree&) = delete;
   void reset();
 
   void save_in_qsettings(const QString& q_settings_group) const;
