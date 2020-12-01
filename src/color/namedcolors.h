@@ -128,7 +128,7 @@ private:
       static constexpr double VALUE_THRESHOLD = 0.75;
       static constexpr double HALF_HUE_RANGE = 0.5;
       h = std::fmod(h + HALF_HUE_RANGE, 1.0);
-      v = v < VALUE_THRESHOLD ? 1.0 : 0.5;
+      v = v < VALUE_THRESHOLD ? 1.0 : 0.0;
       s = 1.0;
     } else {
       static constexpr double VALUE_THRESHOLD = 0.5;
