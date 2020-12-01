@@ -107,7 +107,9 @@ SubcommandLineParser::SubcommandLineParser(const QStringList& args)
   addOptions(options.at(m_command));
   addHelpOption();
 
-  process(QStringList(std::next(args.begin()), args.end()));
+  QStringList args_copy = args;
+  args_copy.removeAt(0);
+  process(args_copy);
 }
 
 SubcommandLineParser::SubcommandLineParser() = default;
