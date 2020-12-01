@@ -71,13 +71,8 @@ Q_SIGNALS:
 
 public:
   struct PixelRange : Range {
-    PixelRange(TimelineCanvas& self) : Range(1, 100), m_self(self)
-    {
-    }
-    [[nodiscard]] int pixel_range() const override
-    {
-      return m_self.rect.width();
-    }
+    PixelRange(TimelineCanvas& self);
+    [[nodiscard]] int pixel_range() const override;
 
   private:
     TimelineCanvas& m_self;

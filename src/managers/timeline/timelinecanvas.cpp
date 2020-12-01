@@ -14,6 +14,30 @@
 #include <QWidget>
 #include <cmath>
 
+namespace
+{
+bool frame_has_line(double ppfs, int frame)
+{
+  static const std::list<std::pair<double, int>> lods{{10.0, 2}, {2.0, 10}, {1.0, 20}};
+  return std::any_of(lods.begin(), lods.end(), [frame, ppfs](auto&& arg) {
+    auto&& [ppfs_threshold, frame_div] = arg;
+    return ppfs >= ppfs_threshold && (frame % frame_div == 0);
+  });
+}
+
+bool frame_has_framenumber(double ppfs, int frame)
+{
+  static constexpr double inf = std::numeric_limits<double>::infinity();
+  static const std::list<std::pair<double, int>> lods{{2.0, 100}, {10.0, 20}, {20.0, 10}, {inf, 2}};
+  for (auto&& [ppfs_threshold, frame_div] : lods) {
+    if (ppfs < ppfs_threshold) {
+      return frame % frame_div == 0;
+    }
+  }
+  return false;
+}
+}
+
 namespace omm
 {
 TimelineCanvas::TimelineCanvas(Animator& animator, QWidget& widget)
@@ -77,51 +101,33 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
   for (int frame = static_cast<int>(frame_range.begin);
        frame <= static_cast<int>(frame_range.end + 1.0);
        ++frame) {
-    if (ppfs < 10 && (frame % 2 != 0)) {
-      continue;
-    } else if (ppfs < 2 && frame % 10 != 0) {
-      continue;
-    } else if (ppfs < 1 && frame % 20 != 0) {
-      continue;
-    }
+    if (frame_has_line(ppfs, frame)) {
+      pen.setWidthF(frame % 10 == 0 ? 1.0 : 0.5);
+      painter.setPen(pen);
 
-    const auto draw_frame_number = [ppfs](int frame) {
-      if (ppfs < 2) {
-        return frame % 100 == 0;
-      } else if (ppfs < 10) {
-        return frame % 20 == 0;
-      } else if (ppfs < 20) {
-        return frame % 10 == 0;
-      } else {
-        return frame % 2 == 0;
+      const double x = (frame - frame_range.begin) * ppf;
+      const double line_start = frame % 2 == 0 ? 0 : 0.05;
+
+      // there is no way in drawing really tiny text. Hence, we must draw the frame numbers in
+      // non-normalized coordinates...
+      painter.save();
+      painter.resetTransform();
+      painter.translate(rect.left() + rect.width() * x, rect.top());
+
+      const double line_end = footer_height > 0 ? std::max(line_start, footer_y()) : rect.height();
+      if (line_end != line_start) {
+        painter.drawLine(QPointF(0, line_start), QPointF(0, line_end));
       }
-    };
 
-    pen.setWidthF(frame % 10 == 0 ? 1.0 : 0.5);
-    painter.setPen(pen);
-
-    const double x = (frame - frame_range.begin) * ppf;
-    const double line_start = frame % 2 == 0 ? 0 : 0.05;
-
-    // there is no way in drawing really tiny text. Hence, we must draw the frame numbers in
-    // non-normalized coordinates...
-    painter.save();
-    painter.resetTransform();
-    painter.translate(rect.left() + rect.width() * x, rect.top());
-
-    const double line_end = footer_height > 0 ? std::max(line_start, footer_y()) : rect.height();
-    if (line_end != line_start) {
-      painter.drawLine(QPointF(0, line_start), QPointF(0, line_end));
+      if (footer_height > 0 && frame_has_framenumber(ppfs, frame)) {
+        const QString text = QString("%1").arg(frame);
+        const QFontMetricsF fm(painter.font());
+        const double text_width = fm.horizontalAdvance(text);
+        const double margin = (footer_height - fm.height()) / 2.0;
+        painter.drawText(QPointF(-text_width / 2.0, footer_y() + margin + fm.height()), text);
+      }
+      painter.restore();
     }
-
-    if (footer_height > 0 && draw_frame_number(frame)) {
-      const QString text = QString("%1").arg(frame);
-      const QFontMetricsF fm(painter.font());
-      const double text_width = fm.horizontalAdvance(text);
-      const double margin = (footer_height - fm.height()) / 2.0;
-      painter.drawText(QPointF(-text_width / 2.0, footer_y() + margin + fm.height()), text);
-    }
-    painter.restore();
   }
 
   painter.restore();
@@ -492,6 +498,17 @@ void TimelineCanvas ::draw_keyframe(QPainter& painter,
   painter.fillPath(diamond, ui_color(m_widget, "TimeLine", status_name_map.at(status)));
   painter.drawPath(diamond);
   painter.restore();
+}
+
+TimelineCanvas::PixelRange::PixelRange(TimelineCanvas& self)
+  : Range(Animator::DEFAULT_START_FRAME, Animator::DEFAULT_END_FRAME), m_self(self)
+{
+
+}
+
+int TimelineCanvas::PixelRange::pixel_range() const
+{
+  return m_self.rect.width();
 }
 
 }  // namespace omm
