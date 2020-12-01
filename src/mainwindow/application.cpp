@@ -289,8 +289,8 @@ void Application::reset()
 
 void Application::load(const QString& filename, bool force)
 {
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (force || can_close()) {
-    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     QTimer::singleShot(0, this, [this, filename]() {
       if (!scene.load_from(filename)) {
         QMessageBox::critical(m_main_window,

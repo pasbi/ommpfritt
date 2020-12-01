@@ -501,9 +501,8 @@ void TimelineCanvas ::draw_keyframe(QPainter& painter,
 }
 
 TimelineCanvas::PixelRange::PixelRange(TimelineCanvas& self)
-  : Range(Animator::DEFAULT_START_FRAME, Animator::DEFAULT_END_FRAME), m_self(self)
+    : Range(Animator::DEFAULT_START_FRAME, Animator::DEFAULT_END_FRAME), m_self(self)
 {
-
 }
 
 int TimelineCanvas::PixelRange::pixel_range() const

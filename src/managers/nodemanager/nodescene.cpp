@@ -21,6 +21,7 @@ NodeScene::NodeScene(Scene& scene) : scene(scene)
           [this](AbstractPropertyOwner& owner, const QString&, Property&) {
             if (Node* node = kind_cast<Node*>(&owner);
                 node != nullptr && &node->model() == m_model) {
+              // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
               QTimer::singleShot(0, this, [this]() { update(); });
             }
           });
