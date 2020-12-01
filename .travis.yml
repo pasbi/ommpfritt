@@ -109,7 +109,7 @@ jobs:
   - stage: build
     os: linux
     dist: focal
-    name: Check Format
+    name: Static Checks
     addons:
       apt:
         update: true
@@ -118,7 +118,6 @@ jobs:
     install:
     - sudo apt-get install -y clang-format-10 clazy clang-tidy-10
     before_script:
-    - echo "Peforming basic static tests that don't require a build."
     - clang-format --version
     - ln -s /usr/bin/clang-format-10 clang-format
     - |
