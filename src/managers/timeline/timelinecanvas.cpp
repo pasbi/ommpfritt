@@ -102,7 +102,10 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
        frame <= static_cast<int>(frame_range.end + 1.0);
        ++frame) {
     if (frame_has_line(ppfs, frame)) {
-      pen.setWidthF(frame % 10 == 0 ? 1.0 : 0.5);
+      static constexpr double THICK_LINE_WIDTH = 1.0;
+      static constexpr double THIN_LINE_WIDTH = 0.5;
+      static constexpr int THICK_LINE_SPACING = 10;
+      pen.setWidthF(frame % THICK_LINE_SPACING == 0 ? THICK_LINE_WIDTH : THIN_LINE_WIDTH);
       painter.setPen(pen);
 
       const double x = (frame - frame_range.begin) * ppf;
@@ -167,7 +170,8 @@ void TimelineCanvas::draw_current(QPainter& painter) const
   painter.fillRect(current_rect, ui_color(m_widget, "TimeLine", "slider fill"));
   QPen pen;
   pen.setColor(ui_color(m_widget, "TimeLine", "slider outline"));
-  pen.setWidthF(4.0);
+  static constexpr double CURRENT_FRAME_LINE_WIDTH = 4.0;
+  pen.setWidthF(CURRENT_FRAME_LINE_WIDTH);
   pen.setCosmetic(true);
   painter.setPen(pen);
   painter.drawRect(current_rect);
