@@ -277,6 +277,7 @@ bool Application::save_as()
 
 void Application::reset()
 {
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (!can_close()) {
     return;
   }
@@ -329,6 +330,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "redo") {
     scene.history().redo();
   } else if (action_name == "new document") {
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     reset();
   } else if (action_name == "save document") {
     save();
@@ -446,6 +448,8 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
       return dispatch_key(key, modifiers, *manager);
     }
   }
+
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   return dispatch_key(key, modifiers, Application::instance());
 }
 
