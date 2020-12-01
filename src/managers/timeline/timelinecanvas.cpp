@@ -142,7 +142,9 @@ void TimelineCanvas::draw_keyframes(QPainter& painter) const
   painter.translate(rect.topLeft());
   const auto y = static_cast<int>(footer_y() / 2.0);
 
-  for (int frame = frame_range.begin; frame <= frame_range.end + 1; ++frame) {
+  for (int frame = static_cast<int>(frame_range.begin);
+       frame <= static_cast<int>(frame_range.end + 1.0);
+       ++frame) {
     const bool draw = std::any_of(tracks.begin(), tracks.end(), [frame](const Track* track) {
       return track->has_keyframe(frame);
     });
@@ -216,7 +218,8 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
   m_move_aborted = false;
   m_pan_active = false;
   m_zoom_active = false;
-  const int frame = std::round(frame_range.pixel_to_unit(event.pos().x() - rect.left()));
+  const double dframe = std::round(frame_range.pixel_to_unit(event.pos().x() - rect.left()));
+  const int frame = static_cast<int>(dframe);
   if (preferences().match("shift viewport", event, true)) {
     m_pan_active = true;
     disable_context_menu();
@@ -244,8 +247,8 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
   } else {
     if (event.button() == Qt::LeftButton) {
       m_dragging_time = true;
-      const int diff = event.pos().x() - rect.left();
-      Q_EMIT current_frame_changed(std::round(frame_range.pixel_to_unit(diff)));
+      const int diff = static_cast<int>(event.pos().x() - rect.left());
+      Q_EMIT current_frame_changed(static_cast<int>(std::round(frame_range.pixel_to_unit(diff))));
       return true;
     }
   }
@@ -263,8 +266,8 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
     zoom(d);
     update();
   } else if (m_dragging_knots && !m_move_aborted) {
-    m_shift = std::round(frame_range.pixel_to_unit(event.x())
-                         - frame_range.pixel_to_unit(m_mouse_down_pos.x()));
+    m_shift = static_cast<int>(std::round(frame_range.pixel_to_unit(event.x())
+                               - frame_range.pixel_to_unit(m_mouse_down_pos.x())));
     update();
   } else if (m_rubber_band_visible && !m_move_aborted) {
     const QPoint pos = event.pos();
@@ -325,7 +328,8 @@ bool TimelineCanvas::mouse_release(QMouseEvent& event)
     m_selection[track].insert(selection.begin(), selection.end());
   }
   m_rubber_band_selection.clear();
-  const int frame = std::round(frame_range.pixel_to_unit(event.pos().x() - rect.left()));
+  const int frame = static_cast<int>(std::round(frame_range.pixel_to_unit(event.pos().x()
+                                                                          - rect.left())));
   if (m_shift == 0 && !m_move_aborted && m_dragging_knots) {
     if (!(event.modifiers() & Qt::ShiftModifier)) {
       m_selection.clear();
@@ -412,7 +416,7 @@ std::set<Track*> TimelineCanvas::tracks_at(double frame) const
 {
   std::set<Track*> tracks;
   for (Track* track : this->tracks) {
-    if (track->has_keyframe(std::round(frame))) {
+    if (track->has_keyframe(static_cast<int>(std::round(frame)))) {
       tracks.insert(track);
     }
   }
