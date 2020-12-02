@@ -31,12 +31,15 @@ jobs:
     - wget https://apt.llvm.org/llvm.sh
     - chmod +x llvm.sh
     - sudo ./llvm.sh 11
-    - sudo apt-get install -y clang-format-10 clazy clang-tidy-10
+    - sudo apt-get install -y clazy
     before_script:
+    - files=$(git diff --name-only $TRAVIS_COMMIT_RANGE)
     - clang-format --version
-    - ln -s /usr/bin/clang-format-11 clang-format
     - |
-      if ! PATH=$(pwd):$PATH build-scripts/format.sh check; then
+      if ! build-scripts/format.py \
+        --clang-format-exec clang-format-11 \
+        --files $files
+      then
         echo "Format check failed."
         echo "Use `build-scripts/format.sh apply` to auto-format the code."
         travis_terminate 1
@@ -54,11 +57,11 @@ jobs:
             -B build
     - cmake --build build --target install
     after_success:
-    - ln -s /usr/bin/clang-tidy-11 clang-tidy
-      files=$(git diff --name-only $TRAVIS_COMMIT_RANGE)
-      if ! PATH="$(pwd):$PATH" build-scripts/static-checks.py \
+    - |
+      if ! build-scripts/static-checks.py \
            --compile-commands build/compile_commands.json \
-           --files $files --modes clang-tidy clazy
+           --files $files --modes clang-tidy clazy \
+           --clang-tidy clang-tidy-11
       then
         travis_terminate 2
       fi

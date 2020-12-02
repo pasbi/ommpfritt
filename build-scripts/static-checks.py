@@ -74,6 +74,8 @@ parser.add_argument("--include-tests", action='store_true', default=False,
                     help="Also check the unit tests. Expect many false positives.")
 parser.add_argument("--include-generated", action='store_true', default=False,
                     help="Also check generated code. Expect many false positives.")
+parser.add_argument("--clang-tidy-exec", default="clang-tidy",
+                    help="The clang-tidy executable.")
 args = parser.parse_args()
 
 clazy_checks = ','.join(clazy_checks)
