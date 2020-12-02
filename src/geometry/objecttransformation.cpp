@@ -116,7 +116,7 @@ void ObjectTransformation::set_mat(const Matrix& mat)
 
   // TODO NaN can occur if scaling is 0.
   {
-    static constexpr double eps = 0.0001;
+    [[maybe_unused]] static constexpr double eps = 0.0001;
     assert(std::abs(mat.m[2][0] - 0) < eps || std::isnan(mat.m[2][0]));
     assert(std::abs(mat.m[2][1] - 0) < eps || std::isnan(mat.m[2][1]));
     assert(std::abs(mat.m[2][2] - 1) < eps || std::isnan(mat.m[2][2]));
