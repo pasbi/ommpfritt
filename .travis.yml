@@ -27,13 +27,14 @@ jobs:
     addons:
       apt:
         update: true
-        packages:
-        - clang
     install:
+    - wget https://apt.llvm.org/llvm.sh
+    - chmod +x llvm.sh
+    - sudo ./llvm.sh 11
     - sudo apt-get install -y clang-format-10 clazy clang-tidy-10
     before_script:
     - clang-format --version
-    - ln -s /usr/bin/clang-format-10 clang-format
+    - ln -s /usr/bin/clang-format-11 clang-format
     - |
       if ! PATH=$(pwd):$PATH build-scripts/format.sh check; then
         echo "Format check failed."
@@ -53,7 +54,7 @@ jobs:
             -B build
     - cmake --build build --target install
     after_success:
-    - ln -s /usr/bin/clang-tidy-10 clang-tidy
+    - ln -s /usr/bin/clang-tidy-11 clang-tidy
       files=$(git diff --name-only $TRAVIS_COMMIT_RANGE)
       if ! PATH="$(pwd):$PATH" build-scripts/static-checks.py \
            --compile-commands build/compile_commands.json \
