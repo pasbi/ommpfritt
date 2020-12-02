@@ -14,7 +14,6 @@ AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
 # AllowShortEnumsOnASingleLine: true  # not available in clang-format 10 on ubuntu.
-AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 AllowShortLambdasOnASingleLine: All
