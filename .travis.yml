@@ -32,6 +32,10 @@ jobs:
     - chmod +x llvm.sh
     - sudo ./llvm.sh 11
     - sudo apt-get install -y clazy
+    - echo "clang format and tidy executables:"
+    - which clang-format-11
+    - which clang-tidy-11
+    - echo "end install."
     before_script:
     - files=$(git diff --name-only $TRAVIS_COMMIT_RANGE)
     - clang-format --version
