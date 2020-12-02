@@ -88,7 +88,9 @@ bool PreferencesTree::save_to_file(const QString& filename) const
   return true;
 }
 
-bool PreferencesTree::handle_group_line(const QString& group_name, const QString& line, bool insert_mode)
+bool PreferencesTree::handle_group_line(const QString& group_name,
+                                        const QString& line,
+                                        bool insert_mode)
 {
   const auto tokens = line.split(":");
   if (tokens.size() != 2) {

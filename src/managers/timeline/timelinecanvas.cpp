@@ -36,7 +36,7 @@ bool frame_has_framenumber(double ppfs, int frame)
   }
   return false;
 }
-}
+}  // namespace
 
 namespace omm
 {
@@ -267,7 +267,7 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
     update();
   } else if (m_dragging_knots && !m_move_aborted) {
     m_shift = static_cast<int>(std::round(frame_range.pixel_to_unit(event.x())
-                               - frame_range.pixel_to_unit(m_mouse_down_pos.x())));
+                                          - frame_range.pixel_to_unit(m_mouse_down_pos.x())));
     update();
   } else if (m_rubber_band_visible && !m_move_aborted) {
     const QPoint pos = event.pos();
@@ -328,8 +328,8 @@ bool TimelineCanvas::mouse_release(QMouseEvent& event)
     m_selection[track].insert(selection.begin(), selection.end());
   }
   m_rubber_band_selection.clear();
-  const int frame = static_cast<int>(std::round(frame_range.pixel_to_unit(event.pos().x()
-                                                                          - rect.left())));
+  const int frame
+      = static_cast<int>(std::round(frame_range.pixel_to_unit(event.pos().x() - rect.left())));
   if (m_shift == 0 && !m_move_aborted && m_dragging_knots) {
     if (!(event.modifiers() & Qt::ShiftModifier)) {
       m_selection.clear();
