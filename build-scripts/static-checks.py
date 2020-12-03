@@ -59,7 +59,7 @@ clazy_checks=[
     # "non-pod-global-static"  # open issue.
 ]
 
-parser = argparse.ArgumentParser("Perform Static Checks")
+parser = argparse.ArgumentParser(description="Perform Static Checks")
 parser.add_argument("--compile-commands", required=True,
                     help="The compile_commands.json file.")
 parser.add_argument("--files", required=True, nargs='+',

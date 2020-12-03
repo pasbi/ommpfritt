@@ -6,7 +6,7 @@ import argparse
 import subprocess
 
 
-parser = argparse.ArgumentParser("Apply the style guide.")
+parser = argparse.ArgumentParser(description="Apply the style guide.")
 parser.add_argument("--clang-format-exec", default="clang-format",
                     help="The clang-format executable.")
 parser.add_argument("--files", required=True, nargs='+',
