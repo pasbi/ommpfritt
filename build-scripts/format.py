@@ -19,7 +19,7 @@ def format_file(fn):
     clang_format_command = [args.clang_format_exec, fn]
     process = subprocess.run(clang_format_command, capture_output=True)
     if process.returncode != 0:
-        print(f"{command} exited with {returncode}")
+        print(f"{command} exited with {process.returncode}")
     else:
         formatted_file = tempfile.NamedTemporaryFile()
         formatted_file.write(process.stdout)
