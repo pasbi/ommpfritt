@@ -39,7 +39,7 @@ jobs:
     before_script:
     - echo "TRAVIS_COMMIT_RANGE $TRAVIS_COMMIT_RANGE"
     - echo "files that have changed $(git diff --name-only $TRAVIS_COMMIT_RANGE)"
-    - files=$(git diff --name-only $TRAVIS_COMMIT_RANGE | grep '\.\(cpp\|h\)$')
+    - files=$(git diff --name-only --diff-filter=d origin/master..HEAD | { egrep '\.(cpp|h)$' || true })
     - clang-format --version
     - |
       if ! build-scripts/format.py \
