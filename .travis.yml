@@ -37,8 +37,8 @@ jobs:
     - which clang-tidy-11
     - echo "end install."
     before_script:
-    - echo "TRAVIS_COMMIT_RANGE: $TRAVIS_COMMIT_RANGE"
-    - echo "files that have changed: $(git diff --name-only $TRAVIS_COMMIT_RANGE)"
+    - echo "TRAVIS_COMMIT_RANGE $TRAVIS_COMMIT_RANGE"
+    - echo "files that have changed $(git diff --name-only $TRAVIS_COMMIT_RANGE)"
     - files=$(git diff --name-only $TRAVIS_COMMIT_RANGE | grep '\.\(cpp\|h\)$')
     - clang-format --version
     - |
