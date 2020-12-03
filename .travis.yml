@@ -31,7 +31,7 @@ jobs:
     - wget https://apt.llvm.org/llvm.sh
     - chmod +x llvm.sh
     - sudo ./llvm.sh 11
-    - sudo apt-get install -y clazy
+    - sudo apt-get install -y clazy clang-format-11 clang-tidy-11
     - echo "clang format and tidy executables:"
     - which clang-format-11
     - which clang-tidy-11
