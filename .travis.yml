@@ -41,7 +41,7 @@ jobs:
     - echo "------"
     - echo "files that have changed (filtered) $(git diff --name-only --diff-filter=d origin/master..HEAD | { grep '\.\(cpp\|h\)$' || true })"
     - echo "------"
-    - "files=$(git diff --name-only --diff-filter=d origin/master..HEAD | { grep '\.\(cpp\|h\)$' || true })"
+    - "files=$(git diff --name-only --diff-filter=d origin/master..HEAD | { grep '\\.\\(cpp\\|h\\)$' || true })"
     - echo "------"
     - files=$(git diff --name-only --diff-filter=d origin/master..HEAD | { grep '\.\(cpp\|h\)$' || true })
     - echo "------"
