@@ -38,9 +38,13 @@ jobs:
     - echo "end install."
     before_script:
     - echo "files that have changed $(git diff --name-only --diff-filter=d origin/master..HEAD)"
+    - echo "------"
     - echo "files that have changed (filtered) $(git diff --name-only --diff-filter=d origin/master..HEAD | { grep '\.\(cpp\|h\)$' || true })"
+    - echo "------"
     - "files=$(git diff --name-only --diff-filter=d origin/master..HEAD | { grep '\.\(cpp\|h\)$' || true })"
+    - echo "------"
     - files=$(git diff --name-only --diff-filter=d origin/master..HEAD | { grep '\.\(cpp\|h\)$' || true })
+    - echo "------"
     - clang-format --version
     - |
       if ! build-scripts/format.py \
