@@ -4,7 +4,7 @@
 TEST(Property, ReferenceFilter)
 {
   using namespace omm;
-  const PropertyFilter any_object({ Kind::Object }, {{}});
+  const PropertyFilter any_object({Kind::Object}, {{}});
 
   EXPECT_TRUE(any_object.accepts(Kind::Object, Flag::None));
   EXPECT_TRUE(any_object.accepts(Kind::Object, Flag::IsView));

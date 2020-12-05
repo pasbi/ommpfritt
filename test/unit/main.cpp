@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "mainwindow/application.h"
+#include "gtest/gtest.h"
 #include <QApplication>
 
 int main(int argc, char* argv[])
