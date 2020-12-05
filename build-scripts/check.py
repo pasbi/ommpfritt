@@ -164,7 +164,8 @@ def check_format(fn):
 fns = [os.path.abspath(fn) for fn in args.files]
 fns = [fn for fn in fns if fn.endswith('.cpp') or fn.endswith('.h')]
 if not args.include_external:
-    fns = [fn for fn in fns if '/src/external/' not in fn]
+    for external_pattern in ['/src/external/', '/test/external']:
+        fns = [fn for fn in fns if external_pattern not in fn]
 if not args.include_generated:
     for generated_pattern in ['/src/registers.cpp', '/src/translations.h']:
         fns = [fn for fn in fns if not fn.endswith(generated_pattern)]
