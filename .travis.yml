@@ -164,6 +164,7 @@ script:
                   -DCMAKE_CXX_COMPILER=${CXX_COMPILER:-g++}
                   -DCMAKE_C_COMPILER=${C_COMPILER:-gcc}
                   -DSYSTEM_SUFFIX="-$TRAVIS_DIST"
+                  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
                   -S .
                   -B build
 - ${cmake:-cmake} --build build --target ${build_target:-package}
