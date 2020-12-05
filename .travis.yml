@@ -33,7 +33,7 @@ jobs:
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     script:
     - |
-      if ! build-scripts/check.py --files $files --mode format --format-exec clang-format-11
+      if ! build-scripts/check.py --files $files --mode format --format-exec clang-format-11 -v
       then
         echo "Format check failed."
         travis_terminate 1
@@ -53,7 +53,7 @@ jobs:
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     after_success:
     - |
-      if ! build-scripts/check.py --files $files --mode tidy --compile-commands build/compile_commands.json --tidy-exec clang-tidy-11
+      if ! build-scripts/check.py --files $files --mode tidy --compile-commands build/compile_commands.json --tidy-exec clang-tidy-11 -v
       then
         travis_terminate 2
       fi
@@ -72,7 +72,7 @@ jobs:
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     after_success:
     - |
-      if ! build-scripts/check.py --files $files --mode clazy --compile-commands build/compile_commands.json
+      if ! build-scripts/check.py --files $files --mode clazy --compile-commands build/compile_commands.json -v
       then
         travis_terminate 3
       fi
