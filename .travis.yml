@@ -203,6 +203,7 @@ jobs:
     script:
       - $mingw64 build-scripts/build-omm-mingw.sh
 script:
+- echo "using cmake-exe= ${cmake:-cmake}"
 - ${cmake:-cmake} -GNinja
                   -DCMAKE_BUILD_TYPE=Release
                   -DQT_QM_PATH=${QT_QM_PATH:-/usr/share/qt5/translations/}
