@@ -49,7 +49,7 @@ jobs:
     - build-scripts/install_build_deps_focal.sh
     - wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
     - sudo apt-get install -y clang-tidy-11 ninja-build
-    - export build_target="install"
+    - export build_target="all"
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     after_success:
     - |
@@ -68,7 +68,7 @@ jobs:
     - build-scripts/install_build_deps_focal.sh
     - wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
     - sudo apt-get install -y clazy ninja-build
-    - export build_target="install"
+    - export build_target="all"
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     after_success:
     - |
