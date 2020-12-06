@@ -75,6 +75,7 @@ void ReferenceLineEdit::set_scene(Scene& scene)
             }
           });
 
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(0, this, &ReferenceLineEdit::update_candidates);
   update_candidates();
 }
