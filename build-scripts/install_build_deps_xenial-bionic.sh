@@ -5,8 +5,6 @@ if ! [[ "$1" =~ ^(xenial|bionic)$ ]]; then
   exit 1
 fi
 
-exit 0
-
 sudo apt-get clean
 sudo apt-get remove -y mysql-client-5.7 mysql-server-5.7
 sudo apt-add-repository -y ppa:deadsnakes/ppa
