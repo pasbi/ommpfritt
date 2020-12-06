@@ -87,8 +87,6 @@ parser.add_argument("--mode", required=True,
                     help="The checker(s) to use")
 parser.add_argument("--include-generated", action='store_true', default=False,
                     help="Do not filter generated files from file list.")
-parser.add_argument("--clang-tidy-exec", default="clang-tidy",
-                    help="The clang-tidy executable.")
 parser.add_argument("--verbose", "-v", action='store_true', default=False)
 
 args = parser.parse_args()
