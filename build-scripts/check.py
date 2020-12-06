@@ -78,6 +78,8 @@ parser.add_argument("--compile-commands",
                     help="Path to the compile_commands.json file.")
 parser.add_argument("--include-external", action='store_true', default=False,
                     help="Do not filter external files from file list.")
+parser.add_argument("--include-test", action='store_true', default=False,
+                    help="Do not filter test code files from file list.")
 parser.add_argument("--jobs", "-j", type=int, default=2,
                     help="Number of parallel jobs.")
 parser.add_argument("--mode", required=True,
@@ -169,6 +171,8 @@ if not args.include_external:
 if not args.include_generated:
     for generated_pattern in ['/src/registers.cpp', '/src/translations.h']:
         fns = [fn for fn in fns if not fn.endswith(generated_pattern)]
+if not args.include_test:
+    fns = [fn for fn in fns if '/test/unit/' not in fn]
 
 def checker(fn):
     if args.verbose:
