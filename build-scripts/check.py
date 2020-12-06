@@ -54,7 +54,7 @@ clazy_checks=[
     "rule-of-two-soft",
     "skipped-base-method",
     "virtual-signal",
-    # "range-loop",            # questionable
+    "range-loop",
     # "incorrect-emit",        # false positives
     # "connect-non-signal",    # many false positives
     # "non-pod-global-static"  # open issue.
