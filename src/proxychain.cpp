@@ -38,10 +38,10 @@ QModelIndex ProxyChain::mapFromChainSource(const QModelIndex& index) const
 {
   assert(!index.isValid() || index.model() == chainSourceModel());
   QModelIndex i = index;
-  for (auto it = m_proxies.begin(); it != m_proxies.end(); ++it) {
-    assert(!i.isValid() || i.model() == it->get()->sourceModel());
-    i = (*it)->mapFromSource(i);
-    assert(!i.isValid() || i.model() == it->get());
+  for (const auto& proxy : m_proxies) {
+    assert(!i.isValid() || i.model() == proxy->sourceModel());
+    i = proxy->mapFromSource(i);
+    assert(!i.isValid() || i.model() == proxy.get());
   }
   i = mapFromSource(i);
   assert(!i.isValid() || i.model() == this);

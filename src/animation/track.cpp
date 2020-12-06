@@ -133,14 +133,14 @@ variant_type Track::interpolate(double frame) const
   int left_frame = 0;
   const Knot* right = nullptr;
   int right_frame = 0;
-  for (auto it = m_knots.cbegin(); it != m_knots.cend(); ++it) {
-    if (it->first <= frame) {
-      left_frame = it->first;
-      left = it->second.get();
+  for (const auto& knot : m_knots) {
+    if (knot.first <= frame) {
+      left_frame = knot.first;
+      left = knot.second.get();
     } else {
-      assert(it->first > frame);
-      right_frame = it->first;
-      right = it->second.get();
+      assert(knot.first > frame);
+      right_frame = knot.first;
+      right = knot.second.get();
       break;
     }
   }
