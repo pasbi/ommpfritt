@@ -56,20 +56,19 @@ Tool& ToolBox::active_tool() const
 
 void ToolBox::set_active_tool(const QString& key)
 {
-  return set_active_tool(m_tools.at(key).get());
+  return set_active_tool(*m_tools.at(key));
 }
 
-void ToolBox::set_active_tool(Tool* tool)
+void ToolBox::set_active_tool(Tool& tool)
 {
-  assert(tool != nullptr);
-  if (m_active_tool != tool) {
-    m_scene.set_mode(tool->scene_mode());
+  if (m_active_tool != &tool) {
+    m_scene.set_mode(tool.scene_mode());
     if (m_active_tool != nullptr) {
       m_history.push_front(m_active_tool);
       ::remove_duplicates(m_history);
       m_active_tool->end();
     }
-    m_active_tool = tool;
+    m_active_tool = &tool;
     m_scene.set_selection(std::set<AbstractPropertyOwner*>{m_active_tool});
     m_scene.set_mode(m_active_tool->scene_mode());
     m_active_tool->reset();
@@ -81,7 +80,7 @@ void ToolBox::set_active_tool(Tool* tool)
 void ToolBox::set_previous_tool()
 {
   if (m_history.size() > 1) {
-    auto* const name = *std::next(m_history.begin());
+    auto& name = **std::next(m_history.begin());
     set_active_tool(name);
   }
 }
@@ -89,7 +88,7 @@ void ToolBox::set_previous_tool()
 void ToolBox::set_scene_mode(SceneMode mode)
 {
   if ((m_active_tool == nullptr) || m_active_tool->scene_mode() != mode) {
-    set_active_tool(m_default_tools.at(mode));
+    set_active_tool(*m_default_tools.at(mode));
   }
 }
 

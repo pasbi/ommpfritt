@@ -16,7 +16,7 @@ public:
   [[nodiscard]] Tool& active_tool() const;
   [[nodiscard]] Tool& tool(const QString& key) const;
   void set_active_tool(const QString& key);
-  void set_active_tool(Tool* tool);
+  void set_active_tool(Tool& tool);
   void set_previous_tool();
   void set_scene_mode(SceneMode mode);
   [[nodiscard]] std::set<Tool*> tools() const;
