@@ -9,7 +9,7 @@ sudo apt-get clean
 sudo apt-get remove -y mysql-client-5.7 mysql-server-5.7
 sudo apt-add-repository -y ppa:deadsnakes/ppa
 sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-$1
+sudo apt-add-repository -y "ppa:beineri/opt-qt-5.12.3-$1"
 sudo apt-get update -y -qq
 sudo apt-get install -y \
   g++-9 qt512tools qt512translations qt512svg qt512base qt512imageformats \
