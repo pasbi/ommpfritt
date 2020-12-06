@@ -517,9 +517,11 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
   using move_command_t = MoveCommand<ObjectTree>;
   using move_context_t = move_command_t::context_type;
   if (!children.empty()) {
-    // it's illogical to be parent of no children.
-    // This assertion is enforced by the conditions before.
-    assert(parent != nullptr);
+    if (parent == nullptr) {
+      // it's illogical to be parent of no children.
+      // This assertion is enforced by the conditions before.
+      LFATAL("Unexpected Condition.");
+    }
     const auto move_contextes = ::transform<move_context_t>(children, [&ref](auto* c) {
       return move_context_t(*c, ref, nullptr);
     });

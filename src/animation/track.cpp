@@ -149,8 +149,9 @@ variant_type Track::interpolate(double frame) const
     return right->value;
   } else if (left != nullptr && right == nullptr) {
     return left->value;
+  } else if (left == nullptr && right == nullptr) {
+    LFATAL("Unexpected condition.");
   } else {
-    assert(left != nullptr && right != nullptr);
     const std::size_t n = n_channels(left->value);
     assert(n == n_channels(right->value));
     if (n == 0) {

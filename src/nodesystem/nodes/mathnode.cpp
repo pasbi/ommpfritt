@@ -142,7 +142,9 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
   const auto glsl_accepts_type = [this, type, &port]() {
     auto* const a_input = find_port<InputPort>(A_VALUE_KEY);
     auto* const b_input = find_port<InputPort>(B_VALUE_KEY);
-    assert(a_input != nullptr && b_input != nullptr);
+    if (a_input == nullptr || b_input == nullptr) {
+      LFATAL("Unexpected condition");
+    }
     const InputPort& other_port = &port == a_input ? *b_input : *a_input;
     assert((std::set{&port, &other_port} == std::set<const InputPort*>{a_input, b_input}));
     if (other_port.is_connected()) {
