@@ -504,7 +504,10 @@ enum class Space { Viewport, Scene };
  *
  *  also std::as_const does not work here.
  */
-template<typename T> std::remove_reference_t<T> const& as_const(T&& t) { return t; }
+template<typename T> std::remove_reference_t<T> const& as_const(T&& t)
+{
+  return t;
+}
 
 constexpr double M_180_PI = 180.0 * M_1_PI;
 constexpr double M_PI_180 = M_PI / 180.0;
