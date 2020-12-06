@@ -53,7 +53,7 @@ jobs:
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     after_success:
     - |
-      if ! build-scripts/check.py --files $files --mode tidy --compile-commands build/compile_commands.json --tidy-exec clang-tidy-11
+      if ! run-clang-tidy -clang-tidy-binary clang-tidy-11 -p build/ $(build-scripts/find-changed-files.sh) -extra-args="warnings-as-errors='*"
       then
         travis_terminate 2
       fi
