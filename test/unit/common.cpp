@@ -241,13 +241,13 @@ TEST(common, modern_cpp_for_loop_qt_cow_container)
       return dummy.end();
     };
 
-    decltype(auto) begin() const
+    [[nodiscard]] decltype(auto) begin() const
     {
       const_begin_was_called = true;
       return dummy.cbegin();
     };
 
-    decltype(auto) end() const
+    [[nodiscard]] decltype(auto) end() const
     {
       const_end_was_called = true;
       return dummy.cend();
