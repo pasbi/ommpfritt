@@ -266,7 +266,8 @@ TEST(common, modern_cpp_for_loop_qt_cow_container)
   }
 
   reset();
-  for (auto&& i : omm::as_const(f())) {
+  const auto fs = f();
+  for (auto&& i : fs) {
     Q_UNUSED(i)
     EXPECT_FALSE(begin_was_called);
     EXPECT_FALSE(end_was_called);

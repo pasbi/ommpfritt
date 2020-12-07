@@ -488,27 +488,6 @@ bool find_path(Vertex start,
 
 enum class Space { Viewport, Scene };
 
-/**
- * @brief This function is required to safely access Qt-Containers in range-based for loops.
- *  The problem is that Qt-containers implement cow by default.
- *  Since the container is usually not constant, the range-based for loop will access it using
- *  *non-const* iterators (`begin`/`end`).
- *  This causes a copy (as the container assumes that the iterator is used to modify the container).
- *  Details can be found here: https://www.kdab.com/goodbye-q_foreach/.
- *  This function prevents that by explicitely requesting a const version of the container and thus
- *  preventing the cow.
- *  The referenced article proposes to use `qAsConst`, but that does not work if a container is
- *  returned by a function:
- *
- *  for (const T& t : qAsConst(foo.get_list())) {}  // the qAsConst does not work here
- *
- *  also std::as_const does not work here.
- */
-template<typename T> std::remove_reference_t<T> const& as_const(T&& t)
-{
-  return t;
-}
-
 constexpr double M_180_PI = 180.0 * M_1_PI;
 constexpr double M_PI_180 = M_PI / 180.0;
 
