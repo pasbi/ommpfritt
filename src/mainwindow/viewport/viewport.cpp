@@ -95,7 +95,7 @@ void Viewport::draw_grid(QPainter& painter,
       for (std::size_t d : {0, 1}) {
         double step = discretize(base_step[d]);
         std::size_t n = (max[d] - min[d]) / step + 1;
-        for (std::size_t i = 0; i < n; ++i) {
+        for (std::size_t i = 0; i < n + 1; ++i) {
           const double t = min[d] + i * step;
           const double tt = t - std::fmod(t, step);
           Vec2f a = min;
