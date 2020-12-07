@@ -115,6 +115,7 @@ std::vector<QString> MainWindow::path_menu_entries()
 
 std::vector<QString> MainWindow::main_menu_entries()
 {
+  using namespace std::string_literals;
   std::list<QString> entries = {
       // NOLINTNEXTLINE(bugprone-suspicious-missing-comma)
       QT_TRANSLATE_NOOP("menu_name", "file") "/new document",
@@ -122,7 +123,7 @@ std::vector<QString> MainWindow::main_menu_entries()
       "file/save document as ...",
       "file/load document ...",
       "file/" QT_TRANSLATE_NOOP("menu_name", "load recent document") "/",
-      QStringLiteral("file/") + KeyBindings::SEPARATOR,
+      QString::fromStdString("file/"s + KeyBindings::SEPARATOR),
       "file/export",
       QT_TRANSLATE_NOOP("menu_name", "edit") "/undo",
       "edit/redo",
@@ -132,7 +133,7 @@ std::vector<QString> MainWindow::main_menu_entries()
       "object/" QT_TRANSLATE_NOOP("menu_name", "attach") "/",
       QT_TRANSLATE_NOOP("menu_name", "path") "/",
       QT_TRANSLATE_NOOP("menu_name", "tool") "/previous tool",
-      QStringLiteral("tool/") + KeyBindings::SEPARATOR,
+      QString::fromStdString("tool/"s + KeyBindings::SEPARATOR),
       QT_TRANSLATE_NOOP("menu_name", "scene") "/evaluate",
       "scene/reset viewport",
       QT_TRANSLATE_NOOP("menu_name", "window") "/" QT_TRANSLATE_NOOP("menu_name", "show") "/",
@@ -145,7 +146,7 @@ std::vector<QString> MainWindow::main_menu_entries()
   }
   entries.insert(entries.end(),
                  {
-                     QStringLiteral("window/") + KeyBindings::SEPARATOR,
+                     QString::fromStdString("window/"s + KeyBindings::SEPARATOR),
                      "window/restore default layout",
                      "window/new toolbar",
 #ifndef NDEBUG  // these functions facialiate the creation of profiles.
