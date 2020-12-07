@@ -17,7 +17,7 @@ bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEven
   if (SelectPointsBaseTool::mouse_move(delta, pos, event)) {
     return true;
   } else if (m_path != nullptr && m_current_point) {
-    const auto lt = PolarCoordinates((*m_current_point)->left_tangent.to_cartesian() - delta);
+    const auto lt = PolarCoordinates((*m_current_point)->left_tangent.to_cartesian() + delta);
     (*m_current_point)->left_tangent = lt;
     (*m_current_point)->right_tangent = -lt;
     m_path->update();
