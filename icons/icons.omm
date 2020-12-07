@@ -908,7 +908,7 @@
                                 "type": "StyleTag"
                             }
                         ],
-                        "type": "Line"
+                        "type": "LineObject"
                     },
                     {
                         "children": [
@@ -1989,7 +1989,7 @@
                                 "type": "StyleTag"
                             }
                         ],
-                        "type": "Line"
+                        "type": "LineObject"
                     },
                     {
                         "children": [],
@@ -4247,7 +4247,7 @@
                                                         "type": "StyleTag"
                                                     }
                                                 ],
-                                                "type": "Line"
+                                                "type": "LineObject"
                                             },
                                             {
                                                 "children": [],
@@ -5069,7 +5069,7 @@
                                             }
                                         ],
                                         "tags": [],
-                                        "type": "Line"
+                                        "type": "LineObject"
                                     }
                                 ],
                                 "id": 3483545984526817353,

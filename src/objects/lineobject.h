@@ -8,7 +8,7 @@ class LineObject : public Object
 public:
   explicit LineObject(Scene* scene);
   QString type() const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Line");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "LineObject");
   Flag flags() const override;
 
   static constexpr auto LENGTH_PROPERTY_KEY = "length";
