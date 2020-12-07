@@ -22,6 +22,7 @@ Checks: '-*,
          -readability-redundant-access-specifiers,
          -readability-uppercase-literal-suffix'
 
+WarningsAsErrors: '*'
 CheckOptions:
 - key: readability-magic-numbers.IgnoredFloatingPointValues
   value: '1.0;2.0'
