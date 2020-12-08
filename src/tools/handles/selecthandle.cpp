@@ -181,7 +181,7 @@ void PointSelectHandle::draw(QPainter& painter) const
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent)
 {
-  transform_tangent(delta, dynamic_cast<SelectPointsTool&>(tool).tangent_mode(), tangent);
+  transform_tangent(delta, dynamic_cast<SelectPointsBaseTool&>(tool).tangent_mode(), tangent);
 }
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta,
