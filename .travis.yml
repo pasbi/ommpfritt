@@ -3,6 +3,9 @@ services:
 - xvfb
 git:
   depth: false
+stages:
+  - test
+  - deploy
 install:
   - echo "clone lib2geom"
   - git clone https://gitlab.com/inkscape/lib2geom.git
@@ -20,7 +23,7 @@ install:
   - sudo ${cmake:-cmake} --build build-lib2geom --target install
 jobs:
   include:
-  - stage: build
+  - stage: test
     os: linux
     dist: focal
     name: Style Checks
@@ -40,7 +43,7 @@ jobs:
       fi
     before_deploy: skip
     deploy: skip
-  - stage: build
+  - stage: test
     os: linux
     dist: focal
     name: Clang-Tidy Checks
@@ -61,7 +64,7 @@ jobs:
       fi
     before_deploy: skip
     deploy: skip
-  - stage: build
+  - stage: test
     os: linux
     dist: focal
     name: Clazy Checks
@@ -82,7 +85,7 @@ jobs:
       fi
     before_deploy: skip
     deploy: skip
-  - stage: build
+  - stage: deploy
     os: linux
     dist: xenial
     name: Build on Ubuntu Xenial
@@ -90,19 +93,19 @@ jobs:
     - source build-scripts/install_build_deps_xenial-bionic.sh xenial
     after_success:
     - build-scripts/make-appimage.sh
-  - stage: build
+  - stage: deploy
     os: linux
     dist: bionic
     name: Build on Ubuntu Bionic
     before_install:
     - source build-scripts/install_build_deps_xenial-bionic.sh bionic
-  - stage: build
+  - stage: deploy
     os: linux
     dist: focal
     name: Build on Ubuntu Focal with GCC
     before_install:
     - build-scripts/install_build_deps_focal.sh
-  - stage: build
+  - stage: deploy
     os: linux
     dist: focal
     name: Build on Ubuntu Focal with Clang
@@ -110,7 +113,7 @@ jobs:
     - build-scripts/install_build_deps_focal.sh
     - export CXX_COMPILER=clang++-10
     - export C_COMPILER=clang-10
-  - stage: build
+  - stage: deploy
     os: windows
     name: Build on Windows/MinGW64
     before_install:
