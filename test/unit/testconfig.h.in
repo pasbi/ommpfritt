@@ -1,0 +1,8 @@
+#pragma once
+
+namespace ommtest
+{
+
+static constexpr auto SOURCE_DIRECTORY = "@CMAKE_SOURCE_DIR@";
+
+}  // namespace ommtest
