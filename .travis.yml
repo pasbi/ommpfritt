@@ -38,10 +38,8 @@ jobs:
         echo "Format check failed."
         travis_terminate 1
       fi
-    before_deploy:
-    - echo "skip before_deploy"
-    deploy:
-    - echo "skip deploy"
+    before_deploy: skip
+    deploy: skip
   - stage: build
     os: linux
     dist: focal
@@ -61,10 +59,8 @@ jobs:
       then
         travis_terminate 2
       fi
-    before_deploy:
-    - echo "skip before_deploy"
-    deploy:
-    - echo "skip deploy"
+    before_deploy: skip
+    deploy: skip
   - stage: build
     os: linux
     dist: focal
@@ -84,10 +80,8 @@ jobs:
       then
         travis_terminate 3
       fi
-    before_deploy:
-    - echo "skip before_deploy"
-    deploy:
-    - echo "skip deploy"
+    before_deploy: skip
+    deploy: skip
   - stage: build
     os: linux
     dist: xenial
