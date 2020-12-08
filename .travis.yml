@@ -100,9 +100,10 @@ jobs:
     dist: focal
     name: Run unit tests
     before_install:
+    - export build_target="all"
     - build-scripts/install_build_deps_focal.sh
     after_success:
-    - build/ommpfritt_unit_tests_autogen
+    - build/ommpfritt_unit_tests
     before_deploy: skip
     deploy: skip
   - stage: deploy
