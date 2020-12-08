@@ -11,20 +11,21 @@ class AbstractColorComponentWidget : public QWidget
 public:
   using QWidget::QWidget;
   virtual void set_role(Color::Role role);
-  Color color() const
+  [[nodiscard]] Color color() const
   {
     return m_color;
   }
-  Color::Role role() const
+
+  [[nodiscard]] Color::Role role() const
   {
     return m_role;
   }
 
 Q_SIGNALS:
-  void color_changed(const Color& color);
+  void color_changed(const omm::Color& color);
 
 public Q_SLOTS:
-  virtual void set_color(const Color& color);
+  virtual void set_color(const omm::Color& color);
 
 private:
   Color m_color;

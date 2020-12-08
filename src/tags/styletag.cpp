@@ -15,7 +15,7 @@ StyleTag::StyleTag(Object& owner) : Tag(owner)
 {
   const QString category = QObject::tr("Basic");
   create_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
-      .set_filter(ReferenceProperty::Filter({Kind::Style}, {{}}))
+      .set_filter(PropertyFilter({Kind::Style}, {{}}))
       .set_label(QObject::tr("style"))
       .set_category(category);
 
@@ -38,8 +38,9 @@ Flag StyleTag::flags() const
 
 void StyleTag::on_property_value_changed(Property* property)
 {
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (property == this->property(STYLE_REFERENCE_PROPERTY_KEY)) {
-    owner->scene()->mail_box().appearance_changed(*owner);
+    Q_EMIT owner->scene()->mail_box().object_appearance_changed(*owner);
   } else if (property == this->property(EDIT_STYLE_PROPERTY_KEY)) {
     auto* style = this->property(STYLE_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
     if (style != nullptr) {
@@ -47,8 +48,8 @@ void StyleTag::on_property_value_changed(Property* property)
 
       // if manager is the PropertyManager hosting the button which has been pressed, it must
       // not be changed now.
-      QTimer::singleShot(0, [&manager, style]() {
-        static_cast<PropertyManager&>(manager).set_selection({style});
+      QTimer::singleShot(0, &manager, [&manager, style]() {
+        dynamic_cast<PropertyManager&>(manager).set_selection({style});
       });
     }
   }

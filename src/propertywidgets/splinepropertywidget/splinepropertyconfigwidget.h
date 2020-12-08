@@ -9,8 +9,8 @@ class SplinePropertyConfigWidget : public PropertyConfigWidget<SplineProperty>
 {
 public:
   SplinePropertyConfigWidget();
-  void init(const Property::Configuration&) override;
-  void update(Property::Configuration&) const override;
+  void init(const PropertyConfiguration&) override;
+  void update(PropertyConfiguration&) const override;
 };
 
 }  // namespace omm

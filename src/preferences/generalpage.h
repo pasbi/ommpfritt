@@ -16,7 +16,11 @@ class GeneralPage : public PreferencePage
   Q_OBJECT
 public:
   explicit GeneralPage(Preferences& preferences);
-  ~GeneralPage();
+  ~GeneralPage() override;
+  GeneralPage(GeneralPage&&) = delete;
+  GeneralPage(const GeneralPage&) = delete;
+  GeneralPage& operator=(GeneralPage&&) = delete;
+  GeneralPage& operator=(const GeneralPage&) = delete;
   void about_to_accept() override;
 
 private:

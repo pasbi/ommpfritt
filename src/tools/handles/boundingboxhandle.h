@@ -60,9 +60,9 @@ public:
     if (status() != HandleStatus::Active) {
       return false;
     }
-    ToolT& tool = static_cast<ToolT&>(this->tool);
+    auto& tool = static_cast<ToolT&>(this->tool);
     const bool discrete = tool.integer_transformation();
-    const bool isotropic = e.modifiers() & Qt::ControlModifier;
+    const bool isotropic = (e.modifiers() & Qt::ControlModifier) != 0u;
 
     Vec2f anchor;
     if (m_symmetric) {
@@ -94,14 +94,15 @@ public:
     }
 
     if (isotropic) {
-      double n;
-      if (s.x == 1.0) {
-        n = s.y;
-      } else if (s.y == 1.0) {
-        n = s.x;
-      } else {
-        n = std::max(std::abs(s.x), std::abs(s.y));
-      }
+      double n = [s]() {
+        if (s.x == 1.0) {
+          return s.y;
+        } else if (s.y == 1.0) {
+          return s.x;
+        } else {
+          return std::max(std::abs(s.x), std::abs(s.y));
+        }
+      }();
       for (std::size_t i : {0u, 1u}) {
         s[i] = std::copysign(n, s[i]);
       }
@@ -160,7 +161,7 @@ public:
   BoundingBox m_bounding_box;
   bool m_symmetric = false;
   mutable Vec2f m_tool_origin = Vec2f::o();
-  Fringe m_active_fringe;
+  Fringe m_active_fringe{};
 };
 
 }  // namespace omm

@@ -23,7 +23,8 @@ std::vector<QString> languages()
   while (it.hasNext()) {
     const auto filename = it.next();
     if (filename.startsWith(prefix)) {
-      const int code_length = filename.size() - prefix_length - suffix_length;
+      const int code_length = static_cast<int>(filename.size()) - static_cast<int>(prefix_length)
+                              - static_cast<int>(suffix_length);
       if (code_length >= 0) {
         const auto code = filename.mid(prefix_length, code_length);
         language_codes.push_back(code);
@@ -67,9 +68,7 @@ GeneralPage::GeneralPage(Preferences& preferences)
   });
 }
 
-GeneralPage::~GeneralPage()
-{
-}
+GeneralPage::~GeneralPage() = default;
 
 void GeneralPage::about_to_accept()
 {

@@ -71,14 +71,14 @@ void Painter::pop_transformation()
 
 ObjectTransformation Painter::current_transformation() const
 {
-  if (m_transformation_stack.size() == 0) {
+  if (m_transformation_stack.empty()) {
     return ObjectTransformation();
   } else {
     return m_transformation_stack.top();
   }
 }
 
-void Painter::toast(const Vec2f& pos, const QString& text)
+void Painter::toast(const Vec2f& pos, const QString& text) const
 {
   static const QFont toast_font("Helvetica", 12, 0, false);
   static const QPen pen(Qt::black, 1.0);
@@ -95,9 +95,11 @@ void Painter::toast(const Vec2f& pos, const QString& text)
   const double margin = 10.0;
   actual_rect.adjust(-margin, -margin, margin, margin);
 
-  painter->setBrush(QBrush(QColor(80, 60, 40, 120)));
+  static const QColor TOAST_BACKGROUND_COLOR{80, 60, 40, 120};
+  static constexpr double TOAST_RADIUS = 25;
+  painter->setBrush(QBrush(TOAST_BACKGROUND_COLOR));
   painter->setPen(QPen(Qt::white));
-  painter->drawRoundedRect(actual_rect, 25, 25, Qt::AbsoluteSize);
+  painter->drawRoundedRect(actual_rect, TOAST_RADIUS, TOAST_RADIUS, Qt::AbsoluteSize);
   painter->restore();
 }
 
@@ -206,7 +208,9 @@ QPen Painter::make_simple_pen(const Style& style)
   }
 }
 
-void Painter::set_style(const Style& style, const Object& object, const Painter::Options& options)
+void Painter::set_style(const Style& style,
+                        const Object& object,
+                        const Painter::Options& options) const
 {
   painter->setPen(make_pen(style, object));
   painter->setBrush(make_brush(style, object, options));

@@ -21,14 +21,18 @@ class CurveTree : public ItemProxyView<QTreeView>
   Q_OBJECT
 public:
   explicit CurveTree(Scene& scene);
-  ~CurveTree();
+  ~CurveTree() override;
+  CurveTree(CurveTree&&) = delete;
+  CurveTree(const CurveTree&) = delete;
+  CurveTree& operator=(CurveTree&&) = delete;
+  CurveTree& operator=(const CurveTree&) = delete;
   static constexpr int quick_access_delegate_width = 20;
   enum class Visibility { Undetermined, Visible, Hidden };
 
   Visibility is_visible(AbstractPropertyOwner& apo) const;
   Visibility is_visible(Property& property) const;
-  Visibility is_visible(const std::pair<Property*, std::size_t>& channel) const;
-  Visibility is_visible(const ChannelProxy& channel) const;
+  [[nodiscard]] Visibility is_visible(const std::pair<Property*, std::size_t>& channel) const;
+  [[nodiscard]] Visibility is_visible(const ChannelProxy& channel) const;
 
   void set_visible(AbstractPropertyOwner& apo, bool visible);
   void set_visible(Property& property, bool visible);

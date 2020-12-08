@@ -17,15 +17,15 @@ bool ObjectTreeSelectionModel::is_selected(Tag& tag) const
 void ObjectTreeSelectionModel::select(Tag& tag, QItemSelectionModel::SelectionFlags command)
 {
   m_current_tag = &tag;
-  if (command & QItemSelectionModel::Clear) {
+  if ((command & QItemSelectionModel::Clear) != 0u) {
     clear_selection();
   }
 
-  if (command & QItemSelectionModel::Select) {
+  if ((command & QItemSelectionModel::Select) != 0u) {
     m_selected_tags.insert(&tag);
-  } else if (command & QItemSelectionModel::Deselect) {
+  } else if ((command & QItemSelectionModel::Deselect) != 0u) {
     m_selected_tags.erase(&tag);
-  } else if (command & QItemSelectionModel::Toggle) {
+  } else if ((command & QItemSelectionModel::Toggle) != 0u) {
     select(tag, is_selected(tag) ? QItemSelectionModel::Deselect : QItemSelectionModel::Select);
   }
 }
@@ -40,7 +40,7 @@ void ObjectTreeSelectionModel::select(const QModelIndex& index,
                                       QItemSelectionModel::SelectionFlags command)
 {
   const bool is_tag_index = index.column() == omm::ObjectTree::TAGS_COLUMN;
-  if (command & QItemSelectionModel::Clear && !is_tag_index) {
+  if (((command & QItemSelectionModel::Clear) != 0u) && !is_tag_index) {
     m_selected_tags.clear();
   }
   QItemSelectionModel::select(index, command);
@@ -54,7 +54,7 @@ void ObjectTreeSelectionModel::select(const QItemSelection& selection,
   };
   const bool selection_has_tags = std::any_of(selection.begin(), selection.end(), has_tag_index);
 
-  if (command & QItemSelectionModel::Clear && !selection_has_tags) {
+  if (((command & QItemSelectionModel::Clear) != 0u) && !selection_has_tags) {
     m_selected_tags.clear();
   }
   QItemSelectionModel::select(selection, command);
@@ -70,7 +70,7 @@ std::vector<Tag*> ObjectTreeSelectionModel::selected_tags_ordered(Scene& scene) 
   std::list<Tag*> selected_tags;
   std::stack<Object*> stack;
   stack.push(&scene.object_tree().root());
-  while (stack.size() > 0) {
+  while (!stack.empty()) {
     Object* object = stack.top();
     stack.pop();
 
@@ -109,7 +109,7 @@ void ObjectTreeSelectionModel::extend_selection(Tag& tag)
 
 const ObjectTree& ObjectTreeSelectionModel::model() const
 {
-  return static_cast<const ObjectTree&>(*QItemSelectionModel::model());
+  return dynamic_cast<const ObjectTree&>(*QItemSelectionModel::model());
 }
 
 void ObjectTreeSelectionModel::set_selection(const std::set<AbstractPropertyOwner*>& selection)

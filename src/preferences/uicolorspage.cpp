@@ -48,9 +48,7 @@ UiColorsPage::UiColorsPage(UiColors& colors) : m_ui(new Ui::UiColorsPage), m_col
           &UiColorsPage::load_skin);
 }
 
-UiColorsPage::~UiColorsPage()
-{
-}
+UiColorsPage::~UiColorsPage() = default;
 
 void UiColorsPage::about_to_accept()
 {

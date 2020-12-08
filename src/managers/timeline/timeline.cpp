@@ -137,10 +137,9 @@ void TimeLine::jump_to_next_keyframe(Animator::PlayDirection direction)
   int current_keyframe = scene().animator().current();
   int next_keyframe = forward ? std::numeric_limits<int>::max() : std::numeric_limits<int>::min();
   for (auto&& frame : key_frames) {
-    if (forward && frame > current_keyframe && frame < next_keyframe) {
-      has_next_keyframe = true;
-      next_keyframe = frame;
-    } else if (!forward && frame < current_keyframe && frame > next_keyframe) {
+    const bool mv_forward = forward && frame > current_keyframe && frame < next_keyframe;
+    const bool mv_backward = !forward && frame < current_keyframe && frame > next_keyframe;
+    if (mv_forward || mv_backward) {
       has_next_keyframe = true;
       next_keyframe = frame;
     }

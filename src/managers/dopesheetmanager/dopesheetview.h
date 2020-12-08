@@ -18,7 +18,7 @@ public:
   explicit DopeSheetView(Animator& animator);
 
 public Q_SLOTS:
-  void update_second_column(Track& track);
+  void update_second_column(omm::Track& track);
   void update_second_column();
 
 protected:
@@ -37,7 +37,7 @@ private:
   public:
     TimelineCanvasC(Animator& animator, DopeSheetView& self);
     void update() override;
-    QPoint map_to_global(const QPoint& pos) const override;
+    [[nodiscard]] QPoint map_to_global(const QPoint& pos) const override;
     void enable_context_menu() override;
     void disable_context_menu() override;
     QRect track_rect(Track& track) override;

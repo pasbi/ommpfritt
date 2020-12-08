@@ -33,7 +33,7 @@ CoordinateEdit::CoordinateEdit(QWidget* parent) : QWidget(parent)
   grid_layout->addWidget(y_edit.release(), 0, 2);
 
   auto arg_edit = std::make_unique<NumericEdit<double>>();
-  arg_edit->set_multiplier(M_1_PI * 180.0);
+  arg_edit->set_multiplier(M_180_PI);
   m_arg_edit = arg_edit.get();
   grid_layout->addWidget(arg_edit.release(), 1, 0);
 
@@ -105,7 +105,7 @@ void CoordinateEdit::update_cartesian()
 void CoordinateEdit::emit_value_changed()
 {
   const auto new_polar_coordinates = to_polar();
-  Q_EMIT value_changed(m_old_polar_coordinates, new_polar_coordinates);
+  Q_EMIT value_changed_val(m_old_polar_coordinates, new_polar_coordinates);
   Q_EMIT value_changed();
   m_old_polar_coordinates = new_polar_coordinates;
 }

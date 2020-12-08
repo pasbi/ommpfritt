@@ -57,21 +57,24 @@ auto load_translator(const QString& prefix, const QLocale& locale)
 
 int img_mean(const QImage& image)
 {
+  static constexpr double NUM_CHANNELS = 3.0;
   double w = 0.0;
   double sum = 0.0;
   for (int y = 0; y < image.height(); ++y) {
     assert(image.format() == QImage::Format_ARGB32_Premultiplied);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
     const QRgb* rgba_line = reinterpret_cast<const QRgb*>(image.scanLine(y));
     for (int x = 0; x < image.width(); ++x) {
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
       const auto& rgba = rgba_line[x];
       const double alpha = qAlpha(rgba) / 255.0;
       sum += qRed(rgba) * alpha;
       sum += qGreen(rgba) * alpha;
       sum += qBlue(rgba) * alpha;
-      w += 3.0 * alpha;
+      w += NUM_CHANNELS * alpha;
     }
   }
-  return sum / w;
+  return static_cast<int>(sum / w);
 }
 
 QKeySequence push_back(const QKeySequence& s, int t)
@@ -133,17 +136,20 @@ const std::set<int> Application::keyboard_modifiers{Qt::Key_Shift,
                                                     Qt::Key_Control,
                                                     Qt::Key_Alt,
                                                     Qt::Key_Meta};
+
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,-warnings-as-errors)
 Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
     : first_member((init(this), nullptr)), mode_selectors(init_mode_selectors()),
       scene(python_engine), m_app(app), m_options(std::move(options)), m_locale(load_locale())
 {
+  static constexpr int RESET_KEYSEQUENCE_INTERVAL_MS = 1000;
   scene.set_selection({});
   if (!this->options().is_cli) {
     ui_colors.apply();
     m_reset_keysequence_timer.setSingleShot(true);
-    m_reset_keysequence_timer.setInterval(1000);
+    m_reset_keysequence_timer.setInterval(RESET_KEYSEQUENCE_INTERVAL_MS);
     connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
       m_pending_key_sequence = QKeySequence();
     });
@@ -165,9 +171,7 @@ void Application::init(omm::Application* instance)
   }
 }
 
-Application::~Application()
-{
-}
+Application::~Application() = default;
 
 Application& Application::instance()
 {
@@ -196,7 +200,7 @@ void Application::quit()
 {
   if (can_close()) {
     LINFO << "Quit application.";
-    m_app.quit();
+    QCoreApplication::quit();
   } else {
     LINFO << "Aborted quit.";
   }
@@ -273,19 +277,22 @@ bool Application::save_as()
 
 void Application::reset()
 {
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (!can_close()) {
     return;
   }
 
   LINFO << "reset scene.";
   scene.set_selection({});
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(0, &scene, &Scene::reset);
 }
 
 void Application::load(const QString& filename, bool force)
 {
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (force || can_close()) {
-    QTimer::singleShot(0, [this, filename]() {
+    QTimer::singleShot(0, this, [this, filename]() {
       if (!scene.load_from(filename)) {
         QMessageBox::critical(m_main_window,
                               tr("Error."),
@@ -323,6 +330,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "redo") {
     scene.history().redo();
   } else if (action_name == "new document") {
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     reset();
   } else if (action_name == "save document") {
     save();
@@ -331,10 +339,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "load document ...") {
     load();
   } else if (action_name == "export") {
-    static ExportDialog* export_dialog = nullptr;
-    if (export_dialog == nullptr) {
-      export_dialog = new omm::ExportDialog(scene, main_window());
-    }
+    static const auto export_dialog = std::make_unique<ExportDialog>(scene, main_window());
     export_dialog->exec();
   } else if (action_name == "evaluate") {
     evaluate();
@@ -356,7 +361,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "reset viewport") {
     main_window()->viewport().reset();
   } else if (action_name == "show point dialog") {
-    if (const auto paths = scene.item_selection<Path>(); paths.size() > 0) {
+    if (const auto paths = scene.item_selection<Path>(); !paths.empty()) {
       PointDialog(paths, main_window()).exec();
     }
   } else if (action_name == "preferences") {
@@ -369,9 +374,9 @@ bool Application::perform_action(const QString& action_name)
     for (const auto& key : Object::keys()) {
       if (key == action_name) {
         const auto modifiers = QApplication::keyboardModifiers();
-        if (modifiers & Qt::ControlModifier) {
+        if ((modifiers & Qt::ControlModifier) != 0u) {
           insert_object(key, InsertionMode::AsChild);
-        } else if (modifiers & Qt::ShiftModifier) {
+        } else if ((modifiers & Qt::ShiftModifier) != 0u) {
           insert_object(key, InsertionMode::AsParent);
         } else {
           insert_object(key, InsertionMode::Default);
@@ -422,7 +427,7 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, Command
     }
   };
 
-  m_pending_key_sequence = push_back(m_pending_key_sequence, key | modifiers);
+  m_pending_key_sequence = push_back(m_pending_key_sequence, key | static_cast<int>(modifiers));
   m_reset_keysequence_timer.start();
   if (dispatch_sequence(ci)) {
     return true;
@@ -443,6 +448,8 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
       return dispatch_key(key, modifiers, *manager);
     }
   }
+
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   return dispatch_key(key, modifiers, Application::instance());
 }
 
@@ -461,7 +468,7 @@ bool Application::handle_mode(const QString& action_name)
   return false;
 }
 
-MailBox& Application::mail_box()
+MailBox& Application::mail_box() const
 {
   return scene.mail_box();
 }
@@ -510,6 +517,11 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
   using move_command_t = MoveCommand<ObjectTree>;
   using move_context_t = move_command_t::context_type;
   if (!children.empty()) {
+    if (parent == nullptr) {
+      // it's illogical to be parent of no children.
+      // This assertion is enforced by the conditions before.
+      LFATAL("Unexpected Condition.");
+    }
     const auto move_contextes = ::transform<move_context_t>(children, [&ref](auto* c) {
       return move_context_t(*c, ref, nullptr);
     });
@@ -530,16 +542,20 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
 void Application::register_auto_invert_icon_button(QAbstractButton& button)
 {
   const auto update_button_icon = [&button]() {
-    const QColor text_color = qApp->palette().color(QPalette::Active, QPalette::ButtonText);
-    QImage img = button.icon().pixmap(QSize(1024, 1024)).toImage();
-    if (std::abs(img_mean(img) - text_color.value()) > 100) {
+    const QColor text_color = QApplication::palette().color(QPalette::Active, QPalette::ButtonText);
+    static constexpr int ICON_SIZE = 1024;
+    static constexpr int ICON_THRESHOLD = 100;
+    QImage img = button.icon().pixmap(QSize(ICON_SIZE, ICON_SIZE)).toImage();
+    if (std::abs(img_mean(img) - text_color.value()) > ICON_THRESHOLD) {
       img.invertPixels(QImage::InvertRgb);
       QSignalBlocker blocker(&button);
       button.setIcon(QIcon(QPixmap::fromImage(img)));
     }
   };
 
-  const auto connection = connect(qApp, &QApplication::paletteChanged, update_button_icon);
+  const auto connection = connect(dynamic_cast<QApplication*>(QCoreApplication::instance()),
+                                  &QApplication::paletteChanged,
+                                  update_button_icon);
   connect(&button, &QObject::destroyed, this, [connection]() { disconnect(connection); });
   update_button_icon();
 }
@@ -554,7 +570,7 @@ Manager& Application::spawn_manager(const QString& type)
   return ref;
 }
 
-ToolBar& Application::spawn_toolbar()
+ToolBar& Application::spawn_toolbar() const
 {
   auto toolbar = std::make_unique<ToolBar>();
   main_window()->assign_unique_objectname(*toolbar);
@@ -605,7 +621,7 @@ void Application::install_translators()
   for (const QString& qm : qms) {
     auto translator = load_translator(qm, m_locale);
     if (translator) {
-      m_app.installTranslator(translator.get());
+      QCoreApplication::installTranslator(translator.get());
       m_translators.insert(std::move(translator));
     };
   }

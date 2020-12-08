@@ -27,12 +27,15 @@ class Object
     , public AbstractFactory<QString, true, Object, Scene*>
 {
   Q_OBJECT
-  Scene* m_scene;
+  Scene* m_scene = nullptr;
 
 public:
   explicit Object(Scene* scene);
   explicit Object(const Object& other);
-  ~Object();
+  ~Object() override;
+  Object(Object&&) = delete;
+  Object& operator=(Object&&) = delete;
+  Object& operator=(const Object&) = delete;
 
   enum class Visibility { Default, Hidden, Visible };
 
@@ -50,7 +53,8 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual void draw_handles(Painter& renderer) const;
 
-  virtual void draw_object(Painter& renderer, const Style& style, Painter::Options options) const;
+  virtual void
+  draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const;
   void draw_recursive(Painter& renderer, Painter::Options options) const;
 
   /**
@@ -59,7 +63,7 @@ public:
   virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const;
   virtual BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const;
   std::unique_ptr<Object> repudiate(Object& repudiatee) override;
-  Object& adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
+  Object& adopt(std::unique_ptr<Object> adoptee, size_t pos) override;
   using TreeElement::adopt;
 
   struct ConvertedObject {
@@ -75,7 +79,7 @@ public:
 
   virtual Point pos(const Geom::PathVectorTime& t) const;
   virtual bool is_closed() const;
-  virtual bool contains(const Vec2f& pos) const;
+  virtual bool contains(const Vec2f& point) const;
 
 private:
   /**
@@ -169,8 +173,8 @@ private:
 
 public:
   void set_object_tree(ObjectTree& object_tree);
-  void set_position_on_path(const Object& path, const bool align, const Geom::PathVectorTime& t);
-  void set_oriented_position(const Point& op, const bool align);
+  void set_position_on_path(const Object& path, bool align, const Geom::PathVectorTime& t);
+  void set_oriented_position(const Point& op, bool align);
 
 private:
   ObjectTree* m_object_tree = nullptr;
@@ -178,9 +182,9 @@ private:
 
 private:
   mutable bool m_visibility_cache_is_dirty = true;
-  mutable bool m_visibility_cache_value;
-  static QPen m_bounding_box_pen;
-  static QBrush m_bounding_box_brush;
+  mutable bool m_visibility_cache_value = false;
+  static const QPen m_bounding_box_pen;
+  static const QBrush m_bounding_box_brush;
 
 protected:
   template<typename Iterable> static Geom::PathVector join(const Iterable& items)

@@ -22,10 +22,6 @@ List<T>::List(const List<T>& other) : Structure<T>(), m_items(copy_items(other.m
 {
 }
 
-template<typename T> List<T>::~List()
-{
-}
-
 template<typename T> std::set<T*> List<T>::items() const
 {
   return ::transform<T*, std::set>(m_items, [](const auto& item) { return item.get(); });

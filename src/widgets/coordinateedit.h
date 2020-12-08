@@ -19,26 +19,27 @@ class CoordinateEdit : public QWidget
 public:
   explicit CoordinateEdit(QWidget* parent = nullptr);
 
-  Vec2f to_cartesian() const;
-  PolarCoordinates to_polar() const;
+  [[nodiscard]] Vec2f to_cartesian() const;
+  [[nodiscard]] PolarCoordinates to_polar() const;
 
 Q_SIGNALS:
-  void value_changed(const PolarCoordinates& old_val, const PolarCoordinates& new_val);
+  void value_changed_val(const omm::PolarCoordinates& old_val,
+                         const omm::PolarCoordinates& new_val);
   void value_changed();
 
 public Q_SLOTS:
-  void set_coordinates(const PolarCoordinates& coordinates);
-  void set_coordinates(const Vec2f& coordinates);
-  void set_display_mode(const DisplayMode& display_mode);
-  void set_magnitude(const double magnitude);
+  void set_coordinates(const omm::PolarCoordinates& coordinates);
+  void set_coordinates(const omm::Vec2f& coordinates);
+  void set_display_mode(const omm::DisplayMode& display_mode);
+  void set_magnitude(double magnitude);
 
 private:
   NumericEdit<double>* m_x_edit;
-  QLabel* m_cart_label;
+  QLabel* m_cart_label{};
   NumericEdit<double>* m_y_edit;
 
   NumericEdit<double>* m_arg_edit;
-  QLabel* m_polar_label;
+  QLabel* m_polar_label{};
   NumericEdit<double>* m_mag_edit;
 
   PolarCoordinates m_old_polar_coordinates;

@@ -11,12 +11,12 @@ class ParticleHandle : public Handle
 {
 public:
   explicit ParticleHandle(Tool& tool);
-  bool contains_global(const Vec2f& point) const override;
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override;
   void draw(QPainter& painter) const override;
   Vec2f position = Vec2f::o();
 
 protected:
-  bool transform_in_tool_space;
+  bool transform_in_tool_space{};
 };
 
 template<typename ToolT> class MoveParticleHandle : public ParticleHandle
@@ -29,9 +29,10 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == HandleStatus::Active) {
+      static constexpr double STEP = 10.0;
       const auto inv_tool_transformation = tool.transformation().inverted();
       auto total_delta = inv_tool_transformation.apply_to_direction(pos - press_pos());
-      total_delta = discretize(total_delta, false, 10.0);
+      total_delta = discretize(total_delta, false, STEP);
       {
         auto transformation = omm::ObjectTransformation().translated(total_delta);
         transformation = transformation.transformed(inv_tool_transformation);

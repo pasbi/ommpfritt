@@ -16,7 +16,7 @@ class SplineWidget
 public:
   SplineWidget(QWidget* parent = nullptr);
   void set_value(const value_type& spline) override;
-  SplineType value() const override
+  [[nodiscard]] SplineType value() const override
   {
     return m_spline;
   }
@@ -31,14 +31,14 @@ protected:
   void set_inconsistent_value() override;
 
 Q_SIGNALS:
-  void value_changed(const SplineType& spline);
+  void value_changed(const omm::SplineType& spline);
 
 private:
   SplineType m_spline;
 
   void draw_spline(QPainter& painter);
 
-  QTransform transform() const;
+  [[nodiscard]] QTransform transform() const;
   SplineType::ControlPoint m_grabbed_knot;
   SplineType::ControlPoint knot_at(const QPoint& pos);
 };

@@ -16,7 +16,7 @@ BoolPropertyWidget::BoolPropertyWidget(Scene& scene, const std::set<Property*>& 
   });
   set_widget(std::move(checkbox));
 
-  update_edit();
+  BoolPropertyWidget::update_edit();
 }
 
 void BoolPropertyWidget::update_edit()

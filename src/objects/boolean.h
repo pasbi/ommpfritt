@@ -12,6 +12,11 @@ class Boolean : public Object
 public:
   explicit Boolean(Scene* scene);
   Boolean(const Boolean& other);
+  Boolean(Boolean&&) = delete;
+  Boolean& operator=(Boolean&&) = delete;
+  Boolean& operator=(const Boolean&) = delete;
+  ~Boolean() override = default;
+
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Boolean");
   void update() override;

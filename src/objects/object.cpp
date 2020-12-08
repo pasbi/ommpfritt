@@ -28,10 +28,10 @@
 
 namespace
 {
-static constexpr auto almost_one = 0.9999999;
-static constexpr auto CHILDREN_POINTER = "children";
-static constexpr auto TAGS_POINTER = "tags";
-static constexpr auto TYPE_POINTER = "type";
+constexpr auto almost_one = 0.9999999;
+constexpr auto CHILDREN_POINTER = "children";
+constexpr auto TAGS_POINTER = "tags";
+constexpr auto TYPE_POINTER = "type";
 
 QPen make_bounding_box_pen()
 {
@@ -88,12 +88,14 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
 
 namespace omm
 {
-QPen Object::m_bounding_box_pen = make_bounding_box_pen();
-QBrush Object::m_bounding_box_brush = Qt::NoBrush;
+const QPen Object::m_bounding_box_pen = make_bounding_box_pen();
+const QBrush Object::m_bounding_box_brush = Qt::NoBrush;
 
 Object::Object(Scene* scene)
     : PropertyOwner(scene), painter_path(*this), geom_paths(*this), tags(*this)
 {
+  static constexpr double STEP = 0.1;
+  static constexpr double SHEAR_STEP = 0.01;
   static const auto category = QObject::tr("basic");
   create_property<OptionProperty>(VIEWPORT_VISIBILITY_PROPERTY_KEY, 0)
       .set_options({QObject::tr("default"), QObject::tr("hidden"), QObject::tr("visible")})
@@ -118,17 +120,17 @@ Object::Object(Scene* scene)
       .set_category(category);
 
   create_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, Vec2f(1.0, 1.0))
-      .set_step(Vec2f(0.1, 0.1))
+      .set_step(Vec2f(STEP, STEP))
       .set_label(QObject::tr("scale"))
       .set_category(category);
 
   create_property<FloatProperty>(ROTATION_PROPERTY_KEY, 0.0)
-      .set_multiplier(180.0 / M_PI)
+      .set_multiplier(M_180_PI)
       .set_label(QObject::tr("rotation"))
       .set_category(category);
 
   create_property<FloatProperty>(SHEAR_PROPERTY_KEY, 0.0)
-      .set_step(0.01)
+      .set_step(SHEAR_STEP)
       .set_label(QObject::tr("shear"))
       .set_category(category);
 }
@@ -164,9 +166,7 @@ ObjectTransformation Object::global_transformation(Space space) const
 {
   if (m_virtual_parent != nullptr) {
     return m_virtual_parent->global_transformation(space).apply(transformation());
-  } else if (is_root()) {
-    return transformation();
-  } else if (space == Space::Scene && tree_parent().is_root()) {
+  } else if (is_root() || (space == Space::Scene && tree_parent().is_root())) {
     return transformation();
   } else {
     // TODO caching could gain some speed
@@ -321,10 +321,10 @@ void Object::draw_recursive(Painter& renderer, Painter::Options options) const
     // TODO options.styles is overriden before being used. Why not use a local variable instead?
     // Remove the styles field from Painter::Options
     options.styles = find_styles();
-    for (auto* style : options.styles) {
+    for (const auto* style : options.styles) {
       draw_object(renderer, *style, options);
     }
-    if (options.styles.size() == 0) {
+    if (options.styles.empty()) {
       draw_object(renderer, *options.default_style, options);
     }
 
@@ -435,9 +435,9 @@ void Object::on_property_value_changed(Property* property)
   } else if (property == this->property(VIEWPORT_VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
     if (is_root()) {
-      Q_EMIT scene()->mail_box().appearance_changed();
+      Q_EMIT scene()->mail_box().scene_appearance_changed();
     } else {
-      Q_EMIT scene()->mail_box().appearance_changed(tree_parent());
+      Q_EMIT scene()->mail_box().object_appearance_changed(tree_parent());
     }
   } else if (property == this->property(VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
@@ -453,7 +453,7 @@ void Object::update()
   painter_path.invalidate();
   geom_paths.invalidate();
   if (Scene* scene = this->scene(); scene != nullptr) {
-    Q_EMIT scene->mail_box().appearance_changed(*this);
+    Q_EMIT scene->mail_box().object_appearance_changed(*this);
   }
 }
 
@@ -521,7 +521,7 @@ std::vector<const omm::Style*> Object::find_styles() const
       const auto* property_owner = tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)
                                        ->value<omm::ReferenceProperty::value_type>();
       assert(property_owner == nullptr || property_owner->kind == omm::Kind::Style);
-      return static_cast<const omm::Style*>(property_owner);
+      return dynamic_cast<const omm::Style*>(property_owner);
     } else {
       return nullptr;
     }
@@ -582,9 +582,9 @@ Geom::PathVectorTime Object::compute_path_vector_time(double t, Interpolation in
 
   switch (interpolation) {
   case Interpolation::Natural: {
-    double path_index;
+    double path_index = -1.0;
     const double path_position = std::modf(t * path_vector.size(), &path_index);
-    return compute_path_vector_time(path_index, path_position, interpolation);
+    return compute_path_vector_time(static_cast<int>(path_index), path_position, interpolation);
   }
   case Interpolation::Distance: {
     const auto [i, tp] = factor_time_by_distance(path_vector, t);
@@ -615,9 +615,9 @@ Object::compute_path_vector_time(int path_index, double t, Interpolation interpo
 
   switch (interpolation) {
   case Interpolation::Natural: {
-    double curve_index;
+    double curve_index = -1.0;
     const double curve_position = std::modf(t * path.size(), &curve_index);
-    return Geom::PathVectorTime(path_index, curve_index, curve_position);
+    return Geom::PathVectorTime(static_cast<int>(path_index), curve_index, curve_position);
   }
   case Interpolation::Distance: {
     const auto [i, tc] = factor_time_by_distance(path, t);
@@ -644,7 +644,9 @@ QString Object::tree_path() const
   return path + "/" + name();
 }
 
-void Object::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
+void Object::draw_object(Painter& renderer,
+                         const Style& style,
+                         const Painter::Options& options) const
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     if (const auto painter_path = this->painter_path(); !painter_path.isEmpty()) {
@@ -685,19 +687,19 @@ void Object::set_object_tree(ObjectTree& object_tree)
 void Object::on_child_added(Object& child)
 {
   TreeElement::on_child_added(child);
-  Q_EMIT scene()->mail_box().appearance_changed(*this);
+  Q_EMIT scene()->mail_box().object_appearance_changed(*this);
 }
 
 void Object::on_child_removed(Object& child)
 {
   TreeElement::on_child_removed(child);
-  Q_EMIT scene()->mail_box().appearance_changed(*this);
+  Q_EMIT scene()->mail_box().object_appearance_changed(*this);
 }
 
 void Object::listen_to_changes(const std::function<Object*()>& get_watched)
 {
   connect(&scene()->mail_box(),
-          qOverload<Object&>(&MailBox::appearance_changed),
+          &MailBox::object_appearance_changed,
           this,
           [get_watched, this](Object& o) {
             Object* r = get_watched();
@@ -707,7 +709,7 @@ void Object::listen_to_changes(const std::function<Object*()>& get_watched)
                   QSignalBlocker blocker(&scene()->mail_box());
                   update();
                 }
-                Q_EMIT scene()->mail_box().appearance_changed();
+                Q_EMIT scene()->mail_box().scene_appearance_changed();
               } else if (r->is_ancestor_of(o)) {
                 update();
               }
@@ -723,7 +725,7 @@ void Object::listen_to_children_changes()
     }
   };
   connect(&scene()->mail_box(), &MailBox::transformation_changed, this, on_change);
-  connect(&scene()->mail_box(), qOverload<Object&>(&MailBox::appearance_changed), this, on_change);
+  connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
 }
 
 Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
@@ -785,6 +787,7 @@ Geom::Path Object::segment_to_path(Segment segment, bool is_closed, Interpolatio
 
   for (std::size_t i = 0; i < m; ++i) {
     const std::size_t j = (i + 1) % n;
+    static constexpr double t = 1.0 / 3.0;
     switch (interpolation) {
     case InterpolationMode::Bezier:
       [[fallthrough]];
@@ -796,8 +799,8 @@ Geom::Path Object::segment_to_path(Segment segment, bool is_closed, Interpolatio
       break;
     case InterpolationMode::Linear:
       bzs.emplace_back(pts({segment[i].position,
-                            (2.0 * segment[i].position + 1.0 * segment[j].position) / 3.0,
-                            (1.0 * segment[i].position + 2.0 * segment[j].position) / 3.0,
+                            (1.0 - t) * segment[i].position + t * segment[j].position,
+                            (1.0 - t) * segment[j].position + t * segment[i].position,
                             segment[j].position}));
       break;
     }

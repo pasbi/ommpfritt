@@ -17,7 +17,7 @@ public:
   {
   }
 
-  bool contains_global(const Vec2f& point) const override
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override
   {
     const Vec2f global_point = this->tool.transformation().inverted().apply_to_position(point);
     Vec2f v = project_onto_axis(global_point);
@@ -42,13 +42,20 @@ public:
       const Vec2f s = [this, inv_tool_transformation, pos, &e] {
         if (!!(e.modifiers() & Qt::ControlModifier)) {
           auto total_delta = inv_tool_transformation.apply_to_direction(pos - this->press_pos());
-          total_delta = -this->discretize(this->project_onto_axis(total_delta), true, 10.0);
-          return Vec2f{std::pow(2.0, total_delta.x / 120.0), std::pow(2.0, total_delta.y / 120.0)};
+          static constexpr double STEP = 10.0;
+          static const auto s = [](double t) {
+            static constexpr double TOTAL_WHEEL_STEPS = 120.0;
+            return std::pow(2.0, t / TOTAL_WHEEL_STEPS);
+          };
+
+          total_delta = -this->discretize(this->project_onto_axis(total_delta), true, STEP);
+          return Vec2f{s(total_delta.x), s(total_delta.y)};
         } else {
           const auto global_pos = inv_tool_transformation.apply_to_position(pos);
           const auto origin = inv_tool_transformation.apply_to_position(this->press_pos());
           auto s = project_onto_axis(global_pos - origin) / origin;
-          s = this->discretize(s, true, 0.2) + Vec2f{1, 1};
+          static constexpr double STEP = 0.2;
+          s = this->discretize(s, true, STEP) + Vec2f{1, 1};
           for (auto i : {0u, 1u}) {
             if (constexpr auto eps = 10e-10; std::abs(s[i]) < eps) {
               s[i] = std::copysign(eps, s[i]);
@@ -76,7 +83,8 @@ public:
     const QString name = Handle::axis_names.at(direction);
     QPen pen;
     pen.setColor(this->ui_color(name + "-outline"));
-    pen.setWidthF(2.0);
+    static constexpr double PEN_WIDTH = 2.0;
+    pen.setWidthF(PEN_WIDTH);
     painter.setPen(pen);
     painter.drawLine(QPointF{0, 0}, to_qpoint(m_direction));
     const auto size = Vec2{1.0, 1.0} * 0.1 * m_direction.euclidean_norm();
@@ -90,7 +98,7 @@ private:
   const Vec2f m_direction;
   ObjectTransformation m_transformation;
 
-  Vec2f project_onto_axis(const Vec2f& vec) const
+  [[nodiscard]] Vec2f project_onto_axis(const Vec2f& vec) const
   {
     const Vec2f s = m_direction;
 

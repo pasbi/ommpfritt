@@ -17,15 +17,17 @@ namespace
 void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 {
   auto cursor = widget.cursor();
-  cursor.setPos(widget.mapToGlobal(pos.to_point()));
+  QCursor::setPos(widget.mapToGlobal(pos.to_point()));
   widget.setCursor(cursor);
 }
 
 double discretize(double value)
 {
-  value = std::log10(std::max(0.00001, value));
+  static constexpr double eps = 0.00001;
+  static constexpr double BASE_DEC = 10.0;
+  value = std::log10(std::max(eps, value));
   value -= std::fmod(value, 1.0);
-  return std::pow(10.0, value);
+  return std::pow(BASE_DEC, value);
 }
 
 template<typename VecT> VecT fold(const VecT& vec)
@@ -58,17 +60,14 @@ Viewport::Viewport(Scene& scene)
   setFocusPolicy(Qt::StrongFocus);
 
   setMouseTracking(true);
-  connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &Viewport::update);
+  connect(&scene.mail_box(), &MailBox::selection_changed, this, &Viewport::update);
 
-  connect(&scene.mail_box(), qOverload<>(&MailBox::appearance_changed), this, &Viewport::update);
+  connect(&scene.mail_box(), &MailBox::scene_appearance_changed, this, &Viewport::update);
   connect(&m_fps_limiter, &QTimer::timeout, [this]() {
     m_fps_limiter.stop();
     if (m_update_later) {
       m_update_later = false;
-      ViewportBase::update();
+      QWidget::update();
       Q_EMIT updated();
     }
   });
@@ -87,7 +86,7 @@ void Viewport::draw_grid(QPainter& painter,
     if (go.zorder == zorder) {
       QPen pen;
       pen.setCosmetic(true);
-      pen.setWidth(go.pen_width);
+      pen.setWidthF(go.pen_width);
       pen.setStyle(go.pen_style);
       pen.setColor(ui_color(*this, "Viewport", "grid " + key));
 
@@ -95,7 +94,9 @@ void Viewport::draw_grid(QPainter& painter,
       const auto base_step = (max - min) / Vec2f(width(), height()) * go.base;
       for (std::size_t d : {0, 1}) {
         double step = discretize(base_step[d]);
-        for (double t = min[d]; t <= max[d] + step; t += step) {
+        std::size_t n = (max[d] - min[d]) / step + 1;
+        for (std::size_t i = 0; i < n + 1; ++i) {
+          const double t = min[d] + i * step;
           const double tt = t - std::fmod(t, step);
           Vec2f a = min;
           Vec2f b = max;
@@ -189,12 +190,13 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 
   if (action != MousePanController::Action::None) {
     event->accept();
-  } else if (auto* hud = find_headup_display(event->pos()); hud && hud->mouse_press(*event)) {
+  } else if (auto* hud = find_headup_display(event->pos());
+             hud != nullptr && hud->mouse_press(*event)) {
     event->accept();
   } else if (m_scene.tool_box().active_tool().mouse_press(cursor_pos, *event)) {
     event->accept();
   } else {
-    ViewportBase::mousePressEvent(event);
+    QWidget::mousePressEvent(event);
     return;
   }
   update();
@@ -225,7 +227,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
         m_pan_controller.apply(delta, m_viewport_transformation);
         event->accept();
       } else {
-        ViewportBase::mouseMoveEvent(event);
+        QWidget::mouseMoveEvent(event);
       }
     }
   }
@@ -243,12 +245,12 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
         menu->exec(event->globalPos());
       }
     }
-    ViewportBase::mouseReleaseEvent(event);
+    QWidget::mouseReleaseEvent(event);
   }
   for (const auto& hud : m_headup_displays) {
     hud->mouse_release(*event);
   }
-  ViewportBase::mouseReleaseEvent(event);
+  QWidget::mouseReleaseEvent(event);
   update();
 }
 
@@ -271,13 +273,13 @@ void Viewport::reset()
 void Viewport::set_transformation(const ObjectTransformation& transformation)
 {
   m_viewport_transformation = transformation;
-  m_viewport_transformation.normalized();
+  [[maybe_unused]] const auto dummy = m_viewport_transformation.normalized();
 }
 
 void Viewport::keyPressEvent(QKeyEvent* event)
 {
   if (!m_scene.tool_box().active_tool().key_press(*event)) {
-    ViewportBase::keyPressEvent(event);
+    QWidget::keyPressEvent(event);
   }
 }
 
@@ -298,12 +300,13 @@ void Viewport::resizeEvent(QResizeEvent* event)
 void Viewport::update()
 {
   static constexpr double fps = 30.0;
+  static constexpr double SECOND_MS = 1000.0;
   if (m_fps_limiter.isActive()) {
     m_update_later = true;
   } else {
-    ViewportBase::update();
+    QWidget::update();
     Q_EMIT updated();
-    m_fps_limiter.start(static_cast<int>(1000.0 / fps));
+    m_fps_limiter.start(static_cast<int>(SECOND_MS / fps));
   }
 }
 

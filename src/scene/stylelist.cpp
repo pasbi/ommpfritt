@@ -12,15 +12,12 @@ namespace omm
 StyleList::StyleList(Scene& scene)
     : ItemModelAdapter<StyleList, Style, QAbstractListModel>(scene, *this), scene(scene)
 {
-  connect(&scene.mail_box(),
-          qOverload<Style&>(&MailBox::appearance_changed),
-          this,
-          [this](Style& style) {
-            if (this->contains(style)) {
-              const QModelIndex index = index_of(style);
-              Q_EMIT dataChanged(index, index, {Qt::DecorationRole});
-            }
-          });
+  connect(&scene.mail_box(), &MailBox::style_appearance_changed, this, [this](Style& style) {
+    if (this->contains(style)) {
+      const QModelIndex index = index_of(style);
+      Q_EMIT dataChanged(index, index, {Qt::DecorationRole});
+    }
+  });
 }
 
 void StyleList::insert(ListOwningContext<Style>& context)

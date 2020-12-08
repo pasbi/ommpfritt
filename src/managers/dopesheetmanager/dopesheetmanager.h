@@ -14,7 +14,7 @@ class DopeSheetManager : public Manager
 public:
   explicit DopeSheetManager(Scene& scene);
   static constexpr auto TYPE = "DopeSheetManager";
-  QString type() const override
+  [[nodiscard]] QString type() const override
   {
     return TYPE;
   }

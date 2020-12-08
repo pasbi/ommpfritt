@@ -89,10 +89,10 @@ static const std::map<QString, QList<QCommandLineOption>> options{
 
 namespace omm
 {
-SubcommandLineParser::SubcommandLineParser(int argc, char* argv[])
-    : m_appname(argv[0]), m_command(argc == 1 ? "" : argv[1])
+SubcommandLineParser::SubcommandLineParser(const QStringList& args)
+    : m_appname(args.front()), m_command(args.size() == 1 ? "" : args.at(1))
 {
-  if (argc == 1 || m_command == "--help" || m_command == "-h") {
+  if (args.size() == 1 || m_command == "--help" || m_command == "-h") {
     print_help();
     exit(EXIT_SUCCESS);
   }
@@ -107,22 +107,16 @@ SubcommandLineParser::SubcommandLineParser(int argc, char* argv[])
   addOptions(options.at(m_command));
   addHelpOption();
 
-  QStringList args;
-  for (int i = 0; i < argc; ++i) {
-    if (i != 1) {
-      args.append(argv[i]);
-    }
-  }
-  process(args);
+  QStringList args_copy = args;
+  args_copy.removeAt(0);
+  process(args_copy);
 }
 
-SubcommandLineParser::SubcommandLineParser()
-{
-}
+SubcommandLineParser::SubcommandLineParser() = default;
 
 template<> QString SubcommandLineParser::get<QString>(const QString& name) const
 {
-  const QString value = this->value(name);
+  QString value = this->value(name);
   if (value.isEmpty()) {
     LERROR << QString("<%1> must be specified.").arg(name);
     std::cout << helpText().toStdString();
@@ -135,15 +129,15 @@ template<> int SubcommandLineParser::get<int>(const QString& name) const
 {
   bool ok = true;
   const auto value = this->get<QString>(name);
-  const auto ivalue = value.toInt(&ok);
+  auto ivalue = value.toInt(&ok);
   if (!ok) {
-    LERROR << QObject::tr("Expected integer argument for '%1', but got '%2'.").arg(name).arg(value);
+    LERROR << QObject::tr("Expected integer argument for '%1', but got '%2'.").arg(name, value);
     exit(EXIT_FAILURE);
   }
   return ivalue;
 }
 
-void SubcommandLineParser::print_help() const
+void SubcommandLineParser::print_help()
 {
   std::cout << "Following sub-commands are available:\n";
   for (auto&& [command, cmd_options_list] : options) {

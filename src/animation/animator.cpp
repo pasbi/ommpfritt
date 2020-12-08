@@ -13,11 +13,16 @@
 #include <functional>
 #include <list>
 
+namespace
+{
+const int ANIMATOR_INTERVAL_MS = static_cast<int>(1000.0 / 30.0);
+}
+
 namespace omm
 {
 Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 {
-  m_timer.setInterval(1000.0 / 30.0);
+  m_timer.setInterval(ANIMATOR_INTERVAL_MS);
   connect(&m_timer, &QTimer::timeout, this, qOverload<>(&Animator::advance));
   connect(this, &Animator::current_changed, this, &Animator::apply);
   connect(&scene.mail_box(),
@@ -61,9 +66,7 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
   invalidate();
 }
 
-Animator::~Animator()
-{
-}
+Animator::~Animator() = default;
 
 void Animator::serialize(AbstractSerializer& serializer, const Serializable::Pointer& pointer) const
 {
@@ -111,7 +114,7 @@ void Animator::set_current(int current)
   if (m_current_frame != current) {
     m_current_frame = current;
     Q_EMIT current_changed(current);
-    Q_EMIT scene.mail_box().appearance_changed();
+    Q_EMIT scene.mail_box().scene_appearance_changed();
   }
 }
 
@@ -199,7 +202,7 @@ QModelIndex Animator::index(int row, int column, const QModelIndex& parent) cons
     return index(*accelerator().owners()[row], column);
   case IndexType::Owner:
     // child of owner is property
-    return index(*accelerator().properties(*this->owner(parent)).at(row), column);
+    return index(*accelerator().properties(*owner(parent)).at(row), column);
   case IndexType::Property:
     // child of property is channel
     return index({property(parent), row}, column);
@@ -284,7 +287,7 @@ QVariant Animator::data(const QModelIndex& index, int role) const
   case IndexType::Channel:
     switch (role) {
     case Qt::DisplayRole: {
-      const auto& c = this->channel(index);
+      const auto& c = channel(index);
       return c.track.property().channel_name(c.channel);
     }
     default:
@@ -325,7 +328,7 @@ QModelIndex Animator::index(const std::pair<Property*, std::size_t>& channel, in
   return createIndex(c, column, m_channel_proxies.at({property->track(), c}).get());
 }
 
-Animator::IndexType Animator::index_type(const QModelIndex& index) const
+Animator::IndexType Animator::index_type(const QModelIndex& index)
 {
   if (!index.isValid()) {
     return IndexType::None;
@@ -344,19 +347,19 @@ Animator::IndexType Animator::index_type(const QModelIndex& index) const
   }
 }
 
-Property* Animator::property(const QModelIndex& index) const
+Property* Animator::property(const QModelIndex& index)
 {
   assert(index_type(index) == IndexType::Property);
   return static_cast<Property*>(index.internalPointer());
 }
 
-ChannelProxy& Animator::channel(const QModelIndex& index) const
+ChannelProxy& Animator::channel(const QModelIndex& index)
 {
   assert(index_type(index) == IndexType::Channel);
   return *static_cast<ChannelProxy*>(index.internalPointer());
 }
 
-AbstractPropertyOwner* Animator::owner(const QModelIndex& index) const
+AbstractPropertyOwner* Animator::owner(const QModelIndex& index)
 {
   assert(index_type(index) == IndexType::Owner);
   return static_cast<AbstractPropertyOwner*>(index.internalPointer());
@@ -366,6 +369,7 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
 {
   assert(track);
   Track& track_ref = *track;
+  auto& property = track->property();
   const auto accelerator = this->accelerator();
   if (accelerator.contains(owner)) {
     const QModelIndex parent_index = this->index(owner);
@@ -390,14 +394,14 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
     assert(!preprocessor_index.isValid() || preprocessor_index.parent() == parent_index);
     const int row = preprocessor_index.row() + 1;
     beginInsertRows(parent_index, row, row);
-    track->property().set_track(std::move(track));
+    property.set_track(std::move(track));
     this->accelerator.invalidate();
     endInsertRows();
   } else {
     // the owner is not in the model. Add the owner.
     // it's too complicated to figure out where the owner is added.
     beginResetModel();
-    track->property().set_track(std::move(track));
+    property.set_track(std::move(track));
     this->accelerator.invalidate();
     endResetModel();
   }

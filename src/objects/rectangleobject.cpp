@@ -5,17 +5,20 @@ namespace omm
 {
 RectangleObject::RectangleObject(Scene* scene) : Object(scene)
 {
+  static constexpr double DEFAULT_SIZE = 200.0;
+  static constexpr double DEFAULT_RADIUS = 0.2;
+  static constexpr double STEP = 0.01;
   static const auto category = QObject::tr("rectangle");
-  create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(200.0, 200.0))
+  create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(DEFAULT_SIZE, DEFAULT_SIZE))
       .set_label(QObject::tr("size"))
       .set_category(category);
-  create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(0.2, 0.2))
-      .set_step(Vec2f(0.01, 0.01))
+  create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(DEFAULT_RADIUS, DEFAULT_RADIUS))
+      .set_step(Vec2f(STEP, STEP))
       .set_range(Vec2f(0.0, 0.0), Vec2f(1.0, 1.0))
       .set_label(QObject::tr("radius"))
       .set_category(category);
   create_property<FloatVectorProperty>(TENSION_PROPERTY_KEY, Vec2f(1.0, 1.0))
-      .set_step(Vec2f(0.01, 0.01))
+      .set_step(Vec2f(STEP, STEP))
       .set_range(Vec2f(0.0, 0.0), Vec2f(1.0, 1.0))
       .set_label(QObject::tr("tension"))
       .set_category(category);
@@ -41,21 +44,21 @@ Geom::PathVector RectangleObject::paths() const
 
   const bool p = ar != Vec2f::o();
   if (p) {
-    points.push_back(Point(Vec2f(-size.x + ar.x, -size.y), null, -h));
+    points.emplace_back(Vec2f(-size.x + ar.x, -size.y), null, -h);
   }
-  points.push_back(Point(Vec2f(-size.x, -size.y + ar.y), v, null));
+  points.emplace_back(Vec2f(-size.x, -size.y + ar.y), v, null);
   if (p) {
-    points.push_back(Point(Vec2f(-size.x, size.y - ar.y), null, -v));
+    points.emplace_back(Vec2f(-size.x, size.y - ar.y), null, -v);
   }
-  points.push_back(Point(Vec2f(-size.x + ar.x, size.y), -h, null));
+  points.emplace_back(Vec2f(-size.x + ar.x, size.y), -h, null);
   if (p) {
-    points.push_back(Point(Vec2f(size.x - ar.x, size.y), null, h));
+    points.emplace_back(Vec2f(size.x - ar.x, size.y), null, h);
   }
-  points.push_back(Point(Vec2f(size.x, size.y - ar.y), -v, null));
+  points.emplace_back(Vec2f(size.x, size.y - ar.y), -v, null);
   if (p) {
-    points.push_back(Point(Vec2f(size.x, -size.y + ar.y), null, v));
+    points.emplace_back(Vec2f(size.x, -size.y + ar.y), null, v);
   }
-  points.push_back(Point(Vec2f(size.x - ar.x, -size.y), h, null));
+  points.emplace_back(Vec2f(size.x - ar.x, -size.y), h, null);
 
   const Segment segment(points.begin(), points.end());
   const auto path = segment_to_path(segment, is_closed());

@@ -52,13 +52,16 @@ MoveTagContext::MoveTagContext(Tag& tag, Object& owner, Tag* predecessor)
 
 void MoveTagContext::assert_is_valid() const
 {
+  Q_UNUSED(subject);
+  Q_UNUSED(owner);
+  Q_UNUSED(predecessor);
   assert(subject != nullptr);
   assert(owner != nullptr);
   assert(predecessor == nullptr || predecessor->owner == subject->owner);
   assert(subject->owner == owner);
 }
 
-MoveTagsCommand ::MoveTagsCommand(const std::vector<Tag*> tags,
+MoveTagsCommand ::MoveTagsCommand(const std::vector<Tag*>& tags,
                                   Object& new_owner,
                                   Tag* new_predecessor)
     : Command(QObject::tr("Move tags")), m_old_contextes(make_old_contextes(tags)),

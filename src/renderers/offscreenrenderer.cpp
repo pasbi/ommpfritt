@@ -51,10 +51,10 @@ QString OffscreenRenderer::ShaderInput::tr_name() const
 
 namespace
 {
-static constexpr auto vertex_position_attribute_name = "vertex_attr";
+constexpr auto vertex_position_attribute_name = "vertex_attr";
 
 using S = omm::OffscreenRenderer;
-static constexpr auto vertex_code = R"(
+constexpr auto vertex_code = R"(
 #version 330
 
 attribute vec4 vertex_attr;
@@ -95,7 +95,7 @@ void main() {
 }
 )";
 
-static constexpr std::array<float, 18> m_quad = {
+constexpr std::array<float, 18> m_quad = {
     -1.0,
     -1.0,
     0.0,
@@ -185,17 +185,13 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
 
 }  // namespace
 
-#ifdef NDEBUG
-#  define assert_or_call(expr) (expr)
-#else
-#  define assert_or_call(expr) assert(expr)
-#endif
-
 namespace omm
 {
 OffscreenRenderer::OffscreenRenderer()
 {
-  assert_or_call(m_context.create());
+  if (!m_context.create()) {
+    LFATAL("Failed to create OpenGL Context.");
+  }
   m_surface.create();
   m_context.makeCurrent(&m_surface);
   m_functions = m_context.functions();
@@ -209,15 +205,19 @@ OffscreenRenderer::OffscreenRenderer()
 
   m_functions->initializeOpenGLFunctions();
   m_functions->glEnableVertexAttribArray(0);
-  m_functions->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+  m_functions->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
   m_vertices.release();
 
-  glClearColor(1.0, 0.5, 0, 1.0);
+  static constexpr double CLEAR_COLOR_R = 1.0;
+  static constexpr double CLEAR_COLOR_G = 0.5;
+  static constexpr double CLEAR_COLOR_B = 0.0;
+  static constexpr double CLEAR_COLOR_A = 1.0;
+  glClearColor(CLEAR_COLOR_R, CLEAR_COLOR_G, CLEAR_COLOR_B, CLEAR_COLOR_A);
 }
 
 OffscreenRenderer::~OffscreenRenderer()
 {
-  // destroy the textures before m_context is destroyed.
+  // destroy the textures *before* m_context is destroyed.
   textures.clear();
 }
 
@@ -228,33 +228,37 @@ bool OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
     m_program.reset();
     return false;
   } else {
-#define CHECK(X) \
-  if (!(X)) { \
-    LERROR << #X " failed."; \
-    return false; \
-  }
-
-    //    QStringList lines = fragment_code.split("\n");
-    //    for (int i = 0; i < lines.size(); ++i) {
-    //      lines[i] = QString("%1 %2").arg(i+1, log(lines.size()+1)/log(10) + 1).arg(lines[i]);
-    //    }
-    //    LINFO << "code:\n" << lines.join("\n");
-
     m_program = std::make_unique<QOpenGLShaderProgram>();
-    CHECK(m_context.makeCurrent(&m_surface));
-    CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_code));
-    CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code));
+    if (!m_context.makeCurrent(&m_surface)) {
+      LERROR << "Failed to activate context.";
+      return false;
+    }
+    if (!m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_code)) {
+      LERROR << "Failed to add vertex shader from source code.";
+      return false;
+    }
+    if (!m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code)) {
+      LERROR << "Failed to add fragment shader from source code.";
+      return false;
+    }
     m_program->bindAttributeLocation(vertex_position_attribute_name, 0);
-    CHECK(m_program->link());
-    CHECK(m_program->isLinked());
+    if (!m_program->link()) {
+      LERROR << "Failed to link program.";
+      return false;
+    }
+    if (!m_program->isLinked()) {
+      LERROR << "Program is not linked.";
+      return false;
+    }
     return true;
-#undef CHECK
   }
 }
 
 void OffscreenRenderer::make_current()
 {
-  assert_or_call(m_context.makeCurrent(&m_surface));
+  if (!m_context.makeCurrent(&m_surface)) {
+    LFATAL("Failed to activate OpenGL context.");
+  }
 }
 
 void OffscreenRenderer::set_uniform(const QString& name, const variant_type& value)
@@ -276,15 +280,17 @@ Texture OffscreenRenderer::render(const Object& object,
                                   const QRectF& roi,
                                   const Painter::Options& options)
 {
-  const QSize adjusted_size
-      = QSize(size.width() * roi.width() / 2.0, size.height() * roi.height() / 2.0);
+  const QSize adjusted_size = QSize(static_cast<int>(size.width() * roi.width() / 2.0),
+                                    static_cast<int>(size.height() * roi.height() / 2.0));
   if (m_program == nullptr) {
     return Texture(adjusted_size);
   } else if (adjusted_size.isEmpty()) {
     return Texture();
   }
-  assert_or_call(m_context.makeCurrent(&m_surface));
-  assert_or_call(m_context.isValid());
+  make_current();
+  if (!m_context.isValid()) {
+    LFATAL("OpenGL context is unexpectedly invalid.");
+  }
   m_functions->glViewport(0, 0, adjusted_size.width(), adjusted_size.height());
   m_program->bind();
   const auto bb = object.bounding_box(ObjectTransformation());
@@ -307,8 +313,8 @@ Texture OffscreenRenderer::render(const Object& object,
   m_program->release();
   m_vertices.release();
   m_vao.release();
-  const QPoint offset((1.0 + roi.left()) / 2.0 * size.width(),
-                      (1.0 + roi.top()) / 2.0 * size.height());
+  const QPoint offset(static_cast<int>((1.0 + roi.left()) / 2.0 * size.width()),
+                      static_cast<int>((1.0 + roi.top()) / 2.0 * size.height()));
   return Texture(fbo.toImage(), offset);
 }
 

@@ -12,7 +12,7 @@
 
 namespace
 {
-static constexpr auto eps = 0.00001;
+constexpr auto eps = 0.00001;
 
 enum class AspectRatio { Ignore, FromWidth, FromHeight };
 
@@ -89,19 +89,16 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   adjust_mode(scene.tool_box().active_tool());
 
   connect(&scene.mail_box(),
-          qOverload<const std::set<Object*>&>(&MailBox::selection_changed),
+          &MailBox::object_selection_changed,
           this,
           [this](const std::set<Object*>&) { update_manager(); });
 
-  connect(&scene.mail_box(),
-          qOverload<Object&>(&MailBox::appearance_changed),
-          this,
-          [this](Object& o) {
-            Path* path = type_cast<Path*>(&o);
-            if (path != nullptr) {
-              update_manager();
-            }
-          });
+  connect(&scene.mail_box(), &MailBox::object_appearance_changed, this, [this](Object& o) {
+    Path* path = type_cast<Path*>(&o);
+    if (path != nullptr) {
+      update_manager();
+    }
+  });
 
   connect(&scene.mail_box(), &MailBox::point_selection_changed, this, [this]() {
     update_manager();
@@ -304,7 +301,7 @@ bool BoundingBoxManager::eventFilter(QObject* o, QEvent* e)
 
 void BoundingBoxManager::UiBoundingBoxManagerDeleter::operator()(Ui::BoundingBoxManager* ui)
 {
-  delete ui;
+  delete ui;  // NOLINT(cppcoreguidelines-owning-memory)
 }
 
 }  // namespace omm

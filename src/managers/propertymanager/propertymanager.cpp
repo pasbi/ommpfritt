@@ -29,7 +29,7 @@ QString tab_display_name(const QString& tab_name)
 
 std::vector<QString> get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
-  if (selection.size() == 0) {
+  if (selection.empty()) {
     return std::vector<QString>();
   }
 
@@ -68,8 +68,8 @@ auto collect_properties(const QString& key, const std::set<omm::AbstractProperty
 
 QString get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Property*>& properties)
 {
-  assert(properties.size() > 0);
-  const auto tab_label = (*properties.begin()).second->category();
+  assert(!properties.empty());
+  auto tab_label = (*properties.begin()).second->category();
 #ifndef NDEBUG
   for (auto&& [_, property] : properties) {
     Q_UNUSED(_)
@@ -115,7 +115,8 @@ PropertyManager::PropertyManager(Scene& scene)
   auto layout = std::make_unique<QVBoxLayout>();
   m_layout = layout.get();
   category_widget->setLayout(layout.release());
-  m_layout->setContentsMargins(0, 0, 6, 0);
+  static constexpr int TOP_MARGIN = 6;
+  m_layout->setContentsMargins(0, 0, TOP_MARGIN, 0);
   m_scroll_area->setWidget(category_widget.release());
 
   auto main_layout = std::make_unique<QVBoxLayout>();
@@ -140,10 +141,7 @@ PropertyManager::PropertyManager(Scene& scene)
           &MultiTabBar::current_indices_changed,
           this,
           &PropertyManager::activate_tabs);
-  connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &PropertyManager::set_selection);
+  connect(&scene.mail_box(), &MailBox::selection_changed, this, &PropertyManager::set_selection);
   m_scroll_area->setFrameShape(QFrame::NoFrame);
 }
 
@@ -174,9 +172,9 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     update_property_widgets();
     m_title_bar->set_selection(selection);
 
-    m_icon_label->setVisible(selection.size() > 0);
-    m_selection_label->setVisible(selection.size() > 0);
-    if (selection.size() > 0) {
+    m_icon_label->setVisible(!selection.empty());
+    m_selection_label->setVisible(!selection.empty());
+    if (!selection.empty()) {
       const auto types = ::transform<QString>(selection, [](AbstractPropertyOwner* owner) {
         return owner->type();
       });
@@ -203,8 +201,9 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       if (image.isNull()) {
         m_icon_label->clear();
       } else {
+        static constexpr int ICON_SIZE = 24;
         m_icon_label->setPixmap(QPixmap::fromImage(
-            image.scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+            image.scaled(ICON_SIZE, ICON_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
       }
     }
   }
@@ -215,7 +214,7 @@ void PropertyManager::update_property_widgets()
   clear();
   for (const auto& key : get_key_intersection(m_current_selection)) {
     const auto properties = collect_properties(key, m_current_selection);
-    assert(properties.size() > 0);
+    assert(!properties.empty());
     const auto tab_label = get_tab_label(properties);
     if (!m_tabs.contains(tab_label)) {
       m_tabs.insert(tab_label, std::make_unique<PropertyManagerTab>(tab_label));

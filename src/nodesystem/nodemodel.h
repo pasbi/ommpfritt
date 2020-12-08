@@ -27,13 +27,16 @@ public:
   explicit NodeModel(AbstractNodeCompiler::Language language, Scene& scene);
   static std::unique_ptr<NodeModel> make(AbstractNodeCompiler::Language language, Scene& scene);
   NodeModel(const NodeModel& other);
-  ~NodeModel();
+  ~NodeModel() override;
+  NodeModel(NodeModel&&) = delete;
+  NodeModel& operator=(NodeModel&&) = delete;
+  NodeModel& operator=(const NodeModel&) = delete;
 
   Node& add_node(std::unique_ptr<Node> node);
   std::unique_ptr<Node> extract_node(Node& node);
-  std::set<Node*> nodes() const;
-  bool can_connect(const AbstractPort& a, const AbstractPort& b) const;
-  bool can_connect(const OutputPort& a, const InputPort& b) const;
+  [[nodiscard]] std::set<Node*> nodes() const;
+  [[nodiscard]] bool can_connect(const AbstractPort& a, const AbstractPort& b) const;
+  [[nodiscard]] bool can_connect(const OutputPort& a, const InputPort& b) const;
   using QObject::connect;
 
   void serialize(AbstractSerializer&, const Pointer&) const override;
@@ -44,10 +47,10 @@ public:
 
   bool find_path(const Node& start, const Node& end, std::list<const Node*>& path) const;
   bool find_path(std::list<const Node*>& path, const Node& end) const;
-  bool find_path(const Node& start, const Node& end) const;
-  bool types_compatible(const QString& from, const QString& to) const;
+  [[nodiscard]] bool find_path(const Node& start, const Node& end) const;
+  [[nodiscard]] bool types_compatible(const QString& from, const QString& to) const;
 
-  std::set<AbstractPort*> ports() const;
+  [[nodiscard]] std::set<AbstractPort*> ports() const;
   template<typename PortT> std::set<PortT*> ports() const
   {
     static const auto pred = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
@@ -55,16 +58,18 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), pred), conv);
   }
 
-  AbstractNodeCompiler::Language language() const
+  [[nodiscard]] AbstractNodeCompiler::Language language() const
   {
     return m_compiler->language;
   }
-  Scene& scene() const
+
+  [[nodiscard]] Scene& scene() const
   {
     return m_scene;
   }
-  AbstractNodeCompiler& compiler() const;
-  QString error() const
+
+  [[nodiscard]] AbstractNodeCompiler& compiler() const;
+  [[nodiscard]] QString error() const
   {
     return m_error;
   }
@@ -75,6 +80,11 @@ public:
   public:
     explicit TopologyChangeSignalBlocker(NodeModel& model);
     ~TopologyChangeSignalBlocker();
+    TopologyChangeSignalBlocker() = delete;
+    TopologyChangeSignalBlocker(const TopologyChangeSignalBlocker&) = delete;
+    TopologyChangeSignalBlocker(TopologyChangeSignalBlocker&&) = delete;
+    TopologyChangeSignalBlocker& operator=(const TopologyChangeSignalBlocker&) = delete;
+    TopologyChangeSignalBlocker& operator=(TopologyChangeSignalBlocker&&) = delete;
 
   private:
     NodeModel& m_model;
@@ -85,8 +95,8 @@ public Q_SLOTS:
 
 Q_SIGNALS:
   void topology_changed();
-  void node_added(Node&);
-  void node_removed(Node&);
+  void node_added(omm::Node&);
+  void node_removed(omm::Node&);
 
 public Q_SLOTS:
   void emit_topology_changed();

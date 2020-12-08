@@ -62,8 +62,9 @@ void ColorEdit::mouseDoubleClickEvent(QMouseEvent*)
 
 QColor ColorEdit::compute_contrast_color() const
 {
-  auto color = this->value();
-  if (color.components(Color::Model::HSVA)[2] > 0.5) {
+  static constexpr double LIGHTNESS_THRESHOLD = 0.5;
+  auto color = ColorEdit::value();
+  if (color.components(Color::Model::HSVA)[2] > LIGHTNESS_THRESHOLD) {
     return Qt::black;
   } else {
     return Qt::white;

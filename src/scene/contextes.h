@@ -22,6 +22,12 @@ public:
   // We need the virtual destructor.
   // Simplest solution: Have make the dtor of a base class virtual.
   virtual ~AbstractContext() = default;
+
+  explicit AbstractContext() = default;
+  AbstractContext(AbstractContext&&) = default;
+  AbstractContext(const AbstractContext&) = default;
+  AbstractContext& operator=(AbstractContext&&) = default;
+  AbstractContext& operator=(const AbstractContext&) = default;
 };
 
 template<typename T, template<typename...> class Wrapper> class ListContext : public AbstractContext
@@ -33,7 +39,7 @@ public:
   }
 
   Wrapper<T> subject;
-  T& get_subject() const
+  [[nodiscard]] T& get_subject() const
   {
     return subject;
   }
@@ -44,7 +50,7 @@ public:
    * @details the parent of `predecessor` must be `parent`.
    */
   const T* predecessor;
-  virtual bool is_sane() const
+  [[nodiscard]] virtual bool is_sane() const
   {
     return true;
   }
@@ -72,7 +78,7 @@ public:
    */
   std::reference_wrapper<T> parent;
 
-  bool is_sane() const override
+  [[nodiscard]] bool is_sane() const override
   {
     return this->predecessor == nullptr || &this->predecessor->tree_parent() == &this->parent.get();
   }
@@ -92,7 +98,7 @@ public:
    *    - subject and predecessor must be different objects
    *    - subject and parent must be different objects
    */
-  virtual bool is_valid() const = 0;
+  [[nodiscard]] virtual bool is_valid() const = 0;
 
   /**
    * @brief returns whether the context does produce illogical states or same state
@@ -108,7 +114,7 @@ protected:
     return this->predecessor == structure.predecessor(this->get_subject());
   }
 
-  bool subject_is_predecessor() const
+  [[nodiscard]] bool subject_is_predecessor() const
   {
     return this->predecessor == &this->get_subject();
   }
@@ -118,7 +124,7 @@ template<typename T> class TreeMoveContext : public MoveContext<T, TreeContext>
 {
 public:
   using MoveContext<T, TreeContext>::MoveContext;
-  bool is_valid() const override
+  [[nodiscard]] bool is_valid() const override
   {
     return !is_root() && !moves_into_itself() && !this->subject_is_predecessor();
   }
@@ -129,11 +135,11 @@ public:
   }
 
 private:
-  bool is_root() const
+  [[nodiscard]] bool is_root() const
   {
     return this->get_subject().is_root();
   }
-  bool moves_into_itself() const
+  [[nodiscard]] bool moves_into_itself() const
   {
     // subject cannot become its own parent (illogical)
     return &this->parent.get() == &this->get_subject();
@@ -153,7 +159,7 @@ template<typename T> class ListMoveContext : public MoveContext<T, ListContext>
 {
 public:
   using MoveContext<T, ListContext>::MoveContext;
-  bool is_valid() const override
+  [[nodiscard]] bool is_valid() const override
   {
     return !this->subject_is_predecessor();
   }
@@ -164,7 +170,7 @@ public:
   }
 
 private:
-  bool is_root() const
+  [[nodiscard]] bool is_root() const
   {
     return this->get_subject().is_root();
   }
@@ -218,7 +224,7 @@ template<typename StructureT> const auto* last_sibling(const StructureT& s)
     }
   };
   const auto siblings = get_siblings();
-  return siblings.size() == 0 ? nullptr : siblings.back();
+  return siblings.empty() ? nullptr : siblings.back();
 }
 
 }  // namespace

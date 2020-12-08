@@ -23,7 +23,7 @@ class ComboBox : public QWidget
 public:
   explicit ComboBox(QWidget* widget = nullptr);
   void set_model(QAbstractItemModel& model);
-  const QComboBox* view() const
+  [[nodiscard]] const QComboBox* view() const
   {
     return m_combo_box;
   }
@@ -36,7 +36,7 @@ Q_SIGNALS:
   void current_index_changed(int index);
 
 private:
-  QAbstractItemModel* m_model;
+  QAbstractItemModel* m_model = nullptr;
   QComboBox* m_combo_box;
 
 private Q_SLOTS:

@@ -36,6 +36,10 @@ protected:
 
 public:
   ~AbstractPropertyOwner() override;
+  AbstractPropertyOwner(AbstractPropertyOwner&&) = delete;
+  AbstractPropertyOwner& operator=(const AbstractPropertyOwner&) = delete;
+  AbstractPropertyOwner& operator=(AbstractPropertyOwner&&) = delete;
+
   Property* property(const QString& key) const;
   bool has_property(const QString& key) const;
   template<typename ValueT> bool has_property(const QString& key) const
@@ -95,7 +99,7 @@ public:
   void new_id() const;
 
 protected Q_SLOTS:
-  virtual void on_property_value_changed(Property* property)
+  virtual void on_property_value_changed(omm::Property* property)
   {
     Q_UNUSED(property);
   }

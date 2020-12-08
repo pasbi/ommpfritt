@@ -29,8 +29,8 @@ namespace
 {
 QItemSelectionModel::SelectionFlag get_selection_flag(const QMouseEvent& event)
 {
-  return (event.modifiers() & Qt::ControlModifier) ? QItemSelectionModel::Deselect
-                                                   : QItemSelectionModel::Select;
+  return ((event.modifiers() & Qt::ControlModifier) != 0u) ? QItemSelectionModel::Deselect
+                                                           : QItemSelectionModel::Select;
 }
 
 }  // namespace
@@ -44,6 +44,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
       m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model, 2)),
       m_model(model)
 {
+  static constexpr int AUTO_EXPAND_DELAY_MS = 200;
   setItemDelegateForColumn(1, m_object_quick_access_delegate.get());
   header()->setSectionResizeMode(1, QHeaderView::Fixed);
   header()->resizeSection(1, row_height);
@@ -52,7 +53,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
 
   setSelectionModel(m_selection_model.get());
   setSelectionBehavior(QAbstractItemView::SelectItems);
-  setAutoExpandDelay(200);
+  setAutoExpandDelay(AUTO_EXPAND_DELAY_MS);
 
   setIconSize(QSize(row_height, row_height));
   connect(&model, &ObjectTree::expand_item, [this](const QModelIndex& index) {
@@ -74,8 +75,8 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
 
   update_tag_column_size();
 
-  auto object_delegate
-      = std::make_unique<ObjectDelegate>(*this, *m_selection_model, *ItemProxyView::model());
+  auto& ipv_model = *ItemProxyView::model();  // clazy:exclude=skipped-base-method
+  auto object_delegate = std::make_unique<ObjectDelegate>(*this, *m_selection_model, ipv_model);
   m_object_delegate = object_delegate.get();
   setItemDelegateForColumn(0, object_delegate.release());
 }
@@ -161,11 +162,13 @@ void ObjectTreeView::mouseReleaseEvent(QMouseEvent* e)
   if (m_rubberband_visible && !m_aborted) {
     m_rubberband_visible = false;
     const auto flag = get_selection_flag(*e);
-    for (const QModelIndex& index : indices(rubber_band())) {
+    const auto rubber_band_indices = indices(rubber_band());
+    for (const QModelIndex& index : rubber_band_indices) {
       selectionModel()->select(index, flag);
     }
     m_object_delegate->tmp_selection.clear();
-    for (const QModelIndex& index : indices(viewport()->rect())) {
+    const auto viewport_indices = indices(viewport()->rect());
+    for (const QModelIndex& index : viewport_indices) {
       for (Tag* tag : m_tags_item_delegate->tags(index, rubber_band())) {
         m_selection_model->select(*tag, flag);
       }
@@ -246,10 +249,10 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
     case ObjectTree::TAGS_COLUMN:
       if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
         const auto left_button = e->buttons() & Qt::LeftButton;
-        if (left_button) {
+        if (left_button != 0u) {
           const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
           const auto st_apo = down_cast(selected_tags);
-          if (selected_tags.size() > 0) {
+          if (!selected_tags.empty()) {
             auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
             auto drag = std::make_unique<QDrag>(this);
             drag->setMimeData(mime_data.release());
@@ -275,7 +278,7 @@ void ObjectTreeView::update_tag_column_size()
 {
   const auto n_tags = m_model.max_number_of_tags_on_object();
   const auto tags_width = m_tags_item_delegate->tag_icon_size().width();
-  setColumnWidth(ObjectTree::TAGS_COLUMN, n_tags * tags_width);
+  setColumnWidth(ObjectTree::TAGS_COLUMN, static_cast<int>(n_tags * tags_width));
 }
 
 Scene& ObjectTreeView::scene() const

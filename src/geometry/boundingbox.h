@@ -19,7 +19,7 @@ public:
   explicit BoundingBox(const std::set<Point>& points);
   explicit BoundingBox(const std::set<BoundingBox>& bbs);
 
-  bool contains(const BoundingBox& other) const;
+  [[nodiscard]] bool contains(const BoundingBox& other) const;
   using Rectangle::contains;
 
   BoundingBox& operator|=(const BoundingBox& other);

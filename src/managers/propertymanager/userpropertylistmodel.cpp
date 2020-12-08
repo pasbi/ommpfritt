@@ -65,7 +65,7 @@ bool UserPropertyListModel::setData(const QModelIndex& index, const QVariant& da
   assert(index.column() == 0);
   assert(!index.parent().isValid());
   if (role == Qt::EditRole) {
-    m_items.at(index.row()).configuration["label"] = data.toString();
+    m_items.at(index.row()).configuration.set("label", data.toString());
     Q_EMIT dataChanged(index, index, {Qt::DisplayRole});
     return true;
   }
@@ -93,7 +93,7 @@ void UserPropertyListModel::add_property(const QString& type)
   const int row = m_items.size();
   beginInsertRows(QModelIndex(), row, row);
   UserPropertyListItem item;
-  item.configuration["type"] = type;
+  item.configuration.set("type", type);
   m_items.push_back(item);
   endInsertRows();
 }
@@ -129,7 +129,7 @@ QString UserPropertyListItem::type() const
 {
   if (property() == nullptr) {
     // if property is null, then there must be a string-typed "type" item in configuration.
-    return *std::get_if<QString>(&configuration.at("type"));
+    return *std::get_if<QString>(&configuration.get("type"));
   } else {
     return property()->type();
   }

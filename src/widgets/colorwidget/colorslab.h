@@ -15,7 +15,7 @@ public:
   void set_new_color(const Color& color);
 
 protected:
-  void paintEvent(QPaintEvent*);
+  void paintEvent(QPaintEvent*) override;
 
 private:
   Color m_old_color;

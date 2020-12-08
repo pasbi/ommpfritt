@@ -15,7 +15,11 @@ class Preferences : public QObject
   Q_OBJECT
 public:
   Preferences();
-  ~Preferences();
+  ~Preferences() override;
+  Preferences(Preferences&&) = delete;
+  Preferences(const Preferences&) = delete;
+  Preferences& operator=(Preferences&&) = delete;
+  Preferences& operator=(const Preferences&) = delete;
 
   struct MouseModifier {
     MouseModifier(const QString& label,
@@ -39,7 +43,8 @@ public:
   std::map<QString, MouseModifier> mouse_modifiers;
   std::map<QString, GridOption> grid_options;
 
-  bool match(const QString& key, const QMouseEvent& event, bool check_modifiers) const;
+  [[nodiscard]] bool
+  match(const QString& key, const QMouseEvent& event, bool check_modifiers) const;
 };
 
 }  // namespace omm

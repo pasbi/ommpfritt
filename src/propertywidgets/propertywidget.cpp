@@ -26,9 +26,10 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
   update_enabledness();
 }
 
-void AbstractPropertyWidget::on_property_value_changed(Property*)
+void AbstractPropertyWidget::on_property_value_changed(Property*) const
 {
   // wait until other properties have updated (important for MultiValueEdit)
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(1, this, &AbstractPropertyWidget::update_edit);
 }
 
@@ -74,10 +75,10 @@ void AbstractPropertyWidget::LabelLayout::remove_old_thing()
     QLayoutItem* item = itemAt(1);
     if (QLayout* layout = item->layout(); layout != nullptr) {
       removeItem(layout);
-      delete layout;
+      delete layout;  // NOLINT(cppcoreguidelines-owning-memory)
     } else if (QWidget* widget = item->widget(); widget != nullptr) {
       removeWidget(widget);
-      delete widget;
+      delete widget;  // NOLINT(cppcoreguidelines-owning-memory)
     }
   }
 }

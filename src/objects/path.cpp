@@ -33,7 +33,7 @@ Path::Path(Scene* scene) : Object(scene)
       .set_options({QObject::tr("linear"), QObject::tr("smooth"), QObject::tr("bezier")})
       .set_label(QObject::tr("interpolation"))
       .set_category(category);
-  update();
+  Path::update();
 }
 
 QString Path::type() const
@@ -48,7 +48,7 @@ void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
   const auto subpath_ptr = make_pointer(root, SUBPATH_POINTER);
   serializer.start_array(segments.size(), subpath_ptr);
   for (std::size_t i = 0; i < segments.size(); ++i) {
-    if (segments.size() == 0) {
+    if (segments.empty()) {
       LWARNING << "Ignoring empty sub-path.";
     } else {
       const auto pts_ptr = make_pointer(subpath_ptr, i);
@@ -78,7 +78,7 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
     if (n_points == 0) {
       throw AbstractDeserializer::DeserializeError("Empty sub-paths are not allowed.");
     }
-    segments.push_back({});
+    segments.emplace_back();
     for (size_t j = 0; j < n_points; ++j) {
       Point p;
       p.deserialize(deserializer, make_pointer(pts_ptr, j));
@@ -207,7 +207,8 @@ template<typename PathRef> Path::Iterator<PathRef>& Path::Iterator<PathRef>::ope
 Point Path::smoothen_point(const Path::Segment& segment, bool is_closed, std::size_t i)
 {
   const std::size_t n = segment.size();
-  Vec2f left, right;
+  Vec2f left;
+  Vec2f right;
   if (i == 0) {
     left = is_closed ? segment[n - 1].position : segment[0].position;
     right = segment[1].position;
@@ -218,10 +219,10 @@ Point Path::smoothen_point(const Path::Segment& segment, bool is_closed, std::si
     left = segment[i - 1].position;
     right = segment[i + 1].position;
   }
-  const Vec2f d = left - right;
   auto copy = segment[i];
-  copy.right_tangent = PolarCoordinates(-d / 6.0);
-  copy.left_tangent = PolarCoordinates(d / 6.0);
+  const Vec2f d = (left - right) / 6.0;
+  copy.right_tangent = PolarCoordinates(-d);
+  copy.left_tangent = PolarCoordinates(d);
   return copy;
 }
 

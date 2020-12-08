@@ -16,7 +16,7 @@ public:
   {
   }
 
-  bool contains_global(const Vec2f& point) const override
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override
   {
     const Vec2f global_point = tool.transformation().inverted().apply_to_position(point);
     Vec2f v = project_onto_axis(global_point);
@@ -31,10 +31,11 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == HandleStatus::Active) {
+      static constexpr double STEP = 10.0;
       const auto inv_tool_transformation = tool.transformation().inverted();
       auto total_delta = inv_tool_transformation.apply_to_direction(pos - press_pos());
       total_delta = project_onto_axis(total_delta);
-      total_delta = discretize(total_delta, true, 10.0);
+      total_delta = discretize(total_delta, true, STEP);
       {
         auto transformation = omm::ObjectTransformation().translated(total_delta);
         transformation = transformation.transformed(inv_tool_transformation);
@@ -84,7 +85,7 @@ public:
 private:
   const Vec2f m_direction;
 
-  Vec2f project_onto_axis(const Vec2f& vec) const
+  [[nodiscard]] Vec2f project_onto_axis(const Vec2f& vec) const
   {
     const Vec2f s = m_direction;
 

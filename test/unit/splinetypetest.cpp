@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "splinetype.h"
+#include "gtest/gtest.h"
 
 TEST(SplineTypeTest, insert)
 {
@@ -46,13 +46,13 @@ TEST(SplineTypeTest, value)
   const omm::SplineType ease_down(omm::SplineType::Initialization::Ease, true);
   const omm::SplineType valley(omm::SplineType::Initialization::Valley, false);
   const omm::SplineType mountain(omm::SplineType::Initialization::Valley, true);
-  const omm::SplineType center({{ 0.5, omm::SplineType::Knot(0.7, 0.0, 0.0) }});
-  const omm::SplineType left({{ 0.0, omm::SplineType::Knot(0.7, 0.0, 0.0) }});
-  const omm::SplineType right({{ 1.0, omm::SplineType::Knot(0.7, 0.0, 0.0) }});
+  const omm::SplineType center({{0.5, omm::SplineType::Knot(0.7, 0.0, 0.0)}});
+  const omm::SplineType left({{0.0, omm::SplineType::Knot(0.7, 0.0, 0.0)}});
+  const omm::SplineType right({{1.0, omm::SplineType::Knot(0.7, 0.0, 0.0)}});
   const omm::SplineType empty;
 
-  const std::set<const omm::SplineType*> rot_symmetric { &up, &down, &ease_up, &ease_down };
-  const std::set<const omm::SplineType*> flip_symmetric { &valley, &mountain };
+  const std::set<const omm::SplineType*> rot_symmetric{&up, &down, &ease_up, &ease_down};
+  const std::set<const omm::SplineType*> flip_symmetric{&valley, &mountain};
 
   static constexpr double abs_eps = 0.0001;
 
@@ -82,18 +82,18 @@ TEST(SplineTypeTest, value)
   for (std::size_t i = 0; i <= n; ++i) {
     double t = static_cast<double>(i) / static_cast<double>(n);
     for (const auto* s : rot_symmetric) {
-      EXPECT_NEAR(s->evaluate(t).value(), 1.0 - s->evaluate(1.0-t).value(), abs_eps);
-      EXPECT_NEAR(s->evaluate(t).derivative(), s->evaluate(1.0-t).derivative(), abs_eps);
+      EXPECT_NEAR(s->evaluate(t).value(), 1.0 - s->evaluate(1.0 - t).value(), abs_eps);
+      EXPECT_NEAR(s->evaluate(t).derivative(), s->evaluate(1.0 - t).derivative(), abs_eps);
     }
     for (const auto* s : flip_symmetric) {
-      EXPECT_NEAR(s->evaluate(t).value(), s->evaluate(1.0-t).value(), abs_eps);
-      EXPECT_NEAR(s->evaluate(t).derivative(), -s->evaluate(1.0-t).derivative(), abs_eps);
+      EXPECT_NEAR(s->evaluate(t).value(), s->evaluate(1.0 - t).value(), abs_eps);
+      EXPECT_NEAR(s->evaluate(t).derivative(), -s->evaluate(1.0 - t).derivative(), abs_eps);
     }
 
     EXPECT_NEAR(up.evaluate(t).value(), t, abs_eps);
     EXPECT_NEAR(up.evaluate(t).derivative(), 1.0, abs_eps);
 
-    EXPECT_NEAR(down.evaluate(t).value(), 1.0-t, abs_eps);
+    EXPECT_NEAR(down.evaluate(t).value(), 1.0 - t, abs_eps);
     EXPECT_NEAR(down.evaluate(t).derivative(), -1.0, abs_eps);
 
     EXPECT_NEAR(center.evaluate(t).value(), 0.7, abs_eps);
@@ -109,4 +109,3 @@ TEST(SplineTypeTest, value)
     EXPECT_NEAR(empty.evaluate(t).derivative(), 0.0, abs_eps);
   }
 }
-

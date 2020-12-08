@@ -45,13 +45,10 @@ NodeManager::NodeManager(Scene& scene)
   widget->setContextMenuPolicy(Qt::NoContextMenu);
   set_widget(std::move(widget));
 
-  connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &NodeManager::set_selection);
+  connect(&scene.mail_box(), &MailBox::selection_changed, this, &NodeManager::set_selection);
   connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed, [this](const auto& apo) {
-    const auto nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
-    const auto node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
+    const auto* nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
+    const auto* node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
     if (node_model == m_ui->nodeview->model()) {
       set_model(nullptr);
     }
@@ -60,9 +57,7 @@ NodeManager::NodeManager(Scene& scene)
   setTitleBarWidget(std::make_unique<NodeManagerTitleBar>(*this).release());
 }
 
-NodeManager::~NodeManager()
-{
-}
+NodeManager::~NodeManager() = default;
 
 QString NodeManager::type() const
 {
@@ -187,7 +182,7 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
       for (const QString& type : types) {
         const QString label = QApplication::translate("Property", type.toStdString().c_str());
         auto action = std::make_unique<QAction>(label);
-        connect(action.get(), &QAction::triggered, [type, model, label, this]() {
+        connect(action.get(), &QAction::triggered, model, [type, model, label, this]() {
           auto node = std::make_unique<ConstantNode>(*model);
           auto property = Property::make(type);
           property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);

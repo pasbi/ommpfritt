@@ -19,9 +19,10 @@ NodeScene::NodeScene(Scene& scene) : scene(scene)
           &MailBox::property_value_changed,
           this,
           [this](AbstractPropertyOwner& owner, const QString&, Property&) {
-            if (Node* node = kind_cast<Node*>(&owner);
-                node != nullptr && &node->model() == m_model) {
-              QTimer::singleShot(0, [this]() { update(); });
+            const Node* const node = kind_cast<Node*>(&owner);
+            // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
+            if (node != nullptr && &node->model() == m_model) {
+              QTimer::singleShot(0, this, [this]() { update(); });
             }
           });
 }
@@ -40,7 +41,7 @@ void NodeScene::set_model(NodeModel* model)
   }
   m_scene_model_connections.clear();
   m_model = model;
-  if (m_model) {
+  if (m_model != nullptr) {
     m_scene_model_connections = {
         connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),
         connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),

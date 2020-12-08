@@ -9,7 +9,7 @@
 
 namespace
 {
-static constexpr QSize animation_button_size(28, 28);
+constexpr QSize animation_button_size(28, 28);
 
 auto make_header(const QString& text)
 {
@@ -38,7 +38,8 @@ PropertyManagerTab::PropertyManagerTab(const QString& title)
 {
   auto layout = std::make_unique<QVBoxLayout>();
   m_layout = layout.get();
-  m_layout->setSpacing(6);
+  static constexpr int ITEM_SPACING = 6;
+  m_layout->setSpacing(ITEM_SPACING);
   m_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout.release());
 
@@ -47,16 +48,14 @@ PropertyManagerTab::PropertyManagerTab(const QString& title)
   m_layout->addWidget(header.release());
 }
 
-PropertyManagerTab::~PropertyManagerTab()
-{
-}
+PropertyManagerTab::~PropertyManagerTab() = default;
 
 void PropertyManagerTab::add_properties(
     Scene& scene,
     const QString& key,
     const std::map<AbstractPropertyOwner*, Property*>& property_map)
 {
-  assert(property_map.size() > 0);
+  assert(!property_map.empty());
   const auto properties = ::transform<Property*, std::set>(property_map, [](const auto& pair) {
     return pair.second;
   });

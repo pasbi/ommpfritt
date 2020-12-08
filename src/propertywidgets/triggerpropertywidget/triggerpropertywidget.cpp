@@ -17,7 +17,7 @@ TriggerPropertyWidget::TriggerPropertyWidget(Scene& scene, const std::set<Proper
 void TriggerPropertyWidget::trigger()
 {
   for (Property* p : properties()) {
-    static_cast<TriggerProperty&>(*p).trigger();
+    dynamic_cast<TriggerProperty&>(*p).trigger();
   }
 }
 

@@ -11,16 +11,21 @@ namespace omm
 {
 void FontProperties::make_properties(const QString& category) const
 {
+  static constexpr double DEFAULT_FONT_SIZE = 12.0;
+  static constexpr double MIN_FONT_SIZE = 0.1;
+  static constexpr double MAX_FONT_SIZE = 100.0;
+  static constexpr int MAX_FONT_WEIGHT = 99;
+  static constexpr double MAX_WORD_SPACING = 100.0;
   create_property<StringProperty>(FONT_PROPERTY_KEY, "Arial")
       .set_mode(StringProperty::Mode::Font)
       .set_label(QObject::tr("Font"))
       .set_category(category);
-  create_property<FloatProperty>(SIZE_PROPERTY_KEY, 12)
-      .set_range(0.1, 100)
+  create_property<FloatProperty>(SIZE_PROPERTY_KEY, DEFAULT_FONT_SIZE)
+      .set_range(MIN_FONT_SIZE, MAX_FONT_SIZE)
       .set_label(QObject::tr("Size"))
       .set_category(category);
   create_property<IntegerProperty>(WEIGHT_PROPERTY_KEY)
-      .set_range(0, 99)
+      .set_range(0, MAX_FONT_WEIGHT)
       .set_label(QObject::tr("Weight"))
       .set_category(category);
   create_property<BoolProperty>(ITALIC_PROPERTY_KEY)
@@ -57,7 +62,7 @@ void FontProperties::make_properties(const QString& category) const
       .set_label(QObject::tr("Letter spacing"))
       .set_category(category);
   create_property<FloatProperty>(WORD_SPACING_PROPERTY_KEY)
-      .set_range(0.0, 100.0)
+      .set_range(0.0, MAX_WORD_SPACING)
       .set_label(QObject::tr("Word spacing"))
       .set_category(category);
 }

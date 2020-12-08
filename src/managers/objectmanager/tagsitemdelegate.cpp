@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include <QPainter>
+#include <cmath>
 
 #include "mainwindow/application.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
@@ -34,7 +35,7 @@ void TagsItemDelegate::paint(QPainter* painter,
   const auto& object = m_view.model()->item_at(index);
 
   for (size_t i = 0; i < object.tags.size(); ++i) {
-    const QRect tag_rect = this->tag_rect(pos, i);
+    const QRect tag_rect = TagsItemDelegate::tag_rect(pos, i);
     auto& tag = object.tags.item(i);
     painter->setClipRect(tag_rect);
     const QIcon icon = Application::instance().icon_provider.icon(tag);
@@ -79,9 +80,9 @@ bool TagsItemDelegate::editorEvent(QEvent* event,
 {
   switch (event->type()) {
   case QEvent::MouseButtonPress:
-    return on_mouse_button_press(*static_cast<QMouseEvent*>(event));
+    return on_mouse_button_press(*dynamic_cast<QMouseEvent*>(event));
   case QEvent::MouseButtonRelease:
-    return on_mouse_button_release(*static_cast<QMouseEvent*>(event));
+    return on_mouse_button_release(*dynamic_cast<QMouseEvent*>(event));
   default:
     return false;
   }
@@ -97,9 +98,9 @@ bool TagsItemDelegate::on_mouse_button_press(QMouseEvent& event)
   switch (event.button()) {
   case Qt::LeftButton:
     if (!is_selected) {
-      if (event.modifiers() & Qt::ControlModifier) {
+      if ((event.modifiers() & Qt::ControlModifier) != 0u) {
         m_selection_model.select(*tag, QItemSelectionModel::Select);
-      } else if (event.modifiers() & Qt::ShiftModifier) {
+      } else if ((event.modifiers() & Qt::ShiftModifier) != 0u) {
         m_selection_model.extend_selection(*tag);
       } else {
         m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
@@ -137,7 +138,7 @@ bool TagsItemDelegate::on_mouse_button_release(QMouseEvent& event)
     m_fragile_selection = false;
     return false;
   }
-  if (event.modifiers() & Qt::ControlModifier) {
+  if ((event.modifiers() & Qt::ControlModifier) != 0u) {
     m_selection_model.select(*tag, QItemSelectionModel::Toggle);
   } else {
     m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
@@ -186,20 +187,20 @@ Tag* TagsItemDelegate::tag_before(const QModelIndex& index, QPoint pos) const
 
   Object& object = m_view.model()->item_at(index);
   auto tags = object.tags.ordered_items();
-  const int x = int(double(pos.x()) / advance() + 0.5) - 1;
-  if (x < 0 || tags.size() == 0) {
+  const int x = static_cast<int>(std::lround(pos.x() / advance()) - 1);
+  if (x < 0 || tags.empty()) {
     return nullptr;
   } else {
     return tags.at(std::min(tags.size() - 1, static_cast<std::size_t>(x)));
   }
 }
 
-QSize TagsItemDelegate::tag_icon_size() const
+QSize TagsItemDelegate::tag_icon_size()
 {
   return QSize(ObjectTreeView::row_height, ObjectTreeView::row_height);
 }
 
-int TagsItemDelegate::advance() const
+int TagsItemDelegate::advance()
 {
   return tag_icon_size().width();
 }
@@ -217,9 +218,9 @@ std::set<Tag*> TagsItemDelegate::tags(const QModelIndex& index, const QRect& rec
   return tags;
 }
 
-QRect TagsItemDelegate::tag_rect(const QPoint& base, std::size_t i) const
+QRect TagsItemDelegate::tag_rect(const QPoint& base, std::size_t i)
 {
-  return QRect(base + QPoint(i * advance(), 0), tag_icon_size());
+  return QRect(base + QPoint(static_cast<int>(i * advance()), 0), tag_icon_size());
 }
 
 }  // namespace omm

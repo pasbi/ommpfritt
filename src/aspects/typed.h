@@ -11,7 +11,11 @@ protected:
 
 public:
   virtual ~Typed() = default;
-  virtual QString type() const = 0;
+  Typed(Typed&&) = default;
+  Typed(const Typed&) = default;
+  Typed& operator=(Typed&&) = default;
+  Typed& operator=(const Typed&) = default;
+  [[nodiscard]] virtual QString type() const = 0;
 };
 
 }  // namespace omm

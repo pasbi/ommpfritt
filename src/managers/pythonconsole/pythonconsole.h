@@ -17,10 +17,14 @@ class PythonConsole : public Manager
   Q_OBJECT
 public:
   explicit PythonConsole(Scene& scene);
-  ~PythonConsole();
+  ~PythonConsole() override;
+  PythonConsole(PythonConsole&&) = delete;
+  PythonConsole(const PythonConsole&) = delete;
+  PythonConsole& operator=(PythonConsole&&) = delete;
+  PythonConsole& operator=(const PythonConsole&) = delete;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
-  QString type() const override;
+  [[nodiscard]] QString type() const override;
   bool perform_action(const QString& name) override;
 
 protected:
@@ -46,7 +50,7 @@ private:
   static constexpr Qt::KeyboardModifiers caption_modifiers = Qt::ControlModifier;
 
 private Q_SLOTS:
-  void on_output(const void* associated_item, QString content, Stream stream);
+  void on_output(const void* associated_item, const QString& text, const Stream& stream);
 
 private:
   // allocation on stack issues strange compiler warnings

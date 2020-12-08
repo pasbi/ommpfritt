@@ -23,12 +23,12 @@ public:
   {
   }
 
-  Property* property() const
+  [[nodiscard]] Property* property() const
   {
     return m_get_property();
   }
 
-  QString label() const override
+  [[nodiscard]] QString label() const override
   {
     if (Property* property = this->property(); property == nullptr) {
       return QObject::tr("undefined");
@@ -37,7 +37,7 @@ public:
     }
   }
 
-  QString data_type() const override;
+  [[nodiscard]] QString data_type() const override;
 
 private:
   const std::function<Property*()> m_get_property;

@@ -16,7 +16,7 @@
 namespace omm
 {
 ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
-    : QComboBox(parent), m_filter(ReferenceProperty::Filter::accept_anything())
+    : QComboBox(parent), m_filter(PropertyFilter::accept_anything())
 {
   setEditable(true);
   setAcceptDrops(true);
@@ -26,6 +26,8 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
     QTimer::singleShot(1, this, &ReferenceLineEdit::convert_text_to_placeholder_text);
   };
   connect(this, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), set_value);
+
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(1, this, &ReferenceLineEdit::convert_text_to_placeholder_text);
 
   lineEdit()->installEventFilter(this);
@@ -73,6 +75,7 @@ void ReferenceLineEdit::set_scene(Scene& scene)
             }
           });
 
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(0, this, &ReferenceLineEdit::update_candidates);
   update_candidates();
 }
@@ -84,8 +87,8 @@ void ReferenceLineEdit::update_candidates()
     QSignalBlocker blocker(this);
     AbstractPropertyOwner* const value_safe = currentIndex() < 0 ? nullptr : value();
     clear();
-    for (auto candidate : m_possible_references) {
-      if (candidate) {
+    for (const auto* candidate : m_possible_references) {
+      if (candidate != nullptr) {
         addItem(candidate->name());
       } else {
         addItem(m_null_label);
@@ -130,7 +133,7 @@ ReferenceLineEdit::value_type ReferenceLineEdit::value() const
   return m_value;
 }
 
-void ReferenceLineEdit::set_filter(const ReferenceProperty::Filter& filter)
+void ReferenceLineEdit::set_filter(const PropertyFilter& filter)
 {
   if (m_filter != filter) {
     m_filter = filter;
@@ -148,9 +151,9 @@ bool ReferenceLineEdit::eventFilter(QObject* o, QEvent* e)
   if (o == this || o == lineEdit()) {
     switch (e->type()) {
     case QEvent::Drop:
-      return drop(static_cast<QDropEvent&>(*e));
+      return drop(dynamic_cast<QDropEvent&>(*e));
     case QEvent::DragEnter:
-      return drag_enter(static_cast<QDragEnterEvent&>(*e));
+      return drag_enter(dynamic_cast<QDragEnterEvent&>(*e));
     case QEvent::DragMove:
       e->accept();
       return true;
@@ -181,7 +184,7 @@ bool ReferenceLineEdit::drop(QDropEvent& event)
     const auto items
         = ::filter_if(property_owner_mime_data.items(),
                       [this](const AbstractPropertyOwner* apo) { return m_filter.accepts(*apo); });
-    assert(items.size() > 0);
+    assert(!items.empty());
     set_value(items.front());
     return true;
   } else {
@@ -196,7 +199,7 @@ bool ReferenceLineEdit::can_drop(const QDropEvent& event) const
   if (event.dropAction() != Qt::LinkAction) {
     return false;
   } else if (mime_data.hasFormat(PropertyOwnerMimeData::MIME_TYPE)) {
-    const auto property_owner_mime_data = qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
+    const auto* property_owner_mime_data = qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
     if (property_owner_mime_data != nullptr) {
       const auto items = property_owner_mime_data->items();
       return items.size() == 1 && m_filter.accepts(*items.front());

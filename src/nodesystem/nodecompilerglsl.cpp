@@ -11,14 +11,12 @@
 
 namespace
 {
-static constexpr auto output_variable_name = "out_color";
+constexpr auto output_variable_name = "out_color";
 
 QString format_connection(const omm::AbstractPort& lhs, const omm::AbstractPort& rhs)
 {
   return QString("%1 %2 = %3;")
-      .arg(omm::NodeCompilerGLSL::translate_type(lhs.data_type()))
-      .arg(lhs.uuid())
-      .arg(rhs.uuid());
+      .arg(omm::NodeCompilerGLSL::translate_type(lhs.data_type()), lhs.uuid(), rhs.uuid());
 }
 
 omm::AbstractPort* get_sibling(const omm::AbstractPort* port)
@@ -28,8 +26,8 @@ omm::AbstractPort* get_sibling(const omm::AbstractPort* port)
   }
   static const auto get_property = [](const omm::AbstractPort* port) {
     return port->port_type == omm::PortType::Input
-               ? static_cast<const omm::PropertyInputPort*>(port)->property()
-               : static_cast<const omm::PropertyOutputPort*>(port)->property();
+               ? dynamic_cast<const omm::PropertyInputPort*>(port)->property()
+               : dynamic_cast<const omm::PropertyOutputPort*>(port)->property();
   };
   const omm::Property* property = get_property(port);
   for (omm::AbstractPort* candidate : port->node.ports()) {
@@ -89,9 +87,9 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   };
   for (const auto& shader_input : OffscreenRenderer::fragment_shader_inputs) {
     lines.append(QString("%1 %2 %3;")
-                     .arg(input_kind_identifier_map.at(shader_input.kind))
-                     .arg(translate_type(shader_input.type))
-                     .arg(shader_input.name));
+                     .arg(input_kind_identifier_map.at(shader_input.kind),
+                          translate_type(shader_input.type),
+                          shader_input.name));
   }
   lines.append(QString("out vec4 %1;").arg(output_variable_name));
 
@@ -109,20 +107,19 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   for (InputPort* port : model().ports<InputPort>()) {
     // only property ports can be uniform
     if (port->flavor == omm::PortFlavor::Property) {
-      PropertyInputPort* ip = static_cast<PropertyInputPort*>(port);
+      auto* ip = dynamic_cast<PropertyInputPort*>(port);
       if (!ip->is_connected() && get_sibling(port) == nullptr) {
         m_uniform_ports.insert(port);
       }
     }
   }
   for (AbstractPort* port : m_uniform_ports) {
-    lines.push_back(
-        QString("uniform %1 %2;").arg(translate_type(port->data_type())).arg(port->uuid()));
+    lines.push_back(QString("uniform %1 %2;").arg(translate_type(port->data_type()), port->uuid()));
   }
   return "";
 }
 
-QString NodeCompilerGLSL::start_program(QStringList& lines) const
+QString NodeCompilerGLSL::start_program(QStringList& lines)
 {
   lines.append("void main() {");
   return "";
@@ -130,23 +127,22 @@ QString NodeCompilerGLSL::start_program(QStringList& lines) const
 
 QString NodeCompilerGLSL::end_program(QStringList& lines) const
 {
-  if (const auto nodes = model().nodes(); nodes.size() > 0) {
+  if (const auto nodes = model().nodes(); !nodes.empty()) {
     const auto fragment_nodes
         = ::filter_if(nodes, [](const Node* node) { return node->type() == FragmentNode::TYPE; });
 
     if (fragment_nodes.size() != 1) {
-      const QString msg
+      QString msg
           = QString("expected exactly one fragment node but found %1.").arg(fragment_nodes.size());
       LWARNING << msg;
       return msg;
     } else {
-      const auto* fragment_node = static_cast<const FragmentNode*>(*fragment_nodes.begin());
+      const auto* fragment_node = dynamic_cast<const FragmentNode*>(*fragment_nodes.begin());
       const auto& port = fragment_node->input_port();
       if (port.is_connected()) {
         const QString alpha = QString("clamp(%1.a, 0.0, 1.0)").arg(port.uuid());
         const QString rgb = QString("clamp(%2.rgb, vec3(0.0), vec3(1.0))").arg(port.uuid());
-        lines.push_back(
-            QString("%1 = vec4(%2 * %3, %2);").arg(output_variable_name).arg(alpha).arg(rgb));
+        lines.push_back(QString("%1 = vec4(%2 * %3, %2);").arg(output_variable_name, alpha, rgb));
       }
     }
   }
@@ -156,7 +152,7 @@ QString NodeCompilerGLSL::end_program(QStringList& lines) const
   return "";
 }
 
-QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) const
+QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines)
 {
   static const auto sort_ports = [](const auto& ports) {
     using PortT = std::decay_t<typename std::decay_t<decltype(ports)>::value_type>;
@@ -186,20 +182,17 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
     std::size_t i = 0;
     for (OutputPort* port : sort_ports(ordinary_output_ports)) {
       if (const Node& node = port->node; node.type() == VertexNode::TYPE) {
-        const auto& vertex_node = static_cast<const VertexNode&>(node);
-        const auto ports = vertex_node.shader_inputs();
+        const auto& vertex_node = dynamic_cast<const VertexNode&>(node);
+        const auto& ports = vertex_node.shader_inputs();
         const auto it = std::find(ports.begin(), ports.end(), port);
         if (it != ports.end()) {
-          lines.push_back(QString("%1 %2 = %3;")
-                              .arg(translate_type(port->data_type()))
-                              .arg(port->uuid())
-                              .arg(it->input_info.name));
+          lines.push_back(
+              QString("%1 %2 = %3;")
+                  .arg(translate_type(port->data_type()), port->uuid(), it->input_info.name));
         }
       } else {
         lines.push_back(QString("%1 %2 = %3_%4(%5);")
-                            .arg(translate_type(port->data_type()))
-                            .arg(port->uuid())
-                            .arg(node.type())
+                            .arg(translate_type(port->data_type()), port->uuid(), node.type())
                             .arg(i)
                             .arg(args.join(", ")));
       }
@@ -226,9 +219,8 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
   return "";
 }
 
-QString NodeCompilerGLSL::compile_connection(const OutputPort& op,
-                                             const InputPort& ip,
-                                             QStringList& lines) const
+QString
+NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines)
 {
   lines.append(format_connection(ip, op));
   return "";

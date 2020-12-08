@@ -18,7 +18,7 @@ class MultiTabBar : public QWidget
 public:
   explicit MultiTabBar();
   void add_tab(const QString& text);
-  std::set<int> current_indices() const;
+  [[nodiscard]] std::set<int> current_indices() const;
   void clear();
 
 protected:
@@ -35,7 +35,7 @@ private:
   std::unique_ptr<QHBoxLayout> m_layout;
   QTimer m_change_current_on_drag_delay_timer;
   int m_drag_activated_index = -1;
-  bool extend_selection() const;
+  [[nodiscard]] static bool extend_selection();
 };
 
 }  // namespace omm

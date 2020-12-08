@@ -9,27 +9,13 @@
 #include "renderers/style.h"
 #include <QObject>
 
-namespace
-{
-QPen make_pen()
-{
-  QPen pen;
-  pen.setWidth(1.0);
-  pen.setCosmetic(true);
-  pen.setColor(Qt::black);
-  return pen;
-}
-
-}  // namespace
-
 namespace omm
 {
-QPen View::m_pen = make_pen();
-
 View::View(Scene* scene) : Object(scene)
 {
+  static constexpr double DEFAULT_SIZE = 100.0;
   static const auto category = QObject::tr("view");
-  create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(100.0, 100.0))
+  create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(DEFAULT_SIZE, DEFAULT_SIZE))
       .set_label(QObject::tr("size"))
       .set_category(category);
   create_property<TriggerProperty>(TO_VIEWPORT_PROPERTY_KEY)
@@ -56,7 +42,7 @@ QString View::type() const
   return TYPE;
 }
 
-void View::draw_object(Painter&, const Style&, Painter::Options) const
+void View::draw_object(Painter&, const Style&, const Painter::Options&) const
 {
   // do nothing
 }

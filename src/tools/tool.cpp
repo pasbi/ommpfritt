@@ -77,9 +77,9 @@ std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent)
   return nullptr;
 }
 
-bool Tool::integer_transformation() const
+bool Tool::integer_transformation()
 {
-  return QApplication::keyboardModifiers() & Qt::ShiftModifier;
+  return (QApplication::keyboardModifiers() & Qt::ShiftModifier) != 0u;
 }
 
 bool Tool::key_press(const QKeyEvent& event)
@@ -106,6 +106,11 @@ void Tool::end()
 QString Tool::name() const
 {
   return QCoreApplication::translate("any-context", type().toUtf8().constData());
+}
+
+QRectF Tool::centered_rectangle(const Vec2f& center, double radius)
+{
+  return QRectF{QPointF{center.x - radius, center.y - radius}, 2.0 * QSizeF{radius, radius}};
 }
 
 }  // namespace omm

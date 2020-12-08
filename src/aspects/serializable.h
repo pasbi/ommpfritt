@@ -18,10 +18,16 @@ public:
   using Pointer = QString;
   using ByteArray = std::vector<char>;
   virtual ~Serializable() = default;
+  Serializable(Serializable&&) = default;
+  Serializable(const Serializable&) = default;
+  Serializable& operator=(Serializable&&) = default;
+  Serializable& operator=(const Serializable&) = default;
+  Serializable() = default;
 
   virtual void serialize(AbstractSerializer&, const Pointer&) const
   {
   }
+
   virtual void deserialize(AbstractDeserializer&, const Pointer&)
   {
   }
@@ -31,7 +37,7 @@ public:
     constexpr char SEPARATOR = '/';
     std::ostringstream ostream;
     ostream << pointer;
-    const auto str = QString::fromStdString(ostream.str());
+    auto str = QString::fromStdString(ostream.str());
     assert(str.size() > 0);
     if (str.at(0) == SEPARATOR) {
       return str;

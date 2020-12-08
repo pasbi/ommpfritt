@@ -23,7 +23,7 @@ public:
   void restore_state();
   void save_state();
   void keyPressEvent(QKeyEvent* e) override;
-  Viewport& viewport() const;
+  [[nodiscard]] Viewport& viewport() const;
   void restore_default_layout();
 
   static std::vector<QString> object_menu_entries();
@@ -62,9 +62,9 @@ protected:
 private:
   Application& m_app;
   Viewport* m_viewport;
-  std::vector<QDockWidget*> dock_widgets() const;
+  [[nodiscard]] std::vector<QDockWidget*> dock_widgets() const;
   void update_recent_files_menu();
-  QString get_last_layout_filename() const;
+  [[nodiscard]] static QString get_last_layout_filename();
 
 private Q_SLOTS:
   void update_window_title();

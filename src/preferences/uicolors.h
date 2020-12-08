@@ -12,7 +12,11 @@ class UiColors : public PreferencesTree
   Q_OBJECT
 public:
   explicit UiColors();
-  ~UiColors();
+  ~UiColors() override;
+  UiColors(UiColors&&) = delete;
+  UiColors(const UiColors&) = delete;
+  UiColors& operator=(UiColors&&) = delete;
+  UiColors& operator=(const UiColors&) = delete;
   QVariant data(int column, const PreferencesTreeValueItem& item, int role) const override;
   bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) override;
   int columnCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -43,6 +47,6 @@ private:
 QColor ui_color(const QWidget& widget, const QString& group, const QString& name);
 QColor ui_color(const QPalette::ColorGroup& status, const QString& group, const QString& name);
 QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role);
-QColor ui_color(const HandleStatus status, const QString& group, const QString& name);
+QColor ui_color(HandleStatus status, const QString& group, const QString& name);
 
 }  // namespace omm

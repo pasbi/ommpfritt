@@ -33,9 +33,9 @@ double convolve(const std::array<double, 4>& coefficients,
 {
   double value = 0.0;
   for (std::size_t i = 0; i < b.size(); ++i) {
-    assert(b[i].size() == N);
-    for (std::size_t j = 0; j < b[i].size(); ++j) {
-      value += coefficients[i] * b[i][j] * std::pow(t, j);
+    assert(b.at(i).size() == N);
+    for (std::size_t j = 0; j < b.at(i).size(); ++j) {
+      value += coefficients.at(i) * b.at(i).at(j) * std::pow(t, j);
     }
   }
   return value;
@@ -44,7 +44,7 @@ double convolve(const std::array<double, 4>& coefficients,
 using Knot = omm::SplineType::Knot;
 using SpInit = omm::SplineType::Initialization;
 
-static const std::map<SpInit, omm::SplineType::knot_map_type> predefined{
+const std::map<SpInit, omm::SplineType::knot_map_type> predefined{
     {SpInit::Linear,
      {
          {0.0, Knot(0.0, -1.0 / 3.0, 1.0 / 3.0)},
@@ -197,7 +197,8 @@ double SplineType::Interpolation::local_t() const
   const double left = this->left.has_value() ? this->left->first : 0.0;
   const double right = this->right.has_value() ? this->right->first : 1.0;
   assert(left <= right);
-  if (abs(left - right) < 0.00001) {
+  static constexpr double eps = 0.00001;
+  if (abs(left - right) < eps) {
     return 0.0;
   } else {
     return (t - left) / (right - left);

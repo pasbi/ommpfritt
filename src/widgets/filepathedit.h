@@ -14,7 +14,7 @@ class FilePathEdit : public QWidget
 public:
   explicit FilePathEdit(QWidget* parent = nullptr);
   void set_path(const QString& path);
-  QString path() const;
+  [[nodiscard]] QString path() const;
   QFileDialog::FileMode mode = QFileDialog::AnyFile;
   QFileDialog::Options options{};
   void clear();

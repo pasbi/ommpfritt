@@ -14,7 +14,7 @@ public:
   explicit KeySequenceEdit(QWidget* parent = nullptr);
   void set_key_sequence(const QKeySequence& key_sequence);
   void set_default_key_sequence(const QKeySequence& key_sequence);
-  QKeySequence key_sequence() const;
+  [[nodiscard]] QKeySequence key_sequence() const;
   void focusInEvent(QFocusEvent* event) override;
   bool focusNextPrevChild(bool next) override;
 

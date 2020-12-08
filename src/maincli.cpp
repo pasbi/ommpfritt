@@ -31,7 +31,7 @@ template<typename T> const T& find(omm::Scene& scene, const QString& name)
   });
   const auto name_type_matches
       = ::filter_if(type_matches, [name](const auto* c) { return c->name() == name; });
-  if (name_type_matches.size() == 0) {
+  if (name_type_matches.empty()) {
     LERROR << QString("%1 '%2' not found.").arg(T::TYPE).arg(name);
     const QStringList view_names
         = ::transform<QString, QList>(type_matches, [](const auto* v) { return v->name(); });
@@ -74,7 +74,7 @@ void print_tree(const omm::Object& root, const QString& prefix = "")
   const auto tags = ::transform<QString, QList>(root.tags.items(), [](const omm::Tag* tag) {
                       return tag->type();
                     }).join(", ");
-  const auto label = QString("%1[%2] (%3)").arg(root.type()).arg(root.name()).arg(tags);
+  const auto label = QString("%1[%2] (%3)").arg(root.type(), root.name(), tags);
   std::cout << prefix.toStdString() << label.toStdString() << "\n";
 
   for (const omm::Object* c : root.tree_children()) {
@@ -84,14 +84,14 @@ void print_tree(const omm::Object& root, const QString& prefix = "")
 
 void prepare_scene(omm::Scene& scene, const std::set<omm::Object*>& visible_objects)
 {
-  for (auto other : scene.object_tree().items()) {
+  for (auto* other : scene.object_tree().items()) {
     const auto is_descendant_of
         = [&other](const auto* object) { return object->is_ancestor_of(*other); };
     if (std::none_of(visible_objects.begin(), visible_objects.end(), is_descendant_of)) {
       other->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Hidden);
     }
   }
-  for (auto object : visible_objects) {
+  for (auto* object : visible_objects) {
     object->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Visible);
   }
 }
@@ -130,18 +130,18 @@ void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
 QSize calculate_resolution(int width, const omm::View& view)
 {
   const auto size = view.property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
-  return QSize(width, width / size.x * size.y);
+  return QSize(width, static_cast<int>(width / size.x * size.y));
 }
 
 void render(omm::Application& app, const omm::SubcommandLineParser& args)
 {
-  const QString scene_filename = args.get<QString>("input");
-  const QString fn_template = args.get<QString>("output");
+  const auto scene_filename = args.get<QString>("input");
+  const auto fn_template = args.get<QString>("output");
   app.scene.load_from(scene_filename);
   prepare_scene(app.scene, args);
   const int start_frame = args.get<int>("start-frame", 1);
   const int n_frames = args.get<int>("sequence-length", 1);
-  const omm::View& view = find<omm::View>(app.scene, args.get<QString>("view"));
+  const auto& view = find<omm::View>(app.scene, args.get<QString>("view"));
   const bool force = args.isSet("overwrite");
   const auto resolution = calculate_resolution(args.get<int>("width"), view);
 
@@ -169,7 +169,7 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
 
 void tree(omm::Application& app, const omm::SubcommandLineParser& args)
 {
-  const QString scene_filename = args.get<QString>("input");
+  const auto scene_filename = args.get<QString>("input");
   app.scene.load_from(scene_filename);
   print_tree(app.scene.object_tree().root());
 }
@@ -227,15 +227,21 @@ std::unique_ptr<omm::Options> make_options(const omm::SubcommandLineParser& args
   return std::make_unique<omm::Options>(true, have_opengl);
 }
 
-QString level = "";
-QFile logfile;
-bool print_long_message = true;
+const bool print_long_message = true;
+
+// The logfile must be non-const and globally accessible, because the message handler lambda
+// must not capture anything (see qInstallMessageHandler).
+QFile logfile;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+
+// The level must be non-const and globally accessible, because the message handler lambda
+// must not capture anything (see qInstallMessageHandler).
+QString level = "";  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 int main(int argc, char* argv[])
 {
   using namespace omm;
   QGuiApplication app(argc, argv);
-  SubcommandLineParser args(argc, argv);
+  SubcommandLineParser args(QApplication::arguments());
 
   level = args.get<QString>("verbosity", "warning");
   if (!::contains(omm::LogLevel::loglevels, level)) {

@@ -20,15 +20,16 @@ public:
   void paint(QPainter* painter,
              const QStyleOptionViewItem& option,
              const QModelIndex& index) const override;
-  QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
-  QString displayText(const QVariant& value, const QLocale& locale) const override;
+  [[nodiscard]] QSize sizeHint(const QStyleOptionViewItem& option,
+                               const QModelIndex& index) const override;
+  [[nodiscard]] QString displayText(const QVariant& value, const QLocale& locale) const override;
   void updateEditorGeometry(QWidget* editor,
                             const QStyleOptionViewItem& option,
                             const QModelIndex& index) const override;
   void set_text_height(int text_height);
 
 private:
-  QString display_text(const QModelIndex& index) const;
+  [[nodiscard]] static QString display_text(const QModelIndex& index);
 };
 
 }  // namespace omm

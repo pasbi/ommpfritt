@@ -10,11 +10,11 @@
 namespace
 {
 using namespace omm::NodeCompilerTypes;
-std::set<QString> supported_glsl_types{FLOATVECTOR_TYPE,
-                                       INTEGER_TYPE,
-                                       FLOAT_TYPE,
-                                       COLOR_TYPE,
-                                       INTEGERVECTOR_TYPE};
+const std::set<QString> supported_glsl_types{FLOATVECTOR_TYPE,
+                                             INTEGER_TYPE,
+                                             FLOAT_TYPE,
+                                             COLOR_TYPE,
+                                             INTEGERVECTOR_TYPE};
 
 const QString glsl_definition_template(R"(
 %1 %2_0(int op, %1 a, %1 b) {
@@ -100,7 +100,7 @@ MathNode::MathNode(NodeModel& model) : Node(model)
 QString MathNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output) {
-    const QString type_a = find_port<InputPort>(A_VALUE_KEY)->data_type();
+    QString type_a = find_port<InputPort>(A_VALUE_KEY)->data_type();
     const QString type_b = find_port<InputPort>(B_VALUE_KEY)->data_type();
     switch (language()) {
     case AbstractNodeCompiler::Language::GLSL:
@@ -140,8 +140,11 @@ QString MathNode::input_data_type(const InputPort& port) const
 bool MathNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   const auto glsl_accepts_type = [this, type, &port]() {
-    const auto a_input = find_port<InputPort>(A_VALUE_KEY);
-    const auto b_input = find_port<InputPort>(B_VALUE_KEY);
+    auto* const a_input = find_port<InputPort>(A_VALUE_KEY);
+    auto* const b_input = find_port<InputPort>(B_VALUE_KEY);
+    if (a_input == nullptr || b_input == nullptr) {
+      LFATAL("Unexpected condition");
+    }
     const InputPort& other_port = &port == a_input ? *b_input : *a_input;
     assert((std::set{&port, &other_port} == std::set<const InputPort*>{a_input, b_input}));
     if (other_port.is_connected()) {
@@ -169,7 +172,7 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
 
 QString MathNode::title() const
 {
-  auto&& opp = static_cast<const OptionProperty&>(*property(OPERATION_PROPERTY_KEY));
+  auto&& opp = dynamic_cast<const OptionProperty&>(*property(OPERATION_PROPERTY_KEY));
   const std::size_t i = opp.value();
   QString operation_label = tr("invalid");
   try {

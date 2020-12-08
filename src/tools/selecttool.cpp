@@ -80,7 +80,7 @@ ObjectTransformation AbstractSelectTool::transformation() const
 void AbstractSelectTool::on_property_value_changed(Property* property)
 {
   if (pmatch(property, {ALIGNMENT_PROPERTY_KEY})) {
-    Q_EMIT scene()->mail_box().appearance_changed(*this);
+    Q_EMIT scene()->mail_box().tool_appearance_changed(*this);
   } else {
     Tool::on_property_value_changed(property);
   }
@@ -90,7 +90,8 @@ void AbstractSelectTool::draw(Painter& renderer) const
 {
   Tool::draw(renderer);
   if (!tool_info.isEmpty()) {
-    renderer.toast(m_current_position + Vec2f(30.0, 30.0), tool_info);
+    static constexpr Vec2f TOAST_OFFSET{30.0, 30.0};
+    renderer.toast(m_current_position + TOAST_OFFSET, tool_info);
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "line"));
     renderer.painter->drawLine(m_init_position.x,
                                m_init_position.y,
@@ -106,7 +107,7 @@ void AbstractSelectTool::cancel()
   Tool::cancel();
   if (auto&& h = scene()->history(); h.last_command_is_noop()) {
     h.make_last_command_obsolete();
-    QSignalBlocker(&scene()->history());
+    QSignalBlocker blocker(&scene()->history());
     scene()->history().undo();
   }
 }

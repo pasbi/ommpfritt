@@ -113,10 +113,7 @@ Scene::Scene(PythonEngine& python_engine)
       set_selection(new_selection);
     }
   });
-  connect(&mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &Scene::update_tool);
+  connect(&mail_box(), &MailBox::selection_changed, this, &Scene::update_tool);
 }
 
 Scene::~Scene()
@@ -176,7 +173,7 @@ Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates
   std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>> reference_holder_map;
   for (const auto* reference : candidates) {
     const auto reference_holders = find_reference_holders(*reference);
-    if (reference_holders.size() > 0) {
+    if (!reference_holders.empty()) {
       reference_holder_map.insert(std::make_pair(reference, reference_holders));
     }
   }
@@ -292,7 +289,7 @@ QString Scene::filename() const
   return m_filename;
 }
 
-void Scene::submit(std::unique_ptr<Command> command)
+void Scene::submit(std::unique_ptr<Command> command) const
 {
   if (command != nullptr) {
     history().push(std::move(command));
@@ -315,7 +312,7 @@ std::set<AbstractPropertyOwner*> Scene::property_owners() const
       = merge(std::set<AbstractPropertyOwner*>(), object_tree().items(), styles().items(), tags());
   for (auto&& apo : apos) {
     if (!!(apo->flags() & Flag::HasNodes)) {
-      const NodesOwner& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
+      const auto& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
       if (const auto* node_model = nodes_owner.node_model()) {
         const auto nodes = node_model->nodes();
         apos.insert(nodes.begin(), nodes.end());
@@ -335,31 +332,31 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   m_selection = selection;
 
   static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
-    Q_EMIT mail_box().selection_changed(selection, kind);
+    Q_EMIT mail_box().kind_selection_changed(selection, kind);
 
     switch (kind) {
     case Kind::Style:
-      Q_EMIT mail_box().selection_changed(kind_cast<Style>(selection));
+      Q_EMIT mail_box().style_selection_changed(kind_cast<Style>(selection));
       break;
     case Kind::Object:
-      Q_EMIT mail_box().selection_changed(kind_cast<Object>(selection));
+      Q_EMIT mail_box().object_selection_changed(kind_cast<Object>(selection));
       break;
     case Kind::Tag:
-      Q_EMIT mail_box().selection_changed(kind_cast<Tag>(selection));
+      Q_EMIT mail_box().tag_selection_changed(kind_cast<Tag>(selection));
       break;
     case Kind::Tool:
-      Q_EMIT mail_box().selection_changed(kind_cast<Tool>(selection));
+      Q_EMIT mail_box().tool_selection_changed(kind_cast<Tool>(selection));
       break;
     case Kind::Node:
-      Q_EMIT mail_box().selection_changed(kind_cast<Node>(selection));
+      Q_EMIT mail_box().node_selection_changed(kind_cast<Node>(selection));
       break;
     default:
       break;
     }
   };
 
-  for (auto& kind : {Kind::Object, Kind::Style, Kind::Tag, Kind::Tool}) {
-    if (selection.size() == 0) {
+  for (const auto& kind : {Kind::Object, Kind::Style, Kind::Tag, Kind::Tool}) {
+    if (selection.empty()) {
       m_item_selection.at(kind).clear();
       emit_selection_changed(m_selection, kind);
     } else {
@@ -406,7 +403,7 @@ template<> std::set<Style*> Scene::find_items<Style>(const QString& name) const
   return filter_by_name(styles().items(), name);
 }
 
-void Scene::evaluate_tags()
+void Scene::evaluate_tags() const
 {
   for (Tag* tag : tags()) {
     tag->evaluate();
@@ -419,7 +416,7 @@ bool Scene::can_remove(QWidget* parent,
 {
   selection = merge(selection, implicitely_selected_tags(selection));
   const auto reference_holder_map = find_reference_holders(selection);
-  if (reference_holder_map.size() > 0) {
+  if (!reference_holder_map.empty()) {
     const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
                                      "Remove the referenced items anyway?")
                              .arg(reference_holder_map.size());
@@ -455,7 +452,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
   std::set<Property*> properties;
   if (can_remove(parent, selection, properties)) {
     [[maybe_unused]] auto macro = history().start_macro(QObject::tr("Remove Selection"));
-    if (properties.size() > 0) {
+    if (!properties.empty()) {
       using command_type = PropertiesCommand<ReferenceProperty>;
       submit<command_type>(properties, nullptr);
     }
@@ -466,7 +463,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
         tag_map[tag->owner].insert(tag);
       }
     }
-    for (auto [owner, tags] : tag_map) {
+    for (auto&& [owner, tags] : tag_map) {
       ::remove_items(*this, owner->tags, tags);
     }
     ::remove_items(*this, styles(), kind_cast<Style>(selection));
@@ -502,12 +499,12 @@ bool Scene::contains(const AbstractPropertyOwner* apo) const
   switch (apo->kind) {
   case Kind::Tag: {
     const auto tags = this->tags();
-    return tags.end() != std::find(tags.begin(), tags.end(), static_cast<const Tag*>(apo));
+    return tags.end() != std::find(tags.begin(), tags.end(), dynamic_cast<const Tag*>(apo));
   }
   case Kind::Object:
-    return object_tree().contains(static_cast<const Object&>(*apo));
+    return object_tree().contains(dynamic_cast<const Object&>(*apo));
   case Kind::Style:
-    return styles().contains(static_cast<const Style&>(*apo));
+    return styles().contains(dynamic_cast<const Style&>(*apo));
   case Kind::Tool:
     return ::contains(m_tool_box->tools(), apo);
   default:

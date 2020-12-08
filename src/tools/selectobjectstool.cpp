@@ -73,7 +73,7 @@ bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 
 BoundingBox SelectObjectsTool::bounding_box() const
 {
-  if (scene()->item_selection<Object>().size() == 0) {
+  if (scene()->item_selection<Object>().empty()) {
     return BoundingBox();
   } else {
     return BoundingBox::around_selected_objects(*scene());

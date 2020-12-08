@@ -38,7 +38,7 @@ private:
   int m_frame_shift = 0;
   double m_value_shift = 0.0;
   bool m_action_aborted = false;
-  bool m_rubberband_rect_visible;
+  bool m_rubberband_rect_visible = false;
   static constexpr double radius = 5.0;
 
   struct KeyFrameHandleKey {
@@ -49,8 +49,8 @@ private:
     Track& track;
     const int frame;
     const std::size_t channel;
-    double value() const;
-    double value(Track::Knot::Side side) const;
+    [[nodiscard]] double value() const;
+    [[nodiscard]] double value(Track::Knot::Side side) const;
     bool operator<(const KeyFrameHandleKey& other) const;
   };
 
@@ -60,11 +60,12 @@ private:
   };
 
   std::map<KeyFrameHandleKey, KeyFrameHandleData> m_keyframe_handles;
-  bool is_visible(const KeyFrameHandleKey& key) const;
-  bool is_visible(const Track& track, std::size_t channel) const;
-  const KeyFrameHandleKey* neighbor(const KeyFrameHandleKey& key, Track::Knot::Side side) const;
+  [[nodiscard]] bool is_visible(const KeyFrameHandleKey& key) const;
+  [[nodiscard]] bool is_visible(const Track& track, std::size_t channel) const;
+  [[nodiscard]] const KeyFrameHandleKey* neighbor(const KeyFrameHandleKey& key,
+                                                  Track::Knot::Side side) const;
 
-  std::set<const KeyFrameHandleKey*> keyframe_handles_at(const QPointF& point) const;
+  [[nodiscard]] std::set<const KeyFrameHandleKey*> keyframe_handles_at(const QPointF& point) const;
 
   void draw_interpolation(QPainter& painter) const;
   void draw_background(QPainter& painter) const;
@@ -72,29 +73,28 @@ private:
   void draw_knots(QPainter& painter) const;
 
   struct TangentHandle {
+    TangentHandle() = default;
     TangentHandle(const KeyFrameHandleKey* key, Track::Knot::Side side) : key(key), side(side)
     {
     }
-    TangentHandle() : key(nullptr)
-    {
-    }
-    const KeyFrameHandleKey* key;
-    Track::Knot::Side side;
-    variant_type& offset();
+
+    const KeyFrameHandleKey* key{nullptr};
+    Track::Knot::Side side = Track::Knot::Side::Left;
+    [[nodiscard]] variant_type& offset() const;
   };
 
   static double interpolate_frame(int key, int neighbor);
 
-  TangentHandle tangent_handle_at(const QPointF& point) const;
+  [[nodiscard]] TangentHandle tangent_handle_at(const QPointF& point) const;
   TangentHandle m_dragged_tangent = TangentHandle();
 
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
-  void add_track(Track& track);
-  void remove_track(Track& track);
-  void add_knot(Track& track, int frame);
-  void remove_knot(Track& track, int frame);
-  void move_knot(Track& track, int old_frame, int new_frame);
+  void add_track(omm::Track& track);
+  void remove_track(omm::Track& track);
+  void add_knot(omm::Track& track, int frame);
+  void remove_knot(omm::Track& track, int frame);
+  void move_knot(omm::Track& track, int old_frame, int new_frame);
 };
 
 }  // namespace omm

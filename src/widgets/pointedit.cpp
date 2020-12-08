@@ -21,7 +21,6 @@ auto make_tangent_layout(omm::CoordinateEdit*& coordinate_edit_ref,
   auto hlayout = std::make_unique<QHBoxLayout>();
   hlayout->addWidget(vanish_button.release());
   hlayout->addWidget(mirror_button.release());
-  mirror_button.release();
 
   auto vlayout = std::make_unique<QVBoxLayout>();
   vlayout->addWidget(coordinate_edit.release());
@@ -82,29 +81,19 @@ PointEdit::PointEdit(Point& point, QWidget* parent) : QWidget(parent), m_point(p
     update_point();
   });
 
-  using PC = PolarCoordinates;
   connect(m_left_tangent_edit,
-          qOverload<const PC&, const PC&>(&CoordinateEdit::value_changed),
+          &CoordinateEdit::value_changed_val,
           this,
           &PointEdit::set_right_maybe);
   connect(m_right_tangent_edit,
-          qOverload<const PC&, const PC&>(&CoordinateEdit::value_changed),
+          &CoordinateEdit::value_changed_val,
           this,
           &PointEdit::set_left_maybe);
 
   {
-    connect(m_left_tangent_edit,
-            qOverload<>(&CoordinateEdit::value_changed),
-            this,
-            &PointEdit::update_point);
-    connect(m_right_tangent_edit,
-            qOverload<>(&CoordinateEdit::value_changed),
-            this,
-            &PointEdit::update_point);
-    connect(m_position_edit,
-            qOverload<>(&CoordinateEdit::value_changed),
-            this,
-            &PointEdit::update_point);
+    connect(m_left_tangent_edit, &CoordinateEdit::value_changed, this, &PointEdit::update_point);
+    connect(m_right_tangent_edit, &CoordinateEdit::value_changed, this, &PointEdit::update_point);
+    connect(m_position_edit, &CoordinateEdit::value_changed, this, &PointEdit::update_point);
   }
 }
 

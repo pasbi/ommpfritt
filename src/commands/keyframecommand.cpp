@@ -1,7 +1,9 @@
 #include "commands/keyframecommand.h"
+
 #include "animation/animator.h"
 #include "animation/track.h"
 #include "properties/property.h"
+#include <utility>
 
 namespace
 {
@@ -14,7 +16,7 @@ collect_knots(const std::set<omm::Property*>& properties, int frame)
       // don't add keyframes to non-existing tracks.
       // You must make sure that the track exists beforehand.
       omm::Track::Knot& knot = property->track()->knot(frame);
-      map.insert({property, &knot});
+      map.emplace(property, &knot);
     }
   }
   return map;
@@ -28,7 +30,7 @@ create_knots(const std::set<omm::Property*>& properties, int frame)
     if (property->track() != nullptr) {
       Q_UNUSED(frame)
       auto knot = std::make_unique<omm::Track::Knot>(property->variant_value());
-      map.insert({property, std::move(knot)});
+      map.emplace(property, std::move(knot));
     }
   }
   return map;
@@ -39,7 +41,7 @@ collect_refs(const std::map<omm::Property*, std::unique_ptr<omm::Track::Knot>>& 
 {
   std::map<omm::Property*, omm::Track::Knot*> refs;
   for (auto&& [property, own] : owns) {
-    refs.insert({property, own.get()});
+    refs.emplace(property, own.get());
   }
   return refs;
 }
@@ -52,22 +54,22 @@ KeyFrameCommand::KeyFrameCommand(Animator& animator,
                                  const QString& label,
                                  int frame,
                                  const std::map<Property*, Track::Knot*>& refs,
-                                 std::map<Property*, std::unique_ptr<Track::Knot>> owns)
+                                 std::map<Property*, std::unique_ptr<Track::Knot>>&& owns)
     : Command(label), m_animator(animator), m_frame(frame), m_refs(refs)
 {
   for (auto&& [property, knot] : owns) {
-    m_owns.insert({property, std::move(knot)});
+    m_owns.emplace(property, std::move(knot));
   }
 }
 
 KeyFrameCommand::KeyFrameCommand(Animator& animator,
                                  const QString& label,
                                  int frame,
-                                 std::map<Property*, std::unique_ptr<Track::Knot>> owns)
+                                 std::map<Property*, std::unique_ptr<Track::Knot>>&& owns)
     : KeyFrameCommand(animator, label, frame, collect_refs(owns))
 {
   for (auto&& [property, knot] : owns) {
-    m_owns.insert({property, std::move(knot)});
+    m_owns.emplace(property, std::move(knot));
   }
 }
 
@@ -87,7 +89,7 @@ void KeyFrameCommand::remove()
     Track* track = property->track();
     assert(track != nullptr);
     auto knot = m_animator.remove_knot(*track, m_frame);
-    m_owns.insert({property, std::move(knot)});
+    m_owns.emplace(property, std::move(knot));
   }
 }
 
@@ -114,7 +116,7 @@ RemoveKeyFrameCommand::RemoveKeyFrameCommand(Animator& animator,
 
 MoveKeyFrameCommand::MoveKeyFrameCommand(Animator& animator,
                                          Property& property,
-                                         std::set<int> old_frames,
+                                         const std::set<int>& old_frames,
                                          int shift)
     : Command(QObject::tr("Move Keyframes")), m_animator(animator), m_property(property),
       m_old_frames(old_frames), m_shift(shift)
@@ -156,7 +158,7 @@ void MoveKeyFrameCommand::redo()
 
 bool MoveKeyFrameCommand::mergeWith(const QUndoCommand* other)
 {
-  const MoveKeyFrameCommand& other_mkfc = static_cast<const MoveKeyFrameCommand&>(*other);
+  const auto& other_mkfc = dynamic_cast<const MoveKeyFrameCommand&>(*other);
   std::set<int> new_frames;
   for (int frame : m_old_frames) {
     new_frames.insert(frame + m_shift);
@@ -188,8 +190,8 @@ void MoveKeyFrameCommand::shift_keyframes(bool invert)
       move_knot(*it);
     }
   } else if ((m_shift > 0) == invert) {
-    for (auto it = m_old_frames.begin(); it != m_old_frames.end(); ++it) {
-      move_knot(*it);
+    for (int m_old_frame : m_old_frames) {
+      move_knot(m_old_frame);
     }
   } else {
     Q_UNREACHABLE();
@@ -206,7 +208,7 @@ ChangeKeyFrameCommand ::ChangeKeyFrameCommand(int frame,
 
 bool ChangeKeyFrameCommand::mergeWith(const QUndoCommand* other)
 {
-  const ChangeKeyFrameCommand& other_ckfc = static_cast<const ChangeKeyFrameCommand&>(*other);
+  const auto& other_ckfc = dynamic_cast<const ChangeKeyFrameCommand&>(*other);
   return &other_ckfc.m_property == &m_property;
 }
 

@@ -1,4 +1,5 @@
 #include "tools/selectsimilartool.h"
+#include "common.h"
 #include "logging.h"
 #include "objects/path.h"
 #include "properties/floatproperty.h"
@@ -7,7 +8,6 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/handles/boundingboxhandle.h"
-#include <cmath>
 
 namespace
 {
@@ -22,7 +22,7 @@ using It = omm::Path::iterator;
 double normal_distance(const It& a, const It& b)
 {
   const auto normalize = [](double a, double b) {
-    return M_1_PI * 180.0 * omm::PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
+    return omm::M_180_PI * omm::PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
   };
 
   return std::min(normalize(a->left_tangent.argument, b->left_tangent.argument),
@@ -48,6 +48,7 @@ namespace omm
 {
 SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
+  static constexpr double THRESHOLD_STEP = 0.1;
   const auto category = QObject::tr("tool");
   create_property<OptionProperty>(MODE_PROPERTY_KEY, 0)
       .set_options(
@@ -61,7 +62,7 @@ SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
       .set_category(category)
       .set_animatable(false);
   create_property<FloatProperty>(THRESHOLD_PROPERTY_KEY, 1.0)
-      .set_step(0.1)
+      .set_step(THRESHOLD_STEP)
       .set_label(QObject::tr("threshold"))
       .set_category(category)
       .set_animatable(false);
@@ -117,7 +118,7 @@ void SelectSimilarTool::update_selection()
       }
     }
   }
-  Q_EMIT scene()->mail_box().appearance_changed(*this);
+  Q_EMIT scene()->mail_box().tool_appearance_changed(*this);
 }
 
 void SelectSimilarTool::update_base_selection()
@@ -167,14 +168,14 @@ void SelectSimilarTool::start()
 void SelectSimilarTool::update_property_appearance()
 {
   const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
-  auto* const threshold_property = static_cast<FloatProperty*>(property(THRESHOLD_PROPERTY_KEY));
+  auto* const threshold_property = dynamic_cast<FloatProperty*>(property(THRESHOLD_PROPERTY_KEY));
   static const std::map<Mode, std::tuple<QString, double>> threshold_config{
-      {Mode::Normal, {"°", 180.0}},
+      {Mode::Normal, {"°", 180.0}},  // NOLINT(cppcoreguidelines-avoid-magic-numbers)
       {Mode::X, {"", std::numeric_limits<double>::max()}},
       {Mode::Y, {"", std::numeric_limits<double>::max()}},
       {Mode::Distance, {"", std::numeric_limits<double>::max()}},
   };
-  const auto [suffix, upper_limit] = threshold_config.at(mode);
+  const auto& [suffix, upper_limit] = threshold_config.at(mode);
   threshold_property->set_suffix(suffix);
   threshold_property->set_range(0.0, upper_limit);
 }

@@ -30,7 +30,7 @@ void TrackViewDelegate::paint(QPainter* painter,
   painter->setRenderHint(QPainter::Antialiasing);
 
   activate_index(index);
-  const bool is_property = m_canvas.animator.index_type(index) == Animator::IndexType::Property;
+  const bool is_property = Animator::index_type(index) == Animator::IndexType::Property;
 
   m_canvas.draw_background(*painter);
 
@@ -42,7 +42,11 @@ void TrackViewDelegate::paint(QPainter* painter,
     painter->setPen(pen);
     painter->drawLine(option.rect.topLeft(), option.rect.topRight());
     painter->restore();
-    painter->fillRect(option.rect, QColor(0, 0, 255, 80));
+    static constexpr int RED = 0;
+    static constexpr int GREEN = 0;
+    static constexpr int BLUE = 255;
+    static constexpr int ALPHA = 80;
+    painter->fillRect(option.rect, QColor(RED, GREEN, BLUE, ALPHA));
   }
 
   m_canvas.draw_lines(*painter);
@@ -66,12 +70,12 @@ bool TrackViewDelegate::view_event(QEvent& event)
 void TrackViewDelegate::activate_index(const QModelIndex& index) const
 {
   std::set<Track*> tracks;
-  const auto index_type = m_canvas.animator.index_type(index);
+  const auto index_type = Animator::index_type(index);
   if (index_type == Animator::IndexType::Property) {
-    Track* track = m_canvas.animator.property(index)->track();
+    Track* track = Animator::property(index)->track();
     tracks.insert(track);
   } else if (index_type == Animator::IndexType::Owner) {
-    for (Property* p : m_canvas.animator.owner(index)->properties().values()) {
+    for (Property* p : Animator::owner(index)->properties().values()) {
       if (p->track() != nullptr) {
         tracks.insert(p->track());
       }

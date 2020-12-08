@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "common.h"
+#include "nodesystem/statement.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -39,38 +40,22 @@ class AbstractNodeCompiler : public QObject
   Q_OBJECT
 public:
   enum class Language { Python, GLSL };
-  static const std::set<QString> supported_types(Language language);
-  QString last_error() const
+  static std::set<QString> supported_types(Language language);
+  [[nodiscard]] QString last_error() const
   {
     return m_last_error;
   }
 
 protected:
   AbstractNodeCompiler(Language language, const NodeModel& model);
-  std::set<Node*> nodes() const;
-  struct Statement {
-    Statement(const OutputPort& source, const InputPort& target);
-    Statement(const Node& node);
-    const bool is_connection;
-    const OutputPort* const source = nullptr;
-    const InputPort* const target = nullptr;
-    const Node* const node = nullptr;
-    bool operator<(const Statement& other) const;
-    friend std::ostream& operator<<(std::ostream& ostream, const Statement& statement);
+  [[nodiscard]] std::set<Node*> nodes() const;
 
-  private:
-    std::set<const AbstractPort*> defines() const;
-    std::set<const AbstractPort*> uses() const;
-  };
-
-  friend std::ostream& operator<<(std::ostream& ostream,
-                                  const omm::AbstractNodeCompiler::Statement& statement);
   void generate_statements(std::set<QString>& used_node_types,
-                           std::list<Statement>& statements) const;
+                           std::list<std::unique_ptr<Statement>>& statements) const;
 
 public:
   const Language language;
-  const NodeModel& model() const
+  [[nodiscard]] const NodeModel& model() const
   {
     return m_model;
   }
@@ -104,7 +89,7 @@ public:
     m_last_error = "";
     QStringList lines;
     std::set<QString> used_node_types;
-    std::list<Statement> statements;
+    std::list<std::unique_ptr<Statement>> statements;
     generate_statements(used_node_types, statements);
     const auto& self = static_cast<const ConcreteCompiler&>(*this);
 
@@ -118,28 +103,35 @@ public:
       }
     };
 
-#define CHECK(statement) \
-  if (!check(statement)) { \
-    return false; \
-  }
-
-    CHECK(self.generate_header(lines))
-    for (const QString& type : used_node_types) {
-      CHECK(self.define_node(type, lines));
+    if (!check(self.generate_header(lines))) {
+      return false;
     }
-
-    CHECK(self.start_program(lines));
-
-    for (const Statement& statement : statements) {
-      if (statement.is_connection) {
-        CHECK(self.compile_connection(*statement.source, *statement.target, lines))
-      } else {
-        CHECK(self.compile_node(*statement.node, lines))
+    for (const QString& type : used_node_types) {
+      if (!check(self.define_node(type, lines))) {
+        return false;
       }
     }
-    CHECK(self.end_program(lines));
 
-#undef CHECK
+    if (!check(self.start_program(lines))) {
+      return false;
+    }
+
+    for (auto&& statement : statements) {
+      if (statement->is_connection()) {
+        const auto& cs = dynamic_cast<const ConnectionStatement&>(*statement);
+        if (!check(self.compile_connection(cs.source, cs.target, lines))) {
+          return false;
+        }
+      } else {
+        const auto& ns = dynamic_cast<const NodeStatement&>(*statement);
+        if (!check(self.compile_node(ns.node, lines))) {
+          return false;
+        }
+      }
+    }
+    if (!check(self.end_program(lines))) {
+      return false;
+    }
 
     m_code = lines.join("\n");
     Q_EMIT compilation_succeeded(m_code);

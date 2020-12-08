@@ -29,10 +29,16 @@ public:
 
   ~PythonStreamRedirect()
   {
+    // We don't expect any exceptions here.
     auto sysm = py::module::import("sys");
     sysm.attr("stdout") = m_stdout;
     sysm.attr("stderr") = m_stderr;
   }
+
+  PythonStreamRedirect(PythonStreamRedirect&&) = delete;
+  PythonStreamRedirect(const PythonStreamRedirect&) = delete;
+  PythonStreamRedirect& operator=(PythonStreamRedirect&&) = delete;
+  PythonStreamRedirect& operator=(const PythonStreamRedirect&) = delete;
 
   QString stdout_()
   {
@@ -57,6 +63,7 @@ private:
 
 namespace omm
 {
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 PYBIND11_EMBEDDED_MODULE(omm, m)
 {
   Q_UNUSED(m);

@@ -3,6 +3,7 @@
 
 namespace omm
 {
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 ScopedInterpreterWrapper* ScopedInterpreterWrapper::m_instance = nullptr;
 
 ScopedInterpreterWrapper::ScopedInterpreterWrapper()

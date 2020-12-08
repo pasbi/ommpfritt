@@ -18,7 +18,8 @@ public:
   void paint(QPainter* painter,
              const QStyleOptionViewItem& option,
              const QModelIndex& index) const override;
-  QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const override;
+  [[nodiscard]] QSize sizeHint(const QStyleOptionViewItem&,
+                               const QModelIndex& index) const override;
 
   bool view_event(QEvent& event);
   void activate_index(const QModelIndex& index) const;
@@ -29,7 +30,7 @@ private:
 
   QModelIndex m_mouse_press_index;
 
-  bool display_fcurve(const QModelIndex& index) const;
+  [[nodiscard]] bool display_fcurve(const QModelIndex& index) const;
 };
 
 }  // namespace omm

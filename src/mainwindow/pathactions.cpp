@@ -73,7 +73,7 @@ void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
     return path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
   });
 
-  if (map.size() > 0) {
+  if (!map.empty()) {
     auto macro = app.scene.history().start_macro(QObject::tr("modify tangents"));
     using OptionPropertyCommand = omm::PropertiesCommand<omm::OptionProperty>;
     app.scene.submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
@@ -113,7 +113,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
   }
 
   std::set<Object*> converted_objects;
-  if (convertibles.size() > 0) {
+  if (!convertibles.empty()) {
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertibles) {
       auto [converted, move_children] = c->convert();
@@ -122,7 +122,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
       assert(!c->is_root());
       ObjectTreeOwningContext context(*converted, c->tree_parent(), c);
       const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
-      if (properties.size() > 0) {
+      if (!properties.empty()) {
         app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
       }
       auto& converted_ref = *converted;
@@ -221,7 +221,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
        }
 
        std::unique_ptr<Macro> macro;
-       if (cmds.size() > 0) {
+       if (!cmds.empty()) {
          macro = app.scene.history().start_macro(QObject::tr("Subdivide Paths"));
        }
        for (auto&& cmd : cmds) {
@@ -244,7 +244,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
          app.scene.set_selection(down_cast(app.scene.object_tree().items()));
          break;
        }
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"deselect all",
@@ -262,7 +262,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
          app.scene.set_selection({});
          break;
        }
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"invert selection",
@@ -286,7 +286,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
          break;
        }
        }
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"convert objects",
@@ -294,7 +294,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
        const auto convertibles
            = ::filter_if(app.scene.item_selection<Object>(),
                          [](const Object* o) { return !!(o->flags() & Flag::Convertible); });
-       if (convertibles.size() > 0) {
+       if (!convertibles.empty()) {
          Scene& scene = app.scene;
          auto macro = scene.history().start_macro(QObject::tr("convert"));
          scene.submit<ObjectSelectionCommand>(app.scene, convertibles);
@@ -324,7 +324,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
            std::for_each(segment.begin(), segment.end(), set_selected);
          }
        });
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"fill selection",
@@ -337,7 +337,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
            std::for_each(first_it, last_it.base(), set_selected);
          }
        });
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"extend selection",
@@ -347,7 +347,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
            segment[i].is_selected = true;
          }
        });
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"shrink selection",
@@ -363,7 +363,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
            segment[i].is_selected = false;
          }
        });
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 };
 

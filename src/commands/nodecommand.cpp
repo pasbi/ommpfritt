@@ -1,8 +1,10 @@
 #include "commands/nodecommand.h"
+
 #include "common.h"
 #include "nodesystem/node.h"
 #include "nodesystem/nodemodel.h"
 #include "nodesystem/port.h"
+#include <utility>
 
 namespace
 {
@@ -21,8 +23,8 @@ namespace omm
 {
 ConnectionCommand::ConnectionCommand(const QString& label, AbstractPort& a, AbstractPort& b)
     : ConnectionCommand(label,
-                        static_cast<OutputPort&>(b.port_type == PortType::Input ? a : b),
-                        static_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
+                        dynamic_cast<OutputPort&>(b.port_type == PortType::Input ? a : b),
+                        dynamic_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
 {
   // require exactly one input and one output.
   assert(a.port_type != b.port_type);
@@ -66,7 +68,7 @@ DisconnectPortsCommand::DisconnectPortsCommand(InputPort& port)
 
 NodeCommand::NodeCommand(const QString& label,
                          NodeModel& model,
-                         std::vector<Node*> refs,
+                         const std::vector<Node*>& refs,
                          std::vector<std::unique_ptr<Node>> owns)
     : Command(label), m_refs(refs), m_owns(std::move(owns)), m_model(model)
 {
@@ -132,7 +134,7 @@ void NodeCommand::add()
   m_model.emit_topology_changed();
 }
 
-RemoveNodesCommand::RemoveNodesCommand(NodeModel& model, std::vector<Node*> nodes)
+RemoveNodesCommand::RemoveNodesCommand(NodeModel& model, const std::vector<Node*>& nodes)
     : NodeCommand(QObject::tr("Remove Nodes"), model, nodes, {})
 {
 }
@@ -142,7 +144,7 @@ AddNodesCommand::AddNodesCommand(NodeModel& model, std::vector<std::unique_ptr<N
 {
 }
 
-MoveNodesCommand::MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction)
+MoveNodesCommand::MoveNodesCommand(const std::set<Node*>& nodes, const QPointF& direction)
     : Command(QObject::tr("Move Nodes")), m_old_positions(collect_old_positions(nodes)),
       m_direction(direction)
 {
@@ -164,7 +166,7 @@ void MoveNodesCommand::redo()
 
 bool MoveNodesCommand::mergeWith(const QUndoCommand* command)
 {
-  const MoveNodesCommand& mn_command = static_cast<const MoveNodesCommand&>(*command);
+  const auto& mn_command = dynamic_cast<const MoveNodesCommand&>(*command);
   if (::same_keys(mn_command.m_old_positions, m_old_positions)) {
     m_direction += mn_command.m_direction;
     return true;

@@ -18,35 +18,35 @@ public:
   {
   }
 
-  Qt::ItemFlags flags(const QModelIndex& index) const override
+  [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& index) const override
   {
     Q_UNUSED(index);
     return Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsSelectable;
   }
 
-  Qt::DropActions supportedDragActions() const override
+  [[nodiscard]] Qt::DropActions supportedDragActions() const override
   {
     return Qt::LinkAction;
   }
 
-  Qt::DropActions supportedDropActions() const override
+  [[nodiscard]] Qt::DropActions supportedDropActions() const override
   {
     return Qt::IgnoreAction;
   }
 
-  int columnCount(const QModelIndex&) const override
+  [[nodiscard]] int columnCount(const QModelIndex&) const override
   {
     return 1;
   }
 
-  QMimeData* mimeData(const QModelIndexList& indices) const override
+  [[nodiscard]] QMimeData* mimeData(const QModelIndexList& indices) const override
   {
     nlohmann::json json;
     for (const QModelIndex& index : indices) {
       if (const QModelIndex sindex = mapToSource(index); sindex.isValid() && sindex.column() == 0) {
         const auto* ptr = static_cast<const omm::PreferencesTreeItem*>(sindex.internalPointer());
         if (!ptr->is_group()) {
-          const auto* item = static_cast<const omm::PreferencesTreeValueItem*>(ptr);
+          const auto* item = dynamic_cast<const omm::PreferencesTreeValueItem*>(ptr);
           assert(item->group == omm::Application::TYPE);
           json[omm::ToolBarItemModel::items_key].push_back(item->name.toStdString());
         }
@@ -113,7 +113,7 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
     for (auto&& [name, mode_selector] : Application::instance().mode_selectors) {
       const auto tr_name = mode_selector->translated_name();
       auto action = std::make_unique<QAction>(tr_name);
-      connect(action.get(), &QAction::triggered, [this, name = name]() {
+      connect(action.get(), &QAction::triggered, this, [this, name = name]() {
         m_model.add_mode_selector(name);
       });
       m_ui->tb_add_switch->addAction(action.release());
@@ -130,8 +130,6 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
   m_ui->tv_toolbar->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
-ToolBarDialog::~ToolBarDialog()
-{
-}
+ToolBarDialog::~ToolBarDialog() = default;
 
 }  // namespace omm

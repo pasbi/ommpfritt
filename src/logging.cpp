@@ -29,7 +29,7 @@ void setup_logfile(QFile& logfile)
   // Remove colon from timestamp, as colons are not supported in windows filenames.
   // Do the same on other platforms to ensure harmony.
   const QString timestamp = QDateTime::currentDateTime().toString(Qt::ISODate).replace(":", "");
-  const QString filename = QString("%1/%2-log_%3.txt").arg(dir).arg(qAppName()).arg(timestamp);
+  const QString filename = QString("%1/%2-log_%3.txt").arg(dir, qAppName(), timestamp);
   logfile.setFileName(filename);
   if (!logfile.open(QIODevice::WriteOnly)) {
     std::cerr << "Failed to open log file " << filename.toStdString() << " for writing.\n";
@@ -67,9 +67,7 @@ void handle_log(QFile& logfile,
   const auto timestamp = QDateTime::currentDateTime().toString(Qt::ISODate);
   const QString rel_fn = QDir(source_directory).relativeFilePath(ctx.file);
   const auto long_message = QString("[%1] %2 %3:%4: %5\n")
-                                .arg(printlevels.at(type))
-                                .arg(timestamp)
-                                .arg(rel_fn)
+                                .arg(printlevels.at(type), timestamp, rel_fn)
                                 .arg(ctx.line)
                                 .arg(msg);
   if (loglevels.at(printlevels.at(type)) >= loglevels.at(level)) {

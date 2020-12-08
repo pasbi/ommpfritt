@@ -19,7 +19,7 @@ void TangentHandle::draw(QPainter& painter) const
   painter.setPen(ui_color("tangent"));
   painter.setBrush(ui_color("tangent fill"));
   const auto r = draw_epsilon();
-  painter.drawEllipse(position.x - r, position.y - r, 2 * r, 2 * r);
+  painter.drawEllipse(Tool::centered_rectangle(position, r));
 }
 
 bool TangentHandle::contains_global(const Vec2f& point) const

@@ -14,11 +14,13 @@ class Style;
 
 Ellipse::Ellipse(Scene* scene) : Object(scene)
 {
+  static constexpr double DEFAULT_RADIUS = 100.0;
+  static constexpr int DEFAULT_CORNER_COUNT = 12;
   static const auto category = QObject::tr("ellipse");
-  create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(100.0, 100.0))
+  create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(DEFAULT_RADIUS, DEFAULT_RADIUS))
       .set_label(QObject::tr("r"))
       .set_category(category);
-  create_property<IntegerProperty>(CORNER_COUNT_PROPERTY_KEY, 12)
+  create_property<IntegerProperty>(CORNER_COUNT_PROPERTY_KEY, DEFAULT_CORNER_COUNT)
       .set_range(3, IntegerProperty::highest_possible_value())
       .set_label(QObject::tr("n"))
       .set_category(category);
@@ -58,9 +60,9 @@ Geom::PathVector Ellipse::paths() const
     const double y = std::sin(theta) * r.y;
     if (smooth) {
       const Vec2f d(std::sin(theta) * r.x, -std::cos(theta) * r.y);
-      points.push_back(Point(Vec2f(x, y), d.arg(), 2.0 * d.euclidean_norm() / n));
+      points.emplace_back(Vec2f(x, y), d.arg(), 2.0 * d.euclidean_norm() / n);
     } else {
-      points.push_back(Point(Vec2f(x, y)));
+      points.emplace_back(Vec2f(x, y));
     }
   }
   const auto path = segment_to_path(points, true);

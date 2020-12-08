@@ -19,10 +19,9 @@ class ReferenceLineEdit
   Q_OBJECT
 public:
   explicit ReferenceLineEdit(QWidget* parent = nullptr);
-  ~ReferenceLineEdit() = default;
   void set_value(const value_type& value) override;
-  value_type value() const override;
-  void set_filter(const ReferenceProperty::Filter& filter);
+  [[nodiscard]] value_type value() const override;
+  void set_filter(const PropertyFilter& filter);
   void set_null_label(const QString& value);
   void set_scene(Scene& scene);
 
@@ -32,10 +31,10 @@ protected:
   bool eventFilter(QObject* o, QEvent* e) override;
 
 private:
-  bool can_drop(const QDropEvent& event) const;
-  AbstractPropertyOwner* m_value;
+  [[nodiscard]] bool can_drop(const QDropEvent& event) const;
+  AbstractPropertyOwner* m_value = nullptr;
   Scene* m_scene = nullptr;
-  ReferenceProperty::Filter m_filter;
+  PropertyFilter m_filter;
   std::vector<AbstractPropertyOwner*> m_possible_references;
 
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();
@@ -51,7 +50,7 @@ private Q_SLOTS:
   void convert_text_to_placeholder_text();
 
 Q_SIGNALS:
-  void value_changed(value_type value);
+  void value_changed(omm::AbstractPropertyOwner*);
 };
 
 }  // namespace omm

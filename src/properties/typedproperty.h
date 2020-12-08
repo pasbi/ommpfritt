@@ -36,20 +36,22 @@ public:
     return QString::fromStdString(std::string(variant_type_name<ValueT>())) + "Property";
   }
 
-  QString type() const override
+  [[nodiscard]] QString type() const override
   {
     return TYPE();
   }
 
 public:
-  variant_type variant_value() const override
+  [[nodiscard]] variant_type variant_value() const override
   {
     return m_value;
   }
+
   ValueT value() const
   {
     return Property::value<ValueT>();
   }
+
   void set(const variant_type& variant) override
   {
     set(std::get<ValueT>(variant));
@@ -76,11 +78,15 @@ public:
     m_value = m_default_value;
   }
 
-  bool is_numerical() const override
+  [[nodiscard]] bool is_numerical() const override
   {
-    return std::is_same_v<
-               bool,
-               ValueT> || std::is_same_v<double, ValueT> || std::is_same_v<int, ValueT> || std::is_same_v<Vec2f, ValueT> || std::is_same_v<Vec2i, ValueT>;
+    // clang-format off
+    return std::is_same_v<bool, ValueT>
+        || std::is_same_v<double, ValueT>
+        || std::is_same_v<int, ValueT>
+        || std::is_same_v<Vec2f, ValueT>
+        || std::is_same_v<Vec2i, ValueT>;
+    // clang-format on
   }
 
 private:

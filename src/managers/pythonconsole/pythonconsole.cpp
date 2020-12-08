@@ -22,16 +22,15 @@ PythonConsole::PythonConsole(Scene& scene)
   auto widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>(widget.get());
   m_layout = layout.get();
-  layout.release();  // ownership is managed by Qt
+  widget->setLayout(layout.release());
 
-  auto header_layout = std::make_unique<QHBoxLayout>().release();
+  auto* header_layout = std::make_unique<QHBoxLayout>().release();
   m_layout->addLayout(header_layout);
 
   auto ref_filter_widget = std::make_unique<ReferenceLineEdit>();
   ref_filter_widget->set_scene(scene);
   using Flag = Flag;
-  ref_filter_widget->set_filter(
-      ReferenceProperty::Filter({{Flag::HasScript}, {Flag::HasPythonNodes}}));
+  ref_filter_widget->set_filter(PropertyFilter({{Flag::HasScript}, {Flag::HasPythonNodes}}));
   m_associated_item_widget = ref_filter_widget.get();
   m_associated_item_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   header_layout->addWidget(ref_filter_widget.release());
@@ -76,7 +75,9 @@ PythonConsole::~PythonConsole()
   delete static_cast<pybind11::dict*>(m_locals);
 }
 
-void PythonConsole::on_output(const void* associated_item, QString text, Stream stream)
+void PythonConsole::on_output(const void* associated_item,
+                              const QString& text,
+                              const Stream& stream)
 {
   if (accept(associated_item)) {
     if (!text.isEmpty()) {
@@ -114,7 +115,7 @@ bool PythonConsole::eventFilter(QObject* object, QEvent* event)
 {
   if (object == m_commandline) {
     if (event->type() == QEvent::KeyPress) {
-      auto* key_event = static_cast<QKeyEvent*>(event);
+      auto* key_event = dynamic_cast<QKeyEvent*>(event);
       if (!(key_event->modifiers() & caption_modifiers)) {
         switch (key_event->key()) {
         case Qt::Key_Return:

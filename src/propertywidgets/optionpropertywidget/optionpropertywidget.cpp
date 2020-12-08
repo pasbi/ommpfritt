@@ -22,7 +22,7 @@ OptionPropertyWidget::OptionPropertyWidget(Scene& scene, const std::set<Property
       Property::get_value<std::vector<QString>, OptionProperty>(properties, get_options));
   m_options_edit->prefix = label();
   set_widget(std::move(options_edit));
-  update_edit();
+  OptionPropertyWidget::update_edit();
 }
 
 void OptionPropertyWidget::update_edit()

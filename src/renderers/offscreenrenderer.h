@@ -23,6 +23,11 @@ class OffscreenRenderer
 public:
   OffscreenRenderer();
   ~OffscreenRenderer();
+  OffscreenRenderer(const OffscreenRenderer&) = delete;
+  OffscreenRenderer(OffscreenRenderer&&) = delete;
+  OffscreenRenderer& operator=(const OffscreenRenderer&) = delete;
+  OffscreenRenderer& operator=(OffscreenRenderer&&) = delete;
+
   Texture render(const Object& object,
                  const QSize& size,
                  const QRectF& roi,
@@ -32,10 +37,12 @@ public:
   {
     return m_context;
   }
-  QOpenGLShaderProgram* program() const
+
+  [[nodiscard]] QOpenGLShaderProgram* program() const
   {
     return m_program.get();
   }
+
   void make_current();
 
   void set_uniform(const QString& name, const variant_type& value);
@@ -45,7 +52,7 @@ public:
     const QString type;
     const char* name;
     const Kind kind;
-    QString tr_name() const;
+    [[nodiscard]] QString tr_name() const;
   };
 
   static const std::vector<ShaderInput> fragment_shader_inputs;

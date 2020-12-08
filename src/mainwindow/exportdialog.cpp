@@ -22,25 +22,6 @@
 
 namespace
 {
-class XLabel : public QLabel
-{
-public:
-  XLabel() : QLabel("x")
-  {
-    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
-  }
-};
-
-class Line : public QFrame
-{
-public:
-  explicit Line(QFrame::Shape shape) : QFrame()
-  {
-    setFrameShape(shape);
-    setFrameShadow(QFrame::Sunken);
-  }
-};
-
 omm::Viewport& viewport()
 {
   return omm::Application::instance().main_window()->viewport();
@@ -84,7 +65,7 @@ public:
     }
 
     for (const QString& allowed_ending : allowed_endings) {
-      if (input.toLower().endsWith(allowed_ending)) {
+      if (input.endsWith(allowed_ending, Qt::CaseInsensitive)) {
         return QValidator::Acceptable;
       }
     }
@@ -109,7 +90,7 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
     update_preview();
   });
 
-  m_ui->cb_view->set_filter(ReferenceProperty::Filter({Kind::Object}, {{Flag::IsView}}));
+  m_ui->cb_view->set_filter(PropertyFilter({Kind::Object}, {{Flag::IsView}}));
 
   m_ui->cb_view->set_null_label(tr("Viewport"));
   m_ui->cb_view->set_scene(scene);
@@ -143,8 +124,10 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   m_ui->cb_format->setCurrentIndex(settings.value(FORMAT_SETTINGS_KEY, 0).toInt());
   update_active_view();
 
-  m_ui->ne_scaling->set_value(100.0);
-  m_ui->ne_scaling->set_step(0.01);
+  static constexpr double SCALING_DEFAULT = 100.0;
+  static constexpr double SCALING_STEP = 0.01;
+  m_ui->ne_scaling->set_value(SCALING_DEFAULT);
+  m_ui->ne_scaling->set_step(SCALING_STEP);
 
   m_ui->le_pattern->setText(scene.animator().filename_pattern);
   m_ui->cb_overwrite->setChecked(scene.animator().overwrite_file);
@@ -182,9 +165,7 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   connect(m_ui->pb_start, &QPushButton::clicked, this, &ExportDialog::start_export_animation);
 }
 
-ExportDialog::~ExportDialog()
-{
-}
+ExportDialog::~ExportDialog() = default;
 
 void ExportDialog::update_preview()
 {
@@ -260,7 +241,7 @@ void ExportDialog::save_as_raster()
   if (file_dialog.exec() == QDialog::Accepted) {
     const auto filenames = file_dialog.selectedFiles();
     assert(filenames.size() == 1);
-    const auto filename = filenames.front();
+    const auto& filename = filenames.front();
 
     QImage image(m_ui->ne_resolution_x->value(),
                  m_ui->ne_resolution_y->value(),
@@ -289,16 +270,16 @@ void ExportDialog::save_as_svg()
   if (file_dialog.exec() == QDialog::Accepted) {
     const auto filenames = file_dialog.selectedFiles();
     assert(filenames.size() == 1);
-    const auto filename = filenames.front();
+    const auto& filename = filenames.front();
 
-    QByteArray buffer;
     QSvgGenerator generator;
     generator.setFileName(filename);
     const auto scale = m_ui->ne_scaling->value();
     auto view_box_size = view()->property(View::SIZE_PROPERTY_KEY)->value<Vec2f>();
     view_box_size *= scale / view_box_size.x;
     generator.setViewBox(QRectF(0.0, 0.0, view_box_size.x, view_box_size.y));
-    render(m_scene, view(), generator, -scale * 4.0 / 3.0);
+    static constexpr double SVG_SCALE_FACTOR = -4.0 / 3.0;
+    render(m_scene, view(), generator, SVG_SCALE_FACTOR * scale);
     m_filepath = filename;
   }
 }
@@ -318,7 +299,8 @@ QString ExportDialog::filename(QString pattern, int frame_number)
     qWarning() << "Pattern '" << pattern << "' is illegal: non-contiguous sequence of '"
                << frame_number_placeholder << "'.";
   }
-  pattern.replace(first_occurence, n, QString("%1").arg(frame_number, n, 10, QChar('0')));
+  static constexpr int base = 10;
+  pattern.replace(first_occurence, n, QString("%1").arg(frame_number, n, base, QChar('0')));
   return pattern;
 }
 
@@ -389,7 +371,7 @@ void ExportDialog::start_export_animation()
     const bool allow_overwrite = m_ui->cb_overwrite->isChecked();
     for (int frame = m_ui->sb_start->value(); frame <= m_ui->sb_end->value(); ++frame) {
       const QString filename = path + "/" + ExportDialog::filename(pattern, frame);
-      if (QFileInfo().exists(filename) && !allow_overwrite) {
+      if (QFileInfo::exists(filename) && !allow_overwrite) {
         LINFO << "Did not overwrite '" << filename << "'.";
       } else {
         m_scene.animator().set_current(frame);

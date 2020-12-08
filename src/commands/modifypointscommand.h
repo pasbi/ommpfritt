@@ -15,7 +15,7 @@ public:
   ModifyPointsCommand(const map_type& points);
   void redo() override;
   void undo() override;
-  int id() const override;
+  [[nodiscard]] int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
 
 private:
@@ -36,7 +36,7 @@ public:
   struct Range {
     Path::iterator begin;
     std::size_t length;
-    bool intersects(const Range& other) const;
+    [[nodiscard]] bool intersects(const Range& other) const;
     bool operator<(const Range& other) const;
     bool operator>(const Range& other) const;
   };
@@ -49,7 +49,7 @@ protected:
   void add();
   void remove();
 
-  Scene& scene() const;
+  [[nodiscard]] Scene& scene() const;
 
 private:
   Path& m_path;

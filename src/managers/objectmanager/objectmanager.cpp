@@ -19,7 +19,7 @@ ObjectManager::ObjectManager(Scene& scene)
                   scene.object_tree())
 {
   connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
+          &MailBox::selection_changed,
           &item_view(),
           &ObjectTreeView::set_selection);
 }

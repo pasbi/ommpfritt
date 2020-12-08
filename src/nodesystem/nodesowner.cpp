@@ -12,21 +12,21 @@ NodesOwner::NodesOwner(AbstractNodeCompiler::Language language, Scene& scene)
 }
 
 NodesOwner::NodesOwner(const NodesOwner& other)
-    : m_node_model(other.node_model() ? std::make_unique<NodeModel>(*other.node_model()) : nullptr)
+    : m_node_model(other.node_model() == nullptr ? nullptr
+                                                 : std::make_unique<NodeModel>(*other.node_model()))
 {
 }
 
-NodesOwner::~NodesOwner()
-{
-}
+NodesOwner::~NodesOwner() = default;
 
 void NodesOwner::connect_edit_property(TriggerProperty& property, QObject& self)
 {
-  self.connect(&property, &Property::value_changed, &self, [this]() {
+  QObject::connect(&property, &Property::value_changed, &self, [this]() {
     Manager& manager = Application::instance().get_active_manager(NodeManager::TYPE);
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     if (m_node_model) {
-      QTimer::singleShot(1, [this, &manager]() {
-        static_cast<NodeManager&>(manager).set_model(m_node_model.get());
+      QTimer::singleShot(1, &manager, [this, &manager]() {
+        dynamic_cast<NodeManager&>(manager).set_model(m_node_model.get());
       });
     }
   });

@@ -10,7 +10,7 @@ class FontProperties : public PropertyGroup
 {
 public:
   using PropertyGroup::PropertyGroup;
-  void make_properties(const QString& group) const override;
+  void make_properties(const QString& category) const override;
 
   QFont get_font() const;
 

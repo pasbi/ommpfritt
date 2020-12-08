@@ -14,8 +14,6 @@ TimeLineTitleBar::TimeLineTitleBar(Manager& parent)
   add_widget(std::move(widget));
 }
 
-TimeLineTitleBar::~TimeLineTitleBar()
-{
-}
+TimeLineTitleBar::~TimeLineTitleBar() = default;
 
 }  // namespace omm

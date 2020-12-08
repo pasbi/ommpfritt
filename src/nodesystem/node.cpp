@@ -4,15 +4,14 @@
 
 namespace omm
 {
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::map<QString, const Node::Detail*> Node::m_details;
 
 Node::Node(NodeModel& model) : PropertyOwner(&model.scene()), m_model(model)
 {
 }
 
-Node::~Node()
-{
-}
+Node::~Node() = default;
 
 std::set<AbstractPort*> Node::ports() const
 {
@@ -29,8 +28,8 @@ void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer
   connection_inputs.reserve(m_ports.size());
   for (const auto& port : m_ports) {
     if (port->port_type == PortType::Input
-        && static_cast<InputPort&>(*port).connected_output() != nullptr) {
-      connection_inputs.push_back(static_cast<const InputPort*>(port.get()));
+        && dynamic_cast<InputPort&>(*port).connected_output() != nullptr) {
+      connection_inputs.push_back(dynamic_cast<const InputPort*>(port.get()));
     }
   }
   connection_inputs.shrink_to_fit();
@@ -56,7 +55,7 @@ void Node::deserialize(AbstractDeserializer& deserializer, const Serializable::P
   const std::size_t n = deserializer.array_size(connections_ptr);
   for (std::size_t i = 0; i < n; ++i) {
     const auto iptr = make_pointer(connections_ptr, i);
-    ConnectionIds connection_ids;
+    ConnectionIds connection_ids{};
     connection_ids.input_port = deserializer.get_size_t(make_pointer(iptr, INPUT_PORT_PTR));
     connection_ids.output_port = deserializer.get_size_t(make_pointer(iptr, OUTPUT_PORT_PTR));
     connection_ids.node_id = deserializer.get_size_t(make_pointer(iptr, CONNECTED_NODE_PTR));
@@ -103,7 +102,7 @@ std::set<Node*> Node::successors() const
   std::set<Node*> successors;
   for (const auto& port : m_ports) {
     if (port->port_type == PortType::Output) {
-      const OutputPort& op = static_cast<OutputPort&>(*port);
+      const OutputPort& op = dynamic_cast<OutputPort&>(*port);
       for (const InputPort* ip : op.connected_inputs()) {
         successors.insert(&ip->node);
       }
@@ -172,7 +171,7 @@ std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
   for (auto it = m_ports.begin(); it != m_ports.end(); ++it) {
     if (it->get() == &port) {
       auto own_port = std::move(m_ports.extract(it).value());
-      Q_EMIT m_model.emit_topology_changed();
+      m_model.emit_topology_changed();
       Q_EMIT ports_changed();
       return own_port;
     }
@@ -207,10 +206,10 @@ Property& Node::add_property(const QString& key, std::unique_ptr<Property> prope
 std::unique_ptr<Property> Node::extract_property(const QString& key)
 {
   auto property = PropertyOwner::extract_property(key);
-  if (InputPort* ip = find_port<InputPort>(*property); ip) {
+  if (auto* ip = find_port<InputPort>(*property); ip) {
     remove_port(*ip);
   }
-  if (OutputPort* op = find_port<OutputPort>(*property); op) {
+  if (auto* op = find_port<OutputPort>(*property); op) {
     remove_port(*op);
   }
   return property;
@@ -220,10 +219,10 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
 {
   QSignalBlocker blocker(model());
   for (const ConnectionIds& cids : m_connection_ids) {
-    Node& node = static_cast<Node&>(*map.at(cids.node_id));
+    Node& node = dynamic_cast<Node&>(*map.at(cids.node_id));
     assert(&node.model() == &model());
-    InputPort* input = find_port<InputPort>(cids.input_port);
-    OutputPort* output = node.find_port<OutputPort>(cids.output_port);
+    auto* input = find_port<InputPort>(cids.input_port);
+    auto* output = node.find_port<OutputPort>(cids.output_port);
     if (input != nullptr && output != nullptr) {
       input->connect(output);
     }

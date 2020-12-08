@@ -16,9 +16,13 @@ class ViewportPage : public PreferencePage
   Q_OBJECT
 public:
   explicit ViewportPage(Preferences& preferences);
-  ~ViewportPage();
+  ~ViewportPage() override;
+  ViewportPage(ViewportPage&&) = delete;
+  ViewportPage(const ViewportPage&) = delete;
+  ViewportPage& operator=(ViewportPage&&) = delete;
+  ViewportPage& operator=(const ViewportPage&) = delete;
 
-  void about_to_accept();
+  void about_to_accept() override;
 
 private:
   Preferences& m_preferences;

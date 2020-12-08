@@ -17,11 +17,14 @@ protected:
   NodesOwner(AbstractNodeCompiler::Language language, Scene& scene);
   NodesOwner(const NodesOwner& other);
   ~NodesOwner();
-
   void connect_edit_property(TriggerProperty& property, QObject& self);
 
 public:
-  NodeModel* node_model() const;
+  NodesOwner(NodesOwner&& other) = delete;
+  NodesOwner& operator=(NodesOwner&& other) = delete;
+  NodesOwner& operator=(const NodesOwner& other) = delete;
+
+  [[nodiscard]] NodeModel* node_model() const;
 
 private:
   std::unique_ptr<NodeModel> m_node_model;

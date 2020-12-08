@@ -11,7 +11,8 @@ namespace omm
 {
 BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
-  create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
+  static constexpr double DEFAULT_RADIUS = 20.0;
+  create_property<FloatProperty>(RADIUS_PROPERTY_KEY, DEFAULT_RADIUS)
       .set_label(QObject::tr("radius"))
       .set_category(QObject::tr("tool"))
       .set_animatable(false);
@@ -35,7 +36,7 @@ bool BrushSelectTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMo
 
 bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
-  if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
+  if ((event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) != 0u) {
     // don't deselect
   } else {
     if (SelectPointsBaseTool::mouse_press(pos, event)) {
@@ -71,7 +72,7 @@ void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& eve
   bool is_noop = true;
   for (Object* object : scene()->item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
-    if (path) {
+    if (path != nullptr) {
       for (auto&& point : *path) {
         // we can't transform `pos` with path's inverse transformation because if it scales,
         // `radius` will be wrong.
@@ -109,7 +110,7 @@ void BrushSelectTool::draw(Painter& renderer) const
     const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "foreground"));
     renderer.painter->setBrush(ui_color(HandleStatus::Active, "Handle", "background"));
-    renderer.painter->drawEllipse(m_mouse_pos.x - r, m_mouse_pos.y - r, 2 * r, 2 * r);
+    renderer.painter->drawEllipse(centered_rectangle(m_mouse_pos, r));
   }
 }
 

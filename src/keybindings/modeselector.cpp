@@ -14,9 +14,7 @@ ModeSelector::ModeSelector(CommandInterface& context,
 {
 }
 
-ModeSelector::~ModeSelector()
-{
-}
+ModeSelector::~ModeSelector() = default;
 
 QString ModeSelector::translated_name() const
 {
@@ -55,7 +53,7 @@ void ModeSelector::set_mode(int mode)
 
 void ModeSelector::cycle()
 {
-  set_mode((m_mode + 1) % activation_actions.size());
+  set_mode((m_mode + 1) % static_cast<int>(activation_actions.size()));
 }
 
 }  // namespace omm

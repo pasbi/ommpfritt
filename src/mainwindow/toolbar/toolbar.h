@@ -16,11 +16,11 @@ public:
   explicit ToolBar();
 
   static constexpr auto TYPE = "ToolBar";
-  virtual QString type() const
+  [[nodiscard]] virtual QString type() const
   {
     return TYPE;
   }
-  QString configuration() const;
+  [[nodiscard]] QString configuration() const;
 
 private:
   void update();

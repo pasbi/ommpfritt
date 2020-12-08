@@ -18,7 +18,11 @@ class KeyBindings : public PreferencesTree
 {
 public:
   KeyBindings();
-  ~KeyBindings();
+  ~KeyBindings() override;
+  KeyBindings(KeyBindings&&) = delete;
+  KeyBindings(const KeyBindings&) = delete;
+  KeyBindings& operator=(KeyBindings&&) = delete;
+  KeyBindings& operator=(const KeyBindings&) = delete;
 
   static constexpr auto TRANSLATION_CONTEXT = "keybindings";
   static constexpr auto SEPARATOR = "separator";

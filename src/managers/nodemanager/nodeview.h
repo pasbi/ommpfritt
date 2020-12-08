@@ -27,10 +27,14 @@ class NodeView : public QGraphicsView
 
 public:
   explicit NodeView(QWidget* parent = nullptr);
-  ~NodeView();
+  ~NodeView() override;
+  NodeView(NodeView&&) = delete;
+  NodeView(const NodeView&) = delete;
+  NodeView& operator=(NodeView&&) = delete;
+  NodeView& operator=(const NodeView&) = delete;
   const QFont font;
   void abort();
-  void remove_selection();
+  void remove_selection() const;
   void set_model(NodeModel* model);
   NodeModel* model() const;
   NodeScene* scene() const
@@ -48,7 +52,7 @@ public:
   std::set<Node*> selected_nodes() const;
 
 public Q_SLOTS:
-  void copy_to_clipboard();
+  void copy_to_clipboard() const;
   void paste_from_clipboard();
 
 protected:

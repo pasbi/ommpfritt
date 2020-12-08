@@ -21,7 +21,7 @@ namespace omm
 UserPropertyCommand ::UserPropertyCommand(
     const std::vector<QString>& deletions,
     std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
-    const std::map<Property*, Property::Configuration>& changes,
+    const std::map<Property*, PropertyConfiguration>& changes,
     AbstractPropertyOwner& owner)
     : Command(QObject::tr("User Property")), m_deletions(transform(deletions)),
       m_additions(std::move(additions)), m_changes(changes), m_owner(owner)
@@ -29,12 +29,12 @@ UserPropertyCommand ::UserPropertyCommand(
   if (Node* node = kind_cast<Node*>(&m_owner); node != nullptr) {
     for (auto&& [key, _] : m_deletions) {
       auto& property = *m_owner.property(key);
-      InputPort* ip = node->find_port<InputPort>(property);
+      auto* ip = node->find_port<InputPort>(property);
       if (ip->is_connected()) {
         m_broken_connections.insert(std::make_unique<DisconnectPortsCommand>(*ip));
       }
 
-      OutputPort* op = node->find_port<OutputPort>(property);
+      auto* op = node->find_port<OutputPort>(property);
       for (InputPort* ip : op->connected_inputs()) {
         m_broken_connections.insert(std::make_unique<DisconnectPortsCommand>(*ip));
       }
@@ -43,9 +43,7 @@ UserPropertyCommand ::UserPropertyCommand(
   }
 }
 
-UserPropertyCommand::~UserPropertyCommand()
-{
-}
+UserPropertyCommand::~UserPropertyCommand() = default;
 
 void UserPropertyCommand::undo()
 {

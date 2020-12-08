@@ -122,8 +122,8 @@ void KnifeTool::draw(Painter& renderer) const
       ;
       pen.setWidthF(3);
       renderer.painter->setPen(pen);
-      const auto r = 6.0 / 2.0;
-      renderer.painter->drawEllipse(p.position.x - r, p.position.y - r, 2 * r, 2 * r);
+      static constexpr double r = 6.0 / 2.0;
+      renderer.painter->drawEllipse(centered_rectangle(p.position, r));
     }
   }
 }

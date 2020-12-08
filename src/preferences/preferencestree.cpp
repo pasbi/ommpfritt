@@ -8,7 +8,7 @@
 
 namespace omm
 {
-PreferencesTree::PreferencesTree(const QString& translation_context, const QString filename)
+PreferencesTree::PreferencesTree(const QString& translation_context, const QString& filename)
     : m_translation_context(translation_context)
 {
   if (!load_from_file(filename)) {
@@ -26,9 +26,7 @@ PreferencesTree::PreferencesTree(const QString& translation_context, const QStri
   });
 }
 
-PreferencesTree::~PreferencesTree()
-{
-}
+PreferencesTree::~PreferencesTree() = default;
 
 void PreferencesTree::reset()
 {
@@ -56,7 +54,7 @@ void PreferencesTree::save_in_qsettings(const QString& q_settings_group) const
 
 void PreferencesTree::load_from_qsettings(const QString& q_settings_group)
 {
-  const auto settings_group = q_settings_group;
+  const auto& settings_group = q_settings_group;
   QSettings settings;
   if (settings.childGroups().contains(settings_group)) {
     settings.beginGroup(settings_group);
@@ -90,6 +88,67 @@ bool PreferencesTree::save_to_file(const QString& filename) const
   return true;
 }
 
+bool PreferencesTree::handle_group_line(const QString& group_name,
+                                        const QString& line,
+                                        bool insert_mode)
+{
+  const auto tokens = line.split(":");
+  if (tokens.size() != 2) {
+    LWARNING << "ignoring line '" << line.toStdString()
+             << "'. Expected format: <name>: <key value>.";
+    return false;
+  }
+  const auto name = tokens[0].trimmed();
+  const auto value = tokens[1].trimmed();
+  const auto git
+      = std::find_if(m_groups.begin(),
+                     m_groups.end(),
+                     [group_name](const std::unique_ptr<PreferencesTreeGroupItem>& group) {
+                       return group->name == group_name;
+                     });
+
+  PreferencesTreeGroupItem* group = nullptr;
+  if (git == m_groups.end()) {
+    if (insert_mode) {
+      auto item = std::make_unique<PreferencesTreeGroupItem>(group_name, m_translation_context);
+      m_groups.push_back(std::move(item));
+    } else {
+      LWARNING << "Ignore unexpected group '" << group_name << "'.";
+      return false;
+    }
+    group = m_groups.back().get();
+  } else {
+    group = git->get();
+  }
+
+  const auto vit = std::find_if(group->values.begin(),
+                                group->values.end(),
+                                [name](auto&& value_item) { return value_item->name == name; });
+
+  if (vit == group->values.end()) {
+    if (insert_mode) {
+      auto item = std::make_unique<PreferencesTreeValueItem>(group->name,
+                                                             name,
+                                                             value,
+                                                             m_translation_context);
+      group->values.push_back(std::move(item));
+    } else {
+      LWARNING << "No such item '" << group_name << "'::'" << name << "'.";
+    }
+  } else {
+    if (insert_mode) {
+      LWARNING << "Duplicate value for '" << group_name << "'::'" << name << "'."
+               << "Drop '" << value << "', "
+               << "keep '" << (*vit)->value() << "'.";
+      LFATAL("Duplicate key.");
+    } else {
+      (*vit)->set_default(value);
+    }
+  }
+
+  return true;
+}
+
 bool PreferencesTree::load_from_file(const QString& filename)
 {
   const bool insert_mode = m_groups.empty();
@@ -105,10 +164,16 @@ bool PreferencesTree::load_from_file(const QString& filename)
     {
       begin_reset();
     }
+
     ~ResetModel()
     {
       m_end_reset();
     }
+
+    ResetModel(ResetModel&&) = delete;
+    ResetModel(const ResetModel&) = delete;
+    ResetModel& operator=(ResetModel&&) = delete;
+    ResetModel& operator=(const ResetModel&) = delete;
 
   private:
     const std::function<void()> m_end_reset;
@@ -120,12 +185,11 @@ bool PreferencesTree::load_from_file(const QString& filename)
                                                    [this]() { endResetModel(); })
                     : std::unique_ptr<ResetModel>(nullptr);
 
-  static const QRegExp context_regexp("\\[\\w+\\]");
+  static const QRegExp context_regexp(R"(\[\w+\])");
   QString group_name = "";
 
   QTextStream stream(&file);
   while (!stream.atEnd()) {
-line_loop:
     const QString line = stream.readLine().trimmed();
     if (line.startsWith("#") || line.isEmpty()) {
       continue;  // line is a comment
@@ -134,58 +198,8 @@ line_loop:
     if (context_regexp.exactMatch(line)) {
       group_name = line.mid(1, line.size() - 2);
     } else if (!group_name.isEmpty()) {
-      const auto tokens = line.split(":");
-      if (tokens.size() != 2) {
-        LWARNING << "ignoring line '" << line.toStdString()
-                 << "'. Expected format: <name>: <key value>.";
+      if (!handle_group_line(group_name, line, insert_mode)) {
         continue;
-      }
-      const auto name = tokens[0].trimmed();
-      const auto value = tokens[1].trimmed();
-      const auto git
-          = std::find_if(m_groups.begin(),
-                         m_groups.end(),
-                         [group_name](const std::unique_ptr<PreferencesTreeGroupItem>& group) {
-                           return group->name == group_name;
-                         });
-
-      PreferencesTreeGroupItem* group = nullptr;
-      if (git == m_groups.end()) {
-        if (insert_mode) {
-          auto item = std::make_unique<PreferencesTreeGroupItem>(group_name, m_translation_context);
-          m_groups.push_back(std::move(item));
-        } else {
-          LWARNING << "Ignore unexpected group '" << group_name << "'.";
-          goto line_loop;
-        }
-        group = m_groups.back().get();
-      } else {
-        group = git->get();
-      }
-
-      const auto vit = std::find_if(group->values.begin(),
-                                    group->values.end(),
-                                    [name](auto&& value_item) { return value_item->name == name; });
-
-      if (vit == group->values.end()) {
-        if (insert_mode) {
-          auto item = std::make_unique<PreferencesTreeValueItem>(group->name,
-                                                                 name,
-                                                                 value,
-                                                                 m_translation_context);
-          group->values.push_back(std::move(item));
-        } else {
-          LWARNING << "No such item '" << group_name << "'::'" << name << "'.";
-        }
-      } else {
-        if (insert_mode) {
-          LWARNING << "Duplicate value for '" << group_name << "'::'" << name << "'."
-                   << "Drop '" << value << "', "
-                   << "keep '" << (*vit)->value() << "'.";
-          LFATAL("Duplicate key.");
-        } else {
-          (*vit)->set_default(value);
-        }
       }
     } else {
       LWARNING << "line '" << line << "' ignored since no group is active.";
@@ -217,7 +231,8 @@ std::vector<PreferencesTreeGroupItem*> PreferencesTree::groups() const
   return ::transform<PreferencesTreeGroupItem*>(m_groups, [](const auto& g) { return g.get(); });
 }
 
-PreferencesTreeValueItem* PreferencesTree::value(const QString group_name, const QString& key) const
+PreferencesTreeValueItem* PreferencesTree::value(const QString& group_name,
+                                                 const QString& key) const
 {
   const auto* group = this->group(group_name);
   const auto vit = std::find_if(group->values.begin(),
@@ -226,9 +241,9 @@ PreferencesTreeValueItem* PreferencesTree::value(const QString group_name, const
   return vit->get();
 }
 
-const QString PreferencesTree::stored_value(const QString& group_name,
-                                            const QString& key,
-                                            std::size_t column) const
+QString PreferencesTree::stored_value(const QString& group_name,
+                                      const QString& key,
+                                      std::size_t column) const
 {
   return PreferencesTreeValueItem::value(m_stored_values.at(group_name).at(key), column);
 }
@@ -277,9 +292,9 @@ QModelIndex PreferencesTree::index(int row, int column, const QModelIndex& paren
   if (!parent.isValid()) {
     internal_pointer = m_groups.at(row).get();
   } else {
-    auto* ptr = static_cast<const PreferencesTreeItem*>(parent.internalPointer());
+    const auto* ptr = static_cast<const PreferencesTreeItem*>(parent.internalPointer());
     assert(ptr->is_group());
-    const auto* group = static_cast<const PreferencesTreeGroupItem*>(ptr);
+    const auto* group = dynamic_cast<const PreferencesTreeGroupItem*>(ptr);
     internal_pointer = group->values.at(row).get();
   }
   return createIndex(row, column, internal_pointer);
@@ -292,7 +307,7 @@ QModelIndex PreferencesTree::parent(const QModelIndex& child) const
     return QModelIndex();
   } else {
     auto* const ptr = static_cast<PreferencesTreeItem*>(child.internalPointer());
-    auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
+    auto* value_item = dynamic_cast<PreferencesTreeValueItem*>(ptr);
     const auto it = std::find_if(m_groups.begin(), m_groups.end(), [&](const auto& group) {
       return group->name == value_item->group;
     });
@@ -305,7 +320,7 @@ QModelIndex PreferencesTree::parent(const QModelIndex& child) const
 int PreferencesTree::rowCount(const QModelIndex& parent) const
 {
   if (parent.isValid()) {
-    PreferencesTreeItem* ptr = static_cast<PreferencesTreeItem*>(parent.internalPointer());
+    auto* ptr = static_cast<PreferencesTreeItem*>(parent.internalPointer());
     if (ptr->is_group()) {
       return group(ptr->name)->values.size();
     } else {
@@ -329,7 +344,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
   }
 
   if (role == Qt::ForegroundRole) {
-    return qApp->palette().color(QPalette::Active, QPalette::WindowText);
+    return QApplication::palette().color(QPalette::Active, QPalette::WindowText);
   }
 
   if (is_group(index)) {
@@ -364,15 +379,11 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
 bool PreferencesTree::setData(const QModelIndex& index, const QVariant& value, int role)
 {
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
-  if (role != Qt::EditRole) {
-    return false;
-  } else if (index.column() == 0) {
-    return false;
-  } else if (ptr->is_group()) {
+  if (role != Qt::EditRole || index.column() == 0 || ptr->is_group()) {
     return false;
   }
 
-  auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
+  auto* value_item = dynamic_cast<PreferencesTreeValueItem*>(ptr);
   if (set_data(index.column(), *value_item, value)) {
     Q_EMIT dataChanged(index, index);
     return true;
@@ -392,23 +403,23 @@ Qt::ItemFlags PreferencesTree::flags(const QModelIndex& index) const
   return flags;
 }
 
-bool PreferencesTree::is_group(const QModelIndex& index) const
+bool PreferencesTree::is_group(const QModelIndex& index)
 {
   return static_cast<const PreferencesTreeItem*>(index.internalPointer())->is_group();
 }
 
-PreferencesTreeGroupItem& PreferencesTree::group(const QModelIndex& index) const
+PreferencesTreeGroupItem& PreferencesTree::group(const QModelIndex& index)
 {
   assert(is_group(index));
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
-  return *static_cast<PreferencesTreeGroupItem*>(ptr);
+  return *dynamic_cast<PreferencesTreeGroupItem*>(ptr);
 }
 
-PreferencesTreeValueItem& PreferencesTree::value(const QModelIndex& index) const
+PreferencesTreeValueItem& PreferencesTree::value(const QModelIndex& index)
 {
   assert(!is_group(index));
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
-  return *static_cast<PreferencesTreeValueItem*>(ptr);
+  return *dynamic_cast<PreferencesTreeValueItem*>(ptr);
 }
 
 void PreferencesTree::apply()

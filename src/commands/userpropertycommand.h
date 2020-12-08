@@ -16,13 +16,17 @@ class UserPropertyCommand : public Command
 {
 public:
   using pmap = std::map<QString, std::unique_ptr<Property>>;
-  using cmap = std::map<QString, Property::Configuration>;
+  using cmap = std::map<QString, PropertyConfiguration>;
 
   UserPropertyCommand(const std::vector<QString>& deletions,
                       std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
-                      const std::map<Property*, Property::Configuration>& changes,
+                      const std::map<Property*, PropertyConfiguration>& changes,
                       AbstractPropertyOwner& owner);
-  ~UserPropertyCommand();
+  ~UserPropertyCommand() override;
+  UserPropertyCommand(UserPropertyCommand&&) = delete;
+  UserPropertyCommand(const UserPropertyCommand&) = delete;
+  UserPropertyCommand& operator=(UserPropertyCommand&&) = delete;
+  UserPropertyCommand& operator=(const UserPropertyCommand&) = delete;
   void undo() override;
   void redo() override;
 
@@ -30,7 +34,7 @@ private:
   using Properties = std::vector<std::pair<QString, std::unique_ptr<Property>>>;
   Properties m_deletions;
   Properties m_additions;
-  using Configurations = std::map<Property*, Property::Configuration>;
+  using Configurations = std::map<Property*, PropertyConfiguration>;
   Configurations m_changes;
 
   AbstractPropertyOwner& m_owner;
@@ -38,7 +42,7 @@ private:
 
   void extract(Properties& ps);
   void insert(Properties& ps);
-  void change(Configurations& configurations);
+  static void change(Configurations& configurations);
 
   void swap();
   NodeModel* m_node_model = nullptr;

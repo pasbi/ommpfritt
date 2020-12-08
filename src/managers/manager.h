@@ -19,19 +19,22 @@ class Manager
     , virtual public AbstractFactory<QString, false, Manager, Scene&>
     , virtual public CommandInterface
 {
+  // clang-format off
   Q_OBJECT  // Required for MainWindow::save_state
-      public
-      : Manager(const Manager&)
-        = delete;
+
+public:
   Manager(Manager&&) = delete;
-  virtual ~Manager();
-  Scene& scene() const;
-  bool is_visible() const;
-  bool is_locked() const
+  Manager(const Manager&) = delete;
+  ~Manager() override;
+  Manager& operator=(const Manager&) = delete;
+  Manager& operator=(Manager&&) = delete;
+  [[nodiscard]] Scene& scene() const;
+  [[nodiscard]] bool is_visible() const;
+  [[nodiscard]] bool is_locked() const
   {
     return m_is_locked;
   }
-
+  // clang-format on
 protected:
   Manager(const QString& title, Scene& scene);
 

@@ -31,7 +31,10 @@ public:
   }
 
   explicit OrderedMap() = default;
-  explicit OrderedMap(OrderedMap<KeyT, ValueT>&& other) = default;
+  explicit OrderedMap(OrderedMap<KeyT, ValueT>&& other) noexcept = default;
+  ~OrderedMap() = default;
+  OrderedMap& operator=(const OrderedMap&) = delete;
+  OrderedMap& operator=(OrderedMap&&) = delete;
 
   auto values() const
   {
@@ -104,7 +107,7 @@ public:
   }
 #endif
 
-  size_t size() const
+  [[nodiscard]] size_t size() const
   {
     return m_keys.size();
   }

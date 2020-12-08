@@ -56,15 +56,16 @@ void ObjectDelegate::paint(QPainter* painter,
   const int w = rect.height();
 
   {  // icon
-    const QIcon decoration = index.data(Qt::DecorationRole).value<QIcon>();
+    const auto decoration = index.data(Qt::DecorationRole).value<QIcon>();
     const QPixmap pixmap = decoration.pixmap(QSize(w, w), QIcon::Normal, QIcon::On);
     painter->drawPixmap(option.rect.topLeft() + QPointF(0, 0), pixmap, pixmap.rect());
   }
 
   {  // text
+    static constexpr int LEFT_MARGIN = 10;
     QString text = index.data(Qt::DisplayRole).toString();
     QRect text_rect = option.rect;
-    text_rect.setLeft(text_rect.left() + w + 10);
+    text_rect.setLeft(text_rect.left() + w + LEFT_MARGIN);
     text = painter->fontMetrics().elidedText(text, Qt::ElideRight, text_rect.width());
     painter->drawText(text_rect, Qt::AlignLeft | Qt::AlignVCenter, text);
   }

@@ -14,10 +14,10 @@ public:
   explicit PortItem(AbstractPort& port, NodeItem& parent);
 
   void paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget) override;
-  QRectF boundingRect() const override;
+  [[nodiscard]] QRectF boundingRect() const override;
   static constexpr auto TYPE = QGraphicsItem::UserType + 1;
   static constexpr double radius = 6;
-  int type() const override
+  [[nodiscard]] int type() const override
   {
     return TYPE;
   }

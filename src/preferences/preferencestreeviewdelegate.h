@@ -17,7 +17,7 @@ public Q_SLOTS:
   void close_current_editor();
 
 protected:
-  QAbstractItemModel* m_model;
+  QAbstractItemModel* m_model{};
   mutable QWidget* m_current_editor = nullptr;
   mutable QModelIndex m_current_editor_index;
   QAbstractItemView& m_view;

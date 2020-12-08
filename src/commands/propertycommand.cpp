@@ -11,7 +11,7 @@ AbstractPropertiesCommand::AbstractPropertiesCommand(const std::set<Property*>& 
 
 bool AbstractPropertiesCommand::mergeWith(const QUndoCommand* command)
 {
-  return m_properties == static_cast<const AbstractPropertiesCommand*>(command)->m_properties;
+  return m_properties == dynamic_cast<const AbstractPropertiesCommand*>(command)->m_properties;
 }
 
 int AbstractPropertiesCommand::id() const

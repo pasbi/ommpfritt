@@ -10,7 +10,11 @@ class JSONSerializer : public AbstractSerializer
 {
 public:
   explicit JSONSerializer(std::ostream& ostream);
-  ~JSONSerializer();
+  ~JSONSerializer() override;
+  JSONSerializer(const JSONSerializer&) = delete;
+  JSONSerializer(JSONSerializer&&) = delete;
+  JSONSerializer& operator=(const JSONSerializer&) = delete;
+  JSONSerializer& operator=(JSONSerializer&&) = delete;
 
   void start_array(size_t size, const Pointer& pointer) override;
   void end_array() override;
@@ -18,7 +22,7 @@ public:
   void set_value(bool value, const Pointer& pointer) override;
   void set_value(double value, const Pointer& pointer) override;
   void set_value(const QString& value, const Pointer& pointer) override;
-  void set_value(const std::size_t id, const Pointer& pointer) override;
+  void set_value(std::size_t id, const Pointer& pointer) override;
   void set_value(const Color& color, const Pointer& pointer) override;
   void set_value(const Vec2f& value, const Pointer& pointer) override;
   void set_value(const Vec2i& value, const Pointer& pointer) override;

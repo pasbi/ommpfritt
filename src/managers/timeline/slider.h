@@ -16,7 +16,7 @@ class Slider : public QWidget
   Q_OBJECT
 public:
   explicit Slider(Animator& animator);
-  std::set<Track*> tracks() const;
+  [[nodiscard]] std::set<Track*> tracks() const;
 
 public Q_SLOTS:
   void set_range(double left, double right);
@@ -33,7 +33,7 @@ private:
   {
   public:
     TimelineCanvasC(Animator& animator, Slider& self);
-    QPoint map_to_global(const QPoint& pos) const override;
+    [[nodiscard]] QPoint map_to_global(const QPoint& pos) const override;
     void update() override;
     void disable_context_menu() override;
     void enable_context_menu() override;

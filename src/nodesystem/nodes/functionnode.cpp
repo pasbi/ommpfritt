@@ -148,7 +148,7 @@ bool FunctionNode::accepts_input_data_type(const QString& type, const InputPort&
 
 QString FunctionNode::title() const
 {
-  auto&& opp = static_cast<const OptionProperty&>(*property(OPERATION_PROPERTY_KEY));
+  auto&& opp = dynamic_cast<const OptionProperty&>(*property(OPERATION_PROPERTY_KEY));
   const std::size_t i = opp.value();
   QString operation_label = tr("invalid");
   try {

@@ -26,7 +26,11 @@ class ExportDialog : public QDialog
   Q_OBJECT
 public:
   ExportDialog(Scene& scene, QWidget* parent);
-  ~ExportDialog();
+  ~ExportDialog() override;
+  ExportDialog(ExportDialog&&) = delete;
+  ExportDialog(const ExportDialog&) = delete;
+  ExportDialog& operator=(ExportDialog&&) = delete;
+  ExportDialog& operator=(const ExportDialog&) = delete;
 
   static void render(Scene& scene, const View* view, QPaintDevice& device, double scale = 1.0);
 
@@ -40,7 +44,7 @@ private:
 
   void save_as();
   void update_preview();
-  const View* view() const;
+  [[nodiscard]] const View* view() const;
   void save_as_raster();
   void save_as_svg();
   QPicture m_picture;

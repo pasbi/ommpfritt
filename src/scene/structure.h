@@ -12,7 +12,7 @@ template<typename T> class Structure
 public:
   using item_type = T;
   Structure() = default;
-  Structure(Structure&& other) = default;
+  Structure(Structure&& other) noexcept = default;
   virtual ~Structure() = default;
 
   virtual std::set<T*> items() const = 0;
@@ -22,7 +22,6 @@ public:
   T* predecessor(T& sibling) const;
   virtual size_t insert_position(const T* predecessor) const = 0;
 
-private:
   // we don't want to assign copy or move
   const Structure<T>& operator=(const Structure<T>&) = delete;
   const Structure<T>& operator=(Structure<T>&&) = delete;

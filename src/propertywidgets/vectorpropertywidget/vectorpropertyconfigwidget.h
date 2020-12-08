@@ -17,7 +17,7 @@ public:
   using ElementT = typename T::element_type;
   explicit VectorPropertyConfigWidget()
   {
-    for (QString d : {"x", "y"}) {
+    for (const QString& d : {"x", "y"}) {
       auto [min_edit, max_edit] = NumericEdit<ElementT>::make_range_edits();
       // ownership is only temporarily passed to this.
       m_edits[d + NumericPropertyDetail::LOWER_VALUE_POINTER] = min_edit.release();
@@ -39,9 +39,9 @@ public:
     static const std::vector keys = {NumericPropertyDetail::LOWER_VALUE_POINTER,
                                      NumericPropertyDetail::UPPER_VALUE_POINTER,
                                      NumericPropertyDetail::STEP_POINTER};
-    for (QString k : keys) {
+    for (const QString& k : keys) {
       auto pair_layout = std::make_unique<QHBoxLayout>();
-      for (QString d : {"x", "y"}) {
+      for (const QString& d : {"x", "y"}) {
         pair_layout->addWidget(m_edits[d + k]);  // pass ownership from this to layout
       }
       layout->addRow(QObject::tr(k.toUtf8().constData(), "NumericProperty"), pair_layout.release());
@@ -51,7 +51,7 @@ public:
     this->setLayout(layout.release());
   }
 
-  void init(const Property::Configuration& configuration) override
+  void init(const PropertyConfiguration& configuration) override
   {
     const ElementT llower = NumericProperty<ElementT>::lowest_possible_value();
     const ElementT uupper = NumericProperty<ElementT>::highest_possible_value();
@@ -77,21 +77,21 @@ public:
       static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::STEP_POINTER])
           ->set_value(step[i]);
     }
-    static_cast<NumericEdit<double>*>(m_edits[NumericPropertyDetail::MULTIPLIER_POINTER])
+    dynamic_cast<NumericEdit<double>*>(m_edits[NumericPropertyDetail::MULTIPLIER_POINTER])
         ->set_value(mult);
   }
 
-  void update(Property::Configuration& configuration) const override
+  void update(PropertyConfiguration& configuration) const override
   {
     for (const QString& key : {NumericPropertyDetail::LOWER_VALUE_POINTER,
                                NumericPropertyDetail::UPPER_VALUE_POINTER,
                                NumericPropertyDetail::STEP_POINTER}) {
       const auto* x_edit = static_cast<NumericEdit<ElementT>*>(m_edits.at("x" + key));
       const auto* y_edit = static_cast<NumericEdit<ElementT>*>(m_edits.at("y" + key));
-      configuration[key] = T(x_edit->value(), y_edit->value());
-      configuration[NumericPropertyDetail::MULTIPLIER_POINTER]
-          = static_cast<NumericEdit<double>*>(m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER))
-                ->value();
+      configuration.set(key, T(x_edit->value(), y_edit->value()));
+      auto* multiplier_edit = m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER);
+      auto* multiplier_edit_double = dynamic_cast<NumericEdit<double>*>(multiplier_edit);
+      configuration.set(NumericPropertyDetail::MULTIPLIER_POINTER, multiplier_edit_double->value());
     }
   }
 

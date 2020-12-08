@@ -17,7 +17,14 @@ class Cloner : public Object
 public:
   explicit Cloner(Scene* scene);
   explicit Cloner(const Cloner& other);
-  void draw_object(Painter& renderer, const Style& style, Painter::Options options) const override;
+  Cloner(Cloner&&) = delete;
+  Cloner& operator=(Cloner&&) = delete;
+  Cloner& operator=(const Cloner&) = delete;
+  ~Cloner() override = default;
+
+  void draw_object(Painter& renderer,
+                   const Style& style,
+                   const Painter::Options& options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;
@@ -36,7 +43,7 @@ public:
 
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom };
   enum class Anchor { Path, This };
-  virtual Flag flags() const override;
+  Flag flags() const override;
   ConvertedObject convert() const override;
   Mode mode() const;
   bool contains(const Vec2f& pos) const override;
@@ -52,9 +59,9 @@ protected:
 
 private:
   std::vector<std::unique_ptr<Object>> make_clones();
-  std::vector<std::unique_ptr<Object>> copy_children(const std::size_t n);
+  std::vector<std::unique_ptr<Object>> copy_children(std::size_t count);
 
-  double get_t(std::size_t i, const bool inclusive) const;
+  double get_t(std::size_t i, bool inclusive) const;
   void set_linear(Object& object, std::size_t i);
   void set_grid(Object& object, std::size_t i);
   void set_radial(Object& object, std::size_t i);

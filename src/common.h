@@ -3,6 +3,7 @@
 #include <QString>
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <functional>
 #include <list>
 #include <map>
@@ -177,7 +178,7 @@ bool is_not_null(const void* p);
 template<typename SetA, typename SetB = SetA> decltype(auto) merge(SetA&& a, SetB&& b)
 {
   a.insert(b.begin(), b.end());
-  return std::move(a);
+  return std::forward<SetA>(a);
 }
 
 template<typename SetA, typename SetB = SetA> SetA merge(const SetA& a, SetB&& b)
@@ -214,6 +215,7 @@ template<template<typename...> typename Container, typename S, typename... Ts>
 bool contains(const Container<Ts...>& set, S&& key)
 {
   if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     return std::find(set.begin(), set.end(), const_cast<std::remove_const_t<S>>(key)) != set.end();
   } else {
     return std::find(set.begin(), set.end(), key) != set.end();
@@ -223,6 +225,7 @@ bool contains(const Container<Ts...>& set, S&& key)
 template<typename S, typename... Ts> bool contains(const std::map<Ts...>& map, S&& key)
 {
   if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     return map.find(const_cast<std::remove_const_t<S>>(key)) != map.end();
   } else {
     return map.find(key) != map.end();
@@ -484,6 +487,9 @@ bool find_path(Vertex start,
 }
 
 enum class Space { Viewport, Scene };
+
+constexpr double M_180_PI = 180.0 * M_1_PI;
+constexpr double M_PI_180 = M_PI / 180.0;
 
 }  // namespace omm
 

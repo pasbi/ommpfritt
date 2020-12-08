@@ -6,7 +6,7 @@ namespace omm
 UserPropertyConfigCommand::UserPropertyConfigCommand(
     AbstractPropertyOwner& owner,
     std::vector<std::unique_ptr<Property>> properties)
-    : Command(QObject::tr("Modify user properties").toStdString()), m_owner(owner),
+    : Command(QObject::tr("Modify user properties")), m_owner(owner),
       m_swapped_properties(std::move(properties))
 {
 }
@@ -39,7 +39,7 @@ void UserPropertyConfigCommand::swap_user_properties()
     int i = 0;
     while (m_owner.has_property(unique_label)) {
       i += 1;
-      unique_label = label + "." + std::to_string(i);
+      unique_label = label + "." + QString("%1").arg(i);
     }
     property->revise();
     m_owner.add_property(unique_label, std::move(property));

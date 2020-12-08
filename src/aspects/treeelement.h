@@ -15,19 +15,21 @@ public:
   TreeElement() = default;
   virtual ~TreeElement() = default;
   explicit TreeElement(const TreeElement& other);
+  TreeElement(TreeElement&&) = delete;
+  TreeElement& operator=(TreeElement&&) = delete;
   TreeElement& operator=(const TreeElement& other) = delete;
-  bool is_root() const;
-  T& tree_parent() const;
-  virtual T& adopt(std::unique_ptr<T> adoptee, const size_t pos);
-  T& adopt(std::unique_ptr<T> adoptee);
-  virtual std::unique_ptr<T> repudiate(T& repudiatee);
-  std::vector<T*> tree_children() const;
-  T& tree_child(size_t i) const;
-  size_t n_children() const;
-  bool is_ancestor_of(const T& subject) const;
+  [[nodiscard]] bool is_root() const;
+  [[nodiscard]] T& tree_parent() const;
+  virtual T& adopt(std::unique_ptr<T> object, size_t pos);
+  T& adopt(std::unique_ptr<T> object);
+  virtual std::unique_ptr<T> repudiate(T& object);
+  [[nodiscard]] std::vector<T*> tree_children() const;
+  [[nodiscard]] T& tree_child(size_t i) const;
+  [[nodiscard]] size_t n_children() const;
+  [[nodiscard]] bool is_ancestor_of(const T& subject) const;
   void reset_parent(T& new_parent);
-  std::set<T*> all_descendants() const;
-  size_t position() const;
+  [[nodiscard]] std::set<T*> all_descendants() const;
+  [[nodiscard]] size_t position() const;
 
   static void remove_internal_children(std::set<T*>& items);
   static T* lowest_common_ancestor(T* a, T* b);
@@ -51,7 +53,7 @@ private:
   {
     return static_cast<T&>(*this);
   }
-  const T& get() const
+  [[nodiscard]] const T& get() const
   {
     return static_cast<const T&>(*this);
   }

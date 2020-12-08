@@ -14,8 +14,8 @@ class ReferencePropertyConfigWidget : public PropertyConfigWidget<ReferencePrope
   Q_OBJECT
 public:
   ReferencePropertyConfigWidget();
-  void init(const Property::Configuration& configuration) override;
-  void update(Property::Configuration& configuration) const override;
+  void init(const PropertyConfiguration& configuration) override;
+  void update(PropertyConfiguration& configuration) const override;
 
 private:
   std::map<Kind, QCheckBox*> m_allowed_kind_checkboxes;

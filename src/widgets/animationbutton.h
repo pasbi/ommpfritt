@@ -20,9 +20,9 @@ public:
                   const std::map<AbstractPropertyOwner*, Property*>& properties,
                   QWidget* parent = nullptr);
 
-  bool has_key() const;
-  bool has_track() const;
-  bool value_is_inconsistent() const;
+  [[nodiscard]] bool has_key() const;
+  [[nodiscard]] bool has_track() const;
+  [[nodiscard]] bool value_is_inconsistent() const;
 
 public Q_SLOTS:
   void set_key();
@@ -41,7 +41,7 @@ protected:
 private:
   Animator& m_animator;
   const std::map<AbstractPropertyOwner*, Property*> m_properties;
-  std::unique_ptr<QMenu> make_interpolation_menu() const;
+  [[nodiscard]] std::unique_ptr<QMenu> make_interpolation_menu() const;
 };
 
 }  // namespace omm

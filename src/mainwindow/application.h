@@ -38,7 +38,13 @@ private:
 
 public:
   Application(QCoreApplication& app, std::unique_ptr<Options> options);
-  ~Application();
+  ~Application() override;
+
+  Application(Application&&) = delete;
+  Application(const Application&) = delete;
+  Application& operator=(Application&&) = delete;
+  Application& operator=(const Application&) = delete;
+
   bool save();
   bool save_as();
   bool save(const QString& filename);
@@ -65,7 +71,7 @@ public:
 
   PythonEngine python_engine;
   Scene scene;
-  MailBox& mail_box();
+  MailBox& mail_box() const;
   MainWindow* main_window() const;
   const IconProvider icon_provider;
 
@@ -76,7 +82,7 @@ public:
   void register_auto_invert_icon_button(QAbstractButton& button);
 
   Manager& spawn_manager(const QString& type);
-  ToolBar& spawn_toolbar();
+  ToolBar& spawn_toolbar() const;
 
   /**
    * @brief get_active_manager returns a reference to an active manager.
@@ -89,8 +95,10 @@ public:
 
 private:
   QCoreApplication& m_app;
+
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static Application* m_instance;
-  MainWindow* m_main_window;
+  MainWindow* m_main_window = nullptr;
 
 public:
   Options& options()

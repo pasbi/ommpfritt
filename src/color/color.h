@@ -18,37 +18,36 @@ private:
 
 public:
   enum Model { RGBA, HSVA, Named };
-  Color(Model model, const std::array<double, 3> components, const double alpha);
-  Color(Model model, const std::array<double, 4> components);
+  Color(Model model, const std::array<double, 3>& components, double alpha);
+  Color(Model model, const std::array<double, 4>& components);
   explicit Color(const QString& name);
   explicit Color(const QColor& c);
   explicit Color();
+  static QString component_name(const Model& model, std::size_t component);
 
-  QString to_html() const;
+  [[nodiscard]] QString to_html() const;
   static Color from_html(const QString& html, bool* ok = nullptr);
   static Color from_qcolor(const QColor& color);
-  QColor to_qcolor() const;
+  [[nodiscard]] QColor to_qcolor() const;
 
   void to_ordinary_color();
-  QString name() const;
+  [[nodiscard]] QString name() const;
 
   enum class Role { Red, Green, Blue, Hue, Saturation, Value, Alpha };
 
   void set(Role role, double value);
-  double get(Role role) const;
+  [[nodiscard]] double get(Role role) const;
 
-  static std::array<double, 4> convert(Model from, Model to, const std::array<double, 4> values);
+  static std::array<double, 4> convert(Model from, Model to, const std::array<double, 4>& values);
   void convert(Model to);
-  Color convert(Model to) const;
+  [[nodiscard]] Color convert(Model to) const;
 
-  std::array<double, 4> components(Model model) const;
+  [[nodiscard]] std::array<double, 4> components(Model model) const;
   void set_components(Model model, const std::array<double, 4>& components);
-  Model model() const
+  [[nodiscard]] Model model() const
   {
     return m_current_model;
   }
-
-  static const std::map<Model, std::array<QString, 4>> component_names;
 
 private:
   Model m_current_model;

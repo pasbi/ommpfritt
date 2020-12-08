@@ -40,8 +40,8 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
     allowed_kind_layout->addWidget(checkbox);
   }
   allowed_kind_layout->addStretch();
-
-  required_flags_layout->addWidget(new QLabel(tr("Requirements:")));
+  auto label = std::make_unique<QLabel>(tr("Requirements:"));
+  required_flags_layout->addWidget(label.release());
   for (auto [_, checkbox] : m_required_flag_checkboxes) {
     required_flags_layout->addWidget(checkbox);
   }
@@ -52,11 +52,11 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
   setLayout(layout.release());
 }
 
-void ReferencePropertyConfigWidget::init(const Property::Configuration& configuration)
+void ReferencePropertyConfigWidget::init(const PropertyConfiguration& configuration)
 {
-  using Filter = ReferenceProperty::Filter;
-  const auto filter
-      = configuration.get<Filter>(ReferenceProperty::FILTER_POINTER, Filter::accept_anything());
+  using Filter = PropertyFilter;
+  const auto filter = configuration.get<PropertyFilter>(ReferenceProperty::FILTER_POINTER,
+                                                        Filter::accept_anything());
   for (auto&& [_, checkbox] : m_allowed_kind_checkboxes) {
     checkbox->setChecked(false);
   }
@@ -86,7 +86,7 @@ void ReferencePropertyConfigWidget::init(const Property::Configuration& configur
   }
 }
 
-void ReferencePropertyConfigWidget::update(Property::Configuration& configuration) const
+void ReferencePropertyConfigWidget::update(PropertyConfiguration& configuration) const
 {
   Disjunction<Kind> kinds;
   DNF<Flag> flags;
@@ -107,7 +107,7 @@ void ReferencePropertyConfigWidget::update(Property::Configuration& configuratio
     }
   }
 
-  configuration[ReferenceProperty::FILTER_POINTER] = ReferenceProperty::Filter(kinds, flags);
+  configuration.set(ReferenceProperty::FILTER_POINTER, PropertyFilter(kinds, flags));
 }
 
 }  // namespace omm

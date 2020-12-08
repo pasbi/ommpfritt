@@ -16,7 +16,7 @@ const std::set<QString> PathProperties::keys{PATH_REFERENCE_PROPERTY_KEY,
 void PathProperties::make_properties(const QString& category) const
 {
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
-      .set_filter(ReferenceProperty::Filter({Kind::Object}, {{{}}}))
+      .set_filter(PropertyFilter({Kind::Object}, {{{}}}))
       .set_label(QObject::tr("path"))
       .set_category(category);
   create_property<IntegerProperty>(SEGMENT_PROPERTY_KEY)
@@ -38,7 +38,7 @@ void PathProperties::apply_transformation(Object& object,
                                           const ObjectTransformation& transformation) const
 {
   const auto* path_object = property_value<AbstractPropertyOwner*>(PATH_REFERENCE_PROPERTY_KEY);
-  if (const auto path = kind_cast<const Object*>(path_object); path != nullptr) {
+  if (const auto* const path = kind_cast<const Object*>(path_object); path != nullptr) {
     const auto interpolation = property_value<Object::Interpolation>(INTERPOLATION_KEY);
     const int path_index = property_value<int>(SEGMENT_PROPERTY_KEY);
     const auto time = path->compute_path_vector_time(path_index, t, interpolation);

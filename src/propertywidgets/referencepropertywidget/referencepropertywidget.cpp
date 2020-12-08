@@ -35,9 +35,10 @@ ReferencePropertyWidget ::ReferencePropertyWidget(Scene& scene,
     set_properties_value(o);
   });
 
-  const auto filter = get<ReferenceProperty, ReferenceProperty::Filter>(
-      properties,
-      [](const ReferenceProperty* p) { return p->filter(); });
+  const auto filter
+      = get<ReferenceProperty, PropertyFilter>(properties, [](const ReferenceProperty* p) {
+          return p->filter();
+        });
 
   line_edit->set_filter(filter);
 
@@ -47,11 +48,7 @@ ReferencePropertyWidget ::ReferencePropertyWidget(Scene& scene,
   vlayout->set_thing(std::make_unique<QLabel>());
   set_widget(std::move(line_edit));
 
-  update_edit();
-}
-
-ReferencePropertyWidget::~ReferencePropertyWidget()
-{
+  ReferencePropertyWidget::update_edit();
 }
 
 void ReferencePropertyWidget::update_edit()

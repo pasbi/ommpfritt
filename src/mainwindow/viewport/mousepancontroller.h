@@ -18,7 +18,7 @@ public:
   void start_move(const Vec2f& global_pos, Action action);
   bool end_move();
   Vec2f apply(const Vec2f& delta, ObjectTransformation& t);
-  Action action() const
+  [[nodiscard]] Action action() const
   {
     return m_action;
   }

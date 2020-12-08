@@ -38,7 +38,6 @@ public:
   explicit AbstractSerializer(std::ostream&)
   {
   }
-  virtual ~AbstractSerializer() = default;
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual void start_array(size_t size, const Pointer& pointer) = 0;
@@ -51,18 +50,16 @@ public:
   virtual void set_value(const Vec2i& value, const Pointer& pointer) = 0;
   virtual void set_value(const PolarCoordinates& value, const Pointer& pointer) = 0;
   virtual void set_value(const Color& color, const Pointer& pointer) = 0;
-  virtual void set_value(const std::size_t, const Pointer& pointer) = 0;
+  virtual void set_value(std::size_t, const Pointer& pointer) = 0;
   virtual void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) = 0;
   virtual void set_value(const SplineType&, const Pointer& pointer) = 0;
-  void set_value(const AbstractPropertyOwner* id, const Pointer& pointer);
+  void set_value(const AbstractPropertyOwner* ref, const Pointer& pointer);
   void set_value(const variant_type& variant, const Pointer& pointer);
   void set_value(const Serializable& serializable, const Pointer& pointer);
   template<typename T> std::enable_if_t<std::is_enum_v<T>> set_value(const T& t, const Pointer& ptr)
   {
     set_value(static_cast<std::size_t>(t), ptr);
   }
-
-  std::set<AbstractPropertyOwner*> serialized_references() const;
 
   template<typename A, typename B> void set_value(const std::pair<A, B>& pair, const Pointer& ptr)
   {
@@ -84,9 +81,6 @@ public:
 
 protected:
   void register_serialzied_reference(AbstractPropertyOwner* reference);
-
-private:
-  std::set<AbstractPropertyOwner*> m_serialized_references;
 };
 
 template<class T> struct always_false : std::false_type {
@@ -95,9 +89,12 @@ template<class T> struct always_false : std::false_type {
 class ReferencePolisher
 {
 public:
-  virtual ~ReferencePolisher()
-  {
-  }
+  virtual ~ReferencePolisher() = default;
+  ReferencePolisher() = default;
+  ReferencePolisher(ReferencePolisher&&) = delete;
+  ReferencePolisher(const ReferencePolisher&) = default;
+  ReferencePolisher& operator=(ReferencePolisher&&) = delete;
+  ReferencePolisher& operator=(const ReferencePolisher&) = delete;
 
 protected:
   virtual void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;
@@ -112,7 +109,6 @@ public:
   explicit AbstractDeserializer(std::istream&)
   {
   }
-  virtual ~AbstractDeserializer();
 
   /**
    * @brief polish sets all registered references.
@@ -135,7 +131,7 @@ public:
   virtual TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) = 0;
   virtual SplineType get_spline(const Pointer& pointer) = 0;
 
-  void register_reference(const std::size_t id, AbstractPropertyOwner& reference);
+  void register_reference(std::size_t id, AbstractPropertyOwner& reference);
   void register_reference_polisher(ReferencePolisher& polisher);
 
   template<typename T> std::enable_if_t<!std::is_enum_v<T>, T> get(const Pointer&);

@@ -14,7 +14,6 @@ protected:
   using creator_map_type = std::map<Key, creator_type>;
   using clone_type = std::unique_ptr<GeneralT> (*)(const GeneralT&);
   using clone_map_type = std::map<Key, clone_type>;
-  virtual ~AbstractFactory() = default;
 
 private:
   template<typename SpecialT> static std::unique_ptr<GeneralT> make_(Args&&... args)
@@ -75,14 +74,19 @@ public:
   }
 
 private:
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static creator_map_type m_creator_map;
+
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static clone_map_type m_clone_map;
 };
 
 template<typename Key, bool enable_clone, typename GeneralT, typename... Args>
 typename AbstractFactory<Key, enable_clone, GeneralT, Args...>::creator_map_type
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
     AbstractFactory<Key, enable_clone, GeneralT, Args...>::m_creator_map;
 
 template<typename Key, bool enable_clone, typename GeneralT, typename... Args>
 typename AbstractFactory<Key, enable_clone, GeneralT, Args...>::clone_map_type
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
     AbstractFactory<Key, enable_clone, GeneralT, Args...>::m_clone_map;

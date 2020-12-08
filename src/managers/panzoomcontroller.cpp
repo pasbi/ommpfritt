@@ -51,7 +51,8 @@ bool PanZoomController::move(const QMouseEvent& event)
   QRectF scene_rect = m_view.sceneRect();
   switch (m_current_action) {
   case Action::Zoom: {
-    double f = std::pow(1.005, d.x());
+    static constexpr double ZOOM_FACTOR = .005;
+    double f = std::pow(1.0 + ZOOM_FACTOR, d.x());
     const double current_scale = this->current_scale();
     if (current_scale > max_scale) {
       // only allow zoom out

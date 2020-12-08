@@ -13,15 +13,18 @@ template<typename ValueT> class Vec2
 {
 public:
   using element_type = ValueT;
-  Vec2(const element_type& x, const element_type& y) : x(x), y(y)
+  constexpr Vec2(const element_type& x, const element_type& y) : x(x), y(y)
   {
   }
-  Vec2() : Vec2(element_type(0), element_type(0))
+
+  constexpr Vec2() : Vec2(element_type(0), element_type(0))
   {
   }
-  Vec2(const std::array<element_type, 2>& components) : Vec2(components[0], components[1])
+
+  constexpr Vec2(const std::array<element_type, 2>& components) : Vec2(components[0], components[1])
   {
   }
+
   explicit Vec2(const std::vector<ValueT>& components)
   {
     if (components.size() != 2) {
@@ -36,15 +39,17 @@ public:
   Vec2(const QPoint& p) : Vec2(p.x(), p.y())
   {
   }
+
   Vec2(const QPointF& p) : Vec2(p.x(), p.y())
   {
   }
 
-  QPointF to_pointf() const
+  [[nodiscard]] QPointF to_pointf() const
   {
     return QPointF(static_cast<double>(x), static_cast<double>(y));
   }
-  QPoint to_point() const
+
+  [[nodiscard]] QPoint to_point() const
   {
     return QPoint(static_cast<int>(x), static_cast<int>(y));
   }
@@ -78,26 +83,32 @@ public:
   {
     return {x, y};
   }
-  double euclidean_norm2() const
+
+  [[nodiscard]] double euclidean_norm2() const
   {
     return x * x + y * y;
   }
-  double euclidean_norm() const
+
+  [[nodiscard]] double euclidean_norm() const
   {
     return std::sqrt(euclidean_norm2());
   }
+
   ValueT max_norm() const
   {
     return std::max(std::abs(x), std::abs(y));
   }
+
   ValueT max() const
   {
     return std::max(x, y);
   }
+
   ValueT min() const
   {
     return std::min(x, y);
   }
+
   void swap(Vec2& other)
   {
     std::swap(x, other.x);
@@ -161,19 +172,23 @@ public:
   {
     return (*this) += (-rhs);
   }
+
   Vec2<element_type>& operator/=(const element_type& e)
   {
     return (*this) *= 1.0 / e;
   }
-  double arg() const
+
+  [[nodiscard]] double arg() const
   {
     return std::atan2(y, x);
   }
-  bool has_nan() const
+
+  [[nodiscard]] bool has_nan() const
   {
     return std::isnan(x) || std::isnan(y);
   }
-  bool has_inf() const
+
+  [[nodiscard]] bool has_inf() const
   {
     return std::isinf(x) || std::isinf(y);
   }

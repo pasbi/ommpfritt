@@ -34,7 +34,7 @@ OptionPropertyConfigWidget ::OptionPropertyConfigWidget()
   setLayout(layout.release());
 }
 
-void OptionPropertyConfigWidget::init(const Property::Configuration& configuration)
+void OptionPropertyConfigWidget::init(const PropertyConfiguration& configuration)
 {
   m_list_widget->clear();
   const auto items = configuration.get<std::vector<QString>>(OptionProperty::OPTIONS_POINTER, {});
@@ -47,7 +47,7 @@ void OptionPropertyConfigWidget::init(const Property::Configuration& configurati
   }
 }
 
-void OptionPropertyConfigWidget::update(Property::Configuration& configuration) const
+void OptionPropertyConfigWidget::update(PropertyConfiguration& configuration) const
 {
   std::vector<QString> items;
   const int n = m_list_widget->count();
@@ -56,7 +56,7 @@ void OptionPropertyConfigWidget::update(Property::Configuration& configuration) 
     const auto label = m_list_widget->item(row)->data(Qt::DisplayRole).toString();
     items.push_back(label);
   }
-  configuration[OptionProperty::OPTIONS_POINTER] = items;
+  configuration.set(OptionProperty::OPTIONS_POINTER, items);
 }
 
 void OptionPropertyConfigWidget::add_option(const QString& label)
@@ -70,7 +70,7 @@ void OptionPropertyConfigWidget::add_option(const QString& label)
 void OptionPropertyConfigWidget::remove_option(int index)
 {
   if (m_list_widget->count() > 1) {
-    delete m_list_widget->takeItem(index);
+    delete m_list_widget->takeItem(index);  // NOLINT(cppcoreguidelines-owning-memory)
   } else {
     LWARNING << "Prevented attempt to remove last option";
     QMessageBox::warning(this,
@@ -82,7 +82,7 @@ void OptionPropertyConfigWidget::remove_option(int index)
 bool OptionPropertyConfigWidget::eventFilter(QObject* watched, QEvent* event)
 {
   const auto get_item = [event, this]() {
-    const auto pos = static_cast<QMouseEvent*>(event)->pos();
+    const auto pos = dynamic_cast<QMouseEvent*>(event)->pos();
     return m_list_widget->itemAt(pos);
   };
 
@@ -109,12 +109,12 @@ bool OptionPropertyConfigWidget::eventFilter(QObject* watched, QEvent* event)
   if (watched == m_list_widget->viewport()) {
     switch (event->type()) {
     case QEvent::MouseButtonPress:
-      if (attempt_remove_item(static_cast<QMouseEvent*>(event))) {
+      if (attempt_remove_item(dynamic_cast<QMouseEvent*>(event))) {
         return true;
       }
       break;
     case QEvent::MouseButtonDblClick:
-      if (attempt_add_item(static_cast<QMouseEvent*>(event))) {
+      if (attempt_add_item(dynamic_cast<QMouseEvent*>(event))) {
         return true;
       }
       break;

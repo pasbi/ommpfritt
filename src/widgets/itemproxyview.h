@@ -40,7 +40,7 @@ public:
     set_proxy(std::make_unique<ProxyChain>());
   }
 
-  ProxyChain* model() const
+  [[nodiscard]] ProxyChain* model() const
   {
     return m_proxy.get();
   }
@@ -50,7 +50,7 @@ public:
     if (m_proxy) {
       QAbstractItemModel* model = m_proxy->chainSourceModel();
       m_proxy = std::move(proxy);
-      setModel(model);
+      ItemProxyView::setModel(model);
     } else {
       m_proxy = std::move(proxy);
     }
@@ -61,7 +61,7 @@ public:
     m_proxy->setSourceModel(model);
     m_selection_proxy.reset();
     ViewT::setModel(m_proxy.get());
-    setSelectionModel(new QItemSelectionModel(model, this));
+    ItemProxyView::setSelectionModel(std::make_unique<QItemSelectionModel>(model, this).release());
   }
 
   void setSelectionModel(QItemSelectionModel* model) override

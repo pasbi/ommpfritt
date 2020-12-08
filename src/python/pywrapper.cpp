@@ -89,11 +89,11 @@ py::object wrap(AbstractPropertyOwner* owner)
   } else {
     switch (owner->kind) {
     case Kind::Tag:
-      return wrap(static_cast<Tag&>(*owner));
+      return wrap(dynamic_cast<Tag&>(*owner));
     case Kind::Style:
-      return wrap(static_cast<Style&>(*owner));
+      return wrap(dynamic_cast<Style&>(*owner));
     case Kind::Object:
-      return wrap(static_cast<Object&>(*owner));
+      return wrap(dynamic_cast<Object&>(*owner));
     default:
       return py::none();
     }
@@ -126,7 +126,7 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
   }
 }
 
-pybind11::object variant_to_python(variant_type variant)
+pybind11::object variant_to_python(const variant_type& variant)
 {
   return std::visit(
       [](auto&& v) {
@@ -137,9 +137,7 @@ pybind11::object variant_to_python(variant_type variant)
           return py::cast(v.toStdString());
         } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
           return static_cast<py::object>(py::none());
-        } else if constexpr (std::is_same_v<T, Vec2f>) {
-          return py::cast(v.to_stdvec());
-        } else if constexpr (std::is_same_v<T, Vec2i>) {
+        } else if constexpr (std::is_same_v<T, Vec2f> || std::is_same_v<T, Vec2i>) {
           return py::cast(v.to_stdvec());
         } else if constexpr (std::is_same_v<T, Color>) {
           return py::cast(v.components(Color::Model::RGBA));

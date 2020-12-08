@@ -35,7 +35,8 @@ AnchorHUD::AnchorHUD(QWidget& widget)
 
 QSize AnchorHUD::size() const
 {
-  return QSize(50, 50);
+  static constexpr int ANCHOR_HUD_SIZE = 50;
+  return QSize(ANCHOR_HUD_SIZE, ANCHOR_HUD_SIZE);
 }
 
 void AnchorHUD::draw(QPainter& painter) const
@@ -62,19 +63,27 @@ bool AnchorHUD::mouse_press(QMouseEvent& event)
 {
   const QPointF pos = event.pos() - this->pos;
   const QRectF grid = anchor_grid();
-  for (const Anchor anchor : PROPER_ANCHORS) {
-    if (anchor_rect(Options::anchor_position(grid, anchor)).contains(pos)) {
-      if (m_anchor == anchor) {
-        set_anchor(Anchor::None);
-      } else {
-        set_anchor(anchor);
-      }
-      m_disable_hover_for = anchor;
-      QTimer::singleShot(1000, [this]() { m_disable_hover_for = Anchor::None; });
-      return true;
-    }
-  }
-  return false;
+
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
+  return std::any_of(PROPER_ANCHORS.begin(),
+                     PROPER_ANCHORS.end(),
+                     [this, pos, grid](auto&& anchor) {
+                       if (anchor_rect(Options::anchor_position(grid, anchor)).contains(pos)) {
+                         if (m_anchor == anchor) {
+                           set_anchor(Anchor::None);
+                         } else {
+                           set_anchor(anchor);
+                         }
+                         m_disable_hover_for = anchor;
+                         static constexpr int HOVER_DISABLE_PERIOD_MS = 1000;
+                         QTimer::singleShot(HOVER_DISABLE_PERIOD_MS, this, [this]() {
+                           m_disable_hover_for = Anchor::None;
+                         });
+                         return true;
+                       } else {
+                         return false;
+                       }
+                     });
 }
 
 void AnchorHUD::mouse_release(QMouseEvent& event)

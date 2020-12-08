@@ -10,10 +10,16 @@ using Interpolation = omm::Track::Interpolation;
 
 double interpolate(const std::array<double, 4>& segment, double t, Interpolation interpolation)
 {
-  std::array<double, 4> bernstein4{1.0 * (1 - t) * (1 - t) * (1 - t),
-                                   3.0 * t * (1 - t) * (1 - t),
-                                   3.0 * t * t * (1 - t),
-                                   1.0 * t * t * t};
+  static constexpr double bc41 = 1.0;
+  static constexpr double bc42 = 3.0;
+  static constexpr double bc43 = 3.0;
+  static constexpr double bc44 = 1.0;
+  std::array<double, 4> bernstein4{bc41 * (1 - t) * (1 - t) * (1 - t),
+                                   // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+                                   bc42 * t * (1 - t) * (1 - t),
+                                   // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+                                   bc43 * t * t * (1 - t),
+                                   bc44 * t * t * t};
   switch (interpolation) {
   case Interpolation::Step:
     return segment[0];
@@ -51,9 +57,7 @@ Track::Track(Property& property) : m_property(property)
 {
 }
 
-Track::~Track()
-{
-}
+Track::~Track() = default;
 
 std::unique_ptr<Track> Track::clone() const
 {
@@ -129,14 +133,14 @@ variant_type Track::interpolate(double frame) const
   int left_frame = 0;
   const Knot* right = nullptr;
   int right_frame = 0;
-  for (auto it = m_knots.cbegin(); it != m_knots.cend(); ++it) {
-    if (it->first <= frame) {
-      left_frame = it->first;
-      left = it->second.get();
+  for (const auto& knot : m_knots) {
+    if (knot.first <= frame) {
+      left_frame = knot.first;
+      left = knot.second.get();
     } else {
-      assert(it->first > frame);
-      right_frame = it->first;
-      right = it->second.get();
+      assert(knot.first > frame);
+      right_frame = knot.first;
+      right = knot.second.get();
       break;
     }
   }
@@ -145,8 +149,9 @@ variant_type Track::interpolate(double frame) const
     return right->value;
   } else if (left != nullptr && right == nullptr) {
     return left->value;
+  } else if (left == nullptr && right == nullptr) {
+    LFATAL("Unexpected condition.");
   } else {
-    assert(left != nullptr && right != nullptr);
     const std::size_t n = n_channels(left->value);
     assert(n == n_channels(right->value));
     if (n == 0) {

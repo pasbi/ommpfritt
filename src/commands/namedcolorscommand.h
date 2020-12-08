@@ -64,7 +64,7 @@ public:
   void undo() override;
   void redo() override;
 
-  int id() const override
+  [[nodiscard]] int id() const override
   {
     return Command::CHANGE_NAMED_COLORS_COLOR_COMMAND_ID;
   }

@@ -19,7 +19,10 @@ class NodesTag
 public:
   explicit NodesTag(Object& owner);
   NodesTag(const NodesTag& other);
-  ~NodesTag();
+  ~NodesTag() override;
+  NodesTag(NodesTag&&) = delete;
+  NodesTag& operator=(NodesTag&&) = delete;
+  NodesTag& operator=(const NodesTag&) = delete;
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "NodesTag");
   static constexpr auto UPDATE_MODE_PROPERTY_KEY = "update";

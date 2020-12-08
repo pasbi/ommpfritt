@@ -55,6 +55,7 @@ namespace omm
 {
 Mirror::Mirror(Scene* scene) : Object(scene)
 {
+  static constexpr double TOLERANCE_STEP = 0.1;
   static const auto category = QObject::tr("Mirror");
   create_property<OptionProperty>(DIRECTION_PROPERTY_KEY)
       .set_options({QObject::tr("Horizontal"), QObject::tr("Vertical"), QObject::tr("Both")})
@@ -66,7 +67,7 @@ Mirror::Mirror(Scene* scene) : Object(scene)
       .set_category(category);
   create_property<FloatProperty>(TOLERANCE_PROPERTY_KEY)
       .set_range(0.0, std::numeric_limits<double>::max())
-      .set_step(0.1)
+      .set_step(TOLERANCE_STEP)
       .set_label(QObject::tr("Snap tolerance"))
       .set_category(category);
   polish();
@@ -81,16 +82,19 @@ Mirror::Mirror(const Mirror& other)
 void Mirror::polish()
 {
   listen_to_children_changes();
-  update();
+  Mirror::update();
 }
 
-void Mirror::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
+void Mirror::draw_object(Painter& renderer,
+                         const Style& style,
+                         const Painter::Options& options) const
 {
   assert(&renderer.scene == scene());
   if (is_active()) {
-    options.default_style = &style;
+    auto options_copy = options;
+    options_copy.default_style = &style;
     if (m_reflection) {
-      m_reflection->draw_recursive(renderer, options);
+      m_reflection->draw_recursive(renderer, options_copy);
     }
   } else {
     Object::draw_object(renderer, style, options);
@@ -103,7 +107,7 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation& transformation) con
     const ObjectTransformation t = transformation.apply(m_reflection->transformation());
     switch (property(AS_PATH_PROPERTY_KEY)->value<Mode>()) {
     case Mode::Path:
-      return m_reflection->recursive_bounding_box(t);
+      [[fallthrough]];
     case Mode::Object:
       return m_reflection->recursive_bounding_box(t);
     default:
@@ -237,7 +241,7 @@ void Mirror::perform_update_path_mode()
               ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
               : InterpolationMode::Bezier;
     reflection->property(Path::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
-    m_reflection.reset(reflection.release());
+    m_reflection = std::move(reflection);
   }
 }
 

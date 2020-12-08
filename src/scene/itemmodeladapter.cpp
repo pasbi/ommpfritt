@@ -39,9 +39,9 @@ make_contextes(const ItemModelAdapterT& adapter,
   std::vector<ContextT> contextes;
   using item_type = typename ContextT::item_type;
 
-  auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
+  const auto* property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
   auto items = ::transform<item_type*, std::set>(property_owner_mime_data->items<item_type>());
-  if (property_owner_mime_data == nullptr || items.size() == 0) {
+  if (property_owner_mime_data == nullptr || items.empty()) {
     return contextes;
   }
 
@@ -71,9 +71,9 @@ make_contextes(const ItemModelAdapterT& adapter,
 
   using item_type = typename ContextT::item_type;
 
-  auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
+  const auto* property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
   const auto items = property_owner_mime_data->items<item_type>();
-  if (property_owner_mime_data == nullptr || items.size() == 0) {
+  if (property_owner_mime_data == nullptr || items.empty()) {
     return std::vector<ContextT>();
   }
 
@@ -157,7 +157,7 @@ bool ItemModelAdapter<StructureT, ItemT, ItemModel>::canDropMimeData(
     return false;
   }
   const auto items = pdata->items<typename structure_type::item_type>();
-  if (items.size() == 0) {
+  if (items.empty()) {
     return false;
   }
 
@@ -190,7 +190,7 @@ bool ItemModelAdapter<StructureT, ItemT, ItemModel>::dropMimeData(const QMimeDat
     switch (action) {
     case Qt::MoveAction: {
       auto move_contextes = make_contextes<MoveContext>(*this, data, row, parent);
-      if (move_contextes.size() == 0) {
+      if (move_contextes.empty()) {
         return false;
       }
       scene.submit<MoveCommand<StructureT>>(structure, move_contextes);
@@ -198,7 +198,7 @@ bool ItemModelAdapter<StructureT, ItemT, ItemModel>::dropMimeData(const QMimeDat
     }
     case Qt::CopyAction: {
       auto copy_contextes = make_contextes<OwningContext>(*this, data, row, parent);
-      if (copy_contextes.size() == 0) {
+      if (copy_contextes.empty()) {
         return false;
       }
       scene.submit<CopyCommand<StructureT>>(structure, std::move(copy_contextes));

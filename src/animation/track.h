@@ -26,9 +26,12 @@ public:
   struct Knot : public ReferencePolisher {
     Knot(AbstractDeserializer& deserializer, const Pointer& pointer, const QString& type);
     Knot(const variant_type& value);
-    Knot& operator=(const Knot& other) = delete;
+    Knot(Knot&&) = delete;
+    Knot& operator=(Knot&&) = delete;
+    Knot& operator=(const Knot&) = delete;
+    ~Knot() override = default;
     void swap(Knot& other);
-    std::unique_ptr<Knot> clone() const;
+    [[nodiscard]] std::unique_ptr<Knot> clone() const;
 
     enum class Side { Left, Right };
 
@@ -49,15 +52,19 @@ public:
 
     // only required for deserialization.
     void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
-    std::size_t m_reference_id;
+    std::size_t m_reference_id = 0;
   };
 
   enum class Interpolation { Step, Linear, Bezier };
   static QString interpolation_label(Interpolation interpolation);
 
   explicit Track(Property& property);
-  ~Track();
-  std::unique_ptr<Track> clone() const;
+  Track(Track&&) = delete;
+  Track(const Track&) = delete;
+  Track& operator=(Track&&) = delete;
+  Track& operator=(const Track&) = delete;
+  ~Track() override;
+  [[nodiscard]] std::unique_ptr<Track> clone() const;
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
   static constexpr auto KNOTS_KEY = "knots";
@@ -73,16 +80,16 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
 
-  bool has_keyframe(int frame) const
+  [[nodiscard]] bool has_keyframe(int frame) const
   {
     return m_knots.find(frame) != m_knots.end();
   }
 
-  double interpolate(double frame, std::size_t channel) const;
-  variant_type interpolate(double frame) const;
-  Knot& knot(int frame) const;
+  [[nodiscard]] double interpolate(double frame, std::size_t channel) const;
+  [[nodiscard]] variant_type interpolate(double frame) const;
+  [[nodiscard]] Knot& knot(int frame) const;
 
-  std::vector<int> key_frames() const;
+  [[nodiscard]] std::vector<int> key_frames() const;
   void apply(int frame) const;
   void move_knot(int old_frame, int new_frame);
 
@@ -104,8 +111,8 @@ public:
    */
   std::unique_ptr<Knot> remove_knot(int frame);
 
-  QString type() const;
-  Property& property() const
+  [[nodiscard]] QString type() const;
+  [[nodiscard]] Property& property() const
   {
     return m_property;
   }
@@ -115,12 +122,12 @@ public:
    * value of the property. Never interpolates the value.
    * @note if there is no key frame at @code frame, then true is returned.
    */
-  bool is_consistent(int frame) const;
+  [[nodiscard]] bool is_consistent(int frame) const;
 
-  bool is_numerical() const;
+  [[nodiscard]] bool is_numerical() const;
 
   void set_interpolation(Interpolation interpolation);
-  Interpolation interpolation() const;
+  [[nodiscard]] Interpolation interpolation() const;
 
 private:
   Property& m_property;

@@ -23,11 +23,11 @@ public:
   QString label;
   void set_prefix(const QString& prefix);
   void set_suffix(const QString& suffix);
-  QString prefix() const
+  [[nodiscard]] QString prefix() const
   {
     return m_prefix;
   }
-  QString suffix() const
+  [[nodiscard]] QString suffix() const
   {
     return m_suffix;
   }
@@ -178,10 +178,11 @@ protected:
 
   void mouseMoveEvent(QMouseEvent* e) override
   {
+    static constexpr double CREEP_FEED_FACTOR = 1.0 / 100.0;
     if (e->buttons() & slider_button && isReadOnly()) {
       QPoint distance = e->pos() - m_mouse_press_pos;
-      if (e->modifiers() & Qt::ControlModifier) {
-        increment(distance.x() / 100.0);
+      if ((e->modifiers() & Qt::ControlModifier) != 0u) {
+        increment(distance.x() * CREEP_FEED_FACTOR);
       } else {
         increment(distance.x());
       }

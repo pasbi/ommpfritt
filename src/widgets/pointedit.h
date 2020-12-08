@@ -20,22 +20,24 @@ public:
   void set_display_mode(const DisplayMode& display_mode);
 
 private:
-  QPushButton* m_mirror_from_left;
-  QPushButton* m_mirror_from_right;
+  QPushButton* m_mirror_from_left = nullptr;
+  QPushButton* m_mirror_from_right = nullptr;
   QPushButton* m_coupled;
-  QPushButton* m_vanish_left;
-  QPushButton* m_vanish_right;
-  CoordinateEdit* m_left_tangent_edit;
-  CoordinateEdit* m_right_tangent_edit;
+  QPushButton* m_vanish_left = nullptr;
+  QPushButton* m_vanish_right = nullptr;
+  CoordinateEdit* m_left_tangent_edit = nullptr;
+  CoordinateEdit* m_right_tangent_edit = nullptr;
   CoordinateEdit* m_position_edit;
   Point& m_point;
-  Path* m_path;
+  Path* m_path{};
 
 private Q_SLOTS:
   void mirror_from_right();
   void mirror_from_left();
-  void set_left_maybe(const PolarCoordinates& old_right, const PolarCoordinates& new_right);
-  void set_right_maybe(const PolarCoordinates& old_left, const PolarCoordinates& new_left);
+  void set_left_maybe(const omm::PolarCoordinates& old_right,
+                      const omm::PolarCoordinates& new_right);
+  void set_right_maybe(const omm::PolarCoordinates& old_left,
+                       const omm::PolarCoordinates& new_left);
   void update_point();
 };
 

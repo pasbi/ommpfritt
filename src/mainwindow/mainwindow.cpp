@@ -13,6 +13,7 @@
 #include <QSettings>
 #include <functional>
 
+#include "common.h"
 #include "keybindings/commandinterface.h"
 #include "logging.h"
 #include "mainwindow/application.h"
@@ -37,7 +38,8 @@ QMenu* find_menu(QMenu* menu, const QString& object_name)
   } else if (menu->objectName() == object_name) {
     return menu;
   } else {
-    for (QAction* action : menu->actions()) {
+    const auto actions = menu->actions();
+    for (const QAction* action : actions) {
       QMenu* sub_menu = find_menu(action->menu(), object_name);
       if (sub_menu != nullptr) {
         return sub_menu;
@@ -114,13 +116,15 @@ std::vector<QString> MainWindow::path_menu_entries()
 
 std::vector<QString> MainWindow::main_menu_entries()
 {
+  using namespace std::string_literals;
   std::list<QString> entries = {
+      // NOLINTNEXTLINE(bugprone-suspicious-missing-comma)
       QT_TRANSLATE_NOOP("menu_name", "file") "/new document",
       "file/save document",
       "file/save document as ...",
       "file/load document ...",
       "file/" QT_TRANSLATE_NOOP("menu_name", "load recent document") "/",
-      QStringLiteral("file/") + KeyBindings::SEPARATOR,
+      QString::fromStdString("file/"s + KeyBindings::SEPARATOR),
       "file/export",
       QT_TRANSLATE_NOOP("menu_name", "edit") "/undo",
       "edit/redo",
@@ -130,7 +134,7 @@ std::vector<QString> MainWindow::main_menu_entries()
       "object/" QT_TRANSLATE_NOOP("menu_name", "attach") "/",
       QT_TRANSLATE_NOOP("menu_name", "path") "/",
       QT_TRANSLATE_NOOP("menu_name", "tool") "/previous tool",
-      QStringLiteral("tool/") + KeyBindings::SEPARATOR,
+      QString::fromStdString("tool/"s + KeyBindings::SEPARATOR),
       QT_TRANSLATE_NOOP("menu_name", "scene") "/evaluate",
       "scene/reset viewport",
       QT_TRANSLATE_NOOP("menu_name", "window") "/" QT_TRANSLATE_NOOP("menu_name", "show") "/",
@@ -143,7 +147,7 @@ std::vector<QString> MainWindow::main_menu_entries()
   }
   entries.insert(entries.end(),
                  {
-                     QStringLiteral("window/") + KeyBindings::SEPARATOR,
+                     QString::fromStdString("window/"s + KeyBindings::SEPARATOR),
                      "window/restore default layout",
                      "window/new toolbar",
 #ifndef NDEBUG  // these functions facialiate the creation of profiles.
@@ -174,7 +178,7 @@ void MainWindow::update_window_title()
   } else {
     filename = QFileInfo(filename).fileName();
   }
-  setWindowTitle(QString("%1%2 - omm").arg(filename).arg(indicator));
+  setWindowTitle(QString("%1%2 - omm").arg(filename, indicator));
 }
 
 MainWindow::MainWindow(Application& app) : m_app(app)
@@ -185,7 +189,7 @@ MainWindow::MainWindow(Application& app) : m_app(app)
   setCentralWidget(viewport.release());
 
   QSettings settings;
-  if (settings.allKeys().size() == 0) {
+  if (settings.allKeys().empty()) {
     restore_default_layout();
   } else {
     restore_state();
@@ -278,9 +282,10 @@ bool omm::MainWindow::eventFilter(QObject* o, QEvent* e)
 
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
-  if (::contains(Application::keyboard_modifiers, e->key())) {
-    QMainWindow::keyPressEvent(e);
-  } else if (!Application::instance().dispatch_key(e->key(), e->modifiers())) {
+  const bool is_modifier = ::contains(Application::keyboard_modifiers, e->key());
+  const bool is_dispatched
+      = !is_modifier && !Application::instance().dispatch_key(e->key(), e->modifiers());
+  if (is_modifier || is_dispatched) {
     QMainWindow::keyPressEvent(e);
   }
 }
@@ -302,10 +307,10 @@ void MainWindow::assign_unique_objectname(ToolBar& toolbar) const
   toolbar.setObjectName(make_unique(toolbar.type(), blacklist));
 }
 
-QString MainWindow::get_last_layout_filename() const
+QString MainWindow::get_last_layout_filename()
 {
   QSettings settings;
-  const QString fn = settings.value(LAST_LAYOUT_FILE_NAME, "").toString();
+  QString fn = settings.value(LAST_LAYOUT_FILE_NAME, "").toString();
   if (fn.isEmpty()) {
     return QDir::homePath();
   } else {
@@ -340,10 +345,15 @@ void MainWindow::save_layout()
 
 void MainWindow::load_layout(QSettings& settings)
 {
-  for (Manager* manager : findChildren<Manager*>()) {
+  const auto managers = findChildren<Manager*>();
+  for (const Manager* manager : managers) {
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
     delete manager;
   }
-  for (QToolBar* toolbar : findChildren<QToolBar*>()) {
+
+  const auto toolbars = findChildren<QToolBar*>();
+  for (const QToolBar* toolbar : toolbars) {
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
     delete toolbar;
   }
 
@@ -383,7 +393,7 @@ void MainWindow::load_layout(QSettings& settings)
         if (manager->isFloating()) {
           manager->setFloating(true);
         }
-        manager.release();  // ownership is handled by qt
+        (void)manager.release();  // ownership is handled by qt
       } else {
         LWARNING << "Failed to restore geometry of manager.";
         // delete the dock widget.
@@ -400,7 +410,8 @@ void MainWindow::save_layout(QSettings& settings)
   {
     std::set<QString> names;
     settings.beginWriteArray(MANAGER_SETTINGS_KEY);
-    for (Manager* manager : findChildren<Manager*>()) {
+    const auto managers = findChildren<Manager*>();
+    for (const Manager* manager : managers) {
       if (const QString name = manager->objectName(); !::contains(names, name)) {
         settings.setArrayIndex(names.size());
         settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
@@ -413,8 +424,8 @@ void MainWindow::save_layout(QSettings& settings)
 
   {
     std::set<QString> names;
-    settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
-    for (ToolBar* toolbar : findChildren<ToolBar*>()) {
+    const auto tools = findChildren<ToolBar*>();
+    for (const ToolBar* toolbar : tools) {
       if (const QString name = toolbar->objectName(); !::contains(names, name)) {
         settings.setArrayIndex(names.size());
         settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
@@ -452,7 +463,8 @@ void MainWindow::update_recent_files_menu()
       recent_document_menu->addAction(action.release());
       count++;
     }
-    if (count > 10) {
+    static constexpr std::size_t RECENT_FILES_MENU_MAX_SIZE = 10;
+    if (count > RECENT_FILES_MENU_MAX_SIZE) {
       break;
     }
   }

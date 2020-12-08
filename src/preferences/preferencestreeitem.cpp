@@ -27,7 +27,7 @@ void PreferencesTreeValueItem::set_value(const QString& value)
 {
   if (value != m_value) {
     m_value = value;
-    Q_EMIT(value_changed(m_value));
+    Q_EMIT value_changed(m_value);
   }
 }
 

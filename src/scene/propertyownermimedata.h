@@ -17,14 +17,14 @@ public:
   static constexpr auto MIME_TYPE = "application/propertyowners";
 
   PropertyOwnerMimeData(const std::vector<AbstractPropertyOwner*>& items);
-  bool hasFormat(const QString& mimeType) const override;
-  QStringList formats() const override;
-  QVariant retrieveData(const QString& mimeType, QVariant::Type type) const override;
+  [[nodiscard]] bool hasFormat(const QString& mimeType) const override;
+  [[nodiscard]] QStringList formats() const override;
+  [[nodiscard]] QVariant retrieveData(const QString& mimeType, QVariant::Type type) const override;
 
-  std::vector<Object*> objects() const;
-  std::vector<Tag*> tags() const;
-  std::vector<Style*> styles() const;
-  std::vector<AbstractPropertyOwner*> items(Kind kinds) const;
+  [[nodiscard]] std::vector<Object*> objects() const;
+  [[nodiscard]] std::vector<Tag*> tags() const;
+  [[nodiscard]] std::vector<Style*> styles() const;
+  [[nodiscard]] std::vector<AbstractPropertyOwner*> items(Kind kinds) const;
   template<typename T = AbstractPropertyOwner> std::vector<T*> items() const;
 
 private:

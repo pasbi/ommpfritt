@@ -12,7 +12,7 @@ class CheckBox
 public:
   explicit CheckBox(const QString& label = "");
   void set_value(const value_type& value) override;
-  value_type value() const override;
+  [[nodiscard]] value_type value() const override;
   void nextCheckState() override;
 
 protected:

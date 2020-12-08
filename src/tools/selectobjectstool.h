@@ -18,14 +18,14 @@ public:
    * @param mode
    * @return
    */
-  std::unique_ptr<ObjectsTransformationCommand>
+  [[nodiscard]] std::unique_ptr<ObjectsTransformationCommand>
   make_command(const Matrix& t, TransformationMode mode = TransformationMode::Object) const;
 
   void update(const std::set<Object*>& objects);
   void update();
-  bool is_empty() const
+  [[nodiscard]] bool is_empty() const
   {
-    return m_initial_transformations.size() == 0;
+    return m_initial_transformations.empty();
   }
 
 Q_SIGNALS:

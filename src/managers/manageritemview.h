@@ -19,8 +19,12 @@ public:
   using item_type = typename ItemModelT::structure_type::item_type;
   explicit ManagerItemView(ItemModelT& model);
   virtual ~ManagerItemView() = default;
+  ManagerItemView(ManagerItemView&&) = delete;
+  ManagerItemView(const ManagerItemView&) = delete;
+  ManagerItemView& operator=(ManagerItemView&&) = delete;
+  ManagerItemView& operator=(const ManagerItemView&) = delete;
   ItemModelT* model() const;
-  virtual std::set<AbstractPropertyOwner*> selected_items() const;
+  [[nodiscard]] virtual std::set<AbstractPropertyOwner*> selected_items() const;
 
 protected:
   void mousePressEvent(QMouseEvent* e) override;

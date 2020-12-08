@@ -11,8 +11,8 @@ class OptionPropertyConfigWidget : public PropertyConfigWidget<OptionProperty>
 {
 public:
   OptionPropertyConfigWidget();
-  void init(const Property::Configuration& configuration) override;
-  void update(Property::Configuration& configuration) const override;
+  void init(const PropertyConfiguration& configuration) override;
+  void update(PropertyConfiguration& configuration) const override;
 
 protected:
   bool eventFilter(QObject* watched, QEvent* event) override;

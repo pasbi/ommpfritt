@@ -43,7 +43,7 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
     // TODO replace top-level-menu with custom key (i.e. 'path' in this case).
     // then, all entries will be in the same menu.
   }
-  if (menus.size() == 0) {
+  if (menus.empty()) {
     return nullptr;
   }
   return std::move(menus.front());
@@ -105,7 +105,7 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
 void SelectPointsBaseTool::on_property_value_changed(Property* property)
 {
   if (property == this->property(BOUNDING_BOX_MODE_PROPERTY_KEY)) {
-    Q_EMIT scene()->mail_box().appearance_changed(*this);
+    Q_EMIT scene()->mail_box().tool_appearance_changed(*this);
   }
   AbstractSelectTool::on_property_value_changed(property);
 }
@@ -146,7 +146,7 @@ TransformPointsHelper::make_command(const ObjectTransformation& t) const
     TransformationCache(const Matrix& mat, Space space) : m_mat(mat), m_space(space)
     {
     }
-    ObjectTransformation retrieve(Path* const& path) const
+    ObjectTransformation retrieve(Path* const& path) const override
     {
       const Matrix gt = path->global_transformation(m_space).to_mat();
       return ObjectTransformation(gt.inverted() * m_mat * gt);

@@ -17,7 +17,7 @@ StyleManager::StyleManager(Scene& scene)
     : ItemManager(QCoreApplication::translate("any-context", "StyleManager"), scene, scene.styles())
 {
   connect(&scene.mail_box(),
-          qOverload<const std::set<Style*>&>(&MailBox::selection_changed),
+          &MailBox::style_selection_changed,
           &item_view(),
           &StyleListView::set_selection);
 }

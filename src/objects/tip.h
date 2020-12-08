@@ -10,6 +10,11 @@ class Tip : public Object
 public:
   explicit Tip(Scene* scene);
   Tip(const Tip& other);
+  Tip(Tip&&) = delete;
+  Tip& operator=(Tip&&) = delete;
+  Tip& operator=(const Tip&) = delete;
+  ~Tip() override = default;
+
   QString type() const override
   {
     return TYPE;

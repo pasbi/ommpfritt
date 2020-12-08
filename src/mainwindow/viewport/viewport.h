@@ -9,31 +9,23 @@
 #include "preferences/preferences.h"
 #include "renderers/painter.h"
 #include "scene/scene.h"
-
-#define USE_OPENGL 0
-
-#ifdef USE_OPENGL
-#  include <QWidget>
-#else
-#  include <QOpenGLWidget>
-#endif
+#include <QWidget>
 
 namespace omm
 {
 class Scene;
 
-#if USE_OPENGL
-using ViewportBase = QOpenGLWidget;
-#else
-using ViewportBase = QWidget;
-#endif
-
-class Viewport : public ViewportBase
+class Viewport : public QWidget
 {
   Q_OBJECT
 public:
   Viewport(Scene& scene);
-  ~Viewport() = default;
+  ~Viewport() override = default;
+  Viewport(Viewport&&) = delete;
+  Viewport(const Viewport&) = delete;
+  Viewport& operator=(Viewport&&) = delete;
+  Viewport& operator=(const Viewport&) = delete;
+
   Scene& scene() const;
   void reset();
   void set_transformation(const ObjectTransformation& transformation);

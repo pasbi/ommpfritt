@@ -49,9 +49,7 @@ ColorWidget::ColorWidget(QWidget* parent) : ColorPicker(parent), m_ui(new Ui::Co
   });
 }
 
-ColorWidget::~ColorWidget()
-{
-}
+ColorWidget::~ColorWidget() = default;
 
 QString ColorWidget::name() const
 {

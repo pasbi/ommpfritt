@@ -8,11 +8,11 @@ SplinePropertyWidget::SplinePropertyWidget(Scene& scene, const std::set<Property
 {
   auto spline_edit = std::make_unique<SplineWidget>();
   m_spline_edit = spline_edit.get();
-  connect(spline_edit.get(), &SplineWidget::value_changed, [this](SplineType spline) {
+  connect(spline_edit.get(), &SplineWidget::value_changed, [this](const SplineType& spline) {
     set_properties_value(spline);
   });
   set_widget(std::move(spline_edit));
-  update_edit();
+  SplinePropertyWidget::update_edit();
 }
 
 void SplinePropertyWidget::update_edit()

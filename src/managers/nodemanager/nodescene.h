@@ -19,21 +19,25 @@ class NodeScene : public QGraphicsScene
   Q_OBJECT
 public:
   explicit NodeScene(Scene& scene);
-  ~NodeScene();
+  ~NodeScene() override;
+  NodeScene(NodeScene&&) = delete;
+  NodeScene(const NodeScene&) = delete;
+  NodeScene& operator=(NodeScene&&) = delete;
+  NodeScene& operator=(const NodeScene&) = delete;
   NodeItem& node_item(Node& node) const;
   void set_model(omm::NodeModel* model);
-  NodeModel* model() const
+  [[nodiscard]] NodeModel* model() const
   {
     return m_model;
   }
-  std::set<Node*> selected_nodes() const;
+  [[nodiscard]] std::set<Node*> selected_nodes() const;
   Scene& scene;
 
   void clear();
 
 public Q_SLOTS:
-  void add_node(Node& node, bool select = true);
-  void remove_node(Node& node);
+  void add_node(omm::Node& node, bool select = true);
+  void remove_node(omm::Node& node);
 
 private:
   std::map<Node*, std::unique_ptr<NodeItem>> m_node_items;

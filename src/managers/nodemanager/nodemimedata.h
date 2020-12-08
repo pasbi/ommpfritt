@@ -17,13 +17,13 @@ class NodeMimeData : public QMimeData
 public:
   static const std::map<AbstractNodeCompiler::Language, QString> MIME_TYPES;
   NodeMimeData(AbstractNodeCompiler::Language language, const std::set<Node*>& items);
-  bool hasFormat(const QString& mimeType) const override;
-  QStringList formats() const override
+  [[nodiscard]] bool hasFormat(const QString& mimeType) const override;
+  [[nodiscard]] QStringList formats() const override
   {
     return {MIME_TYPES.at(m_language)};
   }
-  QVariant retrieveData(const QString& mimeType, QVariant::Type type) const override;
-  std::set<Node*> nodes() const
+  [[nodiscard]] QVariant retrieveData(const QString& mimeType, QVariant::Type type) const override;
+  [[nodiscard]] std::set<Node*> nodes() const
   {
     return m_nodes;
   }

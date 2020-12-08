@@ -65,9 +65,7 @@ NodesTag::NodesTag(const NodesTag& other) : Tag(other), NodesOwner(other)
   polish();
 }
 
-NodesTag::~NodesTag()
-{
-}
+NodesTag::~NodesTag() = default;
 
 QString NodesTag::type() const
 {
@@ -97,7 +95,7 @@ void NodesTag::deserialize(AbstractDeserializer& deserializer, const Serializabl
 
 void NodesTag::polish()
 {
-  connect_edit_property(static_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)), *this);
+  connect_edit_property(dynamic_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)), *this);
 }
 
 void NodesTag::on_property_value_changed(Property* property)
@@ -120,7 +118,7 @@ void NodesTag::force_evaluate()
   if (Application::instance().python_engine.exec(code, locals, this)) {
     for (InputPort* port : model.ports<InputPort>()) {
       if (port->node.type() == SpyNode::TYPE) {
-        SpyNode& spy_node = static_cast<SpyNode&>(port->node);
+        auto& spy_node = dynamic_cast<SpyNode&>(port->node);
         const auto py_var_name = py::cast(port->uuid().toStdString());
         if (locals.contains(py_var_name)) {
           py::object val = locals[py_var_name];
@@ -131,7 +129,7 @@ void NodesTag::force_evaluate()
         }
       }
       if (port->flavor == PortFlavor::Property && port->is_connected()) {
-        Property* property = static_cast<PropertyPort<PortType::Input>*>(port)->property();
+        Property* property = dynamic_cast<PropertyPort<PortType::Input>*>(port)->property();
         if (property != nullptr) {
           const auto var_name = port->uuid();
           const auto py_var_name = py::cast(var_name.toStdString());

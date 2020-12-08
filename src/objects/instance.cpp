@@ -19,7 +19,7 @@ Instance::Instance(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Instance");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
-      .set_filter(ReferenceProperty::Filter({Kind::Object}, {{}}))
+      .set_filter(PropertyFilter({Kind::Object}, {{}}))
       .set_label(QObject::tr("reference", "Instance"))
       .set_category(category);
   create_property<BoolProperty>(IDENTICAL_PROPERTY_KEY)
@@ -52,7 +52,9 @@ void Instance::polish()
   });
 }
 
-void Instance::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
+void Instance::draw_object(Painter& renderer,
+                           const Style& style,
+                           const Painter::Options& options) const
 {
   Q_UNUSED(style)
   auto cycle_guard = scene()->make_cycle_guard(this);
@@ -175,8 +177,8 @@ void Instance::on_property_value_changed(Property* property)
 
 Object* Instance::referenced_object() const
 {
-  const auto reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
-  Object* object_reference = static_cast<Object*>(reference);
+  auto* reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
+  auto* object_reference = dynamic_cast<Object*>(reference);
   if (object_reference != nullptr && object_reference->is_ancestor_of(*this)) {
     LWARNING << "Instance cannot descend from referenced object.";
     return nullptr;

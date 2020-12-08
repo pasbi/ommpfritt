@@ -34,13 +34,14 @@ bool AbstractSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& even
 
 bool AbstractSelectHandle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
+  static constexpr double STEP_SIZE = 10.0;
   Handle::mouse_move(delta, pos, e);
   if (status() == HandleStatus::Active) {
-    Vec2f total_delta = discretize(pos - press_pos(), false, 10.0);
+    Vec2f total_delta = discretize(pos - press_pos(), false, STEP_SIZE);
     const auto transformation = omm::ObjectTransformation().translated(total_delta);
-    static_cast<AbstractSelectTool&>(tool).transform_objects(transformation);
+    dynamic_cast<AbstractSelectTool&>(tool).transform_objects(transformation);
     const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
-    static_cast<AbstractSelectTool&>(tool).tool_info = tool_info;
+    dynamic_cast<AbstractSelectTool&>(tool).tool_info = tool_info;
     return true;
   } else {
     return false;
@@ -67,7 +68,7 @@ void ObjectSelectHandle::draw(QPainter& painter) const
   painter.setPen(is_selected ? ui_color(HandleStatus::Active, "object") : ui_color("object"));
   painter.setBrush(is_selected ? ui_color(HandleStatus::Active, "object fill")
                                : ui_color("object fill"));
-  painter.drawRect(pos.x - r, pos.y - r, 2 * r, 2 * r);
+  painter.drawRect(Tool::centered_rectangle(pos, r));
 }
 
 ObjectTransformation ObjectSelectHandle::transformation() const
@@ -121,10 +122,9 @@ bool PointSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
   if (AbstractSelectHandle::mouse_press(pos, event)) {
     return true;
-  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos, event)) {
-    return true;
-  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos, event)) {
-    return true;
+  } else if (tangents_active()) {
+    return m_left_tangent_handle->mouse_press(pos, event)
+           || m_right_tangent_handle->mouse_press(pos, event);
   } else {
     return false;
   }
@@ -134,10 +134,9 @@ bool PointSelectHandle ::mouse_move(const Vec2f& delta, const Vec2f& pos, const 
 {
   if (AbstractSelectHandle::mouse_move(delta, pos, event)) {
     return true;
-  } else if (tangents_active() && m_left_tangent_handle->mouse_move(delta, pos, event)) {
-    return true;
-  } else if (tangents_active() && m_right_tangent_handle->mouse_move(delta, pos, event)) {
-    return true;
+  } else if (tangents_active()) {
+    return m_left_tangent_handle->mouse_move(delta, pos, event)
+           || m_right_tangent_handle->mouse_move(delta, pos, event);
   } else {
     return false;
   }
@@ -182,7 +181,7 @@ void PointSelectHandle::draw(QPainter& painter) const
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent)
 {
-  transform_tangent(delta, static_cast<SelectPointsTool&>(tool).tangent_mode(), tangent);
+  transform_tangent(delta, dynamic_cast<SelectPointsTool&>(tool).tangent_mode(), tangent);
 }
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta,

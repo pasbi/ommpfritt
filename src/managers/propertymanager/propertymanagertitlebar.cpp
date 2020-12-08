@@ -15,7 +15,8 @@ PropertyManagerTitleBar::PropertyManagerTitleBar(PropertyManager& parent) : Mana
   m_open_user_properties_dialog_button = open_user_property_dialog_button.get();
   open_user_property_dialog_button->setEnabled(false);
   open_user_property_dialog_button->setText("U");
-  open_user_property_dialog_button->setFixedSize(24, 24);
+  static constexpr int ICON_SIZE = 24;
+  open_user_property_dialog_button->setFixedSize(ICON_SIZE, ICON_SIZE);
   connect(open_user_property_dialog_button.get(), &QPushButton::clicked, this, [this, &parent]() {
     auto dialog = UserPropertyDialog(*m_first_selected, Property::keys(), &parent);
     dialog.exec();

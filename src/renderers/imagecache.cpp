@@ -16,21 +16,21 @@ QPicture ImageCache::retrieve(const std::pair<QString, int>& key) const
     renderer.render(&painter);
   } else if (filename.endsWith(".pdf", Qt::CaseInsensitive)) {
     auto* doc = Poppler::Document::load(filename);
-    if (doc) {
+    if (doc != nullptr) {
       doc->setRenderBackend(Poppler::Document::ArthurBackend);
       int page_num = key.second;
       page_num = std::clamp(page_num, 0, doc->numPages() - 1);
-      const auto page = doc->page(page_num);
-      if (page) {
+      auto* const page = doc->page(page_num);
+      if (page != nullptr) {
         const auto success = page->renderToPainter(&painter);
         if (!success) {
           LERROR << "Failed to render pdf.";
         }
-        delete page;
+        delete page;  // NOLINT(cppcoreguidelines-owning-memory)
       } else {
         LERROR << "Failed to load page";
       }
-      delete doc;
+      delete doc;  // NOLINT(cppcoreguidelines-owning-memory)
     } else {
       LERROR << "Failed to load doc";
     }

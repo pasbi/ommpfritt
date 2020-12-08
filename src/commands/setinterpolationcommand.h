@@ -13,11 +13,11 @@ class SetInterpolationCommand : public Command
 public:
   SetInterpolationCommand(const std::set<Property*>& properties,
                           Track::Interpolation interpolation);
-  void undo()
+  void undo() override
   {
     swap();
   }
-  void redo()
+  void redo() override
   {
     swap();
   }

@@ -16,7 +16,7 @@ class AbstractPort;
 class ConnectionCommand : public Command
 {
 protected:
-  ConnectionCommand(const QString& label, AbstractPort& out, AbstractPort& in);
+  ConnectionCommand(const QString& label, AbstractPort& a, AbstractPort& b);
   ConnectionCommand(const QString& label, OutputPort& out, InputPort& in);
   void connect();
   void disconnect();
@@ -27,8 +27,8 @@ private:
   Node& m_target_node;
   const std::size_t m_input_index;
 
-  InputPort& input_port() const;
-  omm::OutputPort& output_port() const;
+  [[nodiscard]] InputPort& input_port() const;
+  [[nodiscard]] omm::OutputPort& output_port() const;
 };
 
 class ConnectPortsCommand : public ConnectionCommand
@@ -64,7 +64,7 @@ class NodeCommand : public Command
 protected:
   NodeCommand(const QString& label,
               NodeModel& model,
-              std::vector<Node*> refs,
+              const std::vector<Node*>& refs,
               std::vector<std::unique_ptr<Node>> owns);
   void remove();
   void add();
@@ -79,7 +79,7 @@ private:
 class RemoveNodesCommand : public NodeCommand
 {
 public:
-  RemoveNodesCommand(NodeModel& model, std::vector<Node*> nodes);
+  RemoveNodesCommand(NodeModel& model, const std::vector<Node*>& nodes);
   void undo() override
   {
     add();
@@ -107,10 +107,10 @@ public:
 class MoveNodesCommand : public Command
 {
 public:
-  MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction);
+  MoveNodesCommand(const std::set<Node*>& nodes, const QPointF& direction);
   void undo() override;
   void redo() override;
-  int id() const override
+  [[nodiscard]] int id() const override
   {
     return MOVE_NODES_COMMAND_ID;
   }

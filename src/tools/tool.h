@@ -22,7 +22,6 @@ class Tool
   Q_OBJECT
 public:
   explicit Tool(Scene& scene);
-  virtual ~Tool() = default;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tool", "Tool");
 
   /**
@@ -36,7 +35,7 @@ public:
   virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event);
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
-  virtual void draw(Painter& painter) const;
+  virtual void draw(Painter& renderer) const;
   virtual bool has_transformation() const
   {
     return false;
@@ -53,9 +52,10 @@ public:
     return Flag::None;
   }
   ObjectTransformation viewport_transformation;
-  bool integer_transformation() const;
+  static bool integer_transformation();
   QString name() const override;
   virtual SceneMode scene_mode() const = 0;
+  static QRectF centered_rectangle(const Vec2f& center, double radius);
 
 public Q_SLOTS:
   virtual void reset()
@@ -64,7 +64,7 @@ public Q_SLOTS:
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;
-  double epsilon = 10.0;
+  static constexpr double epsilon = 10.0;
 };
 
 }  // namespace omm

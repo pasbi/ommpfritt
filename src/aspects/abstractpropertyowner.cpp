@@ -33,7 +33,7 @@ AbstractPropertyOwner::AbstractPropertyOwner(Kind kind, Scene* scene) : kind(kin
 }
 
 AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner& other)
-    : QObject()  // from QObject's perspective, the copy is a new object.
+    : QObject()  // NOLINT(readability-redundant-member-init)
       ,
       kind(other.kind), m_scene(other.m_scene)
 {
@@ -129,7 +129,7 @@ Property& AbstractPropertyOwner::add_property(const QString& key,
   assert(property.get() != nullptr);
   m_properties.insert(key, std::move(property));
   connect(&ref, &Property::value_changed, this, &AbstractPropertyOwner::on_property_value_changed);
-  connect(&ref, &Property::value_changed, [this, key](Property* property) {
+  connect(&ref, &Property::value_changed, this, [this, key](Property* property) {
     assert(property != nullptr);
     if (Scene* scene = this->scene(); scene != nullptr) {
       Q_EMIT scene->mail_box().property_value_changed(*this, key, *property);
@@ -182,11 +182,12 @@ void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target,
 
   for (const auto& key : this_keys) {
     const auto& p = *property(key);
-    const bool key_exists = ::contains(target_keys, key);
-    if (!!(flags & CopiedProperties::New) && !key_exists) {
-      target.add_property(key, p.clone());
-    } else if (!!(flags & CopiedProperties::User) && p.is_user_property() && !key_exists) {
-      target.add_property(key, p.clone());
+    if (!::contains(target_keys, key)) {
+      const bool is_new = !!(flags & CopiedProperties::New);
+      const bool is_user = !!(flags & CopiedProperties::User) && p.is_user_property();
+      if (is_new || is_user) {
+        target.add_property(key, p.clone());
+      }
     }
   }
 }

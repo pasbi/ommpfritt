@@ -6,12 +6,11 @@
 
 namespace omm
 {
-TagList::TagList(Object& object) : QObject(), m_object(object)
+TagList::TagList(Object& object) : m_object(object)
 {
 }
 
-TagList::TagList(const TagList& other, Object& object)
-    : QObject(), List<Tag>(other), m_object(object)
+TagList::TagList(const TagList& other, Object& object) : List<Tag>(other), m_object(object)
 {
 }
 

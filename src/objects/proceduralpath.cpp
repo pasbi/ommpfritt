@@ -35,19 +35,20 @@ class Style;
 
 ProceduralPath::ProceduralPath(Scene* scene) : Object(scene)
 {
+  static constexpr int DEFAULT_COUNT = 10;
   static const auto category = QObject::tr("ProceduralPath");
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
       .set_mode(StringProperty::Mode::Code)
       .set_label(QObject::tr("code"))
       .set_category(category);
-  create_property<IntegerProperty>(COUNT_PROPERTY_KEY, 10)
+  create_property<IntegerProperty>(COUNT_PROPERTY_KEY, DEFAULT_COUNT)
       .set_range(0, std::numeric_limits<int>::max())
       .set_label(QObject::tr("count"))
       .set_category(category);
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
       .set_label(QObject::tr("closed"))
       .set_category(category);
-  update();
+  ProceduralPath::update();
 }
 
 QString ProceduralPath::type() const
@@ -69,7 +70,7 @@ void ProceduralPath::update()
     point_wrappers.emplace_back(point);
   }
 
-  if (m_points.size() > 0) {
+  if (!m_points.empty()) {
     auto locals = pybind11::dict("points"_a = point_wrappers,
                                  "this"_a = ObjectWrapper::make(*this),
                                  "scene"_a = SceneWrapper(*scene()));

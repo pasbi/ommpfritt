@@ -24,7 +24,7 @@ void OptionProperty::deserialize(AbstractDeserializer& deserializer, const Point
         const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
         options.push_back(option);
       }
-      configuration[OPTIONS_POINTER] = options;
+      configuration.set(OPTIONS_POINTER, options);
     }
   }
 }
@@ -66,8 +66,8 @@ std::vector<QString> OptionProperty::options() const
 
 OptionProperty& OptionProperty::set_options(const std::vector<QString>& options)
 {
-  configuration[OPTIONS_POINTER] = options;
-  assert(options.size() > 0);
+  configuration.set(OPTIONS_POINTER, options);
+  assert(!options.empty());
   set(std::clamp(value(), std::size_t(0), options.size()));
   Q_EMIT this->configuration_changed();
   return *this;
@@ -76,7 +76,7 @@ OptionProperty& OptionProperty::set_options(const std::vector<QString>& options)
 bool OptionProperty::is_compatible(const Property& other) const
 {
   if (TypedProperty::is_compatible(other)) {
-    const auto& other_op = static_cast<const OptionProperty&>(other);
+    const auto& other_op = dynamic_cast<const OptionProperty&>(other);
     return options() == other_op.options();
   } else {
     return false;

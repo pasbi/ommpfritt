@@ -12,9 +12,7 @@ PreferencesTreeView::PreferencesTreeView(QWidget* parent) : QTreeView(parent)
   connect(this, &PreferencesTreeView::expanded, this, &PreferencesTreeView::update_column_width);
 }
 
-PreferencesTreeView::~PreferencesTreeView()
-{
-}
+PreferencesTreeView::~PreferencesTreeView() = default;
 
 void PreferencesTreeView::set_model(
     QAbstractItemModel& model,
@@ -24,7 +22,7 @@ void PreferencesTreeView::set_model(
   m_column_delegates = std::move(delegates);
   for (std::size_t i = 0; i < m_column_delegates.size(); ++i) {
     m_column_delegates.at(i)->set_model(model);
-    setItemDelegateForColumn(i + 1, m_column_delegates.at(i).get());
+    setItemDelegateForColumn(static_cast<int>(i) + 1, m_column_delegates.at(i).get());
   }
   setSelectionMode(QAbstractItemView::NoSelection);
   expandAll();
@@ -72,7 +70,7 @@ void PreferencesTreeView::update_column_width()
   const int n = header()->count();
   const double other_width = static_cast<double>(width_others) / static_cast<double>(n - 1);
   for (int i = 1; i < n; ++i) {
-    setColumnWidth(i, other_width);
+    setColumnWidth(i, static_cast<int>(other_width));
   }
 }
 

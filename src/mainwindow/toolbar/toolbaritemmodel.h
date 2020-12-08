@@ -12,14 +12,14 @@ class ToolBarItemModel : public QStandardItemModel
 {
   Q_OBJECT
 public:
-  Qt::DropActions supportedDropActions() const override
+  [[nodiscard]] Qt::DropActions supportedDropActions() const override
   {
     return Qt::MoveAction | Qt::LinkAction;
   }
-  nlohmann::json encode(const QModelIndexList& indices) const;
-  QString encode_str(const QModelIndexList& indices) const;
-  QString encode_str() const;
-  nlohmann::json encode() const;
+  [[nodiscard]] nlohmann::json encode(const QModelIndexList& indices) const;
+  [[nodiscard]] QString encode_str(const QModelIndexList& indices) const;
+  [[nodiscard]] QString encode_str() const;
+  [[nodiscard]] nlohmann::json encode() const;
   void
   add_items(const nlohmann::json& code, int row = 0, const QModelIndex& parent = QModelIndex());
   void add_items(const QString& code, int row = 0, const QModelIndex& parent = QModelIndex());
@@ -44,7 +44,7 @@ protected:
                     int row,
                     int column,
                     const QModelIndex& parent) override;
-  QMimeData* mimeData(const QModelIndexList& indices) const override;
+  [[nodiscard]] QMimeData* mimeData(const QModelIndexList& indices) const override;
 
 private:
   void add_single_item(const nlohmann::json& config);

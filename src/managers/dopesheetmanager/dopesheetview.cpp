@@ -18,24 +18,24 @@ namespace
 class ChopProxyModel : public QIdentityProxyModel
 {
 public:
-  int rowCount(const QModelIndex& index) const
+  [[nodiscard]] int rowCount(const QModelIndex& index) const override
   {
+    using namespace omm;
     const auto* const animator = this->animator();
-    if (animator == nullptr) {
-      return 0;
-    } else if (animator->index_type(mapToSource(index)) == omm::Animator::IndexType::Property) {
+    if (animator == nullptr
+        || Animator::index_type(mapToSource(index)) == Animator::IndexType::Property) {
       return 0;
     } else {
       return QIdentityProxyModel::rowCount(index);
     }
   }
 
-  bool hasChildren(const QModelIndex& index) const
+  [[nodiscard]] bool hasChildren(const QModelIndex& index) const override
   {
+    using namespace omm;
     const auto* const animator = this->animator();
-    if (animator == nullptr) {
-      return 0;
-    } else if (animator->index_type(mapToSource(index)) == omm::Animator::IndexType::Property) {
+    if (animator == nullptr
+        || Animator::index_type(mapToSource(index)) == Animator::IndexType::Property) {
       return false;
     } else {
       return QIdentityProxyModel::hasChildren(index);
@@ -43,9 +43,9 @@ public:
   }
 
 private:
-  omm::Animator* animator() const
+  [[nodiscard]] omm::Animator* animator() const
   {
-    return static_cast<omm::Animator*>(sourceModel());
+    return dynamic_cast<omm::Animator*>(sourceModel());
   }
 };
 
@@ -57,7 +57,7 @@ public:
     appendColumn();
   }
 
-  QVariant
+  [[nodiscard]] QVariant
   extraColumnData(const QModelIndex& parent, int row, int extraColumn, int role) const override
   {
     Q_UNUSED(parent)

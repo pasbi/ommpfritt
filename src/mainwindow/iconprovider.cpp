@@ -10,12 +10,12 @@ namespace omm
 QIcon IconProvider::icon(AbstractPropertyOwner& owner) const
 {
   if (Tag* tag = kind_cast<Tag*>(&owner); tag != nullptr) {
-    if (StyleTag* style_tag = type_cast<StyleTag*>(tag); style_tag != nullptr) {
+    if (auto* style_tag = type_cast<StyleTag*>(tag); style_tag != nullptr) {
       const Property* rprop = style_tag->property(StyleTag::STYLE_REFERENCE_PROPERTY_KEY);
-      const Style* style = kind_cast<const Style*>(rprop->value<AbstractPropertyOwner*>());
+      const auto* style = kind_cast<const Style*>(rprop->value<AbstractPropertyOwner*>());
       return QIcon(std::make_unique<StyleIconEngine>(style).release());
     }
-  } else if (Style* style = kind_cast<Style*>(&owner); style != nullptr) {
+  } else if (auto* style = kind_cast<Style*>(&owner); style != nullptr) {
     return QIcon(std::make_unique<StyleIconEngine>(style).release());
   }
   return icon(owner.type());

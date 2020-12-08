@@ -14,8 +14,12 @@ class TimeLineTitleBar : public ManagerTitleBar
   Q_OBJECT
 public:
   explicit TimeLineTitleBar(Manager& parent);
-  ~TimeLineTitleBar();
-  ::Ui::TimeLineTitleBar* ui() const
+  ~TimeLineTitleBar() override;
+  TimeLineTitleBar(TimeLineTitleBar&&) = delete;
+  TimeLineTitleBar(const TimeLineTitleBar&) = delete;
+  TimeLineTitleBar& operator=(TimeLineTitleBar&&) = delete;
+  TimeLineTitleBar& operator=(const TimeLineTitleBar&) = delete;
+  [[nodiscard]] ::Ui::TimeLineTitleBar* ui() const
   {
     return m_ui.get();
   }

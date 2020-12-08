@@ -27,9 +27,9 @@ MultiTabBar::MultiTabBar() : m_layout(std::make_unique<QHBoxLayout>())
   });
 }
 
-bool MultiTabBar::extend_selection() const
+bool MultiTabBar::extend_selection()
 {
-  return qApp->queryKeyboardModifiers() & Qt::ShiftModifier;
+  return (QApplication::queryKeyboardModifiers() & Qt::ShiftModifier) != 0u;
 }
 
 void MultiTabBar::add_tab(const QString& text)
@@ -39,11 +39,12 @@ void MultiTabBar::add_tab(const QString& text)
   connect(tab.get(),
           &QAbstractButton::clicked,
           [tab = tab.get(), i = m_tabs.size(), this](bool checked) {
-            if (!checked && current_indices().size() == 0) {
+            if (!checked && current_indices().empty()) {
               set_current_indices({});
             } else if (!extend_selection()) {
               set_current_indices({static_cast<int>(i)});
             }
+            // NOLINTNEXTLINE(readability-misleading-indentation)
             Q_EMIT current_indices_changed(current_indices());
           });
   tab->installEventFilter(this);

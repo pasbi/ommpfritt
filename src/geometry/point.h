@@ -13,24 +13,24 @@ public:
   explicit Point(const Vec2f& position,
                  const PolarCoordinates& left_tangent,
                  const PolarCoordinates& right_tangent);
-  explicit Point(const Vec2f& position, const double rotation, const double tangent_length = 1.0);
+  explicit Point(const Vec2f& position, double rotation, double tangent_length = 1.0);
   explicit Point(const Vec2f& position);
   Point();
   Vec2f position;
-  Vec2f left_position() const;
-  Vec2f right_position() const;
-  double rotation() const;
+  [[nodiscard]] Vec2f left_position() const;
+  [[nodiscard]] Vec2f right_position() const;
+  [[nodiscard]] double rotation() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
   bool is_selected = false;
   void swap(Point& other);
-  bool has_nan() const;
-  bool has_inf() const;
+  [[nodiscard]] bool has_nan() const;
+  [[nodiscard]] bool has_inf() const;
 
   PolarCoordinates left_tangent;
   PolarCoordinates right_tangent;
 
-  Point rotated(const double rad) const;
-  Point nibbed() const;
+  [[nodiscard]] Point rotated(double rad) const;
+  [[nodiscard]] Point nibbed() const;
 
   static constexpr auto POSITION_POINTER = "position";
   static constexpr auto LEFT_TANGENT_POINTER = "left";
@@ -49,7 +49,7 @@ public:
    *  The magnitude of tangents is not modified. The angle bisector is an invariant.
    * @return the flattened point.
    */
-  Point flattened(const double t) const;
+  [[nodiscard]] Point flattened(double t) const;
 
   bool operator==(const Point& point) const;
   bool operator!=(const Point& point) const;
@@ -74,8 +74,7 @@ private:
   double get_direction(const Point* left_neighbor, const Point* right_neighbor) const;
 
 public:
-  static std::vector<Point>
-  offset(const double t, const std::vector<Point>& points, const bool is_closed);
+  static std::vector<Point> offset(double t, const std::vector<Point>& points, bool is_closed);
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);

@@ -9,8 +9,10 @@
 
 namespace omm
 {
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::map<QString, const Property::PropertyDetail*> Property::m_details;
 
+// NOLINTNEXTLINE(readability-redundant-member-init)
 Property::Property(const Property& other) : QObject(), configuration(other.configuration)
 {
 }
@@ -75,23 +77,23 @@ bool Property::is_compatible(const Property& other) const
 
 QString Property::label() const
 {
-  return std::get<QString>(configuration.at(LABEL_POINTER));
+  return configuration.get<QString>(LABEL_POINTER);
 }
 
 Property& Property::set_label(const QString& label)
 {
-  configuration[LABEL_POINTER] = label;
+  configuration.set(LABEL_POINTER, label);
   return *this;
 }
 
 QString Property::category() const
 {
-  return std::get<QString>(configuration.at(CATEGORY_POINTER));
+  return configuration.get<QString>(CATEGORY_POINTER);
 }
 
 Property& Property::set_category(const QString& category)
 {
-  configuration[CATEGORY_POINTER] = category;
+  configuration.set(CATEGORY_POINTER, category);
   return *this;
 }
 
@@ -102,7 +104,7 @@ bool Property::is_animatable() const
 
 Property& Property::set_animatable(bool animatable)
 {
-  configuration[ANIMATABLE_POINTER] = animatable;
+  configuration.set(ANIMATABLE_POINTER, animatable);
   return *this;
 }
 
@@ -158,54 +160,6 @@ void Property::set_enabledness(bool enabled)
     m_is_enabled = enabled;
     Q_EMIT enabledness_changed(enabled);
   }
-}
-
-void Property::Filter::deserialize(AbstractDeserializer& deserializer,
-                                   const Serializable::Pointer& root)
-{
-  deserializer.get(kind, make_pointer(root, "kind"));
-  deserializer.get(flag, make_pointer(root, "flag"));
-}
-
-bool Property::Filter::accepts(Kind kind, Flag flag) const
-{
-  return this->flag.evaluate(flag) && this->kind.evaluate(kind);
-}
-
-void Property::Filter::serialize(AbstractSerializer& serializer, const Pointer& root) const
-{
-  serializer.set_value(kind, make_pointer(root, "kind"));
-  serializer.set_value(flag, make_pointer(root, "flag"));
-}
-
-bool Property::Filter::accepts(const AbstractPropertyOwner& apo) const
-{
-  return accepts(apo.kind, apo.flags());
-}
-
-bool Property::Filter::operator==(const Property::Filter& other) const
-{
-  return kind == other.kind && flag == other.flag;
-}
-
-bool Property::Filter::operator<(const Property::Filter& other) const
-{
-  if (kind == other.kind) {
-    return flag < other.flag;
-  } else {
-    return kind == other.kind;
-  }
-}
-
-Property::Filter Property::Filter::accept_anything()
-{
-  return Filter(Disjunction<Kind>(Kind::All, Kind::None), {{}});
-}
-
-std::ostream& operator<<(std::ostream& ostream, const Property::Filter& filter)
-{
-  ostream << "Filter(Flag(" << filter.flag << "), Kind(" << filter.kind << "))";
-  return ostream;
 }
 
 }  // namespace omm

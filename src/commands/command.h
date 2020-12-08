@@ -13,7 +13,7 @@ protected:
   Command(const QString& label);
 
 public:
-  virtual bool is_noop() const
+  [[nodiscard]] virtual bool is_noop() const
   {
     return false;
   }

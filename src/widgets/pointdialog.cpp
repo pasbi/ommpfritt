@@ -40,7 +40,7 @@ namespace omm
 {
 PointDialog::PointDialog(const std::set<Path*>& paths, QWidget* parent) : QDialog(parent)
 {
-  assert(paths.size() > 0);
+  assert(!paths.empty());
   auto tab_widget = std::make_unique<QTabWidget>();
   for (Path* path : paths) {
     tab_widget->addTab(make_tab_widget_page(*path, m_point_edits).release(), path->name());

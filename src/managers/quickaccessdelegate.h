@@ -14,7 +14,8 @@ public:
   void paint(QPainter* painter,
              const QStyleOptionViewItem& option,
              const QModelIndex& index) const override;
-  QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+  [[nodiscard]] QSize sizeHint(const QStyleOptionViewItem& option,
+                               const QModelIndex& index) const override;
 
   bool on_mouse_button_press(QMouseEvent& event);
   void on_mouse_move(QMouseEvent& event);
@@ -24,9 +25,11 @@ public:
   {
   public:
     explicit Area(const QRectF& area);
-    virtual ~Area()
-    {
-    }
+    virtual ~Area() = default;
+    Area(Area&&) = delete;
+    Area(const Area&) = delete;
+    Area& operator=(Area&&) = delete;
+    Area& operator=(const Area&) = delete;
     virtual void draw(QPainter& painter, const QModelIndex& index) = 0;
     const QRectF area;
     bool is_active = false;
@@ -41,7 +44,7 @@ protected:
 private:
   QAbstractItemView& m_view;
   std::list<std::unique_ptr<Area>> m_areas;
-  QPointF to_local(const QPoint& view_global, const QModelIndex& index) const;
+  [[nodiscard]] QPointF to_local(const QPoint& view_global, const QModelIndex& index) const;
 };
 
 }  // namespace omm

@@ -6,22 +6,22 @@
 namespace omm
 {
 struct PolarCoordinates {
-  explicit PolarCoordinates(const double argument, const double magnitude);
+  explicit PolarCoordinates(double argument, double magnitude);
   explicit PolarCoordinates(const Vec2f& cartesian);
   explicit PolarCoordinates();
-  Vec2f to_cartesian() const;
+  [[nodiscard]] Vec2f to_cartesian() const;
   void swap(PolarCoordinates& other);
   double argument;
   double magnitude;
-  bool operator==(const PolarCoordinates& other) const;
-  bool has_nan() const;
-  bool has_inf() const;
+  bool operator==(const PolarCoordinates& point) const;
+  [[nodiscard]] bool has_nan() const;
+  [[nodiscard]] bool has_inf() const;
 
   /**
    * @brief operator < enables the use of PolarCoordinates in, e.g., std::set
    */
   bool operator<(const PolarCoordinates& other) const;
-  bool operator!=(const PolarCoordinates& other) const;
+  bool operator!=(const PolarCoordinates& point) const;
   PolarCoordinates operator-() const;
 
   /**

@@ -52,7 +52,7 @@ public:
     bool operator==(const Iterator& other) const;
     bool operator!=(const Iterator& other) const;
 
-    bool is_end() const;
+    [[nodiscard]] bool is_end() const;
     reference operator*() const;
     pointer operator->() const;
 

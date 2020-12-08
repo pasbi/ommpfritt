@@ -34,11 +34,12 @@ void ColorSlider::paintEvent(QPaintEvent* e)
   painter.fillRect(rect(), gradient);
   painter.setRenderHint(QPainter::Antialiasing);
 
+  static const double RADIUS = 5.0;
   painter.translate(color().get(role()) * width(), 0);
   QPainterPath path;
   path.moveTo(0.0, height() / 2.0);
-  path.lineTo(5.0, height());
-  path.lineTo(-5.0, height());
+  path.lineTo(RADIUS, height());
+  path.lineTo(-RADIUS, height());
   path.closeSubpath();
   painter.fillPath(path, ui_color(*this, QPalette::Base));
   QPen pen;

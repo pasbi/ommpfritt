@@ -9,10 +9,16 @@
 
 #include <QResizeEvent>
 
+namespace
+{
+constexpr int ICON_SIZE = 50;
+}
+
 namespace omm
 {
 StyleListView::StyleListView(StyleList& model)
-    : ManagerItemView(model), m_icon_size(QSize(50, 50)), m_item_delegate(*this, m_icon_size)
+    : ManagerItemView(model), m_icon_size(QSize(ICON_SIZE, ICON_SIZE)),
+      m_item_delegate(*this, m_icon_size)
 {
   setWrapping(true);
   setIconSize(m_icon_size);
@@ -47,7 +53,8 @@ void StyleListView::update_text_height()
   QPainter painter(&picture);
   static constexpr auto large_number = 1000000;
   const QRect rectangle(QPoint(0, 0), QSize(m_icon_size.width(), large_number));
-  if (const auto model = this->model(); model != nullptr) {
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
+  if (const auto* model = this->model(); model != nullptr) {
     const auto heights = ::transform<int>(model->items(), [&painter, &rectangle](auto&& item) {
       QRect actual_rectangle;
       const QString text = item->name();

@@ -19,13 +19,17 @@ class ColorWidget : public ColorPicker
   Q_OBJECT
 public:
   explicit ColorWidget(QWidget* parent = nullptr);
-  ~ColorWidget();
-  QString name() const override;
+  ~ColorWidget() override;
+  ColorWidget(ColorWidget&&) = delete;
+  ColorWidget& operator=(ColorWidget&&) = delete;
+  ColorWidget(const ColorWidget&) = delete;
+  ColorWidget& operator=(const ColorWidget&) = delete;
+  [[nodiscard]] QString name() const override;
   void set_compact();
   void hide_named_colors();
 
 public Q_SLOTS:
-  void set_color(const Color& color) override;
+  void set_color(const omm::Color& color) override;
 
 private:
   std::unique_ptr<Ui::ColorWidget> m_ui;

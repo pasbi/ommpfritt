@@ -12,7 +12,7 @@ namespace py = pybind11;
 
 namespace omm
 {
-py::object variant_to_python(variant_type variant);
+py::object variant_to_python(const variant_type& variant);
 variant_type python_to_variant(const py::object& object, const QString& type);
 
 py::object wrap(Object& object);
@@ -32,6 +32,11 @@ class AbstractPyWrapper
 {
 public:
   virtual ~AbstractPyWrapper() = default;
+  AbstractPyWrapper() = default;
+  AbstractPyWrapper(AbstractPyWrapper&&) = default;
+  AbstractPyWrapper(const AbstractPyWrapper&) = default;
+  AbstractPyWrapper& operator=(AbstractPyWrapper&&) = default;
+  AbstractPyWrapper& operator=(const AbstractPyWrapper&) = default;
 };
 
 template<typename WrappedT> class PyWrapper : AbstractPyWrapper

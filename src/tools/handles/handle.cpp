@@ -38,7 +38,7 @@ bool Handle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&
     }
   }
   if (m_status != old_status) {
-    Q_EMIT tool.scene()->mail_box().appearance_changed(tool);
+    Q_EMIT tool.scene()->mail_box().tool_appearance_changed(tool);
   }
   return false;
 }
@@ -60,20 +60,24 @@ void Handle::deactivate()
 
 double Handle::draw_epsilon() const
 {
-  return 4.0;
+  static constexpr double DRAW_EPSILON = 4.0;
+  return DRAW_EPSILON;
 }
+
 double Handle::interact_epsilon() const
 {
-  return 4.0;
+  static constexpr double INTERACT_EPSILON = 4.0;
+  return INTERACT_EPSILON;
 }
+
 Vec2f Handle::press_pos() const
 {
   return m_press_pos;
 }
 
-double Handle::discretize(double s, double step) const
+double Handle::discretize(double s, double step)
 {
-  if (tool.integer_transformation()) {
+  if (Tool::integer_transformation()) {
     LINFO << s << " " << step;
     return step * static_cast<int>(s / step);
   } else {
@@ -83,13 +87,13 @@ double Handle::discretize(double s, double step) const
 
 Vec2f Handle::discretize(const Vec2f& vec, bool local, double step) const
 {
-  if (tool.integer_transformation()) {
+  if (Tool::integer_transformation()) {
     auto dvec = vec;
     if (!local) {
       dvec = tool.viewport_transformation.inverted().apply_to_direction(vec);
     }
     for (auto i : {0u, 1u}) {
-      dvec[i] = discretize(dvec[i], step);
+      dvec[i] = Handle::discretize(dvec[i], step);
     }
     if (!local) {
       dvec = tool.viewport_transformation.apply_to_direction(vec);
@@ -100,7 +104,7 @@ Vec2f Handle::discretize(const Vec2f& vec, bool local, double step) const
   }
 }
 
-QColor Handle::ui_color(HandleStatus status, const QString& name) const
+QColor Handle::ui_color(HandleStatus status, const QString& name)
 {
   return omm::ui_color(status, "Handle", name);
 }

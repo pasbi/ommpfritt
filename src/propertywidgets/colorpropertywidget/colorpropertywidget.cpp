@@ -8,14 +8,14 @@ ColorPropertyWidget::ColorPropertyWidget(Scene& scene, const std::set<Property*>
     : PropertyWidget(scene, properties)
 {
   auto color_edit = std::make_unique<ColorEdit>();
-  connect(color_edit.get(), &ColorEdit::value_changed, [this](Color color) {
+  connect(color_edit.get(), &ColorEdit::value_changed, [this](const Color& color) {
     set_properties_value(color);
   });
   m_color_edit = color_edit.get();
   color_edit->text = label();
   set_widget(std::move(color_edit));
 
-  update_edit();
+  ColorPropertyWidget::update_edit();
 }
 
 void ColorPropertyWidget::update_edit()

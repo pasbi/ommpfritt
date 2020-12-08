@@ -27,7 +27,11 @@ public:
   enum class PlayMode { Repeat = 0, PingPong = 1, Stop = 2 };
   enum class PlayDirection { Forward, Backward, Stopped };
   explicit Animator(Scene& scene);
-  ~Animator();
+  ~Animator() override;
+  Animator(Animator&&) = delete;
+  Animator(const Animator&) = delete;
+  Animator& operator=(Animator&&) = delete;
+  Animator& operator=(const Animator&) = delete;
   void serialize(AbstractSerializer&, const Pointer&) const override;
   void deserialize(AbstractDeserializer&, const Pointer&) override;
 
@@ -59,7 +63,7 @@ public:
   /**
    * @brief overwrite_file if true, the user prefers to overwrite existing files without notice.
    */
-  bool overwrite_file;
+  bool overwrite_file = false;
 
   /**
    * @brief filename_pattern the pattern to save many files.
@@ -73,10 +77,10 @@ public Q_SLOTS:
   void set_start(int start);
   void set_end(int end);
   void set_current(int current);
-  void set_play_direction(PlayDirection direction);
-  void set_play_mode(PlayMode mode);
+  void set_play_direction(omm::Animator::PlayDirection direction);
+  void set_play_mode(omm::Animator::PlayMode mode);
   void advance();
-  void advance(PlayDirection direction);
+  void advance(omm::Animator::PlayDirection direction);
   void apply();
 
   /**
@@ -90,14 +94,14 @@ Q_SIGNALS:
   void start_changed(int);
   void end_changed(int);
   void current_changed(int);
-  void play_direction_changed(PlayDirection direction);
-  void play_mode_changed(PlayMode mode);
-  void track_changed(Track&);
-  void track_inserted(Track&);
-  void track_removed(Track&);
-  void knot_inserted(Track&, int);
-  void knot_removed(Track&, int);
-  void knot_moved(Track&, int, int);
+  void play_direction_changed(omm::Animator::PlayDirection direction);
+  void play_mode_changed(omm::Animator::PlayMode mode);
+  void track_changed(omm::Track&);
+  void track_inserted(omm::Track&);
+  void track_removed(omm::Track&);
+  void knot_inserted(omm::Track&, int);
+  void knot_removed(omm::Track&, int);
+  void knot_moved(omm::Track&, int, int);
 
   // == ItemModel
 public:
@@ -113,10 +117,10 @@ public:
   QModelIndex index(Property& property, int column = 0) const;
   QModelIndex index(const std::pair<Property*, std::size_t>& channel, int column = 0) const;
   QModelIndex index(AbstractPropertyOwner& owner, int column = 0) const;
-  IndexType index_type(const QModelIndex& index) const;
-  Property* property(const QModelIndex& index) const;
-  ChannelProxy& channel(const QModelIndex& index) const;
-  AbstractPropertyOwner* owner(const QModelIndex& index) const;
+  static IndexType index_type(const QModelIndex& index);
+  static Property* property(const QModelIndex& index);
+  static ChannelProxy& channel(const QModelIndex& index);
+  static AbstractPropertyOwner* owner(const QModelIndex& index);
 
   template<typename F> auto visit_item(const QModelIndex& index, F&& f)
   {
@@ -143,21 +147,21 @@ public:
   public:
     Accelerator() = default;
     explicit Accelerator(Scene& scene);
-    const std::vector<AbstractPropertyOwner*>& owners() const
+    [[nodiscard]] const std::vector<AbstractPropertyOwner*>& owners() const
     {
       return m_owner_order;
     }
     const std::vector<Property*>& properties(AbstractPropertyOwner& owner) const;
     bool contains(AbstractPropertyOwner& owner) const;
-    const std::set<Property*>& properties() const
+    [[nodiscard]] const std::set<Property*>& properties() const
     {
       return m_properties;
     }
     AbstractPropertyOwner* owner(Property& property) const;
 
   private:
-    Scene* m_scene;
-    std::list<AbstractPropertyOwner*> animatable_owners() const;
+    Scene* m_scene{};
+    [[nodiscard]] std::list<AbstractPropertyOwner*> animatable_owners() const;
     std::map<AbstractPropertyOwner*, std::vector<Property*>> m_by_owner;
     std::set<Property*> m_properties;
     std::map<Property*, AbstractPropertyOwner*> m_by_property;
@@ -177,10 +181,14 @@ public:
   void insert_knot(Track& track, int frame, std::unique_ptr<Track::Knot> knot);
   void move_knot(Track& track, int old_frame, int new_frame);
 
+  static constexpr int DEFAULT_START_FRAME = 1;
+  static constexpr int DEFAULT_END_FRAME = 100;
+  static constexpr int DEFAULT_CURRENT_FRAME = 1;
+
 private:
-  int m_start_frame = 1;
-  int m_end_frame = 100;
-  int m_current_frame = 1;
+  int m_start_frame = DEFAULT_START_FRAME;
+  int m_end_frame = DEFAULT_END_FRAME;
+  int m_current_frame = DEFAULT_CURRENT_FRAME;
   PlayDirection m_current_play_direction = PlayDirection::Stopped;
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;

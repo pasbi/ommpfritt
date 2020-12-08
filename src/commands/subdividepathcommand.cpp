@@ -11,7 +11,8 @@ auto compute_cuts(const Path::Segment& segment, bool is_closed)
   const auto n = segment.size();
   for (std::size_t i = 0; i < n - off; ++i) {
     if (segment[i].is_selected && segment[(i + 1) % n].is_selected) {
-      cuts.push_back(Geom::PathTime(i, 0.5));
+      static const double HALF_TIME = 0.5;
+      cuts.emplace_back(i, HALF_TIME);
     }
   }
   return std::vector(cuts.begin(), cuts.end());

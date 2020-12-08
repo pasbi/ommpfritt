@@ -15,7 +15,9 @@ public:
   Cache() = default;
   Cache(Cache&&) = delete;
   Cache(const Cache&) = delete;
+  Cache& operator=(Cache&& other) = delete;
   Cache& operator=(const Cache& other) = delete;
+  virtual ~Cache() = default;
   const V& get(const K& key) const
   {
     if (m_cache.count(key) == 0) {

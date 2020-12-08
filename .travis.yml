@@ -10,40 +10,90 @@ install:
   - git checkout 37876ed4
   - popd
   - echo "configure lib2geom:"
-  - $cmake --version
-  - $cmake -GNinja
-           -D2GEOM_TESTING=OFF
-           -DCMAKE_CXX_COMPILER=${CXX_COMPILER}
-           -DCMAKE_C_COMPILER=${C_COMPILER}
-           -B build-lib2geom
-           -S lib2geom
-  - sudo $cmake --build build-lib2geom --target install
+  - ${cmake:-cmake} --version
+  - ${cmake:-cmake} -GNinja
+                    -D2GEOM_TESTING=OFF
+                    -DCMAKE_CXX_COMPILER=${CXX_COMPILER}
+                    -DCMAKE_C_COMPILER=${C_COMPILER}
+                    -B build-lib2geom
+                    -S lib2geom
+  - sudo ${cmake:-cmake} --build build-lib2geom --target install
 jobs:
   include:
+  - stage: build
+    os: linux
+    dist: focal
+    name: Style Checks
+    addons:
+      apt:
+        update: true
+    install:
+    - wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
+    - sudo apt-get install -y clang-format-11
+    - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
+    script:
+    - |
+      if ! build-scripts/check.py --files $files --mode format --format-exec clang-format-11 -v
+      then
+        echo "Format check failed."
+        travis_terminate 1
+      fi
+    before_deploy:
+    - echo "skip before_deploy"
+    deploy:
+    - echo "skip deploy"
+  - stage: build
+    os: linux
+    dist: focal
+    name: Clang-Tidy Checks
+    addons:
+      apt:
+        update: true
+    before_install:
+    - build-scripts/install_build_deps_focal.sh
+    - wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
+    - sudo apt-get install -y clang-tidy-11 ninja-build
+    - export build_target="all"
+    - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
+    after_success:
+    - |
+      if ! run-clang-tidy-11 -clang-tidy-binary clang-tidy-11 -p build/ $(build-scripts/find-changed-files.sh)
+      then
+        travis_terminate 2
+      fi
+    before_deploy:
+    - echo "skip before_deploy"
+    deploy:
+    - echo "skip deploy"
+  - stage: build
+    os: linux
+    dist: focal
+    name: Clazy Checks
+    addons:
+      apt:
+        update: true
+    before_install:
+    - build-scripts/install_build_deps_focal.sh
+    - wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
+    - sudo apt-get install -y clazy ninja-build
+    - export build_target="all"
+    - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
+    after_success:
+    - |
+      if ! build-scripts/check.py --files $files --mode clazy --compile-commands build/compile_commands.json -v
+      then
+        travis_terminate 3
+      fi
+    before_deploy:
+    - echo "skip before_deploy"
+    deploy:
+    - echo "skip deploy"
   - stage: build
     os: linux
     dist: xenial
     name: Build on Ubuntu Xenial
     before_install:
-    - sudo apt-get clean
-    - sudo apt-get remove -y mysql-client-5.7 mysql-server-5.7
-    - sudo apt-add-repository -y ppa:deadsnakes/ppa
-    - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-xenial
-    - sudo apt-get update -y -qq
-    - sudo apt-get install -y
-        g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7-dev
-        ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
-        libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
-        libkf5itemmodels-dev imagemagick
-    - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
-    - tar xf cmake-3.14.5-Linux-x86_64.tar.gz
-    - export CXX_COMPILER=g++-8
-    - export C_COMPILER=gcc-8
-    - export QT_PREFIX="/opt/qt512"
-    - export QT_QM_PATH="/opt/qt512/translations/"
-    - export PATH="/opt/qt512/bin:$PATH"
-    - export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
+    - source build-scripts/install_build_deps_xenial-bionic.sh xenial
     after_success:
     - build-scripts/make-appimage.sh
   - stage: build
@@ -51,76 +101,21 @@ jobs:
     dist: bionic
     name: Build on Ubuntu Bionic
     before_install:
-    - sudo apt-get clean
-    - sudo apt-get remove -y mysql-client-5.7 mysql-server-5.7
-    - sudo apt-add-repository -y ppa:deadsnakes/ppa
-    - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-bionic
-    - sudo apt-get update -y -qq
-    - sudo apt-get install -y
-        g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7-dev
-        ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
-        libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
-        libkf5itemmodels-dev imagemagick
-    - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
-    - tar xf cmake-3.14.5-Linux-x86_64.tar.gz
-    - export CXX_COMPILER=g++-8
-    - export C_COMPILER=gcc-8
-    - export QT_PREFIX="/opt/qt512"
-    - export QT_QM_PATH="/opt/qt512/translations/"
-    - export PATH="/opt/qt512/bin:$PATH"
-    - export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
+    - source build-scripts/install_build_deps_xenial-bionic.sh bionic
   - stage: build
     os: linux
     dist: focal
     name: Build on Ubuntu Focal with GCC
     before_install:
-    - sudo apt-get clean
-    - sudo apt-get remove mysql-client-5.7 mysql-server-5.7
-    - sudo apt-get update -y -qq
-    - sudo apt-get install -y
-        g++ gcc cmake qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-default
-        libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev
-        libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev
-        libgsl-dev libcairo2-dev libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
-    - export CXX_COMPILER=g++
-    - export C_COMPILER=gcc
-    - export QT_PREFIX=""
-    - export QT_QM_PATH="/usr/share/qt5/translations/"
-    - export cmake="cmake"
+    - build-scripts/install_build_deps_focal.sh
   - stage: build
     os: linux
     dist: focal
     name: Build on Ubuntu Focal with Clang
     before_install:
-    - sudo apt-get clean
-    - sudo apt-get remove mysql-client-5.7 mysql-server-5.7
-    - sudo apt-get update -y -qq
-    - sudo apt-get install -y
-        clang cmake qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-default
-        libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev
-        libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev
-        libgsl-dev libcairo2-dev libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
+    - build-scripts/install_build_deps_focal.sh
     - export CXX_COMPILER=clang++-10
     - export C_COMPILER=clang-10
-    - export QT_PREFIX=""
-    - export QT_QM_PATH="/usr/share/qt5/translations/"
-    - export cmake="cmake"
-  - stage: build
-    os: linux
-    dist: focal
-    name: Check Format
-    addons:
-      apt:
-        update: true
-        packages:
-        - clang
-    install:
-    - sudo apt-get install -y clang-format-10
-    script:
-    - clang-format --version
-    - ln -s /usr/bin/clang-format-10 clang-format
-    - PATH=$(pwd):$PATH build-scripts/format.sh check
   - stage: build
     os: windows
     name: Build on Windows/MinGW64
@@ -163,7 +158,7 @@ jobs:
       export MAKE=mingw32-make  # so that Autotools can find it
     before_cache:
     - |-
-      # https://unix.stackexchange.com/a/137322/107554
+     # https://unix.stackexchange.com/a/137322/107554
       $msys2 pacman --sync --clean --noconfirm
     cache:
       directories:
@@ -173,16 +168,18 @@ jobs:
     script:
       - $mingw64 build-scripts/build-omm-mingw.sh
 script:
-- $cmake -GNinja
-         -DCMAKE_BUILD_TYPE=Release
-         -DQT_QM_PATH="$QT_QM_PATH"
-         -DCMAKE_PREFIX_PATH="$QT_PREFIX"
-         -DCMAKE_CXX_COMPILER=${CXX_COMPILER}
-         -DCMAKE_C_COMPILER=${C_COMPILER}
-         -DSYSTEM_SUFFIX="-$TRAVIS_DIST"
-         -S .
-         -B build
-- $cmake --build build --target package
+- echo "using cmake-exe= ${cmake:-cmake}"
+- ${cmake:-cmake} -GNinja
+                  -DCMAKE_BUILD_TYPE=Release
+                  -DQT_QM_PATH=${QT_QM_PATH:-/usr/share/qt5/translations/}
+                  -DCMAKE_PREFIX_PATH=${QT_PREFIX:-}
+                  -DCMAKE_CXX_COMPILER=${CXX_COMPILER:-g++}
+                  -DCMAKE_C_COMPILER=${C_COMPILER:-gcc}
+                  -DSYSTEM_SUFFIX="-$TRAVIS_DIST"
+                  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+                  -S .
+                  -B build
+- ${cmake:-cmake} --build build --target ${build_target:-package}
 after_script:
 - build-scripts/notify-telegram.sh
 notifications:

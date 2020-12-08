@@ -15,7 +15,7 @@ class ColorEdit
 public:
   explicit ColorEdit();
   void set_value(const value_type& value) override;
-  value_type value() const override;
+  [[nodiscard]] value_type value() const override;
   QString text = "";
 
 protected:
@@ -24,13 +24,13 @@ protected:
   void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 Q_SIGNALS:
-  void value_changed(value_type);
+  void value_changed(omm::MultiValueEdit<omm::Color, std::equal_to<>>::value_type);
 
 private:
   bool m_is_consistent = false;
   Color m_current_color = Colors::BLACK;
   QColor m_contrast_color;
-  QColor compute_contrast_color() const;
+  [[nodiscard]] QColor compute_contrast_color() const;
 };
 
 }  // namespace omm

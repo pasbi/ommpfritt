@@ -9,7 +9,7 @@ namespace
 {
 using namespace omm;
 
-static constexpr double closeness_threshold_px = 4;
+constexpr double closeness_threshold_px = 4;
 
 using Side = SplineType::Knot::Side;
 template<typename Iterator> QPointF knot_pos(Iterator&& it, Side side)
@@ -28,7 +28,9 @@ template<typename Iterator> QPointF knot_pos(Iterator&& it, Side side)
     }
   }();
 
-  return {(other->first + 2.0 * it->first) / 3.0, it->second.get_value(side)};
+  static constexpr double t = 1.0 / 3.0;
+
+  return {(t * other->first + (1.0 - t) * it->first), it->second.get_value(side)};
 }
 
 }  // namespace
@@ -84,7 +86,7 @@ void SplineWidget::mousePressEvent(QMouseEvent* event)
 
 void SplineWidget::mouseReleaseEvent(QMouseEvent*)
 {
-  m_grabbed_knot = m_spline.invalid();
+  m_grabbed_knot = SplineType::ControlPoint();
   Q_EMIT value_changed(m_spline);
 }
 
@@ -115,14 +117,16 @@ void SplineWidget::draw_spline(QPainter& painter)
   }
 
   painter.save();
+  static const QColor HALF_TRANSPARENT{0, 0, 0, 128};
+  static constexpr double SPLINE_PEN_WIDTH = 0.5;
   for (auto cp = m_spline.begin(); cp.is_valid(); cp.advance()) {
     if (cp.side() != Side::Middle) {
       const QPointF origin = knot_pos(cp.iterator(), Side::Middle);
       const QPointF sat_pos = knot_pos(cp.iterator(), cp.side());
       QPen pen;
-      pen.setColor(QColor(0, 0, 0, 128));
+      pen.setColor(HALF_TRANSPARENT);
       pen.setCosmetic(true);
-      pen.setWidthF(0.5);
+      pen.setWidthF(SPLINE_PEN_WIDTH);
       painter.setPen(pen);
       painter.drawLine(origin, sat_pos);
     }
@@ -183,7 +187,7 @@ SplineType::ControlPoint SplineWidget::knot_at(const QPoint& pos)
       return cp;
     }
   }
-  return m_spline.invalid();
+  return SplineType::ControlPoint{};
 }
 
 }  // namespace omm

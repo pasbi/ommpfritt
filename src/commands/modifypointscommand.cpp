@@ -7,7 +7,7 @@ namespace omm
 ModifyPointsCommand ::ModifyPointsCommand(const std::map<Path::iterator, Point>& points)
     : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
 {
-  assert(points.size() > 0);
+  assert(!points.empty());
 }
 
 void ModifyPointsCommand::undo()
@@ -38,7 +38,7 @@ void ModifyPointsCommand::swap()
 bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
 {
   // merging happens automatically!
-  const auto& mtc = static_cast<const ModifyPointsCommand&>(*command);
+  const auto& mtc = dynamic_cast<const ModifyPointsCommand&>(*command);
   return ::get_keys(m_data) == ::get_keys(mtc.m_data);
 }
 
@@ -48,7 +48,7 @@ AbstractPointsCommand::AbstractPointsCommand(
     const std::vector<AbstractPointsCommand::LocatedSegment>& added_points)
     : Command(label), m_path(path), m_points_to_add(added_points)
 {
-  std::sort(m_points_to_add.begin(), m_points_to_add.end(), std::greater<LocatedSegment>());
+  std::sort(m_points_to_add.begin(), m_points_to_add.end(), std::greater<>());
 }
 
 AbstractPointsCommand::AbstractPointsCommand(const QString& label,
@@ -56,7 +56,7 @@ AbstractPointsCommand::AbstractPointsCommand(const QString& label,
                                              const std::vector<Range>& removed_points)
     : Command(label), m_path(path), m_points_to_remove(removed_points)
 {
-  std::sort(m_points_to_remove.begin(), m_points_to_remove.end(), std::greater<Range>());
+  std::sort(m_points_to_remove.begin(), m_points_to_remove.end(), std::greater<>());
 }
 
 void AbstractPointsCommand::add()

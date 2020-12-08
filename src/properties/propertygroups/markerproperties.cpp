@@ -18,19 +18,21 @@ MarkerProperties ::MarkerProperties(const QString& prefix,
 
 void MarkerProperties::make_properties(const QString& category) const
 {
+  static constexpr double SIZE_STEP = 0.1;
+  static constexpr double ASPECT_RATIO_STEP = 0.001;
   create_property<OptionProperty>(SHAPE_PROPERTY_KEY, static_cast<std::size_t>(m_default_shape))
       .set_options(shapes())
       .set_category(category)
       .set_label(QObject::tr("Shape"));
 
   create_property<FloatProperty>(SIZE_PROPERTY_KEY, m_default_size)
-      .set_step(0.1)
+      .set_step(SIZE_STEP)
       .set_range(0.0, FloatProperty::highest_possible_value())
       .set_label(QObject::tr("Size"))
       .set_category(category);
 
   create_property<FloatProperty>(ASPECT_RATIO_PROPERTY_KEY)
-      .set_step(0.001)
+      .set_step(ASPECT_RATIO_STEP)
       .set_label(QObject::tr("Aspect Ratio"))
       .set_category(category);
 
@@ -48,9 +50,9 @@ void MarkerProperties ::draw_marker(Painter& painter,
   p.save();
   p.translate(to_qpoint(location.position));
   if (property_value<bool>(REVERSE_PROPERTY_KEY)) {
-    p.rotate(location.rotation() * 180.0 * M_1_PI + 90);
+    p.rotate((location.rotation() + M_PI_2) * M_180_PI);
   } else {
-    p.rotate(location.rotation() * 180.0 * M_1_PI - 90);
+    p.rotate((location.rotation() - M_PI_2) * M_180_PI);
   }
   p.setPen(Qt::NoPen);
   p.setBrush(color.to_qcolor());
@@ -59,7 +61,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
   p.restore();
 }
 
-std::vector<QString> MarkerProperties::shapes() const
+std::vector<QString> MarkerProperties::shapes()
 {
   return {QObject::tr("None"),
           QObject::tr("Arrow"),
@@ -90,7 +92,7 @@ std::vector<Point> MarkerProperties::shape(const double width) const
   Q_UNREACHABLE();
 }
 
-std::vector<Point> MarkerProperties::arrow(const Vec2f& size) const
+std::vector<Point> MarkerProperties::arrow(const Vec2f& size)
 {
   return {
       Point(Vec2f(size.x, 0.0)),
@@ -99,7 +101,7 @@ std::vector<Point> MarkerProperties::arrow(const Vec2f& size) const
   };
 }
 
-std::vector<Point> MarkerProperties::bar(const Vec2f& size) const
+std::vector<Point> MarkerProperties::bar(const Vec2f& size)
 {
   return {
       Point(Vec2f(-size.x, size.y)),
@@ -109,13 +111,13 @@ std::vector<Point> MarkerProperties::bar(const Vec2f& size) const
   };
 }
 
-std::vector<Point> MarkerProperties::circle(const Vec2f& size) const
+std::vector<Point> MarkerProperties::circle(const Vec2f& size)
 {
   Q_UNUSED(size);
   return {};
 }
 
-std::vector<Point> MarkerProperties::diamond(const Vec2f& size) const
+std::vector<Point> MarkerProperties::diamond(const Vec2f& size)
 {
   return {
       Point(Vec2f(-size.x, 0.0)),

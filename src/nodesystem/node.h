@@ -22,7 +22,11 @@ class Node
   Q_OBJECT
 public:
   explicit Node(NodeModel& model);
-  ~Node();
+  ~Node() override;
+  Node(Node&&) = delete;
+  Node(const Node&) = default;
+  Node& operator=(const Node&) = delete;
+  Node& operator=(Node&&) = delete;
 
   Flag flags() const override
   {
@@ -170,6 +174,7 @@ public:
   static QString fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t);
 
 public:
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
   static std::map<QString, const Detail*> m_details;
 };
 

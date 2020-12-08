@@ -9,10 +9,15 @@ class View : public Object
 public:
   explicit View(Scene* scene);
   explicit View(const View& other);
+  View(View&&) = delete;
+  View& operator=(View&&) = delete;
+  View& operator=(const View&) = delete;
+  ~View() override = default;
+
   void draw_handles(Painter& renderer) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;
-  void draw_object(Painter&, const Style&, Painter::Options) const override;
+  void draw_object(Painter&, const Style&, const Painter::Options&) const override;
   static constexpr auto SIZE_PROPERTY_KEY = "size";
   static constexpr auto TO_VIEWPORT_PROPERTY_KEY = "to-viewport";
   static constexpr auto FROM_VIEWPORT_PROPERTY_KEY = "from-viewport";
@@ -25,7 +30,6 @@ private:
   void from_viewport();
   void to_viewport();
   void make_output_unique();
-  static QPen m_pen;
 };
 
 }  // namespace omm

@@ -52,10 +52,10 @@ ViewportPage::MouseModifiersGroup::MouseModifiersGroup(Preferences::MouseModifie
   hlayout->setContentsMargins(0, 0, 0, 0);
   set_size_policy(*cb);
   hlayout->addWidget(cb.release());
-  for (std::size_t i = 0; i < modifier_map.size(); ++i) {
+  for (const auto& i : modifier_map) {
     auto cb = std::make_unique<QCheckBox>();
-    m_modifier_cbs.insert({modifier_map.at(i).first, cb.get()});
-    if (!!(model.modifiers & modifier_map.at(i).first)) {
+    m_modifier_cbs.insert({i.first, cb.get()});
+    if (!!(model.modifiers & i.first)) {
       cb->setChecked(true);
     }
     auto cb_layout = std::make_unique<QHBoxLayout>();
@@ -71,8 +71,9 @@ ViewportPage::MouseModifiersGroup::MouseModifiersGroup(Preferences::MouseModifie
 ViewportPage::GridGroup::GridGroup(Preferences::GridOption& model, QFormLayout& layout)
     : m_model(model)
 {
+  static constexpr double MAX_PEN_WIDTH = 10;
   auto sp_penwidth = std::make_unique<QDoubleSpinBox>();
-  sp_penwidth->setRange(0, 10);
+  sp_penwidth->setRange(0.0, MAX_PEN_WIDTH);
   sp_penwidth->setSuffix(tr(" px"));
   sp_penwidth->setValue(model.pen_width);
   m_sp_penwidth = sp_penwidth.get();
@@ -133,8 +134,8 @@ ViewportPage::ViewportPage(Preferences& preferences) : m_preferences(preferences
   label->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
   set_size_policy(*label);
   mm_header_layout->addWidget(label.release());
-  for (std::size_t i = 0; i < modifier_map.size(); ++i) {
-    auto label = std::make_unique<QLabel>(tr(modifier_map.at(i).second.toUtf8().constData()));
+  for (const auto& i : modifier_map) {
+    auto label = std::make_unique<QLabel>(tr(i.second.toUtf8().constData()));
     label->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
     set_size_policy(*label);
     mm_header_layout->addWidget(label.release());
@@ -150,9 +151,7 @@ ViewportPage::ViewportPage(Preferences& preferences) : m_preferences(preferences
   setLayout(layout.release());
 }
 
-ViewportPage::~ViewportPage()
-{
-}
+ViewportPage::~ViewportPage() = default;
 
 void ViewportPage::about_to_accept()
 {

@@ -2,8 +2,8 @@
 
 namespace
 {
-static constexpr auto int_high = std::numeric_limits<int>::max();
-static constexpr auto int_low = std::numeric_limits<int>::lowest();
+constexpr auto int_high = std::numeric_limits<int>::max();
+constexpr auto int_low = std::numeric_limits<int>::lowest();
 }  // namespace
 
 namespace omm

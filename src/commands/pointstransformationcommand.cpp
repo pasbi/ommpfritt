@@ -38,7 +38,7 @@ int PointsTransformationCommand::id() const
 
 bool PointsTransformationCommand::mergeWith(const QUndoCommand* command)
 {
-  const auto& pt_command = static_cast<const PointsTransformationCommand&>(*command);
+  const auto& pt_command = dynamic_cast<const PointsTransformationCommand&>(*command);
   const auto affected_points = this->affected_points();
   if (affected_points != pt_command.affected_points()) {
     return false;
@@ -74,7 +74,7 @@ void PointsTransformationCommand::apply(const PointsTransformationCommand::Map& 
 
 std::set<Path::iterator> PointsTransformationCommand::affected_points() const
 {
-  const auto keys = ::get_keys(m_old_points);
+  auto keys = ::get_keys(m_old_points);
   assert(keys == ::get_keys(m_new_points));
   return keys;
 }

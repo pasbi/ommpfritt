@@ -35,7 +35,7 @@ std::vector<omm::AbstractPropertyOwner*> items(const QDropEvent& event)
 {
   const QMimeData& mime_data = *event.mimeData();
   if (mime_data.hasFormat(omm::PropertyOwnerMimeData::MIME_TYPE)) {
-    const auto pomd = qobject_cast<const omm::PropertyOwnerMimeData*>(&mime_data);
+    const auto* pomd = qobject_cast<const omm::PropertyOwnerMimeData*>(&mime_data);
     if (pomd != nullptr) {
       return pomd->items();
     }
@@ -95,9 +95,7 @@ NodeView::NodeView(QWidget* parent) : QGraphicsView(parent), m_pan_zoom_controll
   reset_scene_rect();
 }
 
-NodeView::~NodeView()
-{
-}
+NodeView::~NodeView() = default;
 
 void NodeView::set_model(NodeModel* model)
 {
@@ -133,7 +131,7 @@ NodeModel* NodeView::model() const
 
 bool NodeView::accepts_paste(const QMimeData& mime_data) const
 {
-  if (auto model = this->model(); model != nullptr) {
+  if (auto* model = this->model(); model != nullptr) {
     return mime_data.hasFormat(NodeMimeData::MIME_TYPES.at(model->language()));
   } else {
     return false;
@@ -156,7 +154,7 @@ std::set<Node*> NodeView::selected_nodes() const
   }
 }
 
-void NodeView::copy_to_clipboard()
+void NodeView::copy_to_clipboard() const
 {
   if (NodeModel* model = this->model(); model != nullptr) {
     auto mime_data = std::make_unique<NodeMimeData>(model->language(), selected_nodes());
@@ -171,7 +169,7 @@ void NodeView::paste_from_clipboard()
     NodeModel& model = *this->model();
     auto blocker = std::make_unique<NodeModel::TopologyChangeSignalBlocker>(model);
     const auto nodes
-        = ::transform<Node*, std::vector>(static_cast<const NodeMimeData&>(mime_data).nodes());
+        = ::transform<Node*, std::vector>(dynamic_cast<const NodeMimeData&>(mime_data).nodes());
 
     std::map<const Node*, Node*> copy_map;
     const auto copyable_nodes
@@ -297,9 +295,10 @@ void NodeView::drawBackground(QPainter* painter, const QRectF&)
     painter->fillRect(sceneRect(), ui_color(*this, "NodeView", "canvas-bg-valid"));
   }
 
+  static constexpr double GRID_LINE_WIDTH = 0.5;
   QPen pen;
   pen.setCosmetic(true);
-  pen.setWidthF(0.5);
+  pen.setWidthF(GRID_LINE_WIDTH);
   pen.setColor(ui_color(*this, "NodeView", "grid-color"));
   painter->setPen(pen);
 
@@ -325,12 +324,12 @@ void NodeView::mousePressEvent(QMouseEvent* event)
   m_last_mouse_position = event->pos();
   if (m_pan_zoom_controller.press(*event)) {
     event->accept();
-  } else if (PortItem* port_item = item_at<PortItem>(event->pos()); port_item != nullptr) {
+  } else if (auto* port_item = item_at<PortItem>(event->pos()); port_item != nullptr) {
     m_tmp_connection_origin = port_item;
     viewport()->update();
     AbstractPort& port = port_item->port;
     if (port.port_type == PortType::Input) {
-      InputPort& ip = static_cast<InputPort&>(port);
+      auto& ip = dynamic_cast<InputPort&>(port);
       if (OutputPort* op = ip.connected_output(); op == nullptr) {
         m_tmp_connection_origin = port_item;
       } else {
@@ -393,13 +392,14 @@ void NodeView::dragMoveEvent(QDragMoveEvent* event)
 
 void NodeView::dropEvent(QDropEvent* event)
 {
-  if (auto model = this->model(); model != nullptr && can_drop(*event)) {
+  if (auto* model = this->model(); model != nullptr && can_drop(*event)) {
     QPointF pos = mapToScene(event->pos());
     auto nodes = ::transform<std::unique_ptr<Node>>(::items(*event), [&pos, model](auto* apo) {
       auto reference_node = std::make_unique<ReferenceNode>(*model);
       reference_node->property(ReferenceNode::REFERENCE_PROPERTY_KEY)->set(apo);
       reference_node->set_pos(pos);
-      pos += QPointF(50, 50);
+      static constexpr int OFFSET = 50;
+      pos += QPointF(OFFSET, OFFSET);
       return reference_node;
     });
     model->scene().submit<AddNodesCommand>(*model, std::move(nodes));
@@ -413,7 +413,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
   if (m_pan_zoom_controller.move(*event)) {
     event->accept();
   } else if (m_tmp_connection_origin != nullptr) {
-    if (PortItem* port_item = item_at<PortItem>(event->pos());
+    if (auto* port_item = item_at<PortItem>(event->pos());
         port_item != nullptr
         && model()->can_connect(m_tmp_connection_origin->port, port_item->port)) {
       m_tmp_connection_target = port_item;
@@ -440,7 +440,7 @@ void NodeView::mouseReleaseEvent(QMouseEvent* event)
   std::list<std::unique_ptr<Command>> commands;
   const auto maybe_disconnect = [&commands](AbstractPort& port) {
     if (port.port_type == PortType::Input) {
-      auto& ip = static_cast<InputPort&>(port);
+      auto& ip = dynamic_cast<InputPort&>(port);
       if (ip.is_connected()) {
         commands.push_back(std::make_unique<DisconnectPortsCommand>(ip));
       }
@@ -462,7 +462,7 @@ void NodeView::mouseReleaseEvent(QMouseEvent* event)
     commands.push_back(std::make_unique<DisconnectPortsCommand>(*m_about_to_disconnect));
   }
 
-  if (auto model = this->model(); model != nullptr) {
+  if (auto* model = this->model(); model != nullptr) {
     std::unique_ptr<Macro> macro;
     if (commands.size() > 1) {
       macro = model->scene().history().start_macro(tr("Modify Connections"));
@@ -485,7 +485,7 @@ bool NodeView::can_drop(const QDropEvent& event)
   if (itemAt(event.pos()) != nullptr) {
     return false;  // drop on items is handled elsewhere
   } else {
-    return ::items(event).size() > 0;
+    return !::items(event).empty();
   }
 }
 
@@ -499,10 +499,10 @@ void NodeView::abort()
   update();
 }
 
-void NodeView::remove_selection()
+void NodeView::remove_selection() const
 {
   static const auto can_remove = [](const Node* n) { return n->type() != FragmentNode::TYPE; };
-  if (auto model = this->model(); model != nullptr) {
+  if (auto* model = this->model(); model != nullptr) {
     auto selection = ::filter_if(::transform<Node*, std::vector>(selected_nodes()), can_remove);
     model->scene().submit<RemoveNodesCommand>(*model, selection);
   }
@@ -532,7 +532,8 @@ void NodeView::draw_connection(QPainter& painter,
 
     painter.save();
     QPen pen;
-    pen.setWidth(2.0);
+    static constexpr double CONNECTION_PEN_WIDTH = 2.0;
+    pen.setWidthF(CONNECTION_PEN_WIDTH);
     pen.setColor(
         ui_color(*this, "NodeView", is_floating ? "floating-connection" : "fixed-connection"));
     painter.setPen(pen);
@@ -550,7 +551,7 @@ void NodeView::populate_context_menu(QMenu& menu) const
 
 void NodeView::pan_to_center()
 {
-  if (auto model = this->model(); model != nullptr) {
+  if (auto* model = this->model(); model != nullptr) {
     const auto nodes = model->nodes();
     const auto f = [](const QPointF& p, const Node* n) { return p + n->pos(); };
     const double n = nodes.size();

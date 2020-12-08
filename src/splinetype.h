@@ -21,8 +21,8 @@ public:
       return !(*this == other);
     }
     bool operator<(const Knot& other) const;
-    double get_value(const Side side) const;
-    void set_value(const Side side, double value);
+    [[nodiscard]] double get_value(Side side) const;
+    void set_value(Side side, double value);
   };
 
   using knot_map_type = std::multimap<double, Knot>;
@@ -38,7 +38,7 @@ private:
 
     explicit ControlPoint_() = default;
 
-    bool is_valid() const
+    [[nodiscard]] bool is_valid() const
     {
       if (!m_value.has_value()) {
         return false;
@@ -55,11 +55,11 @@ private:
       }
     }
 
-    Knot& knot() const
+    [[nodiscard]] Knot& knot() const
     {
       return m_value.value().first->second;
     }
-    double& t() const
+    [[nodiscard]] double& t() const
     {
       return m_value.value().first->first;
     }
@@ -67,7 +67,7 @@ private:
     {
       return m_value.value().second;
     }
-    Knot::Side side() const
+    [[nodiscard]] Knot::Side side() const
     {
       return m_value.value().second;
     }
@@ -75,7 +75,7 @@ private:
     {
       return m_value.value().first;
     }
-    Iterator iterator() const
+    [[nodiscard]] Iterator iterator() const
     {
       return m_value.value().first;
     }
@@ -109,10 +109,6 @@ private:
 public:
   using ControlPoint = ControlPoint_<knot_map_type, knot_map_type::iterator>;
   ControlPoint begin();
-  ControlPoint invalid()
-  {
-    return ControlPoint();
-  }
 
   enum class Initialization { Linear, Ease, Valley };
 
@@ -132,14 +128,14 @@ public:
   struct Interpolation {
     std::optional<std::pair<double, Knot>> right;
     std::optional<std::pair<double, Knot>> left;
-    double t;
-    double local_t() const;
-    double value() const;
-    double derivative() const;
-    std::array<double, 4> coefficients() const;
+    double t{};
+    [[nodiscard]] double local_t() const;
+    [[nodiscard]] double value() const;
+    [[nodiscard]] double derivative() const;
+    [[nodiscard]] std::array<double, 4> coefficients() const;
   };
 
-  Interpolation evaluate(double t) const;
+  [[nodiscard]] Interpolation evaluate(double t) const;
 
 Q_SIGNALS:
   void value_changed();

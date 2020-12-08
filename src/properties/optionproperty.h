@@ -14,11 +14,11 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void set(const variant_type& variant) override;
 
-  std::vector<QString> options() const;
+  [[nodiscard]] std::vector<QString> options() const;
   OptionProperty& set_options(const std::vector<QString>& options);
 
   static constexpr auto OPTIONS_POINTER = "options";
-  bool is_compatible(const Property& other) const override;
+  [[nodiscard]] bool is_compatible(const Property& other) const override;
   void revise() override;
   static const PropertyDetail detail;
 };

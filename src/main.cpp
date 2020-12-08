@@ -11,14 +11,17 @@
 #include <QVariant>
 #include <iostream>
 
-QString level = "debug";
-QFile logfile;
-bool print_long_message = true;
+const QString level = "debug";
+const bool print_long_message = true;
+
+// The logfile must be non-const and globally accessible, because the message handler lambda
+// must not capture anything (see qInstallMessageHandler).
+QFile logfile;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 int main(int argc, char* argv[])
 {
   QApplication qt_app(argc, argv);
-  qt_app.setWindowIcon(QIcon(":/icons/omm_48.png"));
+  QApplication::setWindowIcon(QIcon(":/icons/omm_48.png"));
 
   omm::setup_logfile(logfile);
   qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString& msg) {
@@ -35,10 +38,12 @@ int main(int argc, char* argv[])
   window.show();
 
   if (argc > 1) {
+    // https://stackoverflow.com/q/45718389/
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     app.scene.load_from(argv[1]);
   }
 
   app.scene.tool_box().set_active_tool(omm::SelectObjectsTool::TYPE);
 
-  return qt_app.exec();
+  return QApplication::exec();
 }

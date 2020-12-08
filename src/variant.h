@@ -133,7 +133,8 @@ template<typename T> void set_channel_value(T& v, std::size_t channel, double va
   } else if constexpr (std::is_same_v<T, omm::Vec2f> || std::is_same_v<T, omm::Vec2i>) {
     v[channel] = value;
   } else if constexpr (std::is_same_v<T, bool>) {
-    v = std::abs(value) > 0.5;
+    static constexpr double BOOL_THRESHOLD = 0.5;
+    v = std::abs(value) > BOOL_THRESHOLD;
   } else {
     qFatal("tried set numeric value of non-numeric type.");
     Q_UNREACHABLE();
@@ -158,7 +159,7 @@ double get_channel_value(const variant_type& variant, std::size_t channel);
  *  variant. @code channel must not exceed the number of supported channels for the currently stored
  *  variant type.
  */
-void set_channel_value(variant_type& variant, std::size_t channel, const double value);
+void set_channel_value(variant_type& variant, std::size_t channel, double value);
 
 std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType& v);
 std::ostream& operator<<(std::ostream& ostream, const variant_type& v);

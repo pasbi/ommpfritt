@@ -23,7 +23,7 @@ void StyleListViewItemDelegate::paint(QPainter* painter,
 {
   if (!!(option.state & QStyle::State_Selected)) {
     const auto group = [widget = option.widget]() {
-      if (widget == nullptr) {
+      if (widget == nullptr) {  // NOLINT(bugprone-branch-clone)
         return QPalette::Active;
       } else if (!widget->isEnabled()) {
         return QPalette::Disabled;
@@ -36,10 +36,10 @@ void StyleListViewItemDelegate::paint(QPainter* painter,
     painter->fillRect(option.rect, option.palette.color(group, QPalette::Highlight));
   }
 
-  const QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
+  const auto icon = index.data(Qt::DecorationRole).value<QIcon>();
   painter->drawPixmap(option.rect.topLeft(), icon.pixmap(m_icon_size));
 
-  const auto text = this->display_text(index);
+  const auto text = display_text(index);
   const QRect text_rect(QPoint(option.rect.left(), option.rect.bottom() - m_text_height),
                         QSize(option.rect.width(), m_text_height));
 
@@ -66,7 +66,6 @@ void StyleListViewItemDelegate::updateEditorGeometry(QWidget* editor,
                                                      const QModelIndex& index) const
 {
   Q_UNUSED(index);
-  const QString text = index.data(Qt::DisplayRole).toString();
   editor->resize(option.rect.width(), m_text_height);
   editor->move(option.rect.left(), option.rect.bottom() - m_text_height);
 }
@@ -76,7 +75,7 @@ void StyleListViewItemDelegate::set_text_height(int text_height)
   m_text_height = text_height;
 }
 
-QString StyleListViewItemDelegate::display_text(const QModelIndex& index) const
+QString StyleListViewItemDelegate::display_text(const QModelIndex& index)
 {
   return index.data(Qt::DisplayRole).toString();
 }
