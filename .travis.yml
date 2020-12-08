@@ -85,6 +85,16 @@ jobs:
       fi
     before_deploy: skip
     deploy: skip
+  - stage: test
+    os: linux
+    dist: focal
+    name: Build on Ubuntu Focal with Clang
+    before_install:
+    - build-scripts/install_build_deps_focal.sh
+    - export CXX_COMPILER=clang++-10
+    - export C_COMPILER=clang-10
+    before_deploy: skip
+    deploy: skip
   - stage: deploy
     os: linux
     dist: xenial
@@ -105,14 +115,6 @@ jobs:
     name: Build on Ubuntu Focal with GCC
     before_install:
     - build-scripts/install_build_deps_focal.sh
-  - stage: deploy
-    os: linux
-    dist: focal
-    name: Build on Ubuntu Focal with Clang
-    before_install:
-    - build-scripts/install_build_deps_focal.sh
-    - export CXX_COMPILER=clang++-10
-    - export C_COMPILER=clang-10
   - stage: deploy
     os: windows
     name: Build on Windows/MinGW64
