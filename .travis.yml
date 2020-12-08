@@ -95,6 +95,16 @@ jobs:
     - export C_COMPILER=clang-10
     before_deploy: skip
     deploy: skip
+  - stage: test
+    os: linux
+    dist: focal
+    name: Run unit tests
+    before_install:
+    - build-scripts/install_build_deps_focal.sh
+    after_success:
+    - build/ommpfritt_unit_tests_autogen
+    before_deploy: skip
+    deploy: skip
   - stage: deploy
     os: linux
     dist: xenial
