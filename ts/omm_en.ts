@@ -1729,10 +1729,6 @@ Remove the selected items anyway?</translation>
         <translation>Knife</translation>
     </message>
     <message>
-        <source>Line</source>
-        <translation>Line</translation>
-    </message>
-    <message>
         <source>HistoryManager</source>
         <translation>History</translation>
     </message>
@@ -1831,6 +1827,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>SelectSimilarTool</source>
         <translation>Select Similar</translation>
+    </message>
+    <message>
+        <source>LineObject</source>
+        <translation>Line</translation>
     </message>
 </context>
 <context>
@@ -2113,7 +2113,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>LineObject</source>
-        <translation type="unfinished"></translation>
+        <translation>Line</translation>
     </message>
 </context>
 <context>

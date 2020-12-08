@@ -1729,10 +1729,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Messer</translation>
     </message>
     <message>
-        <source>Line</source>
-        <translation>Linie</translation>
-    </message>
-    <message>
         <source>HistoryManager</source>
         <translation>Verlaufsmanager</translation>
     </message>
@@ -1830,7 +1826,11 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>SelectSimilarTool</source>
-        <translation type="unfinished">Ähnliche selektieren</translation>
+        <translation>Ähnliche selektieren</translation>
+    </message>
+    <message>
+        <source>LineObject</source>
+        <translation>Linie</translation>
     </message>
 </context>
 <context>
@@ -2113,7 +2113,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>LineObject</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie</translation>
     </message>
 </context>
 <context>

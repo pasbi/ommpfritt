@@ -1729,10 +1729,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Cuchillo</translation>
     </message>
     <message>
-        <source>Line</source>
-        <translation>Línea</translation>
-    </message>
-    <message>
         <source>HistoryManager</source>
         <translation>Historia de acciones</translation>
     </message>
@@ -1830,6 +1826,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>SelectSimilarTool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LineObject</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
