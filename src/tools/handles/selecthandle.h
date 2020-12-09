@@ -16,6 +16,7 @@ class AbstractSelectHandle : public Handle
 public:
   explicit AbstractSelectHandle(Tool& tool);
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
+  void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
 
 protected:

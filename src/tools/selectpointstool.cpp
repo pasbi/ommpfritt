@@ -65,7 +65,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
   if (AbstractSelectTool::mouse_press(pos, event)) {
     m_transform_points_helper.update(paths);
     return true;
-  } else if (allow_clear) {
+  } else if (allow_clear && event.buttons() == Qt::LeftButton) {
     for (auto* path : paths) {
       for (auto&& point : *path) {
         point.is_selected = false;
