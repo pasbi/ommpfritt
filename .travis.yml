@@ -36,10 +36,14 @@ jobs:
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     script:
     - |
-      if ! build-scripts/check.py --files $files --mode format --format-exec clang-format-11 -v
-      then
-        echo "Format check failed."
-        travis_terminate 1
+      if [ -z "$(files)" ]; then
+        echo "Skip format check: no relevant files."
+      else
+        if ! build-scripts/check.py --files $files --mode format --format-exec clang-format-11 -v
+        then
+          echo "Format check failed."
+          travis_terminate 1
+        fi
       fi
     before_deploy: skip
     deploy: skip
@@ -55,12 +59,16 @@ jobs:
     - wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
     - sudo apt-get install -y clang-tidy-11 ninja-build
     - export build_target="all"
-    - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
+    - export files="$(build-scripts/find-changed-files.sh)"
     after_success:
     - |
-      if ! run-clang-tidy-11 -clang-tidy-binary clang-tidy-11 -p build/ $(build-scripts/find-changed-files.sh)
-      then
-        travis_terminate 2
+      if [ -z "$(files)" ]; then
+        echo "Skip clang-tidy check: no relevant files."
+      else
+        if ! run-clang-tidy-11 -clang-tidy-binary clang-tidy-11 -p build/ $files
+        then
+          travis_terminate 2
+        fi
       fi
     before_deploy: skip
     deploy: skip
@@ -79,9 +87,13 @@ jobs:
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     after_success:
     - |
-      if ! build-scripts/check.py --files $files --mode clazy --compile-commands build/compile_commands.json -v
-      then
-        travis_terminate 3
+      if [ -z "$(files)" ]; then
+        echo "Skip clazy check: no relevant files."
+      else
+        if ! build-scripts/check.py --files $files --mode clazy --compile-commands build/compile_commands.json -v
+        then
+          travis_terminate 3
+        fi
       fi
     before_deploy: skip
     deploy: skip
