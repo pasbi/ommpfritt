@@ -76,12 +76,7 @@ void SelectObjectsTool::mouse_release(const Vec2f& pos, const QMouseEvent& event
 {
   AbstractSelectTool::mouse_release(pos, event);
   const auto items = scene()->item_selection<Object>();
-  for (auto&& item : items) {
-    LINFO << "Selected: " << item->name();
-  }
-  LINFO << "blocked: " << scene()->mail_box().signalsBlocked();
   scene()->emit_selection_changed_signal();
-//  Q_EMIT scene()->mail_box().object_selection_changed(items);
 }
 
 BoundingBox SelectObjectsTool::bounding_box() const
