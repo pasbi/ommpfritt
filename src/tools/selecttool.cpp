@@ -91,12 +91,14 @@ void AbstractSelectTool::draw(Painter& renderer) const
   Tool::draw(renderer);
   if (!tool_info.isEmpty()) {
     static constexpr Vec2f TOAST_OFFSET{30.0, 30.0};
-    renderer.toast(m_current_position + TOAST_OFFSET, tool_info);
+    // compute current position again, m_current_position is not yet updated.
+    const auto current_position = transformation().null();
+    renderer.toast(current_position + TOAST_OFFSET, tool_info);
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "line"));
     renderer.painter->drawLine(m_init_position.x,
                                m_init_position.y,
-                               m_current_position.x,
-                               m_current_position.y);
+                               current_position.x,
+                               current_position.y);
   }
 }
 
