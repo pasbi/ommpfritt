@@ -1,7 +1,7 @@
 #include "tools/selectobjectstool.h"
-#include "scene/mailbox.h"
 #include "commands/objectstransformationcommand.h"
 #include "properties/optionproperty.h"
+#include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/handles/boundingboxhandle.h"
 #include "tools/handles/moveaxishandle.h"
