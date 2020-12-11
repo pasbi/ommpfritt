@@ -58,6 +58,7 @@ bool AbstractSelectHandle::mouse_move(const Vec2f& delta, const Vec2f& pos, cons
   if (status() == HandleStatus::Active) {
     Vec2f total_delta = discretize(pos - press_pos(), false, STEP_SIZE);
     const auto transformation = omm::ObjectTransformation().translated(total_delta);
+    total_delta = tool.viewport_transformation.inverted().apply_to_direction(total_delta);
     dynamic_cast<AbstractSelectTool&>(tool).transform_objects(transformation);
     const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
     dynamic_cast<AbstractSelectTool&>(tool).tool_info = tool_info;
