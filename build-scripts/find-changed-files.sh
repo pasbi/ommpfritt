@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "$1" = "all" ]; then
-  files="$(find 'src' 'test')"
+  files="$(find 'src')"
 else
   files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
 fi
