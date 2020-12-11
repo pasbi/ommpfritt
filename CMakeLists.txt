@@ -9,6 +9,7 @@ project (ommpfritt VERSION 0.1.1)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
 option(BUILD_TESTS "build the unit tests." ON)
