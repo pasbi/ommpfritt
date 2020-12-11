@@ -22,8 +22,8 @@ bool AbstractSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& even
 {
   m_was_selected = is_selected();
   if (Handle::mouse_press(pos, event)) {
+    QSignalBlocker blocker(tool.scene()->mail_box());
     if (!is_selected() && event.modifiers() != extend_selection_modifier) {
-      QSignalBlocker blocker(tool.scene()->mail_box());
       clear();
     }
     set_selected(true);
@@ -39,12 +39,12 @@ void AbstractSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& ev
     static constexpr double eps = 0.0;
     if ((press_pos() - pos).euclidean_norm2() <= eps) {
       if (m_was_selected) {
-        if (event.modifiers() != extend_selection_modifier) {
-          QSignalBlocker blocker(tool.scene()->mail_box());
+        QSignalBlocker blocker(tool.scene()->mail_box());
+        if (event.modifiers() == extend_selection_modifier) {
+          set_selected(false);
+        } else {
           clear();
           set_selected(true);
-        } else {
-          set_selected(false);
         }
       }
     }

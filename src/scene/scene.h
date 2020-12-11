@@ -99,6 +99,8 @@ public:
     return type_cast<ItemT*>(::filter_if(items, type_matches));
   }
 
+  void emit_selection_changed_signal();
+
   [[nodiscard]] std::set<AbstractPropertyOwner*> property_owners() const;
   [[nodiscard]] std::set<ReferenceProperty*>
   find_reference_holders(const AbstractPropertyOwner& candidate) const;
