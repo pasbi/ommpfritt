@@ -24,6 +24,9 @@ protected:
   virtual void clear() = 0;
   [[nodiscard]] virtual bool is_selected() const = 0;
   static constexpr auto extend_selection_modifier = Qt::ShiftModifier;
+
+private:
+  bool m_was_selected = false;
 };
 
 class ObjectSelectHandle : public AbstractSelectHandle
