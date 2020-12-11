@@ -46,7 +46,9 @@ jobs:
         fi
       fi
     before_deploy: skip
-    deploy: skip
+    deploy:
+      provider: script
+      script: true
   - stage: test
     os: linux
     dist: focal
@@ -71,7 +73,9 @@ jobs:
         fi
       fi
     before_deploy: skip
-    deploy: skip
+    deploy:
+      provider: script
+      script: true
   - stage: test
     os: linux
     dist: focal
@@ -96,7 +100,9 @@ jobs:
         fi
       fi
     before_deploy: skip
-    deploy: skip
+    deploy:
+      provider: script
+      script: true
   - stage: test
     os: linux
     dist: focal
@@ -106,7 +112,9 @@ jobs:
     - export CXX_COMPILER=clang++-10
     - export C_COMPILER=clang-10
     before_deploy: skip
-    deploy: skip
+    deploy:
+      provider: script
+      script: true
   - stage: test
     os: linux
     dist: focal
@@ -117,7 +125,9 @@ jobs:
     after_success:
     - build/ommpfritt_unit_tests
     before_deploy: skip
-    deploy: skip
+    deploy:
+      provider: script
+      script: true
   - stage: deploy
     os: linux
     dist: xenial
