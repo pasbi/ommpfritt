@@ -384,7 +384,7 @@ std::set<AbstractPropertyOwner*> Scene::selection() const
 std::unique_ptr<Object> Scene::make_root()
 {
   auto root = std::make_unique<Empty>(this);
-  root->property(Object::NAME_PROPERTY_KEY)->set(QStringLiteral("_root_"));
+  root->property(Object::NAME_PROPERTY_KEY)->set("_root_");
   return root;
 }
 
