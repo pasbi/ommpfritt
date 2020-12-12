@@ -135,16 +135,18 @@ public:
   {
     static constexpr double eps = 4;
     Fringe f = Fringe::None;
-    if (std::abs(m_bounding_box.left() - pos.x) < eps) {
+    const double clamped_x = std::clamp(pos.x, m_bounding_box.left(), m_bounding_box.right());
+    const double clamped_y = std::clamp(pos.y, m_bounding_box.top(), m_bounding_box.bottom());
+    if (std::abs(m_bounding_box.left() - pos.x) < eps && std::abs(clamped_y - pos.y) < eps) {
       f |= Fringe::Left;
     }
-    if (std::abs(m_bounding_box.right() - pos.x) < eps) {
+    if (std::abs(m_bounding_box.right() - pos.x) < eps && std::abs(clamped_y - pos.y) < eps) {
       f |= Fringe::Right;
     }
-    if (std::abs(m_bounding_box.top() - pos.y) < eps) {
+    if (std::abs(m_bounding_box.top() - pos.y) < eps && std::abs(clamped_x - pos.x) < eps) {
       f |= Fringe::Top;
     }
-    if (std::abs(m_bounding_box.bottom() - pos.y) < eps) {
+    if (std::abs(m_bounding_box.bottom() - pos.y) < eps && std::abs(clamped_x - pos.x) < eps) {
       f |= Fringe::Bottom;
     }
 
