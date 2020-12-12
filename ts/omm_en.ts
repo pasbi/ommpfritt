@@ -192,7 +192,7 @@
     </message>
     <message>
         <source>object name not found</source>
-        <translation>objejct name not found</translation>
+        <translation>object name not found</translation>
     </message>
     <message>
         <source>object type not found</source>
