@@ -76,7 +76,7 @@ public:
 
   static void define_python_interface(py::object& module)
   {
-    const auto type_name = (QStringLiteral("Base") + WrappedT::TYPE).toUtf8().constData();
+    const auto type_name = QString("Base %1").arg(WrappedT::TYPE).toUtf8().constData();
     py::class_<AbstractPropertyOwnerWrapper<WrappedT>>(module, type_name, py::dynamic_attr())
         .def("__str__", &AbstractPropertyOwnerWrapper<WrappedT>::str)
         .def("get", &AbstractPropertyOwnerWrapper<WrappedT>::get)
