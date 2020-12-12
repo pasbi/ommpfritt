@@ -131,9 +131,8 @@ public:
 
   void draw(QPainter& painter) const override
   {
-    const BoundingBox bounding_box = static_cast<const ToolT&>(tool).bounding_box();
     painter.setPen(ui_color("bounding-box"));
-    painter.drawRect(bounding_box);
+    painter.drawRect(compute_bounding_box());
   }
 
   Fringe get_fringe(const Vec2f& pos) const
@@ -171,9 +170,14 @@ public:
   Fringe m_active_fringe{};
 
 private:
+  BoundingBox compute_bounding_box() const
+  {
+    return static_cast<const ToolT&>(tool).bounding_box();
+  }
+
   void update()
   {
-    m_bounding_box = static_cast<const ToolT&>(tool).bounding_box();
+    m_bounding_box = compute_bounding_box();
     m_tool_origin = tool.transformation().apply_to_position(Vec2f::o());
   }
 };
