@@ -205,7 +205,7 @@ void status(omm::Application&, const omm::SubcommandLineParser& args)
 
     if (!handle_match(false)) {
       if (!handle_match(true)) {
-        LERROR << "Description '" << description << "not found.";
+        LERROR << "Description '" << description << "' not found.";
         exit(omm::ExitStatus::invalid_input_format);
       }
     }
