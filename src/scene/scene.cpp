@@ -393,7 +393,7 @@ void Scene::emit_selection_changed_signal()
 std::unique_ptr<Object> Scene::make_root()
 {
   auto root = std::make_unique<Empty>(this);
-  root->property(Object::NAME_PROPERTY_KEY)->set("_root_");
+  root->property(Object::NAME_PROPERTY_KEY)->set(QString("_root_"));
   return root;
 }
 
