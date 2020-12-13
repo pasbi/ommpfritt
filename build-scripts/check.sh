@@ -7,13 +7,16 @@ fi
 
 cd "$(dirname "$0")/.."
 files="$(build-scripts/find-changed-files.sh "$2")"
-echo $files
+echo "$files"
 
 echo -e "\nRunning clang-format ..."
+# shellcheck disable=SC2086
 build-scripts/check.py --files $files --mode format -v
 
 echo -e "\nRunning Clazy ..."
+# shellcheck disable=SC2086
 build-scripts/check.py --files $files --mode clazy --compile-commands "$1/compile_commands.json" -v
 
 echo -e "\nRunning clang-tidy ..."
+# shellcheck disable=SC2086
 run-clang-tidy -p "$1" $files
