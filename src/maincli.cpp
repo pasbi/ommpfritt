@@ -137,7 +137,9 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
 {
   const auto scene_filename = args.get<QString>("input");
   const auto fn_template = args.get<QString>("output");
-  app.scene.load_from(scene_filename);
+  if (!app.scene.load_from(scene_filename)) {
+    exit(EXIT_FAILURE);
+  }
   prepare_scene(app.scene, args);
   const int start_frame = args.get<int>("start-frame", 1);
   const int n_frames = args.get<int>("sequence-length", 1);
@@ -170,7 +172,9 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
 void tree(omm::Application& app, const omm::SubcommandLineParser& args)
 {
   const auto scene_filename = args.get<QString>("input");
-  app.scene.load_from(scene_filename);
+  if (!app.scene.load_from(scene_filename)) {
+    exit(EXIT_FAILURE);
+  }
   print_tree(app.scene.object_tree().root());
 }
 
