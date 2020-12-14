@@ -232,10 +232,10 @@ ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(QAbstractItemView& view)
   add_area(std::make_unique<IsEnabledPropertyArea>(otv));
   using VPA = VisibilityPropertyArea;
   add_area(std::make_unique<VPA>(otv,
-                                 QRectF(pos_upper_visibility, half_size_hv),
+                                 QRectF(pos_lower_visibility, half_size_hv),
                                  Object::VISIBILITY_PROPERTY_KEY));
   add_area(std::make_unique<VPA>(otv,
-                                 QRectF(pos_lower_visibility, half_size_hv),
+                                 QRectF(pos_upper_visibility, half_size_hv),
                                  Object::VIEWPORT_VISIBILITY_PROPERTY_KEY));
 }
 
