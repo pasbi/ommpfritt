@@ -1,6 +1,7 @@
 #include "tools/selectobjectstool.h"
 #include "commands/objectstransformationcommand.h"
 #include "properties/optionproperty.h"
+#include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/handles/boundingboxhandle.h"
 #include "tools/handles/moveaxishandle.h"
@@ -69,6 +70,13 @@ bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
     scene()->set_selection({});
     return false;
   }
+}
+
+void SelectObjectsTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
+{
+  AbstractSelectTool::mouse_release(pos, event);
+  const auto items = scene()->item_selection<Object>();
+  scene()->emit_selection_changed_signal();
 }
 
 BoundingBox SelectObjectsTool::bounding_box() const

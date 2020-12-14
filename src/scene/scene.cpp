@@ -329,6 +329,10 @@ Style& Scene::default_style() const
 
 void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
+  // If you'd ever chose to emit signals only if the selection actually changes,
+  // be aware that members like Scene::emit_selection_changed_signal rely on the current
+  // behaviour and adapt them.
+
   m_selection = selection;
 
   static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
@@ -381,10 +385,15 @@ std::set<AbstractPropertyOwner*> Scene::selection() const
   return m_selection;
 }
 
+void Scene::emit_selection_changed_signal()
+{
+  set_selection(m_selection);
+}
+
 std::unique_ptr<Object> Scene::make_root()
 {
   auto root = std::make_unique<Empty>(this);
-  root->property(Object::NAME_PROPERTY_KEY)->set("_root_");
+  root->property(Object::NAME_PROPERTY_KEY)->set(QString("_root_"));
   return root;
 }
 

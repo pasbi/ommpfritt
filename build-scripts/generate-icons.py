@@ -118,8 +118,7 @@ if __name__ == "__main__":
                     items.append(item)
                 break
 
-    object_name_not_found_code = get_omm_status_code(args.command,
-                                                     "object name not found")
+    object_name_not_found_code = 2  # see src/common.h
 
     def required_resolutions(item):
         if item == "omm":

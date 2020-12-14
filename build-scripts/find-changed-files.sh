@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-files=$(git diff --name-only --diff-filter=d origin/master..HEAD)
+if [ "$1" = "all" ]; then
+  files="$(find 'src')"
+else
+  files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
+fi
 files=$(grep -v 'src/external' <<< "$files")
 files=$(grep -v 'test/external' <<< "$files")
 files=$(grep -v 'test/unit' <<< "$files")

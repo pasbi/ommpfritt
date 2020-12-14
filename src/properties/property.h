@@ -84,6 +84,15 @@ public:
   // === set/get value
 public:
   [[nodiscard]] virtual variant_type variant_value() const = 0;
+
+  /**
+   * @brief set In gcc 9 and earlier, there is the issue that pointers will be converted to bool.
+   * Hence, if you write `set("...")`, it will convert the string literal to a variant holding
+   * a bool, although you most likely expected it to hold a QString.
+   * Deleting his overload makes sure that one never falls into such a pitfall.
+   * Call `set` with an explicitely constructed `variant_type` instead.
+   */
+  void set(const char*) = delete;
   virtual void set(const variant_type& value) = 0;
   template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, void> set(const EnumT& value)
   {

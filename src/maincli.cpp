@@ -178,46 +178,6 @@ void tree(omm::Application& app, const omm::SubcommandLineParser& args)
   print_tree(app.scene.object_tree().root());
 }
 
-void status(omm::Application&, const omm::SubcommandLineParser& args)
-{
-  static const auto& statuses = omm::enumerate_enum<omm::ExitStatus>();
-  if (args.isSet("list")) {
-    std::cout << statuses.size() << " status codes:\n";
-    for (auto&& status : statuses) {
-      std::cout << std::setw(3) << std::setfill(' ') << static_cast<int>(status);
-      const auto name = omm::enum_name(status, false);
-      const auto tr_name = omm::enum_name(status, true);
-      std::cout << " " << tr_name.toStdString();
-      if (name != tr_name) {
-        std::cout << " (" << name.toStdString() << ")";
-      }
-      std::cout << "\n";
-    }
-  } else if (args.isSet("get-code")) {
-    const auto description = args.get<QString>("get-code");
-    const auto handle_match = [d = description](bool translate) {
-      const auto it = std::find_if(statuses.begin(), statuses.end(), [d, translate](auto&& c) {
-        return omm::enum_name(c, translate) == d;
-      });
-      if (it == statuses.end()) {
-        return false;
-      } else {
-        std::cout << static_cast<int>(*it);
-        return true;
-      }
-    };
-
-    if (!handle_match(false)) {
-      if (!handle_match(true)) {
-        LERROR << "Description '" << description << "not found.";
-        exit(omm::ExitStatus::invalid_input_format);
-      }
-    }
-  } else {
-    std::cout << args.helpText().toStdString();
-  }
-}
-
 std::unique_ptr<omm::Options> make_options(const omm::SubcommandLineParser& args)
 {
   const auto have_opengl = [&args]() {
@@ -266,7 +226,6 @@ int main(int argc, char* argv[])
   static const std::map<QString, subcommand_t> f_map{
       {"render", &render},
       {"tree", &tree},
-      {"status", &status},
   };
 
   if (const auto it = f_map.find(args.command()); it == f_map.end()) {

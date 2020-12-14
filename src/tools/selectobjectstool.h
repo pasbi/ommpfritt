@@ -51,6 +51,7 @@ public:
   static constexpr auto TRANSFORMATION_MODE_KEY = "transformation_mode";
   void reset() override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
+  void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   BoundingBox bounding_box() const;
   SceneMode scene_mode() const override
   {

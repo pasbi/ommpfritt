@@ -44,7 +44,7 @@ bool set_property_value(AbstractPropertyOwner& property_owner,
     if (property.type() == ReferenceProperty::TYPE()) {
       if (value.is_none()) {
         // TODO replace return-status with throw exception
-        property.set(nullptr);
+        property.set(variant_type{nullptr});
         return true;
       } else if (::set_property_value<Object, ObjectWrapper>(value, property)) {
         return true;
