@@ -54,7 +54,7 @@ std::array<double, 3> rgb_to_hsv(const std::array<double, 3>& rgb)
 std::array<double, 3> hsv_to_rgb(const std::array<double, 3>& hsv)
 {
   const double hue_0_6 = [h = hsv[0]]() mutable {
-    h = std::fmod(h, 2.0 * M_PI);
+    h = std::fmod(h, 1.0);
     if (h < 0.0) {
       h += 1.0;
     }
