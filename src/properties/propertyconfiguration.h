@@ -65,10 +65,10 @@ public:
 
   template<typename T> void set(const QString& key, T&& value)
   {
-    if constexpr (std::is_enum_v<T>) {
+    if constexpr (std::is_enum_v<std::decay_t<T>>) {
       set<std::size_t>(key, static_cast<std::size_t>(value));
     } else {
-      m_store.insert(std::pair{key, std::forward<T>(value)});
+      m_store[key] = std::forward<T>(value);
     }
   }
 
