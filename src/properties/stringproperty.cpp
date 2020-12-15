@@ -37,7 +37,7 @@ void StringProperty::serialize(AbstractSerializer& serializer, const Pointer& ro
 
 StringProperty& StringProperty::set_mode(StringProperty::Mode mode)
 {
-  configuration.set(MODE_PROPERTY_KEY, static_cast<std::size_t>(mode));
+  configuration.set(MODE_PROPERTY_KEY, mode);
   Q_EMIT this->configuration_changed();
   return *this;
 }
