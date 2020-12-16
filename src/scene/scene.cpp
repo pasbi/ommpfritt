@@ -110,7 +110,7 @@ Scene::Scene(PythonEngine& python_engine)
       m_animator(new Animator(*this)), m_named_colors(new NamedColors())
 {
   object_tree().root().set_object_tree(object_tree());
-  for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND}) {
+  for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, Node::KIND}) {
     m_item_selection[kind] = {};
   }
   connect(&history(), &HistoryModel::index_changed, &mail_box(), &MailBox::filename_changed);
