@@ -90,6 +90,15 @@ template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const 
   return ::filter_if(set, [name](const T* t) { return t->name() == name; });
 }
 
+std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scene& scene)
+{
+  auto apos = ::merge(std::set<omm::AbstractPropertyOwner*>(),
+                      scene.object_tree().items(),
+                      scene.styles().items(),
+                      scene.tags());
+  return apos;
+}
+
 }  // namespace
 
 namespace omm
@@ -417,6 +426,25 @@ void Scene::evaluate_tags() const
   for (Tag* tag : tags()) {
     tag->evaluate();
   }
+}
+
+std::set<Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner*>& owners) const
+{
+  std::set<Node*> nodes;
+  for (auto&& apo : owners) {
+    if (!!(apo->flags() & Flag::HasNodes)) {
+      const auto& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
+      if (const auto* node_model = nodes_owner.node_model()) {
+        nodes = ::merge(nodes, node_model->nodes());
+      }
+    }
+  }
+  return nodes;
+}
+
+std::set<Node*> Scene::collect_nodes() const
+{
+  return collect_nodes(collect_apos_without_nodes(*this));
 }
 
 bool Scene::can_remove(QWidget* parent,
