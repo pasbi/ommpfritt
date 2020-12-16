@@ -107,8 +107,6 @@ See [comparison](doc/comparison.md).
 
 -   **empty**: no geometry, but useful as group parent
 
--   **image**: load JPG, PNG, SVG, PDF as object
-
 -   **instance**: all changes of the reference are updated in the instance-object, too
 
 -   **cloner**: many instances in a regular arrangement
