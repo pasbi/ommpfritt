@@ -538,6 +538,10 @@ bool Scene::contains(const AbstractPropertyOwner* apo) const
     const auto tags = this->tags();
     return tags.end() != std::find(tags.begin(), tags.end(), dynamic_cast<const Tag*>(apo));
   }
+  case Kind::Node: {
+    const auto nodes = this->collect_nodes();
+    return nodes.end() != std::find(nodes.begin(), nodes.end(), dynamic_cast<const Node*>(apo));
+  }
   case Kind::Object:
     return object_tree().contains(dynamic_cast<const Object&>(*apo));
   case Kind::Style:
