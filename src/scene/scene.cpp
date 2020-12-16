@@ -317,17 +317,8 @@ std::set<Tag*> Scene::tags() const
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
-  auto apos
-      = merge(std::set<AbstractPropertyOwner*>(), object_tree().items(), styles().items(), tags());
-  for (auto&& apo : apos) {
-    if (!!(apo->flags() & Flag::HasNodes)) {
-      const auto& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
-      if (const auto* node_model = nodes_owner.node_model()) {
-        const auto nodes = node_model->nodes();
-        apos.insert(nodes.begin(), nodes.end());
-      }
-    }
-  }
+  auto apos = collect_apos_without_nodes(*this);
+  apos = ::merge(apos, collect_nodes(apos));
   return apos;
 }
 
