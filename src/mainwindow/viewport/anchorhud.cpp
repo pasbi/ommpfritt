@@ -69,9 +69,7 @@ bool AnchorHUD::mouse_press(QMouseEvent& event)
                      PROPER_ANCHORS.end(),
                      [this, pos, grid](auto&& anchor) {
                        if (anchor_rect(Options::anchor_position(grid, anchor)).contains(pos)) {
-                         if (m_anchor == anchor) {
-                           set_anchor(Anchor::None);
-                         } else {
+                         if (m_anchor != anchor) {
                            set_anchor(anchor);
                          }
                          m_disable_hover_for = anchor;
