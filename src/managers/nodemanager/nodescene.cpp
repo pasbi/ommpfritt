@@ -44,7 +44,6 @@ void NodeScene::set_model(NodeModel* model)
   if (m_model != nullptr) {
     m_scene_model_connections = {
         connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),
-        connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),
         connect(m_model, &NodeModel::node_removed, this, &NodeScene::remove_node),
         connect(&m_model->compiler(),
                 &AbstractNodeCompiler::compilation_succeeded,
@@ -75,7 +74,9 @@ void NodeScene::add_node(Node& node, bool select)
   auto node_item = std::make_unique<NodeItem>(node);
   auto& node_item_ref = *node_item;
   addItem(node_item.get());
-  m_node_items.insert({&node, std::move(node_item)});
+  const bool success = m_node_items.insert({&node, std::move(node_item)}).second;
+  Q_UNUSED(success)
+  assert(success);
 
   if (select) {
     clearSelection();
