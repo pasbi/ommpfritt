@@ -28,6 +28,7 @@ class HistoryModel;
 class Animator;
 class NamedColors;
 class ColorProperty;
+class Node;
 
 template<typename T> struct SceneStructure;
 template<> struct SceneStructure<Object> {
@@ -150,6 +151,11 @@ public:
 public:
   [[nodiscard]] std::set<Tag*> tags() const;
   void evaluate_tags() const;
+
+  // === Nodes ===
+public:
+  [[nodiscard]] std::set<Node*> collect_nodes() const;
+  [[nodiscard]] std::set<Node*> collect_nodes(const std::set<AbstractPropertyOwner*>& owners) const;
 
   // === Styles ===
 public:

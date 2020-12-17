@@ -90,6 +90,15 @@ template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const 
   return ::filter_if(set, [name](const T* t) { return t->name() == name; });
 }
 
+std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scene& scene)
+{
+  auto apos = ::merge(std::set<omm::AbstractPropertyOwner*>(),
+                      scene.object_tree().items(),
+                      scene.styles().items(),
+                      scene.tags());
+  return apos;
+}
+
 }  // namespace
 
 namespace omm
@@ -101,7 +110,7 @@ Scene::Scene(PythonEngine& python_engine)
       m_animator(new Animator(*this)), m_named_colors(new NamedColors())
 {
   object_tree().root().set_object_tree(object_tree());
-  for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND}) {
+  for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, Node::KIND}) {
     m_item_selection[kind] = {};
   }
   connect(&history(), &HistoryModel::index_changed, &mail_box(), &MailBox::filename_changed);
@@ -308,17 +317,8 @@ std::set<Tag*> Scene::tags() const
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
-  auto apos
-      = merge(std::set<AbstractPropertyOwner*>(), object_tree().items(), styles().items(), tags());
-  for (auto&& apo : apos) {
-    if (!!(apo->flags() & Flag::HasNodes)) {
-      const auto& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
-      if (const auto* node_model = nodes_owner.node_model()) {
-        const auto nodes = node_model->nodes();
-        apos.insert(nodes.begin(), nodes.end());
-      }
-    }
-  }
+  auto apos = collect_apos_without_nodes(*this);
+  apos = ::merge(apos, collect_nodes(apos));
   return apos;
 }
 
@@ -419,6 +419,25 @@ void Scene::evaluate_tags() const
   }
 }
 
+std::set<Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner*>& owners) const
+{
+  std::set<Node*> nodes;
+  for (auto&& apo : owners) {
+    if (!!(apo->flags() & Flag::HasNodes)) {
+      const auto& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
+      if (const auto* node_model = nodes_owner.node_model()) {
+        nodes = ::merge(nodes, node_model->nodes());
+      }
+    }
+  }
+  return nodes;
+}
+
+std::set<Node*> Scene::collect_nodes() const
+{
+  return collect_nodes(collect_apos_without_nodes(*this));
+}
+
 bool Scene::can_remove(QWidget* parent,
                        std::set<AbstractPropertyOwner*> selection,
                        std::set<Property*>& properties) const
@@ -509,6 +528,10 @@ bool Scene::contains(const AbstractPropertyOwner* apo) const
   case Kind::Tag: {
     const auto tags = this->tags();
     return tags.end() != std::find(tags.begin(), tags.end(), dynamic_cast<const Tag*>(apo));
+  }
+  case Kind::Node: {
+    const auto nodes = this->collect_nodes();
+    return nodes.end() != std::find(nodes.begin(), nodes.end(), dynamic_cast<const Node*>(apo));
   }
   case Kind::Object:
     return object_tree().contains(dynamic_cast<const Object&>(*apo));
