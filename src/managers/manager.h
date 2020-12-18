@@ -41,6 +41,7 @@ protected:
   Scene& m_scene;
   void set_widget(std::unique_ptr<QWidget> widget);
   void keyPressEvent(QKeyEvent* e) override;
+  bool event(QEvent* event) override;
 
 private:
   using QDockWidget::setWidget;  // use set_widget instead
