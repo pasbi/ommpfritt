@@ -376,8 +376,8 @@ bool ToolBarItemModel::canDropMimeData(const QMimeData* data,
   }
 }
 
-bool ToolBarItemModel::dropMimeData(const QMimeData* data,
-                                    Qt::DropAction action,
+bool ToolBarItemModel::dropMimeData([[maybe_unused]] const QMimeData* data,
+                                    [[maybe_unused]] Qt::DropAction action,
                                     [[maybe_unused]] int row,
                                     [[maybe_unused]] int column,
                                     const QModelIndex& parent)
