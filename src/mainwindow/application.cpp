@@ -417,8 +417,8 @@ bool Application::perform_action(const QString& action_name)
 bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, CommandInterface& ci)
 {
   const auto dispatch_sequence = [this](CommandInterface& ci) {
-    LINFO << m_pending_key_sequence;
     const auto action_name = key_bindings.find_action(ci.type(), m_pending_key_sequence);
+    LINFO << "Dispatching " << m_pending_key_sequence << " to " << &ci;
     if (!action_name.isEmpty() && ci.perform_action(action_name)) {
       m_pending_key_sequence = QKeySequence();
       return true;
@@ -429,11 +429,15 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, Command
 
   m_pending_key_sequence = push_back(m_pending_key_sequence, key | static_cast<int>(modifiers));
   m_reset_keysequence_timer.start();
+
   if (dispatch_sequence(ci)) {
+    LINFO << "Dispatched key sequence to proposed command interface.";
     return true;
-  } else if (&ci != &Application::instance()) {
-    return dispatch_sequence(Application::instance());
+  } else if (&ci != &Application::instance() && dispatch_sequence(Application::instance())) {
+    LINFO << "Dispatched key sequence to application.";
+    return true;
   } else {
+    LINFO << "Pending key sequence: " << m_pending_key_sequence << ".";
     return false;
   }
 }
