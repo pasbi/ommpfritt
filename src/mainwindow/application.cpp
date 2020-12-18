@@ -288,7 +288,7 @@ void Application::reset()
   QTimer::singleShot(0, &scene, &Scene::reset);
 }
 
-void Application::load(const QString& filename, bool force)
+void Application::open(const QString& filename, bool force)
 {
   // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (force || can_close()) {
@@ -296,24 +296,24 @@ void Application::load(const QString& filename, bool force)
       if (!scene.load_from(filename)) {
         QMessageBox::critical(m_main_window,
                               tr("Error."),
-                              tr("Loading scene from '%1' failed.").arg(filename),
+                              tr("Opening scene from '%1' failed.").arg(filename),
                               QMessageBox::Ok);
       }
     });
   }
 }
 
-void Application::load()
+void Application::open()
 {
   if (can_close()) {
     const QString filename = QFileDialog::getOpenFileName(m_main_window,
-                                                          tr("Load scene ..."),
+                                                          tr("Open scene ..."),
                                                           scene_directory_hint(scene.filename()));
     if (filename.isEmpty()) {
       return;
     }
 
-    load(filename, true);
+    open(filename, true);
   }
 }
 
@@ -329,16 +329,16 @@ bool Application::perform_action(const QString& action_name)
     scene.history().undo();
   } else if (action_name == "redo") {
     scene.history().redo();
-  } else if (action_name == "new document") {
+  } else if (action_name == "new") {
     // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     reset();
-  } else if (action_name == "save document") {
+  } else if (action_name == "save") {
     save();
-  } else if (action_name == "save document as ...") {
+  } else if (action_name == "save as ...") {
     save_as();
-  } else if (action_name == "load document ...") {
-    load();
-  } else if (action_name == "export") {
+  } else if (action_name == "open ...") {
+    open();
+  } else if (action_name == "export ...") {
     ExportDialog(scene, main_window()).exec();
   } else if (action_name == "evaluate") {
     evaluate();

@@ -49,8 +49,8 @@ public:
   bool save_as();
   bool save(const QString& filename);
   bool can_close();
-  void load();
-  void load(const QString& filename, bool force);
+  void open();
+  void open(const QString& filename, bool force);
   void reset();
   void quit();
   void update_undo_redo_enabled();
