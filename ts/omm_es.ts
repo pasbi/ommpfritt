@@ -9,202 +9,202 @@
     </message>
     <message>
         <source>Show GPL-3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar GPL-3.0</translation>
     </message>
 </context>
 <context>
     <name>BoundingBoxManager</name>
     <message>
         <source>Pos.&amp;x:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pos.&amp;x:</translation>
     </message>
     <message>
         <source>&amp;Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ancho:</translation>
     </message>
     <message>
         <source>Pos.&amp;y:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pos.y:</translation>
     </message>
     <message>
         <source>&amp;Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Altura:</translation>
     </message>
 </context>
 <context>
     <name>Color</name>
     <message>
         <source>Hue</source>
-        <translation type="unfinished"></translation>
+        <translation>Tono</translation>
     </message>
     <message>
         <source>Saturation</source>
-        <translation type="unfinished"></translation>
+        <translation>Saturación</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Brillo</translation>
     </message>
     <message>
         <source>Alpha</source>
-        <translation type="unfinished"></translation>
+        <translation>Alpha</translation>
     </message>
     <message>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Rojo</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Verde</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Azul</translation>
     </message>
 </context>
 <context>
     <name>ColorWidget</name>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>&amp;B:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;B:</translation>
     </message>
     <message>
         <source>&amp;G:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;G:</translation>
     </message>
     <message>
         <source>&amp;H:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;H:</translation>
     </message>
     <message>
         <source>&amp;A:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;A:</translation>
     </message>
     <message>
         <source>&amp;V:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;V:</translation>
     </message>
     <message>
         <source>&amp;R:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;R:</translation>
     </message>
     <message>
         <source>&amp;S:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;S:</translation>
     </message>
 </context>
 <context>
     <name>DataType</name>
     <message>
         <source>Bool</source>
-        <translation type="unfinished"></translation>
+        <translation>Bool</translation>
     </message>
     <message>
         <source>Float</source>
-        <translation type="unfinished"></translation>
+        <translation>Número decimal</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Número entero</translation>
     </message>
     <message>
         <source>Reference</source>
-        <translation type="unfinished">Referencia</translation>
+        <translation>Referencia</translation>
     </message>
     <message>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor de cadena</translation>
     </message>
     <message>
         <source>Option</source>
-        <translation type="unfinished"></translation>
+        <translation>Opción</translation>
     </message>
     <message>
         <source>Trigger</source>
-        <translation type="unfinished"></translation>
+        <translation>Disparador</translation>
     </message>
     <message>
         <source>FloatVector</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector de número decimal</translation>
     </message>
     <message>
         <source>IntegerVector</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector de número entero</translation>
     </message>
     <message>
         <source>Spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Spline</translation>
     </message>
 </context>
 <context>
     <name>Enum</name>
     <message>
         <source>Tag</source>
-        <translation type="unfinished">Tag</translation>
+        <translation>Tag</translation>
     </message>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>Object</source>
-        <translation type="unfinished">Objeto</translation>
+        <translation>Objeto</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Estilo</translation>
+        <translation>Estilo</translation>
     </message>
     <message>
         <source>Tool</source>
-        <translation type="unfinished">Herramienta</translation>
+        <translation>Herramienta</translation>
     </message>
     <message>
         <source>HasScript</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiene Script</translation>
     </message>
     <message>
         <source>IsView</source>
-        <translation type="unfinished"></translation>
+        <translation>Es vista</translation>
     </message>
     <message>
         <source>HasPythonNodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiene Nodos de Python</translation>
     </message>
     <message>
         <source>HasGLSLNodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiene Nodos de GLSL</translation>
     </message>
     <message>
         <source>Convertible</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertible</translation>
     </message>
     <message>
         <source>invalid input format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato de entrada inválido</translation>
     </message>
     <message>
         <source>object name not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de objeto no encontrado</translation>
     </message>
     <message>
         <source>object type not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de objeto no encontrado</translation>
     </message>
     <message>
         <source>refuse overwrite file</source>
-        <translation type="unfinished"></translation>
+        <translation>archivo existente no se puede sobreescribir</translation>
     </message>
     <message>
         <source>non unique object reference</source>
-        <translation type="unfinished"></translation>
+        <translation>referencia-de-objeto-no-único</translation>
     </message>
 </context>
 <context>
@@ -231,144 +231,144 @@
     </message>
     <message>
         <source>&amp;Resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Resolución:</translation>
     </message>
     <message>
         <source>Still</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotograma</translation>
     </message>
     <message>
         <source>&amp;Export ...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportar ...</translation>
     </message>
     <message>
         <source>Animation</source>
-        <translation type="unfinished"></translation>
+        <translation>Animación</translation>
     </message>
     <message>
         <source>&amp;Start:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Comienzo:</translation>
     </message>
     <message>
         <source>Frame </source>
-        <translation type="unfinished"></translation>
+        <translation>Frame </translation>
     </message>
     <message>
         <source>&amp;End:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fin:</translation>
     </message>
     <message>
         <source>&amp;Pattern:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Patrón:</translation>
     </message>
     <message>
         <source>frame_%%%%.png</source>
-        <translation type="unfinished"></translation>
+        <translation>frame_%%%%.png</translation>
     </message>
     <message>
         <source>St&amp;art ...</source>
-        <translation type="unfinished"></translation>
+        <translation>St&amp;art ...</translation>
     </message>
     <message>
         <source>&amp;Overwrite:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sobreescribir:</translation>
     </message>
 </context>
 <context>
     <name>GeneralPage</name>
     <message>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Idioma</translation>
     </message>
 </context>
 <context>
     <name>KeyBindingsPage</name>
     <message>
         <source>Reset All</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiniciar todo</translation>
     </message>
     <message>
         <source>name filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
 </context>
 <context>
     <name>NamedColorsDialog</name>
     <message>
         <source>Manage Named Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar colores con nombre</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
 </context>
 <context>
     <name>NodeManager</name>
     <message>
         <source>Node Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestor de nodos</translation>
     </message>
 </context>
 <context>
     <name>NodeMenuPath</name>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>General</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <source>Math</source>
-        <translation type="unfinished"></translation>
+        <translation>Matemática</translation>
     </message>
     <message>
         <source>Pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Patrón</translation>
     </message>
     <message>
         <source>Interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolación</translation>
     </message>
 </context>
 <context>
     <name>OffscreenRenderer</name>
     <message>
         <source>local_pos</source>
-        <translation type="unfinished"></translation>
+        <translation>pos local.</translation>
     </message>
     <message>
         <source>global_pos</source>
-        <translation type="unfinished"></translation>
+        <translation>pos global.</translation>
     </message>
     <message>
         <source>local_normalized_pos</source>
-        <translation type="unfinished"></translation>
+        <translation>pos norm. local.</translation>
     </message>
     <message>
         <source>object_size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño de objeto</translation>
     </message>
     <message>
         <source>view_pos</source>
-        <translation type="unfinished"></translation>
+        <translation>pos vista.</translation>
     </message>
 </context>
 <context>
     <name>OptionPropertyConfigWidget</name>
     <message>
         <source>Unnamed Option</source>
-        <translation type="unfinished"></translation>
+        <translation>Opción sin nombre</translation>
     </message>
 </context>
 <context>
@@ -382,7 +382,7 @@
     <name>PreferenceDialog</name>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferencias</translation>
     </message>
 </context>
 <context>
@@ -759,7 +759,7 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>enter command ...</source>
         <comment>PythonConsole</comment>
-        <translation>Etra un comando ...</translation>
+        <translation>Entra un comando ...</translation>
     </message>
     <message>
         <source>&gt;&gt;&gt; </source>
@@ -1158,375 +1158,375 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>Include Tangents</source>
-        <translation type="unfinished"></translation>
+        <translation>Incluir tangentes</translation>
     </message>
     <message>
         <source>Exclude Tangents</source>
-        <translation type="unfinished"></translation>
+        <translation>Excluir tangentes</translation>
     </message>
     <message>
         <source>Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuadro delimitador</translation>
     </message>
     <message>
         <source>identical</source>
         <comment>Instance</comment>
-        <translation type="unfinished"></translation>
+        <translation>idéntico</translation>
     </message>
     <message>
         <source>default</source>
-        <translation type="unfinished"></translation>
+        <translation>predeterminado</translation>
     </message>
     <message>
         <source>Set Object Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectar objetos</translation>
     </message>
     <message>
         <source>visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Visibilidad</translation>
     </message>
     <message>
         <source>User Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades de usuario</translation>
     </message>
     <message>
         <source>Remove Keyframe</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar fotograma clave</translation>
     </message>
     <message>
         <source>Create Keyframe</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear fotograma clave</translation>
     </message>
     <message>
         <source>Create Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear pistas</translation>
     </message>
     <message>
         <source>Remove Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar pistas</translation>
     </message>
     <message>
         <source>Move Keyframes</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover fotogramas claves</translation>
     </message>
     <message>
         <source>Move knots</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover nudos</translation>
     </message>
     <message>
         <source>Python</source>
         <comment>PythonConsole</comment>
-        <translation type="unfinished"></translation>
+        <translation>Python</translation>
     </message>
     <message>
         <source>Change name of named color name</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar nombre de color nombrado</translation>
     </message>
     <message>
         <source>Change Named Color color</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar color de color nombrado</translation>
     </message>
     <message>
         <source>Remove Named Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar color nombrado</translation>
     </message>
     <message>
         <source>Add Named Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir color nombrado</translation>
     </message>
     <message>
         <source>visibility (viewport)</source>
-        <translation type="unfinished"></translation>
+        <translation>Visibilidad (Vista)</translation>
     </message>
     <message>
         <source>Change Keyframes</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar fotogramas claves</translation>
     </message>
     <message>
         <source>Set Interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Asignar modo de interpolación</translation>
     </message>
     <message>
         <source>x</source>
-        <translation type="unfinished">x</translation>
+        <translation>x</translation>
     </message>
     <message>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <source>Connect Ports</source>
-        <translation type="unfinished"></translation>
+        <translation>Conectar puertos</translation>
     </message>
     <message>
         <source>Disconnect Ports</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconectar puertos</translation>
     </message>
     <message>
         <source>Remove Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar nodos</translation>
     </message>
     <message>
         <source>Add Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir nodos</translation>
     </message>
     <message>
         <source>Move Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover nodos</translation>
     </message>
     <message>
         <source>Operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Operación</translation>
     </message>
     <message>
         <source>undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>indefinido</translation>
     </message>
     <message>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Básico</translation>
     </message>
     <message>
         <source>Remove Forwarding Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar puerto reenviado</translation>
     </message>
     <message>
         <source>Add Forwarding Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir puerto reenviado</translation>
     </message>
     <message>
         <source>Edit ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar ...</translation>
     </message>
     <message>
         <source>Edit style ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar estilo ...</translation>
     </message>
     <message>
         <source>t</source>
-        <translation type="unfinished"></translation>
+        <translation>t</translation>
     </message>
     <message>
         <source>left</source>
-        <translation type="unfinished"></translation>
+        <translation>izquierdo</translation>
     </message>
     <message>
         <source>right</source>
-        <translation type="unfinished"></translation>
+        <translation>derecho</translation>
     </message>
     <message>
         <source>Warning</source>
         <comment>OptionPropertyConfigWidget</comment>
-        <translation type="unfinished">Advertencia</translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <source>Cannot remove last option.</source>
         <comment>OptionPropertyConfigWidget</comment>
-        <translation type="unfinished">La última opción no se puede borrar.</translation>
+        <translation>La última opción no se puede borrar.</translation>
     </message>
     <message>
         <source>a</source>
-        <translation type="unfinished"></translation>
+        <translation>a</translation>
     </message>
     <message>
         <source>b</source>
-        <translation type="unfinished"></translation>
+        <translation>b</translation>
     </message>
     <message>
         <source>The input scene file.</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo de escena de entrada.</translation>
     </message>
     <message>
         <source>Where to save the batch renderings. Use `%1` as framenumber placeholder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Donde se ponen las renderizaciones. Usar `%1`como marcador de posición para los números de fotogramas.</translation>
     </message>
     <message>
         <source>Overwrite existing files without warning.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sobreescribir archivos existentes sin aviso.</translation>
     </message>
     <message>
         <source>start-frame of the rendering (optional).</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotograma inicial que se debe renderizar (opcional).</translation>
     </message>
     <message>
         <source>name of the view.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la vista.</translation>
     </message>
     <message>
         <source>number of frames (optional).</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de fotogramas (opcional).</translation>
     </message>
     <message>
         <source>Expected integer argument for &apos;%1&apos;, but got &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se esperó un argumento de número entero para &apos;%1&apos;, pero se recibió &apos;%2&apos;.</translation>
     </message>
     <message>
         <source>Framenumber placeholder must be contiguous.</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcador de posición para el ńumero de fotograma tiene que ser contiguo.</translation>
     </message>
     <message>
         <source>Refuse to overwrite existing file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechazar de sobreescribir &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando no reconocido %1. Intenta &apos;%2 --help&apos; para más información.</translation>
     </message>
     <message>
         <source>#FRAME</source>
-        <translation type="unfinished"></translation>
+        <translation>#FRAME</translation>
     </message>
     <message>
         <source>NAME</source>
-        <translation type="unfinished"></translation>
+        <translation>NOMBRE</translation>
     </message>
     <message>
         <source>#FRAMES</source>
-        <translation type="unfinished"></translation>
+        <translation>#FRAMES</translation>
     </message>
     <message>
         <source>The width of the rendering. Height is calculated based on the aspect ratio of the selected view.</source>
-        <translation type="unfinished"></translation>
+        <translation>El ancho de la renderización. La altura se calcula basado en la relación de aspecto de la vista seleccionado.</translation>
     </message>
     <message>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
     <message>
         <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>La ruta del objeto que se tiene que renderizar. Omitalo para renderizar la escena entera. La ruta no tiene que ser única. En este caso todos los objetos correspondientes se renderizan. Expresiones regulares del estilo Perl son admitido.</translation>
     </message>
     <message>
         <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>El nombre del objeto que se tiene que renderizar. Omitalo para renderizar la escena entera. El nombre no tiene que ser único. En este caso todos los objetos correspondientes se renderizan. Expresiones regulares del estilo Perl son admitido.</translation>
     </message>
     <message>
         <source>The verbosity (fatal|critical|warning|info|debug).</source>
-        <translation type="unfinished"></translation>
+        <translation>La verbosidad (fatal|critical|warning|info|debug).</translation>
     </message>
     <message>
         <source>LEVEL</source>
-        <translation type="unfinished"></translation>
+        <translation>NIVEL</translation>
     </message>
     <message>
         <source>FILENAME</source>
-        <translation type="unfinished"></translation>
+        <translation>NOMBRE DE ARCHIVO</translation>
     </message>
     <message>
         <source>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</source>
-        <translation type="unfinished"></translation>
+        <translation>Desactivar OpenGL. OpenGL está activado por defecto cuando se usa el comando `%1&apos;.</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Unión</translation>
     </message>
     <message>
         <source>Intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersección</translation>
     </message>
     <message>
         <source>Exclusive Or</source>
-        <translation type="unfinished"></translation>
+        <translation>O Exclusivo</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Differencia</translation>
     </message>
     <message>
         <source>Inverse Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Differencia Invertido</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished"></translation>
+        <translation>Booleana</translation>
     </message>
     <message>
         <source>Empty</source>
-        <translation type="unfinished">Objeto vacío</translation>
+        <translation>Objeto vacío</translation>
     </message>
     <message>
         <source>join</source>
-        <translation type="unfinished"></translation>
+        <translation>unir</translation>
     </message>
     <message>
         <source>Snap tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancia de forzar</translation>
     </message>
     <message>
         <source>segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Segmento</translation>
     </message>
     <message>
         <source>Natural</source>
-        <translation type="unfinished"></translation>
+        <translation>Natural</translation>
     </message>
     <message>
         <source>Distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Distancia</translation>
     </message>
     <message>
         <source>Interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolación</translation>
     </message>
     <message>
         <source>CutPathCommand</source>
-        <translation type="unfinished"></translation>
+        <translation>Cortar trayecto</translation>
     </message>
     <message>
         <source>Cut Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Cortar trayecto</translation>
     </message>
     <message>
         <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si está activado esta opción, el objeto de destino (ver la &apos;path&apos; o &apos;object&apos; opción) tiene que ser único, es decir, tiene que existir solo un objeto que encaje. La aplicación termine si este requerimiento esté violado.</translation>
     </message>
     <message>
         <source>Get status code for given description.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtener código de estatus por esta decripción.</translation>
     </message>
     <message>
         <source>DESCRIPTION</source>
-        <translation type="unfinished"></translation>
+        <translation>DESCRIPCIÓN</translation>
     </message>
     <message>
         <source>List status codes and descriptions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enumerar códigos de estatus y descripciones.</translation>
     </message>
     <message>
         <source>Subdivide Paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Subdividir trayectos</translation>
     </message>
     <message>
         <source>Both</source>
-        <translation type="unfinished">Ambas</translation>
+        <translation>Ambas</translation>
     </message>
     <message>
         <source>threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Umbral</translation>
     </message>
     <message>
         <source>apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplicar</translation>
     </message>
     <message>
         <source>similarity</source>
-        <translation type="unfinished"></translation>
+        <translation>Similitud</translation>
     </message>
     <message>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Alguna</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos</translation>
     </message>
     <message>
         <source>strategy</source>
-        <translation type="unfinished"></translation>
+        <translation>Estrategia</translation>
     </message>
     <message>
         <source>normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
 </context>
 <context>
@@ -1540,15 +1540,15 @@ Borrar la selección de todos modos?</translation>
     <name>TimeLineTitleBar</name>
     <message>
         <source>Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Repetir</translation>
     </message>
     <message>
         <source>PingPong</source>
-        <translation type="unfinished"></translation>
+        <translation>Ping-Pong</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Parar</translation>
     </message>
 </context>
 <context>
@@ -1562,80 +1562,80 @@ Borrar la selección de todos modos?</translation>
     <name>ToolBarDialog</name>
     <message>
         <source>Name filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtro de nombre</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Del</source>
-        <translation type="unfinished"></translation>
+        <translation>Supr</translation>
     </message>
     <message>
         <source>add group</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir grupo</translation>
     </message>
     <message>
         <source>remove</source>
-        <translation type="unfinished">Borrar elemento</translation>
+        <translation>Borrar elemento</translation>
     </message>
     <message>
         <source>Customize tool bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalizar barra de herramientas</translation>
     </message>
     <message>
         <source>add separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir separador</translation>
     </message>
     <message>
         <source>add switch ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir interruptor ...</translation>
     </message>
 </context>
 <context>
     <name>Track</name>
     <message>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Paso</translation>
     </message>
     <message>
         <source>Bezier</source>
-        <translation type="unfinished"></translation>
+        <translation>Bézier</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished">Lineal</translation>
+        <translation>Lineal</translation>
     </message>
 </context>
 <context>
     <name>UiColorsPage</name>
     <message>
         <source>save as ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar como ...</translation>
     </message>
     <message>
         <source>Reset All</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiniciar todo</translation>
     </message>
 </context>
 <context>
     <name>UserPropertyDialog</name>
     <message>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>animatable</source>
-        <translation type="unfinished"></translation>
+        <translation>animable</translation>
     </message>
     <message>
         <source>User Property Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Diálogo de propiedades de usuario</translation>
     </message>
 </context>
 <context>
@@ -1746,533 +1746,518 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>TimeLine</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea de tiempo</translation>
     </message>
     <message>
         <source>NodeManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestor de nodos</translation>
     </message>
     <message>
         <source>ConstantNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Constante</translation>
     </message>
     <message>
         <source>NodesTag</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag de nodo</translation>
     </message>
     <message>
         <source>MathNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Matemática</translation>
     </message>
     <message>
         <source>ReferenceNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Referencia</translation>
     </message>
     <message>
         <source>SpyNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Espía</translation>
     </message>
     <message>
         <source>ComposeNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Componer</translation>
     </message>
     <message>
         <source>DecomposeNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Descomponer</translation>
     </message>
     <message>
         <source>FragmentNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Fragmento</translation>
     </message>
     <message>
         <source>ComposeColorNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Componer Color</translation>
     </message>
     <message>
         <source>DecomposeColorNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Descomponer Color</translation>
     </message>
     <message>
         <source>VertexNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Vértice</translation>
     </message>
     <message>
         <source>Function2Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Función2</translation>
     </message>
     <message>
         <source>FunctionNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Funcíon</translation>
     </message>
     <message>
         <source>LinePatternNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Patrón de línea</translation>
     </message>
     <message>
         <source>ColorConvertNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir Color</translation>
     </message>
     <message>
         <source>InterpolateNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolación</translation>
     </message>
     <message>
         <source>Tip</source>
-        <translation type="unfinished">Punta</translation>
+        <translation>Punta</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished"></translation>
+        <translation>Booleana</translation>
     </message>
     <message>
         <source>SelectSimilarTool</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectar similar</translation>
     </message>
     <message>
         <source>LineObject</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea</translation>
     </message>
 </context>
 <context>
     <name>keybindings/Application</name>
     <message>
         <source>Ellipse</source>
-        <translation type="unfinished">Elipse</translation>
+        <translation>Elipsis</translation>
     </message>
     <message>
         <source>show point dialog</source>
-        <translation type="unfinished">Mostrar diálogo para editar puntos</translation>
+        <translation>Mostrar diálogo para editar puntos</translation>
     </message>
     <message>
         <source>Instance</source>
-        <translation type="unfinished">Instancia</translation>
+        <translation>Instancia</translation>
     </message>
     <message>
         <source>previous tool</source>
-        <translation type="unfinished">Herramienta previa</translation>
+        <translation>Herramienta previa</translation>
     </message>
     <message>
         <source>load layout ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar layout ...</translation>
     </message>
     <message>
         <source>convert objects</source>
-        <translation type="unfinished">Convertir objetos</translation>
+        <translation>Convertir objetos</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished">Trayecto</translation>
+        <translation>Trayecto</translation>
     </message>
     <message>
         <source>BoundingBoxManager</source>
-        <translation type="unfinished">Controles de Bounding Box</translation>
+        <translation>Gestor de Cuadro Delimitador</translation>
     </message>
     <message>
         <source>make smooth</source>
-        <translation type="unfinished">Ajusta tangentes de modo cúbico</translation>
+        <translation>Ajusta tangentes de modo cúbico</translation>
     </message>
     <message>
         <source>new style</source>
-        <translation type="unfinished">Nuevo estilo</translation>
+        <translation>Nuevo estilo</translation>
     </message>
     <message>
         <source>restore default layout</source>
-        <translation type="unfinished">Revertir a la configuración de pantalla por defecto</translation>
+        <translation>Revertir a la configuración de pantalla por defecto</translation>
     </message>
     <message>
         <source>ImageObject</source>
-        <translation type="unfinished">Objeto Imagen</translation>
+        <translation>Objeto Imagen</translation>
     </message>
     <message>
         <source>PathTool</source>
-        <translation type="unfinished">Herramienta Trayecto</translation>
+        <translation>Herramienta Trayecto</translation>
     </message>
     <message>
         <source>undo</source>
-        <translation type="unfinished">Deshacer</translation>
+        <translation>Deshacer</translation>
     </message>
     <message>
         <source>PathTag</source>
-        <translation type="unfinished">Tag Trayecto</translation>
+        <translation>Tag Trayecto</translation>
     </message>
     <message>
         <source>HistoryManager</source>
-        <translation type="unfinished">Historia de acciones</translation>
+        <translation>Historia de acciones</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished">Punto de Vista</translation>
-    </message>
-    <message>
-        <source>save document</source>
-        <translation type="unfinished">Guardar</translation>
+        <translation>Vista</translation>
     </message>
     <message>
         <source>SelectObjectsTool</source>
-        <translation type="unfinished">Seleccionar objetos</translation>
+        <translation>Seleccionar objetos</translation>
     </message>
     <message>
         <source>reset viewport</source>
-        <translation type="unfinished">Revertir vista</translation>
+        <translation>Revertir vista</translation>
     </message>
     <message>
         <source>KnifeTool</source>
-        <translation type="unfinished">Cuchillo</translation>
+        <translation>Cuchillo</translation>
     </message>
     <message>
         <source>ProceduralPath</source>
-        <translation type="unfinished">Trayecto Procedural</translation>
+        <translation>Trayecto Procedural</translation>
     </message>
     <message>
         <source>Tip</source>
-        <translation type="unfinished">Punta</translation>
+        <translation>Punta</translation>
     </message>
     <message>
         <source>deselect all</source>
-        <translation type="unfinished">Deseleccionar todo</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation type="unfinished">Nuevo Documento</translation>
+        <translation>Deseleccionar todo</translation>
     </message>
     <message>
         <source>StyleManager</source>
-        <translation type="unfinished">Controles de Estilos</translation>
+        <translation>Controles de Estilos</translation>
     </message>
     <message>
         <source>make linear</source>
-        <translation type="unfinished">Borrar tangentes</translation>
+        <translation>Borrar tangentes</translation>
     </message>
     <message>
         <source>subdivide</source>
-        <translation type="unfinished">Subdividir</translation>
+        <translation>Subdividir</translation>
     </message>
     <message>
         <source>DopeSheetManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Planilla de tiempos</translation>
     </message>
     <message>
         <source>ObjectManager</source>
-        <translation type="unfinished">Controles de Objetos</translation>
+        <translation>Controles de Objetos</translation>
     </message>
     <message>
         <source>redo</source>
-        <translation type="unfinished">Rehacer</translation>
+        <translation>Rehacer</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation type="unfinished">Texto</translation>
+        <translation>Texto</translation>
     </message>
     <message>
         <source>StyleTag</source>
-        <translation type="unfinished">Tag Estilo</translation>
+        <translation>Tag Estilo</translation>
     </message>
     <message>
         <source>save layout ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar layout ...</translation>
     </message>
     <message>
         <source>RectangleObject</source>
-        <translation type="unfinished">Rectángulo</translation>
+        <translation>Rectángulo</translation>
     </message>
     <message>
         <source>Mirror</source>
-        <translation type="unfinished"></translation>
+        <translation>Espejo</translation>
     </message>
     <message>
         <source>BrushSelectTool</source>
-        <translation type="unfinished">Selección con Pincel</translation>
+        <translation>Selección con pincel</translation>
     </message>
     <message>
         <source>select all</source>
-        <translation type="unfinished">Seleccionar todo</translation>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <source>export</source>
-        <translation type="unfinished">Exportar</translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <source>preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferencias</translation>
     </message>
     <message>
         <source>TimeLine</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea de tiempo</translation>
     </message>
     <message>
         <source>Empty</source>
-        <translation type="unfinished">Objeto vacío</translation>
+        <translation>Objeto vacío</translation>
     </message>
     <message>
         <source>PropertyManager</source>
-        <translation type="unfinished">Controles de Atributos</translation>
+        <translation>Controles de Atributos</translation>
     </message>
     <message>
         <source>invert selection</source>
-        <translation type="unfinished">Invertir selección</translation>
+        <translation>Invertir selección</translation>
     </message>
     <message>
         <source>evaluate</source>
-        <translation type="unfinished">Evaluar</translation>
+        <translation>Evaluar</translation>
     </message>
     <message>
         <source>PythonConsole</source>
-        <translation type="unfinished">Consola Python</translation>
+        <translation>Consola Python</translation>
     </message>
     <message>
         <source>ScriptTag</source>
-        <translation type="unfinished">Tag Script</translation>
+        <translation>Tag Script</translation>
     </message>
     <message>
         <source>SelectPointsTool</source>
-        <translation type="unfinished">Seleccionar puntos</translation>
+        <translation>Seleccionar puntos</translation>
     </message>
     <message>
         <source>Cloner</source>
-        <translation type="unfinished">Clonador</translation>
+        <translation>Clonador</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished">Aplicación</translation>
+        <translation>Aplicación</translation>
     </message>
     <message>
         <source>CurveManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Curva F</translation>
     </message>
     <message>
         <source>NodeManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestor de nodos</translation>
     </message>
     <message>
         <source>NodesTag</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag de nodo</translation>
     </message>
     <message>
         <source>new toolbar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>save document as ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>load document ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuevo barra de herramientas</translation>
     </message>
     <message>
         <source>remove unused styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar estilos no usados</translation>
     </message>
     <message>
         <source>Boolean</source>
-        <translation type="unfinished"></translation>
+        <translation>Booleana</translation>
     </message>
     <message>
         <source>scene_mode.cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>Siguiente modo de escena</translation>
     </message>
     <message>
         <source>scene_mode.object</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de objeto</translation>
     </message>
     <message>
         <source>scene_mode.vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de vértice</translation>
     </message>
     <message>
         <source>scene_mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo de escena</translation>
     </message>
     <message>
         <source>remove selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar selección</translation>
     </message>
     <message>
         <source>remove selected points</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar puntos seleccionados</translation>
     </message>
     <message>
         <source>select connected points</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar puntos conectados</translation>
     </message>
     <message>
         <source>fill selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Llenar selección</translation>
     </message>
     <message>
         <source>extend selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ampliar selección</translation>
     </message>
     <message>
         <source>shrink selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Disminuir selección</translation>
     </message>
     <message>
         <source>SelectSimilarTool</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar similar</translation>
     </message>
     <message>
         <source>LineObject</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea</translation>
+    </message>
     </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
     <message>
         <source>ComposeNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Componer</translation>
     </message>
     <message>
         <source>ConstantNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Constante</translation>
     </message>
     <message>
         <source>DecomposeNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Descomponer</translation>
     </message>
     <message>
         <source>MathNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Matemática</translation>
     </message>
     <message>
         <source>NodeManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestor de Nodos</translation>
     </message>
     <message>
         <source>ReferenceNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Node Referencia</translation>
     </message>
     <message>
         <source>SpyNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Espía</translation>
     </message>
     <message>
         <source>abort</source>
-        <translation type="unfinished"></translation>
+        <translation>abortar</translation>
     </message>
     <message>
         <source>remove nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar nodos</translation>
     </message>
     <message>
         <source>ColorConvertNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Conversión de Color</translation>
     </message>
     <message>
         <source>ComposeColorNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Componer color</translation>
     </message>
     <message>
         <source>DecomposeColorNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Descomponer Color</translation>
     </message>
     <message>
         <source>FragmentNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Fragmento</translation>
     </message>
     <message>
         <source>Function2Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Función2</translation>
     </message>
     <message>
         <source>FunctionNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Función</translation>
     </message>
     <message>
         <source>LinePatternNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Patrón de línea</translation>
     </message>
     <message>
         <source>VertexNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo Vértice</translation>
     </message>
     <message>
         <source>copy</source>
-        <translation type="unfinished">Copiar</translation>
+        <translation>Copiar</translation>
     </message>
     <message>
         <source>cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Cortar</translation>
     </message>
     <message>
         <source>paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegar</translation>
     </message>
     <message>
         <source>InterpolateNode</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolación</translation>
     </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
     <message>
         <source>remove objects and tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar objetos y tags</translation>
     </message>
     <message>
         <source>group objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupar objetos</translation>
     </message>
     <message>
         <source>ObjectManager</source>
-        <translation type="unfinished">Controles de Objetos</translation>
+        <translation>Controles de Objetos</translation>
     </message>
 </context>
 <context>
     <name>keybindings/PythonConsole</name>
     <message>
         <source>clear console</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar consola</translation>
     </message>
     <message>
         <source>PythonConsole</source>
-        <translation type="unfinished">Consola Python</translation>
+        <translation>Consola Python</translation>
     </message>
     <message>
         <source>py-evaluate</source>
-        <translation type="unfinished"></translation>
+        <translation>evaluar</translation>
     </message>
 </context>
 <context>
     <name>keybindings/StyleManager</name>
     <message>
         <source>remove styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar estilos</translation>
     </message>
     <message>
         <source>StyleManager</source>
-        <translation type="unfinished">Controles de Estilos</translation>
+        <translation>Controles de Estilos</translation>
     </message>
 </context>
 <context>
     <name>keybindings/TimeLine</name>
     <message>
         <source>step left</source>
-        <translation type="unfinished"></translation>
+        <translation>Paso a la izquierda</translation>
     </message>
     <message>
         <source>jump to start</source>
-        <translation type="unfinished"></translation>
+        <translation>Saltar al comienzo</translation>
     </message>
     <message>
         <source>play/pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Reproducir/Pausar</translation>
     </message>
     <message>
         <source>step right</source>
-        <translation type="unfinished"></translation>
+        <translation>Paso a la derecha</translation>
     </message>
     <message>
         <source>clear selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Despejar selección</translation>
     </message>
     <message>
         <source>TimeLine</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea de tiempo</translation>
     </message>
     <message>
         <source>remove selected keys</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar fotogramas de clave seleccionadas</translation>
     </message>
 </context>
 <context>
@@ -2326,27 +2311,27 @@ Borrar la selección de todos modos?</translation>
     <name>omm::AnimationButton</name>
     <message>
         <source>Remove Track</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar pista</translation>
     </message>
     <message>
         <source>Add Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir fotograma clave</translation>
     </message>
     <message>
         <source>Remove Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar fotograma clave</translation>
     </message>
     <message>
         <source>Replace Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir fotograma clave</translation>
     </message>
     <message>
         <source>Set keyframe</source>
-        <translation type="unfinished"></translation>
+        <translation>Poner fotograma clave</translation>
     </message>
     <message>
         <source>Interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolación</translation>
     </message>
 </context>
 <context>
@@ -2381,11 +2366,11 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>Add Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir tag</translation>
     </message>
     <message>
         <source>Some pending changes will be lost if you don&apos;t save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Algunas modificaciones se pierden si no guardes.</translation>
     </message>
 </context>
 <context>
@@ -2399,174 +2384,174 @@ Borrar la selección de todos modos?</translation>
     <name>omm::ColorCircle</name>
     <message>
         <source>ColorCircle</source>
-        <translation type="unfinished"></translation>
+        <translation>Círculo de color</translation>
     </message>
 </context>
 <context>
     <name>omm::ColorConvertNode</name>
     <message>
         <source>Identity</source>
-        <translation type="unfinished"></translation>
+        <translation>Identidad</translation>
     </message>
     <message>
         <source>RGBA -&gt; HSVA</source>
-        <translation type="unfinished"></translation>
+        <translation>RGBA -&gt; HSVA</translation>
     </message>
     <message>
         <source>HSVA -&gt; RGBA</source>
-        <translation type="unfinished"></translation>
+        <translation>HSVA -&gt; RGBA</translation>
     </message>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>conversion</source>
-        <translation type="unfinished"></translation>
+        <translation>Conversión</translation>
     </message>
     <message>
         <source>color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir</translation>
     </message>
 </context>
 <context>
     <name>omm::ColorWidget</name>
     <message>
         <source>ColorWidget</source>
-        <translation type="unfinished"></translation>
+        <translation>Selector de color</translation>
     </message>
 </context>
 <context>
     <name>omm::ComposeColorNode</name>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <source>color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Compose Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Componer color</translation>
     </message>
 </context>
 <context>
     <name>omm::ComposeNode</name>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>x</source>
-        <translation type="unfinished">x</translation>
+        <translation>x</translation>
     </message>
     <message>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <source>vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <source>Compose</source>
-        <translation type="unfinished"></translation>
+        <translation>Componer</translation>
     </message>
 </context>
 <context>
     <name>omm::ConstantNode</name>
     <message>
         <source>Edit ports ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar puertos ...</translation>
     </message>
 </context>
 <context>
     <name>omm::CurveManager</name>
     <message>
         <source>Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Curvas F</translation>
     </message>
 </context>
 <context>
     <name>omm::DecomposeColorNode</name>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <source>Decompose Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Descomponer color</translation>
     </message>
 </context>
 <context>
     <name>omm::DecomposeNode</name>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <source>x</source>
-        <translation type="unfinished">x</translation>
+        <translation>x</translation>
     </message>
     <message>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <source>Decompose</source>
-        <translation type="unfinished"></translation>
+        <translation>Descomponer</translation>
     </message>
 </context>
 <context>
     <name>omm::DopeSheetManager</name>
     <message>
         <source>Dope Sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Planilla de tiempos</translation>
     </message>
 </context>
 <context>
@@ -2601,11 +2586,11 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>frame_%%%%.png</source>
-        <translation type="unfinished"></translation>
+        <translation>frame_%%%%.png</translation>
     </message>
     <message>
         <source>Export animation to ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar animación a ...</translation>
     </message>
 </context>
 <context>
@@ -2619,156 +2604,156 @@ Borrar la selección de todos modos?</translation>
     <name>omm::FragmentNode</name>
     <message>
         <source>color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
 </context>
 <context>
     <name>omm::Function2Node</name>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>atan2</source>
-        <translation type="unfinished"></translation>
+        <translation>atan2</translation>
     </message>
     <message>
         <source>length</source>
-        <translation type="unfinished">Longitud</translation>
+        <translation>Longitud</translation>
     </message>
     <message>
         <source>pow</source>
-        <translation type="unfinished"></translation>
+        <translation>pow</translation>
     </message>
     <message>
         <source>min</source>
-        <translation type="unfinished"></translation>
+        <translation>min</translation>
     </message>
     <message>
         <source>max</source>
-        <translation type="unfinished"></translation>
+        <translation>max</translation>
     </message>
     <message>
         <source>a</source>
-        <translation type="unfinished"></translation>
+        <translation>a</translation>
     </message>
     <message>
         <source>b</source>
-        <translation type="unfinished"></translation>
+        <translation>b</translation>
     </message>
     <message>
         <source>result</source>
-        <translation type="unfinished"></translation>
+        <translation>Resulto</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Inválido</translation>
     </message>
     <message>
         <source> [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation> [%1]</translation>
     </message>
 </context>
 <context>
     <name>omm::FunctionNode</name>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>abs</source>
-        <translation type="unfinished"></translation>
+        <translation>abs</translation>
     </message>
     <message>
         <source>sqrt</source>
-        <translation type="unfinished"></translation>
+        <translation>sqrt</translation>
     </message>
     <message>
         <source>log</source>
-        <translation type="unfinished"></translation>
+        <translation>log</translation>
     </message>
     <message>
         <source>log2</source>
-        <translation type="unfinished"></translation>
+        <translation>log2</translation>
     </message>
     <message>
         <source>exp</source>
-        <translation type="unfinished"></translation>
+        <translation>exp</translation>
     </message>
     <message>
         <source>exp2</source>
-        <translation type="unfinished"></translation>
+        <translation>exp2</translation>
     </message>
     <message>
         <source>sin</source>
-        <translation type="unfinished"></translation>
+        <translation>sin</translation>
     </message>
     <message>
         <source>cos</source>
-        <translation type="unfinished"></translation>
+        <translation>cos</translation>
     </message>
     <message>
         <source>tan</source>
-        <translation type="unfinished"></translation>
+        <translation>tan</translation>
     </message>
     <message>
         <source>asin</source>
-        <translation type="unfinished"></translation>
+        <translation>asin</translation>
     </message>
     <message>
         <source>acos</source>
-        <translation type="unfinished"></translation>
+        <translation>acos</translation>
     </message>
     <message>
         <source>atan</source>
-        <translation type="unfinished"></translation>
+        <translation>atan</translation>
     </message>
     <message>
         <source>frac</source>
-        <translation type="unfinished"></translation>
+        <translation>Parte fraccional</translation>
     </message>
     <message>
         <source>ceil</source>
-        <translation type="unfinished"></translation>
+        <translation>ceil</translation>
     </message>
     <message>
         <source>floor</source>
-        <translation type="unfinished"></translation>
+        <translation>floor</translation>
     </message>
     <message>
         <source>sign</source>
-        <translation type="unfinished"></translation>
+        <translation>Signo</translation>
     </message>
     <message>
         <source>rad</source>
-        <translation type="unfinished"></translation>
+        <translation>Radianes</translation>
     </message>
     <message>
         <source>deg</source>
-        <translation type="unfinished"></translation>
+        <translation>Grados</translation>
     </message>
     <message>
         <source>x</source>
-        <translation type="unfinished">x</translation>
+        <translation>x</translation>
     </message>
     <message>
         <source>result</source>
-        <translation type="unfinished"></translation>
+        <translation>Resulto</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Inválido</translation>
     </message>
     <message>
         <source> [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation> [%1]</translation>
     </message>
 </context>
 <context>
     <name>omm::GeneralPage</name>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
-        <translation type="unfinished">Un cambio de idioma solo tiene efecto cuando reinicies la aplicación.</translation>
+        <translation>Un cambio de idioma solo tiene efecto cuando reinicies la aplicación.</translation>
     </message>
 </context>
 <context>
@@ -2786,69 +2771,70 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source> #</source>
-        <translation>#</translation>
+        <translation> #</translation>
     </message>
     <message>
         <source> &lt;-</source>
-        <translation type="unfinished"></translation>
+        <translation> &lt;-</translation>
     </message>
 </context>
 <context>
     <name>omm::InterpolateNode</name>
     <message>
         <source>result</source>
-        <translation type="unfinished"></translation>
+        <translation>Resulto</translation>
     </message>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
 </context>
 <context>
     <name>omm::KeyBindingsPage</name>
     <message>
         <source>Reset all key bindings</source>
-        <translation type="unfinished"></translation>
+        <translation>Revertir asociaciones de tecla</translation>
     </message>
     <message>
         <source>Do you really want to reset all key bindings to the default value?
 This cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Realmente quieres reiniciar todos los asociaciones de tecla a su valor predeterminado?
+Esto no se puede revertir.</translation>
     </message>
 </context>
 <context>
     <name>omm::LinePatternNode</name>
     <message>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Líneas</translation>
     </message>
     <message>
         <source>freq</source>
-        <translation type="unfinished"></translation>
+        <translation>freq.</translation>
     </message>
     <message>
         <source>ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Relación</translation>
     </message>
     <message>
         <source>left ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampa izquierda</translation>
     </message>
     <message>
         <source>right ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampa derecha</translation>
     </message>
     <message>
         <source>position</source>
-        <translation type="unfinished">Posición</translation>
+        <translation>Posición</translation>
     </message>
     <message>
         <source>lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Líneas</translation>
     </message>
     <message>
         <source>Line Pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Patrón de línea</translation>
     </message>
 </context>
 <context>
@@ -2871,68 +2857,70 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>Restore Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Restablecer Layout</translation>
     </message>
     <message>
         <source>Save Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar Layout</translation>
     </message>
 </context>
 <context>
     <name>omm::MathNode</name>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>*</source>
-        <translation type="unfinished">*</translation>
+        <translation>*</translation>
     </message>
     <message>
         <source>/</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
     </message>
     <message>
         <source>result</source>
-        <translation type="unfinished"></translation>
+        <translation>Resulto</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Inválido</translation>
     </message>
     <message>
         <source> [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation> [%1]</translation>
     </message>
 </context>
 <context>
     <name>omm::NamedColors</name>
     <message>
         <source>Unnamed Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color sin nombre</translation>
     </message>
 </context>
 <context>
     <name>omm::NamedColorsDialog</name>
     <message>
         <source>Convert Named Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir colores nombrados</translation>
     </message>
     <message numerus="yes">
         <source>%n properties reference this named color.
 Do you want to convert them into ordinary colors?</source>
         <comment>NamedColorsDialog</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n propiedad usa este color nombrado.
+Quieres convertirlo en un color regular?</numerusform>
+            <numerusform>%n propiedades usan este color nombrado.
+Quieres convertirlos en colores regulares?</numerusform>
         </translation>
     </message>
 </context>
@@ -2940,51 +2928,51 @@ Do you want to convert them into ordinary colors?</source>
     <name>omm::NodeManager</name>
     <message>
         <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodos</translation>
     </message>
     <message>
         <source>Add Node ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir nodo ...</translation>
     </message>
     <message>
         <source>Constant ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Constante ...</translation>
     </message>
 </context>
 <context>
     <name>omm::NodeView</name>
     <message>
         <source>Copy Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar nodos</translation>
     </message>
     <message>
         <source>Modify Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar conexiones</translation>
     </message>
 </context>
 <context>
     <name>omm::NodesTag</name>
     <message>
         <source>nil</source>
-        <translation type="unfinished"></translation>
+        <translation>nil</translation>
     </message>
     <message>
         <source>Fail.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error.</translation>
     </message>
 </context>
 <context>
     <name>omm::Object</name>
     <message>
         <source>Subdivide Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Subdividir trayecto</translation>
     </message>
 </context>
 <context>
     <name>omm::ObjectManager</name>
     <message>
         <source>Attach</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjuntar</translation>
     </message>
 </context>
 <context>
@@ -3013,49 +3001,49 @@ Do you want to convert them into ordinary colors?</source>
     <name>omm::PreferenceDialog</name>
     <message>
         <source>Ui Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colores de UI</translation>
     </message>
     <message>
         <source>Keyindings</source>
-        <translation type="unfinished"></translation>
+        <translation>Asociaciones de teclas</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>General</translation>
     </message>
     <message>
         <source>Viewport</source>
-        <translation type="unfinished">Vista</translation>
+        <translation>Vista</translation>
     </message>
 </context>
 <context>
     <name>omm::Preferences</name>
     <message>
         <source>&amp;zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zoom</translation>
     </message>
     <message>
         <source>&amp;shift</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mover</translation>
     </message>
     <message>
         <source>&amp;fine</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Delgado</translation>
     </message>
     <message>
         <source>&amp;mid</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Medio</translation>
     </message>
     <message>
         <source>&amp;coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Grueso</translation>
     </message>
 </context>
 <context>
     <name>omm::PrefixComboBox</name>
     <message>
         <source>%1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2</translation>
     </message>
 </context>
 <context>
@@ -3063,9 +3051,9 @@ Do you want to convert them into ordinary colors?</source>
     <message numerus="yes">
         <source>[%n Elements]</source>
         <comment>PropertyManager</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>[%n Elemento]</numerusform>
+            <numerusform>[%n Elementos]</numerusform>
         </translation>
     </message>
 </context>
@@ -3073,99 +3061,99 @@ Do you want to convert them into ordinary colors?</source>
     <name>omm::ReferenceNode</name>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <source>Reference</source>
-        <translation type="unfinished">Referencia</translation>
+        <translation>Referencia</translation>
     </message>
     <message>
         <source>Forwarded Ports</source>
-        <translation type="unfinished"></translation>
+        <translation>Puertos reenviados</translation>
     </message>
     <message>
         <source>No properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sin propriedades.</translation>
     </message>
     <message>
         <source>input</source>
         <comment>ReferenceNode</comment>
-        <translation type="unfinished"></translation>
+        <translation>Entrada</translation>
     </message>
     <message>
         <source>output</source>
         <comment>ReferenceNode</comment>
-        <translation type="unfinished">Output</translation>
+        <translation>Salida</translation>
     </message>
     <message>
         <source> [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation> [%1]</translation>
     </message>
 </context>
 <context>
     <name>omm::ReferencePropertyConfigWidget</name>
     <message>
         <source>Requirements:</source>
-        <translation type="unfinished"></translation>
+        <translation>Requerimientos:</translation>
     </message>
 </context>
 <context>
     <name>omm::SpyNode</name>
     <message>
         <source>value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor</translation>
     </message>
 </context>
 <context>
     <name>omm::Style</name>
     <message>
         <source>Use Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar nodos</translation>
     </message>
     <message>
         <source>Compilation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Compilación ha fallado</translation>
     </message>
 </context>
 <context>
     <name>omm::ToolBar</name>
     <message>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
 </context>
 <context>
     <name>omm::ToolBarItemModel</name>
     <message>
         <source>group</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupo</translation>
     </message>
     <message>
         <source>separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Separador</translation>
     </message>
 </context>
 <context>
     <name>omm::UiColors</name>
     <message>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Activo</translation>
     </message>
     <message>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactivo</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Deshabilitado</translation>
     </message>
     <message>
         <source>dark</source>
-        <translation type="unfinished"></translation>
+        <translation>oscuro</translation>
     </message>
     <message>
         <source>light</source>
-        <translation type="unfinished"></translation>
+        <translation>luminoso</translation>
     </message>
 </context>
 <context>
@@ -3173,544 +3161,545 @@ Do you want to convert them into ordinary colors?</source>
     <message>
         <source>Do you really want to reset all colors for in the current color schema?
 This cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Realmente quieres reiniciar todos los colores en el esquema actual?
+Esto no se puede revertir.</translation>
     </message>
     <message>
         <source>Reset all colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Reiniciar colores</translation>
     </message>
 </context>
 <context>
     <name>omm::UserPropertyDialog</name>
     <message>
         <source>unnamed</source>
-        <translation type="unfinished">Sin nombre</translation>
+        <translation>Sin nombre</translation>
     </message>
 </context>
 <context>
     <name>omm::UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>propiedad sin nombre</translation>
     </message>
 </context>
 <context>
     <name>omm::ViewportPage</name>
     <message>
         <source>Button</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Izquierdo</translation>
+        <translation>Izquierdo</translation>
     </message>
     <message>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Medio</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Derecho</translation>
+        <translation>Derecho</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Meta</source>
-        <translation type="unfinished"></translation>
+        <translation>Meta</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
     <message>
         <source> px</source>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Ninguna</translation>
+        <translation>Invisible</translation>
     </message>
     <message>
         <source>Solid</source>
-        <translation type="unfinished">Sólido</translation>
+        <translation>sólido</translation>
     </message>
     <message>
         <source>Dashed</source>
-        <translation type="unfinished">Rayado</translation>
+        <translation>rayado</translation>
     </message>
     <message>
         <source>Dotted</source>
-        <translation type="unfinished">Punteado</translation>
+        <translation>punteado</translation>
     </message>
     <message>
         <source>Invisible</source>
-        <translation type="unfinished"></translation>
+        <translation>Invisible</translation>
     </message>
     <message>
         <source>Foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer plano</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo</translation>
     </message>
     <message>
         <source>DashDotted</source>
-        <translation type="unfinished">rayo/punto</translation>
+        <translation>rayo/punto</translation>
     </message>
     <message>
         <source>DashDotDotted</source>
-        <translation type="unfinished">rayo/punto/punto</translation>
+        <translation>rayo/punto/punto</translation>
     </message>
 </context>
 <context>
     <name>uicolors/AnchorHUD</name>
     <message>
         <source>checked</source>
-        <translation type="unfinished"></translation>
+        <translation>activado</translation>
     </message>
     <message>
         <source>hover</source>
-        <translation type="unfinished"></translation>
+        <translation>pasa cursor sobre</translation>
     </message>
     <message>
         <source>AnchorHUD</source>
-        <translation type="unfinished"></translation>
+        <translation>HUD Ancla</translation>
     </message>
 </context>
 <context>
     <name>uicolors/Handle</name>
     <message>
         <source>marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcador</translation>
     </message>
     <message>
         <source>foreground</source>
-        <translation type="unfinished"></translation>
+        <translation>Primer plano</translation>
     </message>
     <message>
         <source>object fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno de objeto</translation>
     </message>
     <message>
         <source>band fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno de banda</translation>
     </message>
     <message>
         <source>bounding-box</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuadro delimitador</translation>
     </message>
     <message>
         <source>band</source>
-        <translation type="unfinished"></translation>
+        <translation>Banda</translation>
     </message>
     <message>
         <source>point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto</translation>
     </message>
     <message>
         <source>particle fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno de partícula</translation>
     </message>
     <message>
         <source>particle</source>
-        <translation type="unfinished"></translation>
+        <translation>Partícula</translation>
     </message>
     <message>
         <source>line</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea</translation>
     </message>
     <message>
         <source>tangent</source>
-        <translation type="unfinished">Tangente</translation>
+        <translation>Tangente</translation>
     </message>
     <message>
         <source>tangent fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno de tangente</translation>
     </message>
     <message>
         <source>Handle</source>
-        <translation type="unfinished"></translation>
+        <translation>Tirador</translation>
     </message>
     <message>
         <source>object</source>
-        <translation type="unfinished">Objeto</translation>
+        <translation>Objeto</translation>
     </message>
     <message>
         <source>background</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo</translation>
     </message>
     <message>
         <source>camera-fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno de cámara</translation>
     </message>
     <message>
         <source>camera-outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno de cámara</translation>
     </message>
     <message>
         <source>rotate-ring-fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno de anillo de rotacíon</translation>
     </message>
     <message>
         <source>rotate-ring-outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno de anillo de rotacíon</translation>
     </message>
     <message>
         <source>x-axis-fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno del eje X</translation>
     </message>
     <message>
         <source>x-axis-outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno del eje X</translation>
     </message>
     <message>
         <source>y-axis-fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno del eje Y</translation>
     </message>
     <message>
         <source>y-axis-outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno del eje Y</translation>
     </message>
 </context>
 <context>
     <name>uicolors/NodeView</name>
     <message>
         <source>NodeView</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor de nodos</translation>
     </message>
     <message>
         <source>canvas-bg-invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo de lienzo (inválido)</translation>
     </message>
     <message>
         <source>canvas-bg-valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo de lienzo (válido)</translation>
     </message>
     <message>
         <source>fixed-connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Conexión fijado</translation>
     </message>
     <message>
         <source>floating-connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Conexión flotando</translation>
     </message>
     <message>
         <source>node-outline-invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno de nodo (inválido)</translation>
     </message>
     <message>
         <source>node-outline-valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno de nodo (válido)</translation>
     </message>
     <message>
         <source>port-Bool</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto Booleano</translation>
     </message>
     <message>
         <source>port-Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto Color</translation>
     </message>
     <message>
         <source>port-Float</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto de número decimal</translation>
     </message>
     <message>
         <source>port-FloatVector</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto de vector de número decimal</translation>
     </message>
     <message>
         <source>port-Integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto de número entero</translation>
     </message>
     <message>
         <source>port-IntegerVector</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto de vector de número entero</translation>
     </message>
     <message>
         <source>port-Invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto inválido</translation>
     </message>
     <message>
         <source>port-Reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto Referncia</translation>
     </message>
     <message>
         <source>port-String</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto de valor de cadena</translation>
     </message>
     <message>
         <source>grid-color</source>
-        <translation type="unfinished"></translation>
+        <translation>Color cuadrícula</translation>
     </message>
     <message>
         <source>port-Option</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto opción</translation>
     </message>
     <message>
         <source>port-Spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto Splìne</translation>
     </message>
     <message>
         <source>statusbar-bg</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo de barra de estado</translation>
     </message>
 </context>
 <context>
     <name>uicolors/ObjectManager</name>
     <message>
         <source>enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Activado</translation>
     </message>
     <message>
         <source>ObjectManager</source>
-        <translation type="unfinished">Controles de Objetos</translation>
+        <translation>Controles de Objetos</translation>
     </message>
     <message>
         <source>visibility outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno de visibilidad</translation>
     </message>
     <message>
         <source>visible fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno visible</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Desactivado</translation>
     </message>
     <message>
         <source>default fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno predeterminado</translation>
     </message>
     <message>
         <source>invisible fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno invisible</translation>
     </message>
 </context>
 <context>
     <name>uicolors/Preferences</name>
     <message>
         <source>record inconsistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotograma de clave inconsistente</translation>
     </message>
     <message>
         <source>record keyframe</source>
-        <translation type="unfinished"></translation>
+        <translation>Recordar fotograma clave</translation>
     </message>
     <message>
         <source>record normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear pista</translation>
     </message>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferencias</translation>
     </message>
 </context>
 <context>
     <name>uicolors/TimeLine</name>
     <message>
         <source>key dragged</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotograma clave arrastrado</translation>
     </message>
     <message>
         <source>slider outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno control deslizante</translation>
     </message>
     <message>
         <source>key selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotograma clave seleccionada</translation>
     </message>
     <message>
         <source>TimeLine</source>
-        <translation type="unfinished"></translation>
+        <translation>Línea de tiempo</translation>
     </message>
     <message>
         <source>key outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno fotograma clave</translation>
     </message>
     <message>
         <source>key normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Fotograma clave regular</translation>
     </message>
     <message>
         <source>beyond</source>
-        <translation type="unfinished"></translation>
+        <translation>Más lejos</translation>
     </message>
     <message>
         <source>slider fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno control deslizante</translation>
     </message>
     <message>
         <source>rubberband fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Relleno Banda elástica</translation>
     </message>
     <message>
         <source>rubberband outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorno Banda elástica</translation>
     </message>
     <message>
         <source>Bool-0-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>Booleana</translation>
     </message>
     <message>
         <source>Color-0-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>Tono</translation>
     </message>
     <message>
         <source>Color-1-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>Saturación</translation>
     </message>
     <message>
         <source>Color-2-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosidad</translation>
     </message>
     <message>
         <source>Color-3-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparencia</translation>
     </message>
     <message>
         <source>Float-0-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>Número decimal</translation>
     </message>
     <message>
         <source>FloatVector-0-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <source>FloatVector-1-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <source>Integer-0-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>Número entero</translation>
     </message>
     <message>
         <source>IntegerVector-0-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <source>IntegerVector-1-fcurve</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <source>scale hline</source>
-        <translation type="unfinished"></translation>
+        <translation>Escala horizontal</translation>
     </message>
     <message>
         <source>scale vline</source>
-        <translation type="unfinished"></translation>
+        <translation>Escala vertical</translation>
     </message>
 </context>
 <context>
     <name>uicolors/Viewport</name>
     <message>
         <source>Viewport</source>
-        <translation type="unfinished">Vista</translation>
+        <translation>Vista</translation>
     </message>
     <message>
         <source>background</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo</translation>
     </message>
     <message>
         <source>grid coarse</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuadrícula gruesa</translation>
     </message>
     <message>
         <source>grid fine</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuadrícula fina</translation>
     </message>
     <message>
         <source>grid mid</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuadrícula media</translation>
     </message>
 </context>
 <context>
     <name>uicolors/Widget</name>
     <message>
         <source>link</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlace</translation>
     </message>
     <message>
         <source>bright text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texto brilliante</translation>
     </message>
     <message>
         <source>placeholder text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texto de marcador de posición</translation>
     </message>
     <message>
         <source>highlighted text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texto resaltado</translation>
     </message>
     <message>
         <source>window</source>
-        <translation type="unfinished">Ventana</translation>
+        <translation>Ventana</translation>
     </message>
     <message>
         <source>mid</source>
-        <translation type="unfinished"></translation>
+        <translation>Medio</translation>
     </message>
     <message>
         <source>dark</source>
-        <translation type="unfinished"></translation>
+        <translation>Oscuro</translation>
     </message>
     <message>
         <source>button</source>
-        <translation type="unfinished"></translation>
+        <translation>Botón</translation>
     </message>
     <message>
         <source>Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo</translation>
     </message>
     <message>
         <source>shadow</source>
-        <translation type="unfinished"></translation>
+        <translation>Sombra</translation>
     </message>
     <message>
         <source>button text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texto de botón</translation>
     </message>
     <message>
         <source>link visited</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlace visitado</translation>
     </message>
     <message>
         <source>base</source>
-        <translation type="unfinished">Básico</translation>
+        <translation>Base</translation>
     </message>
     <message>
         <source>highlight</source>
-        <translation type="unfinished"></translation>
+        <translation>Resaltado</translation>
     </message>
     <message>
         <source>alternate base</source>
-        <translation type="unfinished"></translation>
+        <translation>Base alternativo</translation>
     </message>
     <message>
         <source>midlight</source>
-        <translation type="unfinished"></translation>
+        <translation>Medio brilliante</translation>
     </message>
     <message>
         <source>light</source>
-        <translation type="unfinished"></translation>
+        <translation>Brilliante</translation>
     </message>
     <message>
         <source>window text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texto Ventana</translation>
     </message>
     <message>
         <source>text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texto</translation>
     </message>
     <message>
         <source>invalid base</source>
-        <translation type="unfinished"></translation>
+        <translation>Inválido</translation>
     </message>
 </context>
 </TS>
