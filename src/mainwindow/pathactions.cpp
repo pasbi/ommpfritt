@@ -211,7 +211,6 @@ const std::map<QString, std::function<void(Application& app)>> actions{
 
     {"subdivide",
      [](Application& app) {
-       Q_UNUSED(app)
        std::list<std::unique_ptr<SubdividePathCommand>> cmds;
        for (auto* path : app.scene.item_selection<Path>()) {
          auto cmd = std::make_unique<SubdividePathCommand>(*path);

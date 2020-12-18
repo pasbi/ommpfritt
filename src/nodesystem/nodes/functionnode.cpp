@@ -133,16 +133,14 @@ FunctionNode::FunctionNode(NodeModel& model) : Node(model)
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
-QString FunctionNode::output_data_type(const OutputPort& port) const
+QString FunctionNode::output_data_type(const OutputPort&) const
 {
-  Q_UNUSED(port)
   using namespace NodeCompilerTypes;
   return FLOAT_TYPE;
 }
 
-bool FunctionNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool FunctionNode::accepts_input_data_type(const QString& type, const InputPort&) const
 {
-  Q_UNUSED(port)
   return NodeCompilerTypes::is_numeric(type);
 }
 

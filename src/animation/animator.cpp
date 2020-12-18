@@ -254,9 +254,8 @@ int Animator::rowCount(const QModelIndex& parent) const
   }
 }
 
-int Animator::columnCount(const QModelIndex& parent) const
+int Animator::columnCount(const QModelIndex&) const
 {
-  Q_UNUSED(parent);
   return 1;
 }
 
@@ -301,9 +300,8 @@ QVariant Animator::data(const QModelIndex& index, int role) const
   return QVariant();
 }
 
-Qt::ItemFlags Animator::flags(const QModelIndex& index) const
+Qt::ItemFlags Animator::flags(const QModelIndex&) const
 {
-  Q_UNUSED(index);
   return Qt::ItemIsEnabled;
 }
 

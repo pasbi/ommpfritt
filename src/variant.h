@@ -91,9 +91,8 @@ template<typename T> std::size_t constexpr n_channels()
  * @returns the numeric value of the given T at given channel
  * @note channel must not exceed the number of supported channels for a given type T.
  */
-template<typename T> double get_channel_value(const T& v, std::size_t channel)
+template<typename T> double get_channel_value(const T& v, [[maybe_unused]] std::size_t channel)
 {
-  Q_UNUSED(channel)
   if constexpr (std::is_same_v<T, double> || std::is_same_v<T, int>) {
     assert(channel == 0);
     return static_cast<double>(v);
@@ -118,10 +117,9 @@ template<typename T> double get_channel_value(const T& v, std::size_t channel)
  * @brief sets the channel of the given value to value.
  * @note channel must not exceed the number of supported channels for a given type T.
  */
-template<typename T> void set_channel_value(T& v, std::size_t channel, double value)
+template<typename T>
+void set_channel_value(T& v, [[maybe_unused]] std::size_t channel, [[maybe_unused]] double value)
 {
-  Q_UNUSED(channel)
-  Q_UNUSED(value)
   if constexpr (std::is_same_v<T, double> || std::is_same_v<T, int>) {
     assert(channel == 0);
     v = value;

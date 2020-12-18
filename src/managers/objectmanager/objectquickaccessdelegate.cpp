@@ -29,9 +29,9 @@ public:
   ObjectTreeView& view;
   [[nodiscard]] Property& property(const QModelIndex& index) const;
   virtual std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) = 0;
-  void begin(const QModelIndex& index, QMouseEvent& event) override;
+  void begin(const QModelIndex& index, QMouseEvent&) override;
   void end() override;
-  void perform(const QModelIndex& index, QMouseEvent& event) override;
+  void perform(const QModelIndex& index, QMouseEvent&) override;
 
 private:
   const QString m_property_key;
@@ -88,9 +88,8 @@ Property& PropertyArea::property(const QModelIndex& index) const
   return *view.model()->item_at(index).property(m_property_key);
 }
 
-void PropertyArea::begin(const QModelIndex& index, QMouseEvent& event)
+void PropertyArea::begin(const QModelIndex& index, QMouseEvent&)
 {
-  Q_UNUSED(event)
   is_active = true;
   Scene& scene = Application::instance().scene;
 
@@ -106,9 +105,8 @@ void PropertyArea::end()
   m_macro.reset();
 }
 
-void PropertyArea::perform(const QModelIndex& index, QMouseEvent& event)
+void PropertyArea::perform(const QModelIndex& index, QMouseEvent&)
 {
-  Q_UNUSED(event)
   auto command = make_command(index, false);
   if (command != nullptr) {
     Scene& scene = Application::instance().scene;

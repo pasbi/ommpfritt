@@ -19,7 +19,7 @@ public:
   UiColors& operator=(const UiColors&) = delete;
   QVariant data(int column, const PreferencesTreeValueItem& item, int role) const override;
   bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) override;
-  int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex& = QModelIndex()) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   Color color(QPalette::ColorGroup pgroup, const QString& group, const QString& name) const;
   void apply() override;

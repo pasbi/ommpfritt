@@ -57,13 +57,11 @@ public:
     appendColumn();
   }
 
-  [[nodiscard]] QVariant
-  extraColumnData(const QModelIndex& parent, int row, int extraColumn, int role) const override
+  [[nodiscard]] QVariant extraColumnData([[maybe_unused]] const QModelIndex& parent,
+                                         [[maybe_unused]] int row,
+                                         [[maybe_unused]] int extraColumn,
+                                         [[maybe_unused]] int role) const override
   {
-    Q_UNUSED(parent)
-    Q_UNUSED(row)
-    Q_UNUSED(extraColumn)
-    Q_UNUSED(role)
     // the extra column displays a delegate which does not rely on data.
     return QVariant();
   }

@@ -74,8 +74,7 @@ void NodeScene::add_node(Node& node, bool select)
   auto node_item = std::make_unique<NodeItem>(node);
   auto& node_item_ref = *node_item;
   addItem(node_item.get());
-  const bool success = m_node_items.insert({&node, std::move(node_item)}).second;
-  Q_UNUSED(success)
+  [[maybe_unused]] const auto [_, success] = m_node_items.insert({&node, std::move(node_item)});
   assert(success);
 
   if (select) {

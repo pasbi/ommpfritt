@@ -104,11 +104,8 @@ JSONSerializer::~JSONSerializer()
 #endif
 }
 
-void JSONSerializer::start_array(size_t size, const Pointer& pointer)
+void JSONSerializer::start_array([[maybe_unused]] size_t size, const Pointer& pointer)
 {
-  Q_UNUSED(size);
-  Q_UNUSED(pointer);
-
   m_store[ptr(pointer)] = nlohmann::json::value_type::array();
 }
 
@@ -171,9 +168,8 @@ void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& poi
 }
 
 void JSONSerializer::set_value(const TriggerPropertyDummyValueType&,
-                               const AbstractSerializer::Pointer& pointer)
+                               const AbstractSerializer::Pointer&)
 {
-  Q_UNUSED(pointer)
 }
 
 void JSONSerializer::set_value(const SplineType& spline, const Pointer& pointer)
@@ -270,9 +266,8 @@ PolarCoordinates JSONDeserializer::get_polarcoordinates(const Pointer& pointer)
 }
 
 TriggerPropertyDummyValueType
-JSONDeserializer::get_trigger_dummy_value(const AbstractDeserializer::Pointer& pointer)
+JSONDeserializer::get_trigger_dummy_value(const AbstractDeserializer::Pointer&)
 {
-  Q_UNUSED(pointer)
   return TriggerPropertyDummyValueType();
 }
 

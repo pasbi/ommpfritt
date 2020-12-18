@@ -559,8 +559,7 @@ void CurveManagerWidget::add_track(Track& track)
   for (int frame : track.key_frames()) {
     add_knot(track, frame);
   }
-  const auto [_, was_inserted] = m_tracks.insert(&track);
-  Q_UNUSED(was_inserted)
+  [[maybe_unused]] const auto [_, was_inserted] = m_tracks.insert(&track);
   assert(was_inserted);
   update();
 }
@@ -570,8 +569,7 @@ void CurveManagerWidget::remove_track(Track& track)
   for (int frame : track.key_frames()) {
     remove_knot(track, frame);
   }
-  const std::size_t n = m_tracks.erase(&track);
-  Q_UNUSED(n)
+  [[maybe_unused]] const std::size_t n = m_tracks.erase(&track);
   assert(n == 1);
   update();
 }

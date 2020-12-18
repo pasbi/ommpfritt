@@ -109,9 +109,8 @@ QPalette UiColors::make_palette() const
   return palette;
 }
 
-int UiColors::columnCount(const QModelIndex& parent) const
+int UiColors::columnCount(const QModelIndex&) const
 {
-  Q_UNUSED(parent);
   return 4;
 }
 

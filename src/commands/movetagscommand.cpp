@@ -52,9 +52,6 @@ MoveTagContext::MoveTagContext(Tag& tag, Object& owner, Tag* predecessor)
 
 void MoveTagContext::assert_is_valid() const
 {
-  Q_UNUSED(subject);
-  Q_UNUSED(owner);
-  Q_UNUSED(predecessor);
   assert(subject != nullptr);
   assert(owner != nullptr);
   assert(predecessor == nullptr || predecessor->owner == subject->owner);
