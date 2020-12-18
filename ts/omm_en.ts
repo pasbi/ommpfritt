@@ -1904,10 +1904,6 @@ Remove the selected items anyway?</translation>
         <translation>View</translation>
     </message>
     <message>
-        <source>save document</source>
-        <translation>Save</translation>
-    </message>
-    <message>
         <source>SelectObjectsTool</source>
         <translation>Select objects</translation>
     </message>
@@ -1930,10 +1926,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>deselect all</source>
         <translation>Deselect all</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation>New Scene</translation>
     </message>
     <message>
         <source>StyleManager</source>
@@ -1986,10 +1978,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>select all</source>
         <translation>Select all</translation>
-    </message>
-    <message>
-        <source>export</source>
-        <translation>export</translation>
     </message>
     <message>
         <source>preferences</source>
@@ -2052,14 +2040,6 @@ Remove the selected items anyway?</translation>
         <translation>New toolbar</translation>
     </message>
     <message>
-        <source>save document as ...</source>
-        <translation>Save scene as ...</translation>
-    </message>
-    <message>
-        <source>load document ...</source>
-        <translation>Load scene ...</translation>
-    </message>
-    <message>
         <source>remove unused styles</source>
         <translation>Remove unused styles</translation>
     </message>
@@ -2116,12 +2096,24 @@ Remove the selected items anyway?</translation>
         <translation>Line</translation>
     </message>
     <message>
-        <source>new scene</source>
-        <translation>New scene</translation>
+        <source>new</source>
+        <translation>New</translation>
     </message>
     <message>
-        <source>save scene</source>
-        <translation>Save scene</translation>
+        <source>open ...</source>
+        <translation>Open ...</translation>
+    </message>
+    <message>
+        <source>save as ...</source>
+        <translation>Save As ...</translation>
+    </message>
+    <message>
+        <source>save</source>
+        <translation>Save</translation>
+    </message>
+    <message>
+        <source>export ...</source>
+        <translation>Export ...</translation>
     </message>
 </context>
 <context>
@@ -2318,16 +2310,16 @@ Remove the selected items anyway?</translation>
         <translation>Show windows</translation>
     </message>
     <message>
-        <source>load recent document</source>
-        <translation>Recently opened files</translation>
-    </message>
-    <message>
         <source>path</source>
         <translation>Path</translation>
     </message>
     <message>
         <source>tool</source>
         <translation>Tool</translation>
+    </message>
+    <message>
+        <source>open recent</source>
+        <translation>Open Recent</translation>
     </message>
 </context>
 <context>
@@ -2376,12 +2368,8 @@ Remove the selected items anyway?</translation>
         <translation>Save scene as ...</translation>
     </message>
     <message>
-        <source>Load scene ...</source>
-        <translation>Load scene ...</translation>
-    </message>
-    <message>
-        <source>Loading scene from &apos;%1&apos; failed.</source>
-        <translation>Loading scene from &apos;%1&apos; failed.</translation>
+        <source>Open scene ...</source>
+        <translation>Open scene ...</translation>
     </message>
     <message>
         <source>Create %1</source>
@@ -2394,6 +2382,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Some pending changes will be lost if you don&apos;t save.</source>
         <translation>Some pending changes will be lost if you don&apos;t save.</translation>
+    </message>
+    <message>
+        <source>Opening scene from &apos;%1&apos; failed.</source>
+        <translation>Opening scene from &apos;%1&apos; failed.</translation>
     </message>
 </context>
 <context>

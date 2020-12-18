@@ -1904,10 +1904,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <source>save document</source>
-        <translation>Speichern</translation>
-    </message>
-    <message>
         <source>SelectObjectsTool</source>
         <translation>Objekte selektieren</translation>
     </message>
@@ -1930,10 +1926,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>deselect all</source>
         <translation>Alles deselektieren</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation>Neue Szene</translation>
     </message>
     <message>
         <source>StyleManager</source>
@@ -1986,10 +1978,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>select all</source>
         <translation>Alles selektieren</translation>
-    </message>
-    <message>
-        <source>export</source>
-        <translation>exportieren</translation>
     </message>
     <message>
         <source>preferences</source>
@@ -2052,14 +2040,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Neue Toolbar</translation>
     </message>
     <message>
-        <source>save document as ...</source>
-        <translation>Szene speichern als ...</translation>
-    </message>
-    <message>
-        <source>load document ...</source>
-        <translation>Szene laden ...</translation>
-    </message>
-    <message>
         <source>remove unused styles</source>
         <translation>Unbenutzte Styles entfernen</translation>
     </message>
@@ -2114,6 +2094,26 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>LineObject</source>
         <translation>Linie</translation>
+    </message>
+    <message>
+        <source>new</source>
+        <translation>Neu</translation>
+    </message>
+    <message>
+        <source>open ...</source>
+        <translation>Öffnen ...</translation>
+    </message>
+    <message>
+        <source>save as ...</source>
+        <translation>Speichern als ...</translation>
+    </message>
+    <message>
+        <source>save</source>
+        <translation>Speichern</translation>
+    </message>
+    <message>
+        <source>export ...</source>
+        <translation>Exportieren ...</translation>
     </message>
 </context>
 <context>
@@ -2310,16 +2310,16 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Fenster anzeigen</translation>
     </message>
     <message>
-        <source>load recent document</source>
-        <translation>Zuletzt geöffnete Dokumente</translation>
-    </message>
-    <message>
         <source>path</source>
         <translation>Pfad</translation>
     </message>
     <message>
         <source>tool</source>
         <translation>Werkzeug</translation>
+    </message>
+    <message>
+        <source>open recent</source>
+        <translation>Zuletzt geöffnet</translation>
     </message>
 </context>
 <context>
@@ -2368,12 +2368,8 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Szene speichern als ...</translation>
     </message>
     <message>
-        <source>Load scene ...</source>
-        <translation>Szene laden ...</translation>
-    </message>
-    <message>
-        <source>Loading scene from &apos;%1&apos; failed.</source>
-        <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
+        <source>Open scene ...</source>
+        <translation>Szene öffnen ...</translation>
     </message>
     <message>
         <source>Create %1</source>
@@ -2386,6 +2382,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Some pending changes will be lost if you don&apos;t save.</source>
         <translation>Einige ungespeicherte Änderungen gehen verloren wenn Sie nicht speichern.</translation>
+    </message>
+    <message>
+        <source>Opening scene from &apos;%1&apos; failed.</source>
+        <translation>Szene von &apos;%1&apos; öffnen war nicht erfolgreich.</translation>
     </message>
 </context>
 <context>

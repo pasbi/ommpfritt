@@ -1980,10 +1980,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Seleccionar todo</translation>
     </message>
     <message>
-        <source>export</source>
-        <translation>Exportar</translation>
-    </message>
-    <message>
         <source>preferences</source>
         <translation>Preferencias</translation>
     </message>
@@ -2099,6 +2095,25 @@ Borrar la selección de todos modos?</translation>
         <source>LineObject</source>
         <translation>Línea</translation>
     </message>
+    <message>
+        <source>new</source>
+        <translation>Nueva</translation>
+    </message>
+    <message>
+        <source>open ...</source>
+        <translation>Abrir ...</translation>
+    </message>
+    <message>
+        <source>save as ...</source>
+        <translation>Guardar como ...</translation>
+    </message>
+    <message>
+        <source>save</source>
+        <translation>Guardar</translation>
+    </message>
+    <message>
+        <source>export ...</source>
+        <translation>Exportar ...</translation>
     </message>
 </context>
 <context>
@@ -2295,16 +2310,16 @@ Borrar la selección de todos modos?</translation>
         <translation>Mostrar ventana</translation>
     </message>
     <message>
-        <source>load recent document</source>
-        <translation>Documentos recién abridos ...</translation>
-    </message>
-    <message>
         <source>path</source>
         <translation>Trayecto</translation>
     </message>
     <message>
         <source>tool</source>
         <translation>Herramienta</translation>
+    </message>
+    <message>
+        <source>open recent</source>
+        <translation>Abrir reciente</translation>
     </message>
 </context>
 <context>
@@ -2353,12 +2368,8 @@ Borrar la selección de todos modos?</translation>
         <translation>Guardar escena como ...</translation>
     </message>
     <message>
-        <source>Load scene ...</source>
+        <source>Open scene ...</source>
         <translation>Cargar escena ...</translation>
-    </message>
-    <message>
-        <source>Loading scene from &apos;%1&apos; failed.</source>
-        <translation>La escena en &apos;%1&apos; no se pudo cargar.</translation>
     </message>
     <message>
         <source>Create %1</source>
@@ -2371,6 +2382,10 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>Some pending changes will be lost if you don&apos;t save.</source>
         <translation>Algunas modificaciones se pierden si no guardes.</translation>
+    </message>
+    <message>
+        <source>Opening scene from &apos;%1&apos; failed.</source>
+        <translation>No se pudo abrir la escena de &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
