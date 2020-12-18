@@ -296,7 +296,7 @@
     <name>NamedColorsDialog</name>
     <message>
         <source>Manage Named Colors</source>
-        <translation>Benannte Farben editieren</translation>
+        <translation>Manage named colors</translation>
     </message>
     <message>
         <source>-</source>
@@ -1398,7 +1398,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>The name of the object to render. Keep clear to render the whole Scene. The path does not need to be unique. In this case, all matchings are rendered. Perl-like regular expressions are supported.</translation>
+        <translation>The name of the object to render. Keep clear to render the whole Scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</translation>
     </message>
     <message>
         <source>The verbosity (fatal|critical|warning|info|debug).</source>
@@ -1482,7 +1482,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Get status code for given description.</source>
-        <translation>Get status code for given descritption.</translation>
+        <translation>Get status code for given description.</translation>
     </message>
     <message>
         <source>DESCRIPTION</source>
@@ -1590,7 +1590,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>add switch ...</source>
-        <translation>Add switch</translation>
+        <translation>Add switch ...</translation>
     </message>
 </context>
 <context>
@@ -2115,12 +2115,20 @@ Remove the selected items anyway?</translation>
         <source>LineObject</source>
         <translation>Line</translation>
     </message>
+    <message>
+        <source>new scene</source>
+        <translation>New scene</translation>
+    </message>
+    <message>
+        <source>save scene</source>
+        <translation>Save scene</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
     <message>
         <source>ComposeNode</source>
-        <translation>Zusammenstell Node</translation>
+        <translation>Compose Node</translation>
     </message>
     <message>
         <source>ConstantNode</source>
@@ -3016,7 +3024,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::PreferenceDialog</name>
     <message>
         <source>Ui Colors</source>
-        <translation>Ui-Colors</translation>
+        <translation>UI-Colors</translation>
     </message>
     <message>
         <source>Keyindings</source>
@@ -3176,7 +3184,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>Do you really want to reset all colors for in the current color schema?
 This cannot be undone.</source>
-        <translation>Do you really want to reset all colors for in the current color schema?
+        <translation>Do you really want to reset all colors in the current color schema?
 This cannot be undone.</translation>
     </message>
     <message>
@@ -3698,11 +3706,11 @@ This cannot be undone.</translation>
     </message>
     <message>
         <source>midlight</source>
-        <translation>Midlight</translation>
+        <translation>Medium bright</translation>
     </message>
     <message>
         <source>light</source>
-        <translation>Light</translation>
+        <translation>Bright</translation>
     </message>
     <message>
         <source>window text</source>

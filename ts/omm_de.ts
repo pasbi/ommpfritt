@@ -271,7 +271,7 @@
     </message>
     <message>
         <source>&amp;Overwrite:</source>
-        <translation>Ü&amp;berschreiben:</translation>
+        <translation>&amp;Überschreiben:</translation>
     </message>
 </context>
 <context>
@@ -296,7 +296,7 @@
     <name>NamedColorsDialog</name>
     <message>
         <source>Manage Named Colors</source>
-        <translation>Manage named colors</translation>
+        <translation>Benannte Farben editieren</translation>
     </message>
     <message>
         <source>-</source>
@@ -1398,7 +1398,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
+        <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Name muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
     </message>
     <message>
         <source>The verbosity (fatal|critical|warning|info|debug).</source>
@@ -1514,7 +1514,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Any</source>
-        <translation>Einer</translation>
+        <translation>Irgendeiner</translation>
     </message>
     <message>
         <source>All</source>
@@ -1522,7 +1522,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>strategy</source>
-        <translation>Startegie</translation>
+        <translation>Strategie</translation>
     </message>
     <message>
         <source>normal</source>
@@ -1590,7 +1590,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>add switch ...</source>
-        <translation>Schalter</translation>
+        <translation>Schalter hinzufügen ...</translation>
     </message>
 </context>
 <context>
@@ -2422,7 +2422,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>conversion</source>
-        <translation>Konvertieren</translation>
+        <translation>Konvertierung</translation>
     </message>
     <message>
         <source>color</source>
@@ -2725,7 +2725,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>frac</source>
-        <translation>Nachkommaantel</translation>
+        <translation>Nachkommaanteil</translation>
     </message>
     <message>
         <source>ceil</source>
@@ -2733,7 +2733,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>floor</source>
-        <translation>Abrunden</translation>
+        <translation>floor</translation>
     </message>
     <message>
         <source>sign</source>
@@ -3016,7 +3016,7 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <name>omm::PreferenceDialog</name>
     <message>
         <source>Ui Colors</source>
-        <translation>Ui-Farben</translation>
+        <translation>UI-Farben</translation>
     </message>
     <message>
         <source>Keyindings</source>
@@ -3262,7 +3262,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation>Hintegrund</translation>
+        <translation>Hintergrund</translation>
     </message>
     <message>
         <source>DashDotted</source>
@@ -3451,7 +3451,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>grid-color</source>
-        <translation>Netzfarbe</translation>
+        <translation>Rasterfarbe</translation>
     </message>
     <message>
         <source>port-Option</source>
@@ -3528,7 +3528,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>key selected</source>
-        <translation>Selektierted Schlüsselbild</translation>
+        <translation>Selektiertes Schlüsselbild</translation>
     </message>
     <message>
         <source>TimeLine</source>
@@ -3623,15 +3623,15 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>grid coarse</source>
-        <translation>Grobes Netz</translation>
+        <translation>Grobes Raster</translation>
     </message>
     <message>
         <source>grid fine</source>
-        <translation>Feines Netz</translation>
+        <translation>Feines Raster</translation>
     </message>
     <message>
         <source>grid mid</source>
-        <translation>Mittleres Netz</translation>
+        <translation>Mittleres Raster</translation>
     </message>
 </context>
 <context>
@@ -3678,7 +3678,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>button text</source>
-        <translation>Knop-Text</translation>
+        <translation>Knopf-Text</translation>
     </message>
     <message>
         <source>link visited</source>
