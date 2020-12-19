@@ -41,21 +41,27 @@ void setup_logfile(QFile& logfile)
   }
 
   static const auto hex = [](const QByteArray& data) { return QString(data.toHex()); };
+  static const auto write = [&logfile](const QString& text) {
+    return logfile.write(text.toUtf8());
+  };
 
-  logfile.write(QString("Log of the %1 application.\n").arg(qAppName()).toUtf8());
-  logfile.write(QString("Application started at %1.\n").arg(timestamp).toUtf8());
-  logfile.write(QString("boot unique id:   %1\n").arg(hex(QSysInfo::bootUniqueId())).toUtf8());
-  logfile.write(QString("build ABI:        %1\n").arg(QSysInfo::buildAbi()).toUtf8());
-  logfile.write(QString("build CPU arch:   %1\n").arg(QSysInfo::buildCpuArchitecture()).toUtf8());
-  logfile.write(QString("current CPU arch: %1\n").arg(QSysInfo::currentCpuArchitecture()).toUtf8());
-  logfile.write(QString("kernel type:      %1\n").arg(QSysInfo::kernelType()).toUtf8());
-  logfile.write(QString("kernel version:   %1\n").arg(QSysInfo::kernelVersion()).toUtf8());
-  logfile.write(QString("host name:        %1\n").arg(QSysInfo::machineHostName()).toUtf8());
-  logfile.write(QString("machine id:       %1\n").arg(hex(QSysInfo::bootUniqueId())).toUtf8());
-  logfile.write(QString("product name:     %1\n").arg(QSysInfo::prettyProductName()).toUtf8());
-  logfile.write(QString("product type:     %1\n").arg(QSysInfo::productType()).toUtf8());
-  logfile.write(QString("product version:  %1\n").arg(QSysInfo::productVersion()).toUtf8());
-  logfile.write("\n");
+  write(QString("Log of the %1 application.\n").arg(qAppName()));
+  write(QString("Application started at %1.\n").arg(timestamp));
+  write(QString("boot unique id:   %1\n").arg(hex(QSysInfo::bootUniqueId())));
+  write(QString("build ABI:        %1\n").arg(QSysInfo::buildAbi()));
+  write(QString("build CPU arch:   %1\n").arg(QSysInfo::buildCpuArchitecture()));
+  write(QString("current CPU arch: %1\n").arg(QSysInfo::currentCpuArchitecture()));
+  write(QString("kernel type:      %1\n").arg(QSysInfo::kernelType()));
+  write(QString("kernel version:   %1\n").arg(QSysInfo::kernelVersion()));
+  write(QString("host name:        %1\n").arg(QSysInfo::machineHostName()));
+  write(QString("machine id:       %1\n").arg(hex(QSysInfo::machineUniqueId())));
+  write(QString("product name:     %1\n").arg(QSysInfo::prettyProductName()));
+  write(QString("product type:     %1\n").arg(QSysInfo::productType()));
+  write(QString("product version:  %1\n").arg(QSysInfo::productVersion()));
+  write(QString("major version:    %1\n").arg(ommpfritt_version_major));
+  write(QString("minor version:    %1\n").arg(ommpfritt_version_minor));
+  write(QString("patch version:    %1\n").arg(ommpfritt_version_patch));
+  write(QString("app file path:    %1\n").arg(QApplication::applicationFilePath()));
   logfile.flush();
 }
 
