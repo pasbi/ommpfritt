@@ -35,6 +35,9 @@ void setup_logfile(QFile& logfile)
     std::cerr << "Failed to open log file " << filename.toStdString() << " for writing.\n";
     std::cerr << std::flush;
     exit(2);
+  } else {
+    std::cout << "Using log file " << filename.toStdString() << "\n";
+    std::cout << std::flush;
   }
 
   static const auto hex = [](const QByteArray& data) { return QString(data.toHex()); };
