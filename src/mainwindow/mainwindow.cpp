@@ -424,6 +424,7 @@ void MainWindow::save_layout(QSettings& settings)
 
   {
     std::set<QString> names;
+    settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
     const auto tools = findChildren<ToolBar*>();
     for (const ToolBar* toolbar : tools) {
       if (const QString name = toolbar->objectName(); !::contains(names, name)) {
