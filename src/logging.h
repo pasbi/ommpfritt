@@ -14,11 +14,9 @@
   QMessageLogger(static_cast<const char*>(__FILE__), \
                  __LINE__, \
                  static_cast<const char*>(Q_FUNC_INFO)).level
-#define STRINGIZE_DETAIL(x) #x
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define MAKE_DECORATED_Q_MESSAGE_LOGGER(level) MAKE_Q_MESSAGE_LOGGER(level()).nospace().noquote()
-#define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
 
 #define LDEBUG MAKE_DECORATED_Q_MESSAGE_LOGGER(debug)  // NOLINT(cppcoreguidelines-macro-usage)
