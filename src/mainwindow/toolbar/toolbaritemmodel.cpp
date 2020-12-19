@@ -53,6 +53,10 @@ public:
   {
     const auto& key_bindings = omm::Application::instance().key_bindings;
     const auto* item = key_bindings.value(omm::Application::TYPE, command_name);
+    if (item == nullptr) {
+      const auto d = ToolBarItemModel::tr("%1 is no valid command name.").arg(command_name);
+      throw omm::ToolBarItemModel::BadConfigurationError(d);
+    }
     setData(item->translated_name(), Qt::DisplayRole);
     setData(item->icon(), Qt::DecorationRole);
   }
@@ -131,11 +135,19 @@ public:
   }
 };
 
+QString get_mode_selector(const nlohmann::json& item)
+{
+  if (!item.contains("name")) {
+    using TBIM = omm::ToolBarItemModel;
+    throw TBIM::BadConfigurationError(TBIM::tr("Switch item has no mode selector."));
+  }
+  return QString::fromStdString(item["name"]);
+}
+
 class SwitchItem : public HyperItem<switch_item_id>
 {
 public:
-  explicit SwitchItem(const nlohmann::json& item)
-      : m_mode_selector(QString::fromStdString(item["name"]))
+  explicit SwitchItem(const nlohmann::json& item) : m_mode_selector(get_mode_selector(item))
   {
     const auto& mode_selector = *Application::instance().mode_selectors.at(m_mode_selector);
     set_label(mode_selector.translated_name());
@@ -408,6 +420,11 @@ QMimeData* ToolBarItemModel::mimeData(const QModelIndexList& indices) const
 void ToolBarItemModel::add_single_item(const nlohmann::json& config)
 {
   add_items(nlohmann::json{{items_key, {config}}}, rowCount());
+}
+
+ToolBarItemModel::BadConfigurationError::BadConfigurationError(const QString& description) noexcept
+    : std::runtime_error(description.toStdString())
+{
 }
 
 }  // namespace omm

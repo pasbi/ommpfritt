@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <QObject>
 
 template<typename Key, bool enable_clone, typename GeneralT, typename... Args>
 class AbstractFactory : public virtual omm::Typed
@@ -33,6 +34,14 @@ private:
   }
 
 public:
+  class InvalidKeyError : public std::runtime_error
+  {
+  public:
+    InvalidKeyError(const QString& what) : std::runtime_error(what.toStdString())
+    {
+    }
+  };
+
   using factory_item_type = GeneralT;
   template<typename SpecialT> static void register_type(Key key)
   {
@@ -44,13 +53,21 @@ public:
 
   template<typename... Args_> static std::unique_ptr<GeneralT> make(const Key& key, Args_&&... args)
   {
-    return m_creator_map.at(key)(std::forward<Args>(args)...);
+    const auto it = m_creator_map.find(key);
+    if (it == m_creator_map.end()) {
+      throw InvalidKeyError(QObject::tr("No such item: %2").arg(key));
+    }
+    return it->second(std::forward<Args>(args)...);  // TODO shouldn't it be `Args_` instead of `Args`?
   }
 
   static std::unique_ptr<GeneralT> make(const Key& key)
   {
     static_assert(sizeof...(Args) == 0, "Expected zero arguments.");
-    return m_creator_map.at(key)();
+    const auto it = m_creator_map.find(key);
+    if (it == m_creator_map.end()) {
+      throw InvalidKeyError(QObject::tr("No such item: %2").arg(key));
+    }
+    return it->second();
   }
 
   std::unique_ptr<GeneralT> clone() const

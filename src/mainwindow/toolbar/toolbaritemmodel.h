@@ -27,6 +27,13 @@ public:
   void reset(const QString& configuration);
   static constexpr auto items_key = "items";
 
+  class BadConfigurationError : public std::runtime_error
+  {
+  public:
+    BadConfigurationError(const QString& description) noexcept;
+  };
+
+
 public Q_SLOTS:
   void remove_selection(const QItemSelection& selection);
   void add_group();
