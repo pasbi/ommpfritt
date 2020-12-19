@@ -1393,14 +1393,6 @@ Borrar la selección de todos modos?</translation>
         <translation>W</translation>
     </message>
     <message>
-        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>La ruta del objeto que se tiene que renderizar. Omitalo para renderizar la escena entera. La ruta no tiene que ser única. En este caso todos los objetos correspondientes se renderizan. Expresiones regulares del estilo Perl son admitido.</translation>
-    </message>
-    <message>
-        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>El nombre del objeto que se tiene que renderizar. Omitalo para renderizar la escena entera. El nombre no tiene que ser único. En este caso todos los objetos correspondientes se renderizan. Expresiones regulares del estilo Perl son admitido.</translation>
-    </message>
-    <message>
         <source>The verbosity (fatal|critical|warning|info|debug).</source>
         <translation>La verbosidad (fatal|critical|warning|info|debug).</translation>
     </message>
@@ -1477,10 +1469,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Cortar trayecto</translation>
     </message>
     <message>
-        <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
-        <translation>Si está activado esta opción, el objeto de destino (ver la &apos;path&apos; o &apos;object&apos; opción) tiene que ser único, es decir, tiene que existir solo un objeto que encaje. La aplicación termine si este requerimiento esté violado.</translation>
-    </message>
-    <message>
         <source>Get status code for given description.</source>
         <translation>Obtener código de estatus por esta decripción.</translation>
     </message>
@@ -1527,6 +1515,26 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>normal</source>
         <translation>Normal</translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>El nombre del objeto que se tiene que renderizar. Omitalo para renderizar la escena entera. El nombre no tiene que ser único, todos los objetos correspondientes se renderizan. Expresiones regulares del estilo Perl son admitido.</translation>
+    </message>
+    <message>
+        <source>NAME_REGEX</source>
+        <translation>NAME_REGEX</translation>
+    </message>
+    <message>
+        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>La ruta del objeto que se tiene que renderizar. Omitalo para renderizar la escena entera. La ruta no tiene que ser único, todos los objetos correspondientes se renderizan. Expresiones regulares del estilo Perl son admitido.</translation>
+    </message>
+    <message>
+        <source>PATH_REGEX</source>
+        <translation>PATH_REGEX</translation>
+    </message>
+    <message>
+        <source>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
+        <translation>Si está activado esta opción, el objeto de destino (ver la opción &apos;object-path&apos; o &apos;object-name&apos;) tiene que ser único, es decir, tiene que existir solo un objeto que encaje. La aplicación termine si este requerimiento esté violado.</translation>
     </message>
 </context>
 <context>
@@ -2825,7 +2833,7 @@ Esto no se puede revertir.</translation>
     </message>
     <message>
         <source>freq</source>
-        <translation>freq.</translation>
+        <translation>Frequencia</translation>
     </message>
     <message>
         <source>ratio</source>

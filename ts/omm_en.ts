@@ -1393,14 +1393,6 @@ Remove the selected items anyway?</translation>
         <translation>W</translation>
     </message>
     <message>
-        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>The path of the object to render. Keep clear to render the whole Scene. The path does not need to be unique. In this case, all matchings are rendered. Perl-like regular expressions are supported.</translation>
-    </message>
-    <message>
-        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>The name of the object to render. Keep clear to render the whole Scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</translation>
-    </message>
-    <message>
         <source>The verbosity (fatal|critical|warning|info|debug).</source>
         <translation>The verbosity (fatal|critical|warning|info|debug).</translation>
     </message>
@@ -1477,10 +1469,6 @@ Remove the selected items anyway?</translation>
         <translation>Cut path</translation>
     </message>
     <message>
-        <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
-        <translation>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; option) must be unique, i.e., there must be exactly one matching object. The application terminates if this requirement is violated.</translation>
-    </message>
-    <message>
         <source>Get status code for given description.</source>
         <translation>Get status code for given description.</translation>
     </message>
@@ -1527,6 +1515,26 @@ Remove the selected items anyway?</translation>
     <message>
         <source>normal</source>
         <translation>Normal</translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</translation>
+    </message>
+    <message>
+        <source>NAME_REGEX</source>
+        <translation>NAME_REGEX</translation>
+    </message>
+    <message>
+        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</translation>
+    </message>
+    <message>
+        <source>PATH_REGEX</source>
+        <translation>PATH_REGEX</translation>
+    </message>
+    <message>
+        <source>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
+        <translation>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</translation>
     </message>
 </context>
 <context>
@@ -2825,11 +2833,11 @@ This cannot be undone.</translation>
     </message>
     <message>
         <source>freq</source>
-        <translation>freq.</translation>
+        <translation>Frequency</translation>
     </message>
     <message>
         <source>ratio</source>
-        <translation>ratio</translation>
+        <translation>Ratio</translation>
     </message>
     <message>
         <source>left ramp</source>
@@ -2837,7 +2845,7 @@ This cannot be undone.</translation>
     </message>
     <message>
         <source>right ramp</source>
-        <translation>right ramp</translation>
+        <translation>Right ramp</translation>
     </message>
     <message>
         <source>position</source>
@@ -2849,7 +2857,7 @@ This cannot be undone.</translation>
     </message>
     <message>
         <source>Line Pattern</source>
-        <translation>line pattern</translation>
+        <translation>Line pattern</translation>
     </message>
 </context>
 <context>
