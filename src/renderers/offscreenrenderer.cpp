@@ -140,8 +140,7 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
     return;
   }
   program->bind();
-  GLuint location = program->uniformLocation(name);
-  Q_UNUSED(location)
+  [[maybe_unused]] GLuint location = program->uniformLocation(name);
   if constexpr (std::is_same_v<T, double>) {
     program->setUniformValue(location, GLfloat(value));
   } else if constexpr (std::is_same_v<T, int>) {

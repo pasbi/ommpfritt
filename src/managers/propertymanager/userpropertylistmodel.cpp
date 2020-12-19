@@ -17,9 +17,8 @@ UserPropertyListModel::UserPropertyListModel(AbstractPropertyOwner& owner)
   m_items = std::vector(items.begin(), items.end());
 }
 
-int UserPropertyListModel::rowCount(const QModelIndex& parent) const
+int UserPropertyListModel::rowCount([[maybe_unused]] const QModelIndex& parent) const
 {
-  Q_UNUSED(parent)
   assert(!parent.isValid());
   return m_items.size();
 }

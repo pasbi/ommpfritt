@@ -74,4 +74,14 @@ void Manager::keyPressEvent(QKeyEvent* e)
   }
 }
 
+bool Manager::event(QEvent* event)
+{
+  if (event->type() == QEvent::ShortcutOverride) {
+    // QEvent documentation: "If the shortcut override is accepted, the event is delivered
+    // as a normal key press to the focus widget."
+    event->accept();
+  }
+  return QDockWidget::event(event);
+}
+
 }  // namespace omm

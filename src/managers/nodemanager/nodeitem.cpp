@@ -45,14 +45,12 @@ public:
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override
   {
-    Q_UNUSED(event);
     BaseItem::mousePressEvent(event);
     event->accept();
   }
 
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override
   {
-    Q_UNUSED(event)
     BaseItem::mouseReleaseEvent(event);
     event->accept();
   }

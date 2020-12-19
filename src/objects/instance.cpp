@@ -53,10 +53,9 @@ void Instance::polish()
 }
 
 void Instance::draw_object(Painter& renderer,
-                           const Style& style,
+                           [[maybe_unused]] const Style& style,
                            const Painter::Options& options) const
 {
-  Q_UNUSED(style)
   auto cycle_guard = scene()->make_cycle_guard(this);
   if (!cycle_guard->inside_cycle() && is_active()) {
     auto* r = illustrated_object();

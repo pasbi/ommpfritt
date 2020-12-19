@@ -125,7 +125,6 @@ template<>
 TriggerPropertyDummyValueType
 AbstractDeserializer ::get<TriggerPropertyDummyValueType>(const Pointer& pointer)
 {
-  Q_UNUSED(pointer)
   return get_trigger_dummy_value(pointer);
 }
 

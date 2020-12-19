@@ -82,8 +82,6 @@ bool KnifeTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 
 void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
-  Q_UNUSED(pos)
-  Q_UNUSED(event)
   if (m_is_cutting) {
     if (const auto paths = ::type_cast<Path*>(scene()->item_selection<Object>()); !paths.empty()) {
       std::unique_ptr<Macro> macro;

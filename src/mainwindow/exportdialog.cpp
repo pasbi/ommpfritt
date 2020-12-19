@@ -42,9 +42,8 @@ const QChar frame_number_placeholder = '%';
 class FilenamePatternValidator : public QValidator
 {
 public:
-  QValidator::State validate(QString& input, int& pos) const override
+  QValidator::State validate(QString& input, int&) const override
   {
-    Q_UNUSED(pos)
     const std::set<QString> forbidden_subsequences = {"/"};
     const std::set<QString> allowed_endings = {".png", ".jpg", ".jpeg"};
 

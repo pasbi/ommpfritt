@@ -25,15 +25,13 @@ def listarithm_decorator(func):
   return "";
 }
 
-QString NodeCompilerPython::start_program(QStringList& lines)
+QString NodeCompilerPython::start_program(QStringList&)
 {
-  Q_UNUSED(lines)
   return "";
 }
 
-QString NodeCompilerPython::end_program(QStringList& lines)
+QString NodeCompilerPython::end_program(QStringList&)
 {
-  Q_UNUSED(lines)
   return "";
 }
 

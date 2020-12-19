@@ -5,7 +5,7 @@ if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
 
-project (ommpfritt VERSION 0.1.1)
+project(ommpfritt VERSION 0.1.2)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -23,6 +23,7 @@ find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
+include(check_version_consistency)
 include(generate_registers)
 include(generate_translations)
 include(generate_icons)
@@ -33,6 +34,8 @@ generate_registers("${classes}")
 
 set (QT_QM_PATH CACHE PATH
     "path where to find the Qt translation files (qt_en.qm, qtbase_de.qm, etc.")
+
+include(update_git_describe)
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/ommpfrittconfig.h.in"
@@ -182,6 +185,7 @@ endif()
 add_dependencies(resources_cli translations_qm)
 add_dependencies(resources translations_qm)
 add_dependencies(libommpfritt registers)
+add_dependencies(libommpfritt update-git-describe)
 add_dependencies(ommpfritt libommpfritt resources)
 add_dependencies(ommpfritt_unit_tests resources_cli)
 add_dependencies(ommpfritt-cli libommpfritt resources_cli)

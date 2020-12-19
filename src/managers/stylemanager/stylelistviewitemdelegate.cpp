@@ -46,26 +46,23 @@ void StyleListViewItemDelegate::paint(QPainter* painter,
   painter->drawText(text_rect, omm::StyleListView::text_flags, text);
 }
 
-QSize StyleListViewItemDelegate::sizeHint(const QStyleOptionViewItem& option,
-                                          const QModelIndex& index) const
+QSize StyleListViewItemDelegate::sizeHint([[maybe_unused]] const QStyleOptionViewItem& option,
+                                          [[maybe_unused]] const QModelIndex& index) const
 {
-  Q_UNUSED(option);
-  Q_UNUSED(index);
   return QSize(m_icon_size.width(), m_icon_size.height() + m_text_height);
 }
 
-QString StyleListViewItemDelegate::displayText(const QVariant& value, const QLocale& locale) const
+QString StyleListViewItemDelegate::displayText([[maybe_unused]] const QVariant& value,
+                                               [[maybe_unused]] const QLocale& locale) const
 {
-  Q_UNUSED(value)
-  Q_UNUSED(locale)
   return "";
 }
 
-void StyleListViewItemDelegate::updateEditorGeometry(QWidget* editor,
-                                                     const QStyleOptionViewItem& option,
-                                                     const QModelIndex& index) const
+void StyleListViewItemDelegate::updateEditorGeometry(
+    QWidget* editor,
+    const QStyleOptionViewItem& option,
+    [[maybe_unused]] const QModelIndex& index) const
 {
-  Q_UNUSED(index);
   editor->resize(option.rect.width(), m_text_height);
   editor->move(option.rect.left(), option.rect.bottom() - m_text_height);
 }

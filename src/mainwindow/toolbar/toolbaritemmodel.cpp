@@ -353,7 +353,6 @@ void ToolBarItemModel::populate(QToolBar& tool_bar) const
       tool_bar.addAction(action.release());
     }
   }
-  Q_UNUSED(tool_bar)
 }
 
 void ToolBarItemModel::reset(const QString& configuration)
@@ -366,25 +365,23 @@ void ToolBarItemModel::reset(const QString& configuration)
 
 bool ToolBarItemModel::canDropMimeData(const QMimeData* data,
                                        Qt::DropAction action,
-                                       int row,
-                                       int column,
-                                       const QModelIndex& parent) const
+                                       [[maybe_unused]] int row,
+                                       [[maybe_unused]] int column,
+                                       [[maybe_unused]] const QModelIndex& parent) const
 {
-  Q_UNUSED(column)
-  Q_UNUSED(row)
-  Q_UNUSED(parent)
-  return data->hasFormat(ToolBarDialog::mime_type)
-         && ::contains(std::set{Qt::MoveAction, Qt::LinkAction}, action);
+  if (data->hasFormat(ToolBarDialog::mime_type)) {
+    return ::contains(std::set{Qt::MoveAction, Qt::LinkAction}, action);
+  } else {
+    return false;
+  }
 }
 
-bool ToolBarItemModel::dropMimeData(const QMimeData* data,
-                                    Qt::DropAction action,
-                                    int row,
-                                    int column,
+bool ToolBarItemModel::dropMimeData([[maybe_unused]] const QMimeData* data,
+                                    [[maybe_unused]] Qt::DropAction action,
+                                    [[maybe_unused]] int row,
+                                    [[maybe_unused]] int column,
                                     const QModelIndex& parent)
 {
-  Q_UNUSED(action)
-  Q_UNUSED(column)
   assert(canDropMimeData(data, action, row, column, parent));
   QDataStream stream(data->data(ToolBarDialog::mime_type));
   QString code;
