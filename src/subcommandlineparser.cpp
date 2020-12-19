@@ -45,7 +45,7 @@ static const std::map<QString, QList<QCommandLineOption>> options{
                       "The name does not need to be unique. "
                       "In this case, all matching objects are rendered. "
                       "Perl-like regular expressions are supported."),
-          QObject::tr("NAME"),
+          QObject::tr("NAME_REGEX"),
           "",
       },
       {
@@ -61,7 +61,7 @@ static const std::map<QString, QList<QCommandLineOption>> options{
                       "The path does not need to be unique. "
                       "In this case, all matching objects are rendered. "
                       "Perl-like regular expressions are supported."),
-          QObject::tr("NAME"),
+          QObject::tr("PATH_REGEX"),
           "",
       },
       {{"n", "sequence-length"},
