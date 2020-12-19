@@ -34,6 +34,8 @@ generate_registers("${classes}")
 set (QT_QM_PATH CACHE PATH
     "path where to find the Qt translation files (qt_en.qm, qtbase_de.qm, etc.")
 
+include(update_git_describe)
+
 configure_file (
   "${PROJECT_SOURCE_DIR}/ommpfrittconfig.h.in"
   "${PROJECT_BINARY_DIR}/ommpfrittconfig.h"
@@ -182,6 +184,7 @@ endif()
 add_dependencies(resources_cli translations_qm)
 add_dependencies(resources translations_qm)
 add_dependencies(libommpfritt registers)
+add_dependencies(libommpfritt update-git-describe)
 add_dependencies(ommpfritt libommpfritt resources)
 add_dependencies(ommpfritt_unit_tests resources_cli)
 add_dependencies(ommpfritt-cli libommpfritt resources_cli)

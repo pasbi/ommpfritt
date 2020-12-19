@@ -1,5 +1,6 @@
 #include "logging.h"
 #include "ommpfrittconfig.h"
+#include "git_describe.h"
 #include <QApplication>
 #include <QDateTime>
 #include <QDir>
@@ -58,6 +59,8 @@ void setup_logfile(QFile& logfile)
   write(QString("product name:     %1\n").arg(QSysInfo::prettyProductName()));
   write(QString("product type:     %1\n").arg(QSysInfo::productType()));
   write(QString("product version:  %1\n").arg(QSysInfo::productVersion()));
+  write(QString("build:            %1\n").arg(git_describe));
+  write(QString("commit hash:      %1\n").arg(git_commit));
   write(QString("major version:    %1\n").arg(ommpfritt_version_major));
   write(QString("minor version:    %1\n").arg(ommpfritt_version_minor));
   write(QString("patch version:    %1\n").arg(ommpfritt_version_patch));
