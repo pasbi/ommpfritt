@@ -23,6 +23,7 @@ find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
+include(check_version_consistency)
 include(generate_registers)
 include(generate_translations)
 include(generate_icons)
