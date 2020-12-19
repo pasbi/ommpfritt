@@ -10,25 +10,22 @@
 #endif
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define MAKE_Q_MESSAGE_LOGGER(level) \
+  QMessageLogger(static_cast<const char*>(__FILE__), \
+                 __LINE__, \
+                 static_cast<const char*>(Q_FUNC_INFO)).level
 #define STRINGIZE_DETAIL(x) #x
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define MAKE_DECORATED_Q_MESSAGE_LOGGER(level) MAKE_Q_MESSAGE_LOGGER(level()).nospace().noquote()
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
-#define LDEBUG qDebug().nospace().noquote()
 
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
-#define LINFO qInfo().nospace().noquote()
-
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
-#define LWARNING qCritical().nospace().noquote()
-
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
-#define LERROR qCritical().nospace().noquote()
-
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)  // we need __LINE__, __FILE__, etc.
-#define LFATAL(...) qFatal(__VA_ARGS__)
+#define LDEBUG MAKE_DECORATED_Q_MESSAGE_LOGGER(debug)  // NOLINT(cppcoreguidelines-macro-usage)
+#define LINFO MAKE_DECORATED_Q_MESSAGE_LOGGER(info)  // NOLINT(cppcoreguidelines-macro-usage)
+#define LWARNING MAKE_DECORATED_Q_MESSAGE_LOGGER(warning)  // NOLINT(cppcoreguidelines-macro-usage)
+#define LERROR MAKE_DECORATED_Q_MESSAGE_LOGGER(critical)  // NOLINT(cppcoreguidelines-macro-usage)
+#define LFATAL MAKE_Q_MESSAGE_LOGGER(fatal)  // NOLINT(cppcoreguidelines-macro-usage)
 
 class QFile;
 
