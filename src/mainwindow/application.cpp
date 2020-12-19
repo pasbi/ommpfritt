@@ -339,8 +339,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "load document ...") {
     load();
   } else if (action_name == "export") {
-    static const auto export_dialog = std::make_unique<ExportDialog>(scene, main_window());
-    export_dialog->exec();
+    ExportDialog(scene, main_window()).exec();
   } else if (action_name == "evaluate") {
     evaluate();
   } else if (action_name == "restore default layout") {
