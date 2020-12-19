@@ -1393,14 +1393,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>W</translation>
     </message>
     <message>
-        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>Der Pfad des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
-    </message>
-    <message>
-        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Name muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
-    </message>
-    <message>
         <source>The verbosity (fatal|critical|warning|info|debug).</source>
         <translation>Grad der Ausführlichkeit (fatal|critical|warning|info|debug).</translation>
     </message>
@@ -1477,10 +1469,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Pfad schneiden</translation>
     </message>
     <message>
-        <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
-        <translation>Wenn diese Option aktiv ist, dann muss das Zielobjet (siehe &apos;path&apos;- oder &apos;object&apos;-Option) eindeutig sein, es muss also genau ein passendes Objekt in der Szene geben. Die Applikation bricht ab falls diese Bedingung verletzt ist.</translation>
-    </message>
-    <message>
         <source>Get status code for given description.</source>
         <translation>Erhalte den Status-Code für eine Beschreibung.</translation>
     </message>
@@ -1527,6 +1515,26 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>normal</source>
         <translation>Normale</translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Name muss nicht unbedingt eindeutig sein, alle passenden Objekte werden gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
+    </message>
+    <message>
+        <source>NAME_REGEX</source>
+        <translation>NAME_REGEX</translation>
+    </message>
+    <message>
+        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>Der Pfad des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein, alle passenden Objekte werden gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
+    </message>
+    <message>
+        <source>PATH_REGEX</source>
+        <translation>PATH_REGEX</translation>
+    </message>
+    <message>
+        <source>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
+        <translation>Wenn diese Option aktiv ist, dann muss das Zielobjekt (siehe &apos;object-path&apos; oder &apos;object-name&apos;-Option) eindeutig sein, es muss also genau ein passendes Objekt in der Szene geben. Die Applikation bricht ab falls diese Bedingung verletzt ist.</translation>
     </message>
 </context>
 <context>
@@ -2825,7 +2833,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>freq</source>
-        <translation>Freq.</translation>
+        <translation>Frequenz</translation>
     </message>
     <message>
         <source>ratio</source>
@@ -2833,11 +2841,11 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>left ramp</source>
-        <translation>linke Rampe</translation>
+        <translation>Linke Rampe</translation>
     </message>
     <message>
         <source>right ramp</source>
-        <translation>rechte Rampe</translation>
+        <translation>Rechte Rampe</translation>
     </message>
     <message>
         <source>position</source>
