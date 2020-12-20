@@ -6,7 +6,7 @@ namespace omm
 RectangleObject::RectangleObject(Scene* scene) : Object(scene)
 {
   static constexpr double DEFAULT_SIZE = 200.0;
-  static constexpr double DEFAULT_RADIUS = 0.2;
+  static constexpr double DEFAULT_RADIUS = 0.0;
   static constexpr double STEP = 0.01;
   static const auto category = QObject::tr("rectangle");
   create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(DEFAULT_SIZE, DEFAULT_SIZE))
