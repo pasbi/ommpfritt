@@ -296,7 +296,7 @@
     <name>NamedColorsDialog</name>
     <message>
         <source>Manage Named Colors</source>
-        <translation>Benannte Farben editieren</translation>
+        <translation>Manage named colors</translation>
     </message>
     <message>
         <source>-</source>
@@ -1393,14 +1393,6 @@ Remove the selected items anyway?</translation>
         <translation>W</translation>
     </message>
     <message>
-        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>The path of the object to render. Keep clear to render the whole Scene. The path does not need to be unique. In this case, all matchings are rendered. Perl-like regular expressions are supported.</translation>
-    </message>
-    <message>
-        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>The name of the object to render. Keep clear to render the whole Scene. The path does not need to be unique. In this case, all matchings are rendered. Perl-like regular expressions are supported.</translation>
-    </message>
-    <message>
         <source>The verbosity (fatal|critical|warning|info|debug).</source>
         <translation>The verbosity (fatal|critical|warning|info|debug).</translation>
     </message>
@@ -1477,12 +1469,8 @@ Remove the selected items anyway?</translation>
         <translation>Cut path</translation>
     </message>
     <message>
-        <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
-        <translation>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; option) must be unique, i.e., there must be exactly one matching object. The application terminates if this requirement is violated.</translation>
-    </message>
-    <message>
         <source>Get status code for given description.</source>
-        <translation>Get status code for given descritption.</translation>
+        <translation>Get status code for given description.</translation>
     </message>
     <message>
         <source>DESCRIPTION</source>
@@ -1527,6 +1515,26 @@ Remove the selected items anyway?</translation>
     <message>
         <source>normal</source>
         <translation>Normal</translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</translation>
+    </message>
+    <message>
+        <source>NAME_REGEX</source>
+        <translation>NAME_REGEX</translation>
+    </message>
+    <message>
+        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</translation>
+    </message>
+    <message>
+        <source>PATH_REGEX</source>
+        <translation>PATH_REGEX</translation>
+    </message>
+    <message>
+        <source>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
+        <translation>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</translation>
     </message>
 </context>
 <context>
@@ -1590,7 +1598,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>add switch ...</source>
-        <translation>Add switch</translation>
+        <translation>Add switch ...</translation>
     </message>
 </context>
 <context>
@@ -1904,10 +1912,6 @@ Remove the selected items anyway?</translation>
         <translation>View</translation>
     </message>
     <message>
-        <source>save document</source>
-        <translation>Save</translation>
-    </message>
-    <message>
         <source>SelectObjectsTool</source>
         <translation>Select objects</translation>
     </message>
@@ -1930,10 +1934,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>deselect all</source>
         <translation>Deselect all</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation>New Scene</translation>
     </message>
     <message>
         <source>StyleManager</source>
@@ -1986,10 +1986,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>select all</source>
         <translation>Select all</translation>
-    </message>
-    <message>
-        <source>export</source>
-        <translation>export</translation>
     </message>
     <message>
         <source>preferences</source>
@@ -2052,14 +2048,6 @@ Remove the selected items anyway?</translation>
         <translation>New toolbar</translation>
     </message>
     <message>
-        <source>save document as ...</source>
-        <translation>Save scene as ...</translation>
-    </message>
-    <message>
-        <source>load document ...</source>
-        <translation>Load scene ...</translation>
-    </message>
-    <message>
         <source>remove unused styles</source>
         <translation>Remove unused styles</translation>
     </message>
@@ -2115,12 +2103,32 @@ Remove the selected items anyway?</translation>
         <source>LineObject</source>
         <translation>Line</translation>
     </message>
+    <message>
+        <source>new</source>
+        <translation>New</translation>
+    </message>
+    <message>
+        <source>open ...</source>
+        <translation>Open ...</translation>
+    </message>
+    <message>
+        <source>save as ...</source>
+        <translation>Save As ...</translation>
+    </message>
+    <message>
+        <source>save</source>
+        <translation>Save</translation>
+    </message>
+    <message>
+        <source>export ...</source>
+        <translation>Export ...</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
     <message>
         <source>ComposeNode</source>
-        <translation>Zusammenstell Node</translation>
+        <translation>Compose Node</translation>
     </message>
     <message>
         <source>ConstantNode</source>
@@ -2310,16 +2318,16 @@ Remove the selected items anyway?</translation>
         <translation>Show windows</translation>
     </message>
     <message>
-        <source>load recent document</source>
-        <translation>Recently opened files</translation>
-    </message>
-    <message>
         <source>path</source>
         <translation>Path</translation>
     </message>
     <message>
         <source>tool</source>
         <translation>Tool</translation>
+    </message>
+    <message>
+        <source>open recent</source>
+        <translation>Open Recent</translation>
     </message>
 </context>
 <context>
@@ -2368,12 +2376,8 @@ Remove the selected items anyway?</translation>
         <translation>Save scene as ...</translation>
     </message>
     <message>
-        <source>Load scene ...</source>
-        <translation>Load scene ...</translation>
-    </message>
-    <message>
-        <source>Loading scene from &apos;%1&apos; failed.</source>
-        <translation>Loading scene from &apos;%1&apos; failed.</translation>
+        <source>Open scene ...</source>
+        <translation>Open scene ...</translation>
     </message>
     <message>
         <source>Create %1</source>
@@ -2386,6 +2390,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Some pending changes will be lost if you don&apos;t save.</source>
         <translation>Some pending changes will be lost if you don&apos;t save.</translation>
+    </message>
+    <message>
+        <source>Opening scene from &apos;%1&apos; failed.</source>
+        <translation>Opening scene from &apos;%1&apos; failed.</translation>
     </message>
 </context>
 <context>
@@ -2825,11 +2833,11 @@ This cannot be undone.</translation>
     </message>
     <message>
         <source>freq</source>
-        <translation>freq.</translation>
+        <translation>Frequency</translation>
     </message>
     <message>
         <source>ratio</source>
-        <translation>ratio</translation>
+        <translation>Ratio</translation>
     </message>
     <message>
         <source>left ramp</source>
@@ -2837,7 +2845,7 @@ This cannot be undone.</translation>
     </message>
     <message>
         <source>right ramp</source>
-        <translation>right ramp</translation>
+        <translation>Right ramp</translation>
     </message>
     <message>
         <source>position</source>
@@ -2849,7 +2857,7 @@ This cannot be undone.</translation>
     </message>
     <message>
         <source>Line Pattern</source>
-        <translation>line pattern</translation>
+        <translation>Line pattern</translation>
     </message>
 </context>
 <context>
@@ -3016,7 +3024,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::PreferenceDialog</name>
     <message>
         <source>Ui Colors</source>
-        <translation>Ui-Colors</translation>
+        <translation>UI-Colors</translation>
     </message>
     <message>
         <source>Keyindings</source>
@@ -3176,7 +3184,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>Do you really want to reset all colors for in the current color schema?
 This cannot be undone.</source>
-        <translation>Do you really want to reset all colors for in the current color schema?
+        <translation>Do you really want to reset all colors in the current color schema?
 This cannot be undone.</translation>
     </message>
     <message>
@@ -3698,11 +3706,11 @@ This cannot be undone.</translation>
     </message>
     <message>
         <source>midlight</source>
-        <translation>Midlight</translation>
+        <translation>Medium bright</translation>
     </message>
     <message>
         <source>light</source>
-        <translation>Light</translation>
+        <translation>Bright</translation>
     </message>
     <message>
         <source>window text</source>
