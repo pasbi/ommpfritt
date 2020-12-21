@@ -48,7 +48,7 @@ set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
 set(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
 set(languages de en es)
 set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
-set(prefixes omm qtlocation qt_help qt)
+set(prefixes omm qtlocation qt_help qt qtbase)
 set(cfg_files
   ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-light.cfg
   ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-dark.cfg
