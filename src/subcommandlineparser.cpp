@@ -39,29 +39,27 @@ static const std::map<QString, QList<QCommandLineOption>> options{
           QObject::tr("NAME"),
       },
       {
-          {"q", "object"},
+          {"q", "object-name"},
           QObject::tr("The name of the object to render. "
                       "Keep clear to render the whole scene. "
-                      "The name does not need to be unique. "
-                      "In this case, all matching objects are rendered. "
+                      "The name does not need to be unique, all matching objects are rendered. "
                       "Perl-like regular expressions are supported."),
-          QObject::tr("NAME"),
+          QObject::tr("NAME_REGEX"),
           "",
       },
       {
           {"u", "unique"},
-          QObject::tr("If this option is set, the target object (see 'path' or 'object' argument) "
+          QObject::tr("If this option is set, the target object (see 'object-path' or 'object-name' argument) "
                       "must be unique, i.e., there must be exactly one such object. "
                       "The application terminates if this requirement is violated."),
       },
       {
-          {"p", "path"},
+          {"p", "object-path"},
           QObject::tr("The path of the object to render. "
                       "Keep clear to render the whole scene. "
-                      "The path does not need to be unique. "
-                      "In this case, all matching objects are rendered. "
+                      "The path does not need to be unique, all matching objects are rendered. "
                       "Perl-like regular expressions are supported."),
-          QObject::tr("NAME"),
+          QObject::tr("PATH_REGEX"),
           "",
       },
       {{"n", "sequence-length"},

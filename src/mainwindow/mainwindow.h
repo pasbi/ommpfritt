@@ -51,7 +51,7 @@ public:
   static constexpr auto MANAGER_NAME_SETTINGS_KEY = "name";
   static constexpr auto GEOMETRY_SETTINGS_KEY = "mainwindow/geometry";
   static constexpr auto WINDOWSTATE_SETTINGS_KEY = "mainwindow/window_state";
-  static constexpr auto RECENT_DOCUMENTS_SETTINGS_KEY = "mainwindow/recent_documents";
+  static constexpr auto RECENT_SCENES_SETTINGS_KEY = "mainwindow/recent_scenes";
   static constexpr auto TYPE_NAME_CONTEXT = "typename";
   static constexpr auto LAST_LAYOUT_FILE_NAME = "last_layout_file_name";
 
@@ -63,7 +63,7 @@ private:
   Application& m_app;
   Viewport* m_viewport;
   [[nodiscard]] std::vector<QDockWidget*> dock_widgets() const;
-  void update_recent_files_menu();
+  void update_recent_scenes_menu();
   [[nodiscard]] static QString get_last_layout_filename();
 
   void handle_corrupted_config_file(const QSettings& s, const QString& what);

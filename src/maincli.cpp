@@ -98,10 +98,10 @@ void prepare_scene(omm::Scene& scene, const std::set<omm::Object*>& visible_obje
 
 void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
 {
-  const QString& object_name = args.get<QString>("object", "");
-  const QString& object_path = args.get<QString>("path", "");
+  const QString& object_name = args.get<QString>("object-name", "");
+  const QString& object_path = args.get<QString>("object-path", "");
   if (!object_name.isEmpty() && !object_path.isEmpty()) {
-    LERROR << "options path and object are mutual exclusive.";
+    LERROR << "options object-path and object-name are mutual exclusive.";
     exit(omm::ExitStatus::invalid_input_format);
   }
 

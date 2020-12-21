@@ -119,13 +119,14 @@ std::vector<QString> MainWindow::main_menu_entries()
   using namespace std::string_literals;
   std::list<QString> entries = {
       // NOLINTNEXTLINE(bugprone-suspicious-missing-comma)
-      QT_TRANSLATE_NOOP("menu_name", "file") "/new document",
-      "file/save document",
-      "file/save document as ...",
-      "file/load document ...",
-      "file/" QT_TRANSLATE_NOOP("menu_name", "load recent document") "/",
+      QT_TRANSLATE_NOOP("menu_name", "file") "/new",
+      "file/open ...",
+      "file/" QT_TRANSLATE_NOOP("menu_name", "open recent") "/",
       QString::fromStdString("file/"s + KeyBindings::SEPARATOR),
-      "file/export",
+      "file/save",
+      "file/save as ...",
+      QString::fromStdString("file/"s + KeyBindings::SEPARATOR),
+      "file/export ...",
       QT_TRANSLATE_NOOP("menu_name", "edit") "/undo",
       "edit/redo",
       "edit/preferences",
@@ -200,20 +201,20 @@ MainWindow::MainWindow(Application& app) : m_app(app)
     menuBar()->addMenu(menu.release());
   }
   menuBar()->addMenu(make_about_menu().release());
-  update_recent_files_menu();
+  update_recent_scenes_menu();
 
   connect(&app.mail_box(), &MailBox::filename_changed, this, &MainWindow::update_window_title);
   connect(&app.mail_box(), &MailBox::filename_changed, [&app, this] {
     if (QString fn = app.scene.filename(); !fn.isEmpty()) {
       QSettings settings;
-      auto fns = settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList();
+      auto fns = settings.value(RECENT_SCENES_SETTINGS_KEY, QStringList()).toStringList();
       fn = QDir::cleanPath(QDir::current().absoluteFilePath(fn));
       if (!fn.isEmpty()) {
         fns.removeAll(fn);
         fns.append(QFileInfo(fn).absoluteFilePath());
       }
-      settings.setValue(RECENT_DOCUMENTS_SETTINGS_KEY, fns);
-      update_recent_files_menu();
+      settings.setValue(RECENT_SCENES_SETTINGS_KEY, fns);
+      update_recent_scenes_menu();
     }
   });
 
@@ -444,16 +445,16 @@ void MainWindow::save_layout(QSettings& settings)
   }
 }
 
-void MainWindow::update_recent_files_menu()
+void MainWindow::update_recent_scenes_menu()
 {
-  auto* recent_document_menu = find_menu(menuBar(), "load recent document");
-  recent_document_menu->clear();
+  auto* recent_scene_menu = find_menu(menuBar(), "open recent");
+  recent_scene_menu->clear();
   Scene& scene = Application::instance().scene;
-  recent_document_menu->setToolTipsVisible(true);
-  assert(recent_document_menu != nullptr);
+  recent_scene_menu->setToolTipsVisible(true);
+  assert(recent_scene_menu != nullptr);
   std::size_t count = 0;
   std::set<QString> filenames;
-  for (auto&& fn : QSettings().value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList()) {
+  for (auto&& fn : QSettings().value(RECENT_SCENES_SETTINGS_KEY, QStringList()).toStringList()) {
     const QFileInfo file_info(fn);
     const QString abs_file_path = file_info.absoluteFilePath();
     if (file_info.exists() && file_info.isFile()
@@ -463,9 +464,9 @@ void MainWindow::update_recent_files_menu()
       auto action = std::make_unique<QAction>(file_info.fileName());
       action->setToolTip(fn);
       connect(action.get(), &QAction::triggered, [fn]() {
-        Application::instance().load(fn, false);
+        Application::instance().open(fn, false);
       });
-      recent_document_menu->addAction(action.release());
+      recent_scene_menu->addAction(action.release());
       count++;
     }
     static constexpr std::size_t RECENT_FILES_MENU_MAX_SIZE = 10;
