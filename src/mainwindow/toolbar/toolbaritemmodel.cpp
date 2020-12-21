@@ -137,9 +137,10 @@ public:
 
 QString get_mode_selector(const nlohmann::json& item)
 {
+  using namespace omm;
   if (!item.contains("name")) {
-    using TBIM = omm::ToolBarItemModel;
-    throw TBIM::BadConfigurationError(TBIM::tr("Switch item has no mode selector."));
+    const auto msg = ToolBarItemModel::tr("Switch item has no mode selector.");
+    throw ToolBarItemModel::BadConfigurationError(msg);
   }
   return QString::fromStdString(item["name"]);
 }
