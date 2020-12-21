@@ -59,7 +59,7 @@ function check-local-includes {
   fi
 }
 
-function check-qdebug {
+function check-qdebug-includes {
   if grep -nP '^\s*#include .QDebug.' \
     --exclude-dir=external \
     --exclude="logging.h" \
@@ -72,10 +72,25 @@ function check-qdebug {
   fi
 }
 
+function check-qdebug-usage {
+  if grep -niP 'qdebug|qinfo|qwarning|qcritical|qfatal' \
+    --exclude-dir=external \
+    --exclude="logging.h" \
+    --exclude="logging.cpp" \
+    -R "$src_dir"
+  then
+    echo 'Fail: avoid including QDebug, use "logging.h" instead.'
+    return 1
+  else
+    return 0
+  fi
+}
+
 run-check check-size_t
 run-check check-system-includes
 run-check check-local-includes
-run-check check-qdebug
+run-check check-qdebug-includes
+run-check check-qdebug-usage
 
 if [ "$fail" -eq 0 ]; then
   echo "No bad patterns detected."
