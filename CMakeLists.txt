@@ -48,13 +48,12 @@ set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
 set(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
 set(languages de en es)
 set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
-set(prefixes omm qtlocation qt_help qt qtbase)
 set(cfg_files
   ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-light.cfg
   ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-dark.cfg
   ${CMAKE_CURRENT_SOURCE_DIR}/keybindings/default_keybindings.cfg
 )
-generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${prefixes}" "${cfg_files}")
+generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${cfg_files}")
 
 set(qrc_files_cli
     "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc"
