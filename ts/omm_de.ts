@@ -2,6 +2,13 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name></name>
+    <message>
+        <source>Switch item has no mode selector.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AboutDialog</name>
     <message>
         <source>About</source>
@@ -1528,6 +1535,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>normal</source>
         <translation>Normale</translation>
     </message>
+    <message>
+        <source>No such item: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2878,6 +2889,16 @@ Dies kann nicht rückgängig gemacht werden.</translation>
         <source>Save Layout</source>
         <translation>Layout speichern</translation>
     </message>
+    <message>
+        <source>The configuration file %1 is corrupted.
+Delete the file and restart the application.
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Corrupted config file</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::MathNode</name>
@@ -3146,6 +3167,10 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>separator</source>
         <translation>Trenner</translation>
+    </message>
+    <message>
+        <source>%1 is no valid command name.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
