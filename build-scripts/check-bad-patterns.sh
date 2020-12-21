@@ -18,10 +18,10 @@ function run-check {
 
 function check-size_t {
   if grep -nP '\b(?<!std::)size_t\b' --exclude-dir=external -R "$src_dir"; then
-    echo 'Fail: Found one or more unqualified `size_t`.'
-    echo 'Please replace it with `std::size_t`.'
-    # Note that this script will also complain about variables named `size_t`,
-    # type aliases named `size_t`, etc. or comments that contain the string
+    echo 'Fail: Found one or more unqualified size_t.'
+    echo 'Please replace it with std::size_t.'
+    # Note that this script will also complain about variables named size_t,
+    # type aliases named size_t, etc. or comments that contain the string
     # "size_t".
     # Its probably a good idea not chose another name for variables and
     # aliases, etc.
@@ -37,7 +37,7 @@ function check-system-includes {
   if grep -nP '^\s*#include <(?!(2geom|poppler|KF5)).*\.h>' \
      --exclude-dir=external -R "$src_dir"
   then
-    echo 'Fail: do not include system libaries with `.h` suffix.'
+    echo 'Fail: do not include system libaries with .h suffix.'
     return 1
   else
     return 0
