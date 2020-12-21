@@ -271,7 +271,7 @@
     </message>
     <message>
         <source>&amp;Overwrite:</source>
-        <translation>Ü&amp;berschreiben:</translation>
+        <translation>&amp;Überschreiben:</translation>
     </message>
 </context>
 <context>
@@ -296,7 +296,7 @@
     <name>NamedColorsDialog</name>
     <message>
         <source>Manage Named Colors</source>
-        <translation>Manage named colors</translation>
+        <translation>Benannte Farben editieren</translation>
     </message>
     <message>
         <source>-</source>
@@ -1393,14 +1393,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>W</translation>
     </message>
     <message>
-        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>Der Pfad des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
-    </message>
-    <message>
-        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
-        <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
-    </message>
-    <message>
         <source>The verbosity (fatal|critical|warning|info|debug).</source>
         <translation>Grad der Ausführlichkeit (fatal|critical|warning|info|debug).</translation>
     </message>
@@ -1477,10 +1469,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Pfad schneiden</translation>
     </message>
     <message>
-        <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
-        <translation>Wenn diese Option aktiv ist, dann muss das Zielobjet (siehe &apos;path&apos;- oder &apos;object&apos;-Option) eindeutig sein, es muss also genau ein passendes Objekt in der Szene geben. Die Applikation bricht ab falls diese Bedingung verletzt ist.</translation>
-    </message>
-    <message>
         <source>Get status code for given description.</source>
         <translation>Erhalte den Status-Code für eine Beschreibung.</translation>
     </message>
@@ -1514,7 +1502,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Any</source>
-        <translation>Einer</translation>
+        <translation>Irgendeiner</translation>
     </message>
     <message>
         <source>All</source>
@@ -1522,11 +1510,31 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>strategy</source>
-        <translation>Startegie</translation>
+        <translation>Strategie</translation>
     </message>
     <message>
         <source>normal</source>
         <translation>Normale</translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Name muss nicht unbedingt eindeutig sein, alle passenden Objekte werden gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
+    </message>
+    <message>
+        <source>NAME_REGEX</source>
+        <translation>NAME_REGEX</translation>
+    </message>
+    <message>
+        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>Der Pfad des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein, alle passenden Objekte werden gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
+    </message>
+    <message>
+        <source>PATH_REGEX</source>
+        <translation>PATH_REGEX</translation>
+    </message>
+    <message>
+        <source>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
+        <translation>Wenn diese Option aktiv ist, dann muss das Zielobjekt (siehe &apos;object-path&apos; oder &apos;object-name&apos;-Option) eindeutig sein, es muss also genau ein passendes Objekt in der Szene geben. Die Applikation bricht ab falls diese Bedingung verletzt ist.</translation>
     </message>
 </context>
 <context>
@@ -1590,7 +1598,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>add switch ...</source>
-        <translation>Schalter</translation>
+        <translation>Schalter hinzufügen ...</translation>
     </message>
 </context>
 <context>
@@ -1904,10 +1912,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <source>save document</source>
-        <translation>Speichern</translation>
-    </message>
-    <message>
         <source>SelectObjectsTool</source>
         <translation>Objekte selektieren</translation>
     </message>
@@ -1930,10 +1934,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>deselect all</source>
         <translation>Alles deselektieren</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation>Neue Szene</translation>
     </message>
     <message>
         <source>StyleManager</source>
@@ -1986,10 +1986,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>select all</source>
         <translation>Alles selektieren</translation>
-    </message>
-    <message>
-        <source>export</source>
-        <translation>exportieren</translation>
     </message>
     <message>
         <source>preferences</source>
@@ -2052,14 +2048,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Neue Toolbar</translation>
     </message>
     <message>
-        <source>save document as ...</source>
-        <translation>Szene speichern als ...</translation>
-    </message>
-    <message>
-        <source>load document ...</source>
-        <translation>Szene laden ...</translation>
-    </message>
-    <message>
         <source>remove unused styles</source>
         <translation>Unbenutzte Styles entfernen</translation>
     </message>
@@ -2114,6 +2102,26 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>LineObject</source>
         <translation>Linie</translation>
+    </message>
+    <message>
+        <source>new</source>
+        <translation>Neu</translation>
+    </message>
+    <message>
+        <source>open ...</source>
+        <translation>Öffnen ...</translation>
+    </message>
+    <message>
+        <source>save as ...</source>
+        <translation>Speichern als ...</translation>
+    </message>
+    <message>
+        <source>save</source>
+        <translation>Speichern</translation>
+    </message>
+    <message>
+        <source>export ...</source>
+        <translation>Exportieren ...</translation>
     </message>
 </context>
 <context>
@@ -2310,16 +2318,16 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Fenster anzeigen</translation>
     </message>
     <message>
-        <source>load recent document</source>
-        <translation>Zuletzt geöffnete Dokumente</translation>
-    </message>
-    <message>
         <source>path</source>
         <translation>Pfad</translation>
     </message>
     <message>
         <source>tool</source>
         <translation>Werkzeug</translation>
+    </message>
+    <message>
+        <source>open recent</source>
+        <translation>Zuletzt geöffnet</translation>
     </message>
 </context>
 <context>
@@ -2368,12 +2376,8 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Szene speichern als ...</translation>
     </message>
     <message>
-        <source>Load scene ...</source>
-        <translation>Szene laden ...</translation>
-    </message>
-    <message>
-        <source>Loading scene from &apos;%1&apos; failed.</source>
-        <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
+        <source>Open scene ...</source>
+        <translation>Szene öffnen ...</translation>
     </message>
     <message>
         <source>Create %1</source>
@@ -2386,6 +2390,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Some pending changes will be lost if you don&apos;t save.</source>
         <translation>Einige ungespeicherte Änderungen gehen verloren wenn Sie nicht speichern.</translation>
+    </message>
+    <message>
+        <source>Opening scene from &apos;%1&apos; failed.</source>
+        <translation>Szene von &apos;%1&apos; öffnen war nicht erfolgreich.</translation>
     </message>
 </context>
 <context>
@@ -2422,7 +2430,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>conversion</source>
-        <translation>Konvertieren</translation>
+        <translation>Konvertierung</translation>
     </message>
     <message>
         <source>color</source>
@@ -2725,7 +2733,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>frac</source>
-        <translation>Nachkommaantel</translation>
+        <translation>Nachkommaanteil</translation>
     </message>
     <message>
         <source>ceil</source>
@@ -2733,7 +2741,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>floor</source>
-        <translation>Abrunden</translation>
+        <translation>floor</translation>
     </message>
     <message>
         <source>sign</source>
@@ -2825,7 +2833,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>freq</source>
-        <translation>Freq.</translation>
+        <translation>Frequenz</translation>
     </message>
     <message>
         <source>ratio</source>
@@ -2833,11 +2841,11 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>left ramp</source>
-        <translation>linke Rampe</translation>
+        <translation>Linke Rampe</translation>
     </message>
     <message>
         <source>right ramp</source>
-        <translation>rechte Rampe</translation>
+        <translation>Rechte Rampe</translation>
     </message>
     <message>
         <source>position</source>
@@ -3016,7 +3024,7 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <name>omm::PreferenceDialog</name>
     <message>
         <source>Ui Colors</source>
-        <translation>Ui-Farben</translation>
+        <translation>UI-Farben</translation>
     </message>
     <message>
         <source>Keyindings</source>
@@ -3262,7 +3270,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation>Hintegrund</translation>
+        <translation>Hintergrund</translation>
     </message>
     <message>
         <source>DashDotted</source>
@@ -3451,7 +3459,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>grid-color</source>
-        <translation>Netzfarbe</translation>
+        <translation>Rasterfarbe</translation>
     </message>
     <message>
         <source>port-Option</source>
@@ -3528,7 +3536,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>key selected</source>
-        <translation>Selektierted Schlüsselbild</translation>
+        <translation>Selektiertes Schlüsselbild</translation>
     </message>
     <message>
         <source>TimeLine</source>
@@ -3623,15 +3631,15 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>grid coarse</source>
-        <translation>Grobes Netz</translation>
+        <translation>Grobes Raster</translation>
     </message>
     <message>
         <source>grid fine</source>
-        <translation>Feines Netz</translation>
+        <translation>Feines Raster</translation>
     </message>
     <message>
         <source>grid mid</source>
-        <translation>Mittleres Netz</translation>
+        <translation>Mittleres Raster</translation>
     </message>
 </context>
 <context>
@@ -3678,7 +3686,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>button text</source>
-        <translation>Knop-Text</translation>
+        <translation>Knopf-Text</translation>
     </message>
     <message>
         <source>link visited</source>
