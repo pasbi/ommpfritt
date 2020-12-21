@@ -45,8 +45,8 @@ jobs:
           travis_terminate 1
         fi
       fi
-      if ! build-scrips/check-size_t.sh; then
-        echo "size_t check failed."
+      if ! build-scrips/check-bad-patterns.sh; then
+        echo "Bad pattern detected. Check failed."
         travis_terminate 1
       fi
     before_deploy: skip
