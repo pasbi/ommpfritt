@@ -3,7 +3,6 @@
 #include "cachedgetter.h"
 #include "geometry/point.h"
 #include "objects/object.h"
-#include <QDebug>
 #include <list>
 #include <type_traits>
 

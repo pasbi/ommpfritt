@@ -1,6 +1,5 @@
 #include "managers/objectmanager/tagsitemdelegate.h"
 
-#include <QDebug>
 #include <QMouseEvent>
 #include <QPainter>
 #include <cmath>

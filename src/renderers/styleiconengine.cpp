@@ -1,7 +1,6 @@
 #include "renderers/styleiconengine.h"
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
-#include <QDebug>
 #include <QPainter>
 #include <iostream>
 #include <memory>

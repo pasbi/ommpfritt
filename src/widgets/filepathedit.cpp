@@ -1,5 +1,4 @@
 #include "widgets/filepathedit.h"
-#include <QDebug>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>

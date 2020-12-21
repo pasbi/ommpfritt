@@ -7,7 +7,6 @@
 #include "properties/optionproperty.h"
 #include "scene/history/historymodel.h"
 #include "scene/scene.h"
-#include <QDebug>
 #include <QEvent>
 #include <QMouseEvent>
 #include <QPainter>

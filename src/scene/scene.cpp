@@ -1,6 +1,5 @@
 #include "scene.h"
 #include <QApplication>
-#include <QDebug>
 #include <QMessageBox>
 #include <QTimer>
 #include <cassert>

@@ -5,7 +5,7 @@
 #include "ui_generalpage.h"
 #include <QDirIterator>
 #include <QMessageBox>
-#include <qsettings.h>
+#include <QSettings>
 
 namespace
 {
