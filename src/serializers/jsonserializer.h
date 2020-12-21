@@ -16,7 +16,7 @@ public:
   JSONSerializer& operator=(const JSONSerializer&) = delete;
   JSONSerializer& operator=(JSONSerializer&&) = delete;
 
-  void start_array(size_t size, const Pointer& pointer) override;
+  void start_array(std::size_t size, const Pointer& pointer) override;
   void end_array() override;
   void set_value(int value, const Pointer& pointer) override;
   void set_value(bool value, const Pointer& pointer) override;
@@ -41,7 +41,7 @@ public:
   explicit JSONDeserializer(std::istream& istream);
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  size_t array_size(const Pointer& pointer) override;
+  std::size_t array_size(const Pointer& pointer) override;
   int get_int(const Pointer& pointer) override;
   double get_double(const Pointer& pointer) override;
   bool get_bool(const Pointer& pointer) override;

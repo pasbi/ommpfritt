@@ -34,7 +34,7 @@ void TagsItemDelegate::paint(QPainter* painter,
 
   const auto& object = m_view.model()->item_at(index);
 
-  for (size_t i = 0; i < object.tags.size(); ++i) {
+  for (std::size_t i = 0; i < object.tags.size(); ++i) {
     const QRect tag_rect = TagsItemDelegate::tag_rect(pos, i);
     auto& tag = object.tags.item(i);
     painter->setClipRect(tag_rect);

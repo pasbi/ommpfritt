@@ -48,10 +48,10 @@ void OptionProperty::serialize(AbstractSerializer& serializer, const Pointer& ro
 void OptionProperty::set(const variant_type& variant)
 {
   if (std::holds_alternative<int>(variant)) {
-    TypedProperty<size_t>::set(std::get<int>(variant));
+    TypedProperty<std::size_t>::set(std::get<int>(variant));
   } else {
     assert(std::holds_alternative<std::size_t>(variant));
-    TypedProperty<size_t>::set(variant);
+    TypedProperty<std::size_t>::set(variant);
   }
 }
 

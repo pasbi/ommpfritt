@@ -32,7 +32,7 @@ template<typename T> std::vector<T*> List<T>::ordered_items() const
   return ::transform<T*>(m_items, [](const auto& item) { return item.get(); });
 }
 
-template<typename T> T& List<T>::item(size_t i) const
+template<typename T> T& List<T>::item(std::size_t i) const
 {
   return *m_items[i].get();
 }
@@ -54,7 +54,7 @@ template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
   return extracted_item;
 }
 
-template<typename T> size_t List<T>::position(const T& item) const
+template<typename T> std::size_t List<T>::position(const T& item) const
 {
   const auto it = std::find_if(m_items.begin(), m_items.end(), [&item](const auto& uptr) {
     return uptr.get() == &item;
@@ -65,7 +65,7 @@ template<typename T> size_t List<T>::position(const T& item) const
   return static_cast<std::size_t>(i);
 }
 
-template<typename T> size_t List<T>::insert_position(const T* predecessor) const
+template<typename T> std::size_t List<T>::insert_position(const T* predecessor) const
 {
   if (predecessor == nullptr) {
     return 0;
@@ -107,7 +107,7 @@ std::vector<std::unique_ptr<T>> List<T>::set(std::vector<std::unique_ptr<T>> ite
   return old_items;
 }
 
-template<typename T> size_t List<T>::size() const
+template<typename T> std::size_t List<T>::size() const
 {
   return m_items.size();
 }

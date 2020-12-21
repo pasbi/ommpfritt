@@ -40,7 +40,7 @@ public:
   }
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  virtual void start_array(size_t size, const Pointer& pointer) = 0;
+  virtual void start_array(std::size_t size, const Pointer& pointer) = 0;
   virtual void end_array() = 0;
   virtual void set_value(bool value, const Pointer& pointer) = 0;
   virtual void set_value(int value, const Pointer& pointer) = 0;
@@ -118,7 +118,7 @@ public:
   void add_references(const std::set<AbstractPropertyOwner*>& existing_references);
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  virtual size_t array_size(const Pointer& pointer) = 0;
+  virtual std::size_t array_size(const Pointer& pointer) = 0;
   virtual bool get_bool(const Pointer& pointer) = 0;
   virtual int get_int(const Pointer& pointer) = 0;
   virtual double get_double(const Pointer& pointer) = 0;

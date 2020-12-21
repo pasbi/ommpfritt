@@ -32,7 +32,7 @@ QPainterPath to_path(const std::vector<Point>& points, bool is_closed)
   if (points.size() > 1) {
     path.moveTo(to_qpoint(points.front().position));
 
-    for (size_t i = 1; i < points.size(); ++i) {
+    for (std::size_t i = 1; i < points.size(); ++i) {
       path.cubicTo(to_qpoint(points.at(i - 1).right_position()),
                    to_qpoint(points.at(i).left_position()),
                    to_qpoint(points.at(i).position));

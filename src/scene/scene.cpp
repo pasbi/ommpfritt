@@ -208,7 +208,7 @@ bool Scene::save_as(const QString& filename)
   object_tree().root().serialize(serializer, ROOT_POINTER);
 
   serializer.start_array(styles().items().size(), Serializable::make_pointer(STYLES_POINTER));
-  for (size_t i = 0; i < styles().items().size(); ++i) {
+  for (std::size_t i = 0; i < styles().items().size(); ++i) {
     styles().item(i).serialize(serializer, Serializable::make_pointer(STYLES_POINTER, i));
   }
   serializer.end_array();
@@ -248,7 +248,7 @@ bool Scene::load_from(const QString& filename)
     const auto n_styles = deserializer.array_size(Serializable::make_pointer(STYLES_POINTER));
     std::vector<std::unique_ptr<Style>> styles;
     styles.reserve(n_styles);
-    for (size_t i = 0; i < n_styles; ++i) {
+    for (std::size_t i = 0; i < n_styles; ++i) {
       const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
       auto style = std::make_unique<Style>(this);
       style->deserialize(deserializer, style_pointer);

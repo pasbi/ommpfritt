@@ -104,7 +104,7 @@ JSONSerializer::~JSONSerializer()
 #endif
 }
 
-void JSONSerializer::start_array([[maybe_unused]] size_t size, const Pointer& pointer)
+void JSONSerializer::start_array([[maybe_unused]] std::size_t size, const Pointer& pointer)
 {
   m_store[ptr(pointer)] = nlohmann::json::value_type::array();
 }
@@ -190,7 +190,7 @@ JSONDeserializer::JSONDeserializer(std::istream& istream) : AbstractDeserializer
   }
 }
 
-size_t JSONDeserializer::array_size(const Pointer& pointer)
+std::size_t JSONDeserializer::array_size(const Pointer& pointer)
 {
   const auto array = m_store[ptr(pointer)];
   if (array.is_array() || array.is_null()) {

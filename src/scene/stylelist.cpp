@@ -22,7 +22,7 @@ StyleList::StyleList(Scene& scene)
 
 void StyleList::insert(ListOwningContext<Style>& context)
 {
-  const size_t row = this->insert_position(context.predecessor);
+  const std::size_t row = this->insert_position(context.predecessor);
   beginInsertRows(QModelIndex(), row, row);
   List::insert(context);
   endInsertRows();

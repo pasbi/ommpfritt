@@ -29,7 +29,7 @@ using variant_type = std::variant<bool,
                                   int,
                                   AbstractPropertyOwner*,
                                   QString,
-                                  size_t,
+                                  std::size_t,
                                   TriggerPropertyDummyValueType,
                                   Vec2f,
                                   Vec2i,
@@ -51,7 +51,7 @@ template<typename T> constexpr std::string_view variant_type_name() noexcept
     return QT_TRANSLATE_NOOP("DataType", "Reference");
   } else if constexpr (std::is_same_v<T, QString>) {
     return QT_TRANSLATE_NOOP("DataType", "String");
-  } else if constexpr (std::is_same_v<T, size_t>) {
+  } else if constexpr (std::is_same_v<T, std::size_t>) {
     return QT_TRANSLATE_NOOP("DataType", "Option");
   } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
     return QT_TRANSLATE_NOOP("DataType", "Trigger");

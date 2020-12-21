@@ -20,16 +20,16 @@ public:
   TreeElement& operator=(const TreeElement& other) = delete;
   [[nodiscard]] bool is_root() const;
   [[nodiscard]] T& tree_parent() const;
-  virtual T& adopt(std::unique_ptr<T> object, size_t pos);
+  virtual T& adopt(std::unique_ptr<T> object, std::size_t pos);
   T& adopt(std::unique_ptr<T> object);
   virtual std::unique_ptr<T> repudiate(T& object);
   [[nodiscard]] std::vector<T*> tree_children() const;
-  [[nodiscard]] T& tree_child(size_t i) const;
-  [[nodiscard]] size_t n_children() const;
+  [[nodiscard]] T& tree_child(std::size_t i) const;
+  [[nodiscard]] std::size_t n_children() const;
   [[nodiscard]] bool is_ancestor_of(const T& subject) const;
   void reset_parent(T& new_parent);
   [[nodiscard]] std::set<T*> all_descendants() const;
-  [[nodiscard]] size_t position() const;
+  [[nodiscard]] std::size_t position() const;
 
   static void remove_internal_children(std::set<T*>& items);
   static T* lowest_common_ancestor(T* a, T* b);
