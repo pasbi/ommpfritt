@@ -5,6 +5,7 @@
 #include "splinetype.h"
 #include <QString>
 #include <variant>
+#include "logging.h"
 
 namespace omm
 {
@@ -107,7 +108,7 @@ template<typename T> double get_channel_value(const T& v, [[maybe_unused]] std::
   } else if constexpr (std::is_same_v<T, bool>) {
     return v ? 1.0 : 0.0;
   } else {
-    qFatal("tried get numeric value from non-numeric type.");
+    LFATAL("tried get numeric value from non-numeric type.");
     Q_UNREACHABLE();
     return 0.0;
   }
@@ -134,7 +135,7 @@ void set_channel_value(T& v, [[maybe_unused]] std::size_t channel, [[maybe_unuse
     static constexpr double BOOL_THRESHOLD = 0.5;
     v = std::abs(value) > BOOL_THRESHOLD;
   } else {
-    qFatal("tried set numeric value of non-numeric type.");
+    LFATAL("tried set numeric value of non-numeric type.");
     Q_UNREACHABLE();
   }
 }

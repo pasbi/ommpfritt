@@ -51,7 +51,7 @@ void TagsItemDelegate::paint(QPainter* painter,
       case QItemSelectionModel::Deselect:
         return selected && !tmp_selected;
       default:
-        qFatal("Unexpected selection command");
+        LFATAL("Unexpected selection command");
         Q_UNREACHABLE();
         return false;
       };

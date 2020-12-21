@@ -227,7 +227,7 @@ bool Application::can_close()
     case QMessageBox::Save:
       return save();
     default:
-      qCritical() << "Unexpected response code: " << decision;
+      LERROR << "Unexpected response code: " << decision;
       return false;
     }
   } else {
