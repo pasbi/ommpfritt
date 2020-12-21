@@ -45,6 +45,10 @@ jobs:
           travis_terminate 1
         fi
       fi
+      if ! build-scrips/check-size_t.sh; then
+        echo "size_t check failed."
+        travis_terminate 1
+      fi
     before_deploy: skip
     deploy:
       provider: script
