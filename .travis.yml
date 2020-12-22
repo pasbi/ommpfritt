@@ -45,7 +45,7 @@ jobs:
           travis_terminate 1
         fi
       fi
-      if ! build-scrips/check-bad-patterns.sh; then
+      if ! build-scripts/check-bad-patterns.sh; then
         echo "Bad pattern detected. Check failed."
         travis_terminate 1
       fi
