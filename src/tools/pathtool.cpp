@@ -102,7 +102,7 @@ void PathTool::end()
 
 void PathTool::reset()
 {
-  auto paths = type_cast<Path*>(scene()->item_selection<Object>());
+  auto paths = type_casts<Path*>(scene()->item_selection<Object>());
   if (paths.size() == 1) {
     m_path = *paths.begin();
   } else {

@@ -30,7 +30,7 @@ class NamedColors;
 class ColorProperty;
 class Node;
 
-template<typename T> struct SceneStructure;
+template<typename> struct SceneStructure;
 template<> struct SceneStructure<Object> {
   using type = ObjectTree;
 };
@@ -97,7 +97,7 @@ public:
   {
     static const auto type_matches = [](const auto* v) { return v->type() == ItemT::TYPE; };
     const auto items = item_selection<typename ItemT::factory_item_type>();
-    return type_cast<ItemT*>(::filter_if(items, type_matches));
+    return type_casts<ItemT*>(::filter_if(items, type_matches));
   }
 
   void emit_selection_changed_signal();

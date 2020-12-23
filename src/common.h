@@ -297,34 +297,34 @@ void print_variant_value(std::ostream& ostream, const variant_type& variant)
   }
 }
 
-template<typename T, typename S> T type_cast(S* s)
+template<typename T, typename S> decltype(auto) type_cast(S&& s)
 {
-  const auto type = []() {
-    using DecayedT = std::decay_t<std::remove_pointer_t<T>>;
-    if constexpr (std::is_same_v<decltype(DecayedT::TYPE), QString()>) {
-      return DecayedT::TYPE();
+  if constexpr (std::is_pointer_v<std::decay_t<T>>) {
+    const auto type = []() {
+      using DecayedT = std::decay_t<std::remove_pointer_t<T>>;
+      if constexpr (std::is_same_v<decltype(DecayedT::TYPE), QString()>) {
+        return DecayedT::TYPE();
+      } else {
+        return DecayedT::TYPE;
+      }
+    }();
+    if (s != nullptr && s->type() == type) {
+      return static_cast<T>(s);
     } else {
-      return DecayedT::TYPE;
+      return static_cast<T>(nullptr);
     }
-  }();
-  if (s != nullptr && s->type() == type) {
-    return static_cast<T>(s);
   } else {
-    return nullptr;
+    static_assert(!std::is_pointer_v<T>);
+    auto* t = type_cast<std::add_pointer_t<T>>(&s);
+    if (t == nullptr) {
+      throw std::bad_cast();
+    }
+    return *t;
   }
-}
-
-template<typename T, typename S> T& type_cast(S& s)
-{
-  auto* t = type_cast<std::add_pointer_t<T>>(&s);
-  if (t == nullptr) {
-    throw std::bad_cast();
-  }
-  return *t;
 }
 
 template<typename T, template<typename...> class Container, typename S>
-Container<T> type_cast(const Container<S>& apos)
+Container<T> type_casts(const Container<S>& apos)
 {
   const auto casted = ::transform<T>(apos, [](S apo) { return type_cast<T>(apo); });
   return ::filter_if(casted, ::is_not_null);
