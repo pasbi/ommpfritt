@@ -2,6 +2,13 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name></name>
+    <message>
+        <source>Switch item has no mode selector.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AboutDialog</name>
     <message>
         <source>About</source>
@@ -1517,6 +1524,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Normale</translation>
     </message>
     <message>
+        <source>No such item: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique, all matching objects are rendered. Perl-like regular expressions are supported.</source>
         <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Name muss nicht unbedingt eindeutig sein, alle passenden Objekte werden gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
     </message>
@@ -2886,6 +2897,16 @@ Dies kann nicht rückgängig gemacht werden.</translation>
         <source>Save Layout</source>
         <translation>Layout speichern</translation>
     </message>
+    <message>
+        <source>The configuration file %1 is corrupted.
+Delete the file and restart the application.
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Corrupted config file</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::MathNode</name>
@@ -3154,6 +3175,10 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>separator</source>
         <translation>Trenner</translation>
+    </message>
+    <message>
+        <source>%1 is no valid command name.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

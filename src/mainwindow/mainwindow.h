@@ -66,6 +66,8 @@ private:
   void update_recent_scenes_menu();
   [[nodiscard]] static QString get_last_layout_filename();
 
+  void handle_corrupted_config_file(const QSettings& s, const QString& what);
+
 private Q_SLOTS:
   void update_window_title();
 };
