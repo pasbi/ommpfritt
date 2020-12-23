@@ -2,6 +2,13 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es">
 <context>
+    <name></name>
+    <message>
+        <source>Switch item has no mode selector.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AboutDialog</name>
     <message>
         <source>About</source>
@@ -1536,6 +1543,10 @@ Borrar la selección de todos modos?</translation>
         <source>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
         <translation>Si está activado esta opción, el objeto de destino (ver la opción &apos;object-path&apos; o &apos;object-name&apos;) tiene que ser único, es decir, tiene que existir solo un objeto que encaje. La aplicación termine si este requerimiento esté violado.</translation>
     </message>
+    <message>
+        <source>No such item: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2886,6 +2897,16 @@ Esto no se puede revertir.</translation>
         <source>Save Layout</source>
         <translation>Guardar Layout</translation>
     </message>
+    <message>
+        <source>The configuration file %1 is corrupted.
+Delete the file and restart the application.
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Corrupted config file</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::MathNode</name>
@@ -3154,6 +3175,10 @@ Quieres convertirlos en colores regulares?</numerusform>
     <message>
         <source>separator</source>
         <translation>Separador</translation>
+    </message>
+    <message>
+        <source>%1 is no valid command name.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

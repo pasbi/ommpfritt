@@ -1,5 +1,6 @@
-function(generate_translations translations_qrc ts_dir languages prefixes cfg_files)
+function(generate_translations translations_qrc ts_dir languages cfg_files)
     set(qm_dir "${CMAKE_BINARY_DIR}/qm/")
+    set(qt_translator_prefixes "qt" "qtbase" "qt_help" "qtlocation")
 
     file(MAKE_DIRECTORY ${qm_dir})
     list(TRANSFORM languages APPEND ".ts" OUTPUT_VARIABLE ts_files)
@@ -41,7 +42,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
         COMMAND_EXPAND_LISTS
         COMMAND Python3::Interpreter "${script}"
           --languages "${languages}"
-          --prefixes "${prefixes}"
+          --prefixes "omm" "${qt_translator_prefixes}"
           --qrc "${translations_qrc}"
         COMMENT "generate translations.qrc"
     )
@@ -53,7 +54,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
     foreach (lang IN LISTS languages)
         SET(qm "${qm_dir}/omm_${lang}.qm")
         SET(ts "${ts_dir}/omm_${lang}.ts")
-        set(qt_qm_files "qt" "qtbase" "qt_help" "qtlocation")
+        set(qt_qm_files "${qt_translator_prefixes}")
         list(TRANSFORM qt_qm_files APPEND "_${lang}.qm")
         list(TRANSFORM qt_qm_files PREPEND "${qm_dir}/" OUTPUT_VARIABLE dst_qt_qm_files)
         list(TRANSFORM qt_qm_files PREPEND "${QT_QM_PATH}/" OUTPUT_VARIABLE src_qt_qm_files)
