@@ -287,16 +287,16 @@ QString ExportDialog::filename(QString pattern, int frame_number)
 {
   const int first_occurence = pattern.indexOf(frame_number_placeholder);
   if (first_occurence < 0) {
-    qWarning() << "Frame number placeholder '" << frame_number_placeholder
-               << "' does not occur in pattern '" << pattern << "'.";
+    LWARNING << "Frame number placeholder '" << frame_number_placeholder
+             << "' does not occur in pattern '" << pattern << "'.";
     return pattern;
   }
   const int last_occurence = pattern.lastIndexOf(frame_number_placeholder);
   const int n = last_occurence - first_occurence + 1;
   assert(n > 0);
   if (pattern.mid(first_occurence, n) != QString(frame_number_placeholder).repeated(n)) {
-    qWarning() << "Pattern '" << pattern << "' is illegal: non-contiguous sequence of '"
-               << frame_number_placeholder << "'.";
+    LWARNING << "Pattern '" << pattern << "' is illegal: non-contiguous sequence of '"
+             << frame_number_placeholder << "'.";
   }
   static constexpr int base = 10;
   pattern.replace(first_occurence, n, QString("%1").arg(frame_number, n, base, QChar('0')));

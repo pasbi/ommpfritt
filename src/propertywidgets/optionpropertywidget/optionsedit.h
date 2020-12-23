@@ -27,7 +27,7 @@ protected:
 
 class OptionsEdit
     : public PrefixComboBox
-    , public MultiValueEdit<size_t>
+    , public MultiValueEdit<std::size_t>
 {
 public:
   explicit OptionsEdit(QWidget* parent = nullptr);

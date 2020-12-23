@@ -46,7 +46,7 @@ make_contextes(const ItemModelAdapterT& adapter,
   }
 
   item_type& new_parent = adapter.item_at(parent);
-  const size_t pos = row < 0 ? new_parent.n_children() : static_cast<std::size_t>(row);
+  const std::size_t pos = row < 0 ? new_parent.n_children() : static_cast<std::size_t>(row);
   omm::Object::remove_internal_children(items);
   const auto sorted_items = ContextT::item_type::sort(items);
   contextes.reserve(items.size());
@@ -79,7 +79,7 @@ make_contextes(const ItemModelAdapterT& adapter,
 
   std::vector<ContextT> contextes;
   contextes.reserve(items.size());
-  const size_t pos = row < 0 ? adapter.rowCount() : row;
+  const std::size_t pos = row < 0 ? adapter.rowCount() : row;
   const item_type* predecessor
       = (pos == 0) ? nullptr : &adapter.item_at(adapter.index(pos - 1, 0, parent));
   for (item_type* subject : items) {

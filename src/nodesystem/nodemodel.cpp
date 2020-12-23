@@ -132,7 +132,7 @@ void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializab
   {
     QSignalBlocker blocker(this);
     const auto n = deserializer.array_size(Serializable::make_pointer(ptr, NODES_POINTER));
-    for (size_t i = 0; i < n; ++i) {
+    for (std::size_t i = 0; i < n; ++i) {
       const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);
       const auto type = deserializer.get_string(make_pointer(node_ptr, TYPE_POINTER));
       if (type == FragmentNode::TYPE) {

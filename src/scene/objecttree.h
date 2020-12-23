@@ -25,9 +25,9 @@ public:
   Object& root() const;
   bool contains(const Object& t) const;
 
-  size_t insert_position(const Object* predecessor) const override;
+  std::size_t insert_position(const Object* predecessor) const override;
   std::set<Object*> items() const override;
-  size_t position(const Object& item) const override;
+  std::size_t position(const Object& item) const override;
   const Object* predecessor(const Object& sibling) const override;
   using Structure<Object>::predecessor;
   std::unique_ptr<Object> remove(Object& t) override;

@@ -71,7 +71,7 @@ PYBIND11_EMBEDDED_MODULE(omm, m)
 
 PythonEngine::PythonEngine()
 {
-  static size_t count = 0;
+  static std::size_t count = 0;
   if (count > 0) {
     LFATAL("There must be not more than one PythonEngine.");
   }

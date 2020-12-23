@@ -41,7 +41,7 @@ void ObjectDelegate::paint(QPainter* painter,
       case QItemSelectionModel::Deselect:
         return is_selected && !is_tmp_selected;
       default:
-        qFatal("Unexpected selection flag");
+        LFATAL("Unexpected selection flag");
         Q_UNREACHABLE();
         return false;
       }

@@ -54,7 +54,7 @@ Geom::PathVector Ellipse::paths() const
   const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
   std::vector<Point> points;
   points.reserve(n);
-  for (size_t i = 0; i < n; ++i) {
+  for (std::size_t i = 0; i < n; ++i) {
     const double theta = i * 2.0 / n * M_PI;
     const double x = std::cos(theta) * r.x;
     const double y = std::sin(theta) * r.y;

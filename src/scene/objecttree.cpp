@@ -185,7 +185,7 @@ std::set<Object*> ObjectTree::items() const
   return m_item_cache;
 }
 
-size_t ObjectTree::position(const Object& item) const
+std::size_t ObjectTree::position(const Object& item) const
 {
   return item.position();
 }
@@ -414,7 +414,7 @@ std::size_t ObjectTree::max_number_of_tags_on_object() const
   }
 }
 
-size_t ObjectTree::insert_position(const Object* predecessor) const
+std::size_t ObjectTree::insert_position(const Object* predecessor) const
 {
   if (predecessor == nullptr) {
     return 0;

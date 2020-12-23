@@ -4,8 +4,7 @@
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 #include "properties/stringproperty.h"
-#include <QDebug>
-#include <properties/integerproperty.h>
+#include "properties/integerproperty.h"
 
 namespace omm
 {
@@ -64,7 +63,7 @@ QTextOption TextOptionProperties::get_option() const
     case 3:
       return Qt::AlignJustify;
     default:
-      qFatal("Unexpected case.");
+      LFATAL("Unexpected case.");
       return Qt::AlignCenter;
     }
   }();
@@ -79,7 +78,7 @@ QTextOption TextOptionProperties::get_option() const
     case 3:
       return Qt::AlignBaseline;  // is never reached (see @code make_properties)
     default:
-      qFatal("Unexpected case.");
+      LFATAL("Unexpected case.");
       return Qt::AlignCenter;
     }
   }();
@@ -102,7 +101,7 @@ QTextOption TextOptionProperties::get_option() const
     case 3:
       return QTextOption::WrapAtWordBoundaryOrAnywhere;
     default:
-      qFatal("Unexpected case.");
+      LFATAL("Unexpected case.");
       return QTextOption::NoWrap;
     }
   }();

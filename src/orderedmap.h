@@ -107,7 +107,7 @@ public:
   }
 #endif
 
-  [[nodiscard]] size_t size() const
+  [[nodiscard]] std::size_t size() const
   {
     return m_keys.size();
   }

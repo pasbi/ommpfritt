@@ -64,7 +64,7 @@ std::vector<double> linspace(double left, double right, double step)
   left = left - mod(left);
   right = right - mod(right) + step;
 
-  const size_t n = (right - left) / step;
+  const std::size_t n = (right - left) / step;
   std::vector<double> linspace;
   linspace.reserve(n + 1);
   for (std::size_t i = 0; i < n + 1; ++i) {

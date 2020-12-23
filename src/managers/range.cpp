@@ -3,7 +3,7 @@
 #include <cassert>
 #include <cmath>
 #include <list>
-#include <logging.h>
+#include "logging.h"
 
 namespace omm
 {
