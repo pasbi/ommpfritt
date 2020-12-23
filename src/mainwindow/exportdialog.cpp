@@ -72,6 +72,14 @@ public:
   }
 };
 
+void update_edit(omm::IntNumericEdit& primary, omm::IntNumericEdit& secondary, double aspect_ratio)
+{
+  const int p_value = primary.value();
+  const int s_value = static_cast<int>(p_value * aspect_ratio);
+  QSignalBlocker blocker(secondary);
+  secondary.set_value(s_value);
+}
+
 }  // namespace
 
 namespace omm
@@ -82,86 +90,15 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
       m_validator(new FilenamePatternValidator())
 {
   m_ui->setupUi(this);
-
-  QObject::connect(m_ui->cb_view, &ReferenceLineEdit::value_changed, [this]() {
-    m_ui->ne_resolution_y->set_value(
-        int(m_ui->ne_resolution_x->value() / compute_aspect_ratio(view())));
-    update_preview();
-  });
-
-  m_ui->cb_view->set_filter(PropertyFilter({Kind::Object}, {{Flag::IsView}}));
-
-  m_ui->cb_view->set_null_label(tr("Viewport"));
-  m_ui->cb_view->set_scene(scene);
-
-  connect(m_ui->pb_export, &QPushButton::clicked, this, &ExportDialog::save_as);
-
-  const auto update_resolution_y_edit = [this]() {
-    const auto ar = compute_aspect_ratio(view());
-    const int x = m_ui->ne_resolution_x->value();
-    const int y = static_cast<int>(x / ar);
-    QSignalBlocker blocker(m_ui->ne_resolution_y);
-    m_ui->ne_resolution_y->set_value(y);
-  };
-  const auto update_resolution_x_edit = [this]() {
-    const auto ar = compute_aspect_ratio(view());
-    const int y = m_ui->ne_resolution_y->value();
-    const int x = static_cast<int>(y * ar);
-    QSignalBlocker blocker(m_ui->ne_resolution_x);
-    m_ui->ne_resolution_x->set_value(x);
-  };
-  connect(m_ui->ne_resolution_y, &AbstractNumericEdit::value_changed, update_resolution_x_edit);
-  connect(m_ui->ne_resolution_x, &AbstractNumericEdit::value_changed, update_resolution_y_edit);
-
+  set_default_values(scene);
+  connect_gui();
+  update_y_edit();
   update_preview();
-
-  const int default_resolution_x = 1000;
-  m_ui->ne_resolution_x->set_value(default_resolution_x);
-  update_resolution_y_edit();
-
-  QSettings settings;
-  m_ui->cb_format->setCurrentIndex(settings.value(FORMAT_SETTINGS_KEY, 0).toInt());
   update_active_view();
-
-  static constexpr double SCALING_DEFAULT = 100.0;
-  static constexpr double SCALING_STEP = 0.01;
-  m_ui->ne_scaling->set_value(SCALING_DEFAULT);
-  m_ui->ne_scaling->set_step(SCALING_STEP);
-
-  m_ui->le_pattern->setText(scene.animator().filename_pattern);
-  m_ui->cb_overwrite->setChecked(scene.animator().overwrite_file);
-  m_ui->le_pattern->setValidator(m_validator.get());
-
-  connect(m_ui->le_pattern,
-          &QLineEdit::textChanged,
-          this,
-          &ExportDialog::update_pattern_edit_background);
   update_pattern_edit_background();
-  if (!m_ui->le_pattern->hasAcceptableInput()) {
-    m_ui->le_pattern->setText(tr("frame_%%%%.png"));
-  }
-
-  connect(m_ui->pb_reset_end, &QPushButton::clicked, this, &ExportDialog::reset_end_frame);
-  connect(m_ui->pb_reset_start, &QPushButton::clicked, this, &ExportDialog::reset_start_frame);
   reset_start_frame();
   reset_end_frame();
-
-  connect(m_ui->sb_start,
-          qOverload<int>(&QSpinBox::valueChanged),
-          this,
-          &ExportDialog::set_minimum_end);
-  connect(m_ui->sb_end,
-          qOverload<int>(&QSpinBox::valueChanged),
-          this,
-          &ExportDialog::set_maximum_start);
-  set_maximum_start(m_ui->sb_end->value());
-  set_minimum_end(m_ui->sb_start->value());
-
-  m_ui->pb_reset_end->setIcon(QIcon(":/icons/revert.png"));
-  m_ui->pb_reset_start->setIcon(QIcon(":/icons/revert.png"));
-  Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset_end);
-  Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset_start);
-  connect(m_ui->pb_start, &QPushButton::clicked, this, &ExportDialog::start_export_animation);
+  restore_settings();
 }
 
 ExportDialog::~ExportDialog() = default;
@@ -320,6 +257,71 @@ void ExportDialog::save_settings()
   settings.setValue(FORMAT_SETTINGS_KEY, m_ui->cb_format->currentIndex());
 }
 
+void ExportDialog::restore_settings()
+{
+  QSettings settings;
+  m_ui->cb_format->setCurrentIndex(settings.value(FORMAT_SETTINGS_KEY, 0).toInt());
+}
+
+void ExportDialog::set_default_values(Scene& scene)
+{
+  constexpr  int default_resolution_x = 1000;
+  m_ui->ne_resolution_x->set_value(default_resolution_x);
+
+  m_ui->cb_view->set_filter(PropertyFilter({Kind::Object}, {{Flag::IsView}}));
+  m_ui->cb_view->set_null_label(tr("Viewport"));
+  m_ui->cb_view->set_scene(scene);
+
+  static constexpr double SCALING_DEFAULT = 100.0;
+  static constexpr double SCALING_STEP = 0.01;
+  m_ui->ne_scaling->set_value(SCALING_DEFAULT);
+  m_ui->ne_scaling->set_step(SCALING_STEP);
+
+  m_ui->le_pattern->setText(scene.animator().filename_pattern);
+  m_ui->cb_overwrite->setChecked(scene.animator().overwrite_file);
+  m_ui->le_pattern->setValidator(m_validator.get());
+
+  if (!m_ui->le_pattern->hasAcceptableInput()) {
+    m_ui->le_pattern->setText(tr("frame_%%%%.png"));
+  }
+  this->set_maximum_start(m_ui->sb_end->value());
+  this->set_minimum_end(m_ui->sb_start->value());
+
+  for (auto&& pb : {m_ui->pb_reset_end, m_ui->pb_reset_start}) {
+    pb->setIcon(QIcon(":/icons/revert.png"));
+    Application::instance().register_auto_invert_icon_button(*pb);
+  }
+}
+
+void ExportDialog::connect_gui()
+{
+  connect(m_ui->pb_export, &QPushButton::clicked, this, &ExportDialog::save_as);
+  QObject::connect(m_ui->cb_view, &ReferenceLineEdit::value_changed, [this]() {
+    update_y_edit();
+    update_preview();
+  });
+
+  const auto update_x_edit = &ExportDialog::update_x_edit;
+  QObject::connect(m_ui->ne_resolution_y, &IntNumericEdit::value_changed, this, update_x_edit);
+
+  const auto update_y_edit = &ExportDialog::update_y_edit;
+  QObject::connect(m_ui->ne_resolution_x, &IntNumericEdit::value_changed, this, update_y_edit);
+
+  const auto update_pattern_edit_background = &ExportDialog::update_pattern_edit_background;
+  connect(m_ui->le_pattern, &QLineEdit::textChanged, this, update_pattern_edit_background);
+
+  connect(m_ui->pb_reset_end, &QPushButton::clicked, this, &ExportDialog::reset_end_frame);
+  connect(m_ui->pb_reset_start, &QPushButton::clicked, this, &ExportDialog::reset_start_frame);
+
+  const auto set_minimum_end = &ExportDialog::set_minimum_end;
+  connect(m_ui->sb_start, qOverload<int>(&QSpinBox::valueChanged), this, set_minimum_end);
+
+  const auto set_maximum_start = &ExportDialog::set_maximum_start;
+  connect(m_ui->sb_end, qOverload<int>(&QSpinBox::valueChanged), this, set_maximum_start);
+
+  connect(m_ui->pb_start, &QPushButton::clicked, this, &ExportDialog::start_export_animation);
+}
+
 void ExportDialog::update_pattern_edit_background()
 {
   QPalette palette = m_ui->le_pattern->palette();
@@ -385,6 +387,16 @@ void ExportDialog::start_export_animation()
       }
     }
   }
+}
+
+void ExportDialog::update_x_edit()
+{
+  update_edit(*m_ui->ne_resolution_y, *m_ui->ne_resolution_x, compute_aspect_ratio(view()));
+}
+
+void ExportDialog::update_y_edit()
+{
+  update_edit(*m_ui->ne_resolution_x, *m_ui->ne_resolution_y, 1.0 / compute_aspect_ratio(view()));
 }
 
 void ExportDialog::save_as()

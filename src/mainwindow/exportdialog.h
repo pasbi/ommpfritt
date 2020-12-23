@@ -58,6 +58,9 @@ private:
   static constexpr auto FORMAT_SETTINGS_KEY = "last_format";
   void update_active_view();
   void save_settings();
+  void restore_settings();
+  void set_default_values(Scene& scene);
+  void connect_gui();
 
 private Q_SLOTS:
   void update_pattern_edit_background();
@@ -66,6 +69,8 @@ private Q_SLOTS:
   void set_maximum_start(int max);
   void set_minimum_end(int min);
   void start_export_animation();
+  void update_y_edit();
+  void update_x_edit();
 };
 
 }  // namespace omm
