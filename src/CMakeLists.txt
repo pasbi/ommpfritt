@@ -18,6 +18,8 @@ target_sources(libommpfritt PRIVATE
   proxychain.h
   splinetype.cpp
   splinetype.h
+  stringinterpolation.cpp
+  stringinterpolation.h
   subcommandlineparser.cpp
   subcommandlineparser.h
   abstractfactory.h
