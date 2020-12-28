@@ -19,6 +19,7 @@ public:
   QFileDialog::Options options{};
   void clear();
   void set_placeholder_text(const QString& text);
+  QLineEdit& line_edit() const;
 
 Q_SIGNALS:
   void path_changed(const QString& path);

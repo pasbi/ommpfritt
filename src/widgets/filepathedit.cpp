@@ -42,6 +42,7 @@ FilePathEdit::FilePathEdit(QWidget* parent) : QWidget(parent)
   });
 
   connect(m_line_edit, &QLineEdit::textChanged, [this](const QString& text) {
+    m_path = text;
     Q_EMIT path_changed(text);
   });
 
@@ -69,6 +70,11 @@ void FilePathEdit::clear()
 void FilePathEdit::set_placeholder_text(const QString& text)
 {
   m_line_edit->setPlaceholderText(text);
+}
+
+QLineEdit& FilePathEdit::line_edit() const
+{
+  return *m_line_edit;
 }
 
 }  // namespace omm
