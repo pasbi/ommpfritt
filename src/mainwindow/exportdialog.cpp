@@ -25,6 +25,8 @@
 namespace
 {
 
+static constexpr auto ALLOW_OVERWRITE_KEY = "allow_overwrite";
+
 template<std::size_t i, typename Ts> std::vector<QString> get(Ts&& vs)
 {
   std::vector<QString> r;
@@ -68,8 +70,6 @@ QString interpolate_filename(const QString& pattern,
       {"frame", frame}
   });
 }
-
-static constexpr auto OVERWRITE_KEY = "overwrite";
 
 }  // namespace
 
@@ -150,9 +150,6 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   update_preview();
   update_active_view();
   update_pattern_edit_background();
-  reset_start_frame();
-  reset_end_frame();
-  restore_settings();
   m_ui->splitter->setSizes({width(), 1});
 }
 
@@ -276,13 +273,40 @@ void ExportDialog::update_active_view()
 void ExportDialog::save_settings()
 {
   QSettings settings;
-  settings.setValue(FORMAT_SETTINGS_KEY, m_ui->cb_format->currentIndex());
+  settings.setValue(ALLOW_OVERWRITE_KEY, m_ui->cb_overwrite->isChecked());
+
+  auto& eo = m_scene.export_options;
+  eo.pattern = m_ui->le_pattern->path();
+  eo.start_frame = m_ui->sb_start->value();
+  eo.end_frame = m_ui->sb_end->value();
+  eo.animated = m_ui->cb_animation->isChecked();
+  eo.view = type_cast<View*>(m_ui->cb_view->value());
+}
+
+void ExportDialog::set_animation_range(int start, int end)
+{
+  m_ui->sb_start->setMaximum(end - 1);
+  m_ui->sb_end->setMinimum(start + 1);
+
+  m_ui->sb_end->setValue(end);
+  m_ui->sb_start->setValue(start);
+}
+
+void ExportDialog::update_frame_range_limits()
+{
+  set_animation_range(m_ui->sb_start->value(), m_ui->sb_end->value());
 }
 
 void ExportDialog::restore_settings()
 {
   QSettings settings;
-  m_ui->cb_format->setCurrentIndex(settings.value(FORMAT_SETTINGS_KEY, 0).toInt());
+  m_ui->cb_overwrite->setChecked(settings.value(ALLOW_OVERWRITE_KEY, false).toBool());
+
+  const auto& eo = m_scene.export_options;
+  m_ui->le_pattern->set_path(eo.pattern);
+  m_ui->cb_animation->setChecked(eo.animated);
+  m_ui->cb_view->set_value(eo.view);
+  set_animation_range(eo.start_frame, eo.end_frame);
 }
 
 void ExportDialog::set_default_values()
@@ -290,8 +314,6 @@ void ExportDialog::set_default_values()
   static constexpr int default_resolution_x = 1000;
   static constexpr double SCALING_DEFAULT = 100.0;
   static constexpr double SCALING_STEP = 0.01;
-
-  QSettings settings;
 
   m_ui->ne_resolution_x->set_value(default_resolution_x);
 
@@ -313,11 +335,6 @@ For numeric values, placeholder and length options may be specified after a colo
 )");
   m_ui->le_pattern->setToolTip(path_variable_tooltip);
 
-  m_ui->cb_overwrite->setChecked(settings.value(OVERWRITE_KEY).toBool());
-
-  this->set_maximum_start(m_ui->sb_end->value());
-  this->set_minimum_end(m_ui->sb_start->value());
-
   for (auto&& pb : {m_ui->pb_reset_end, m_ui->pb_reset_start}) {
     pb->setIcon(QIcon(":/icons/revert.png"));
     Application::instance().register_auto_invert_icon_button(*pb);
@@ -325,6 +342,7 @@ For numeric values, placeholder and length options may be specified after a colo
 
   m_ui->cb_variable->setModel(m_variable_list_model.get());
   m_ui->cb_ending->setModel(m_raster_format_list_model.get());
+  restore_settings();
 }
 
 void ExportDialog::connect_gui()
@@ -343,11 +361,10 @@ void ExportDialog::connect_gui()
   connect(m_ui->pb_reset_end, &QPushButton::clicked, this, &ExportDialog::reset_end_frame);
   connect(m_ui->pb_reset_start, &QPushButton::clicked, this, &ExportDialog::reset_start_frame);
 
-  const auto set_minimum_end = &ExportDialog::set_minimum_end;
-  connect(m_ui->sb_start, qOverload<int>(&QSpinBox::valueChanged), this, set_minimum_end);
-
-  const auto set_maximum_start = &ExportDialog::set_maximum_start;
-  connect(m_ui->sb_end, qOverload<int>(&QSpinBox::valueChanged), this, set_maximum_start);
+  for (auto&& sb : {m_ui->sb_start, m_ui->sb_end}) {
+    auto&& update_frame_range_limits = &ExportDialog::update_frame_range_limits;
+    connect(sb, qOverload<int>(&QSpinBox::valueChanged), this, update_frame_range_limits);
+  }
 
   connect(m_ui->pb_start, &QPushButton::clicked, this, &ExportDialog::start_export);
   connect(m_ui->splitter, &QSplitter::splitterMoved, this, &ExportDialog::update_preview);
@@ -438,25 +455,15 @@ void ExportDialog::update_ending_cb()
 void ExportDialog::reset_start_frame()
 {
   const int start_frame = m_scene.animator().start();
-  m_ui->sb_end->setValue(std::max(m_ui->sb_end->value(), start_frame + 1));
-  m_ui->sb_start->setValue(start_frame);
+  const int end_frame = std::max(m_ui->sb_end->value(), start_frame + 1);
+  set_animation_range(start_frame, end_frame);
 }
 
 void ExportDialog::reset_end_frame()
 {
   const int end_frame = m_scene.animator().end();
-  m_ui->sb_start->setValue(std::min(m_ui->sb_start->value(), end_frame - 1));
-  m_ui->sb_end->setValue(end_frame);
-}
-
-void ExportDialog::set_maximum_start(int max)
-{
-  m_ui->sb_start->setMaximum(max - 1);
-}
-
-void ExportDialog::set_minimum_end(int min)
-{
-  m_ui->sb_end->setMinimum(min + 1);
+  const int start_frame = std::min(m_ui->sb_start->value(), end_frame - 1);
+  set_animation_range(start_frame, end_frame);
 }
 
 int ExportDialog::render(int frame, bool allow_overwrite)

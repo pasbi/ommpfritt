@@ -14,6 +14,7 @@
 #include "scene/cycleguard.h"
 #include "scene/list.h"
 #include "scene/pointselection.h"
+#include "mainwindow/exportoptions.h"
 
 namespace omm
 {
@@ -224,6 +225,10 @@ public:
     return *m_named_colors;
   }
   [[nodiscard]] std::set<ColorProperty*> find_named_color_holders(const QString& name) const;
+
+  // === ExportOptions ===
+public:
+  ExportOptions export_options;
 };
 
 }  // namespace omm

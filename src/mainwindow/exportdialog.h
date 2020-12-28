@@ -70,20 +70,19 @@ private:
   std::unique_ptr<MapListModel> m_svg_format_list_model;
   std::unique_ptr<MapListModel> m_variable_list_model;
 
-  static constexpr auto FORMAT_SETTINGS_KEY = "last_format";
   void update_active_view();
   void save_settings();
   void restore_settings();
   void set_default_values();
   void connect_gui();
+  void set_animation_range(int start, int end);
+  void update_frame_range_limits();
 
 private Q_SLOTS:
   void update_pattern_edit_background();
   void update_ending_cb();
   void reset_start_frame();
   void reset_end_frame();
-  void set_maximum_start(int max);
-  void set_minimum_end(int min);
   void start_export();
   void update_y_edit();
   void update_x_edit();

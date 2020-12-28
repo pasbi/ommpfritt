@@ -73,6 +73,7 @@ constexpr auto ROOT_POINTER = "root";
 constexpr auto STYLES_POINTER = "styles";
 constexpr auto ANIMATOR_POINTER = "animation";
 constexpr auto NAMED_COLORS_POINTER = "colors";
+constexpr auto EXPORT_OPTIONS_POINTER = "export_options";
 
 auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
@@ -215,6 +216,7 @@ bool Scene::save_as(const QString& filename)
 
   animator().serialize(serializer, ANIMATOR_POINTER);
   named_colors().serialize(serializer, NAMED_COLORS_POINTER);
+  export_options.serialize(serializer, EXPORT_OPTIONS_POINTER);
 
   LINFO << "Saved current scene to '" << filename << "'.";
   history().set_saved_index();
@@ -266,8 +268,8 @@ bool Scene::load_from(const QString& filename)
     object_tree().root().update_recursive();
 
     animator().deserialize(deserializer, ANIMATOR_POINTER);
-
     named_colors().deserialize(deserializer, NAMED_COLORS_POINTER);
+    export_options.deserialize(deserializer, EXPORT_OPTIONS_POINTER);
     deserializer.polish();
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
