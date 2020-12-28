@@ -1,17 +1,18 @@
 #include "mainwindow/exportdialog.h"
-#include "mainwindow/exportoptions.h"
-#include "stringinterpolation.h"
 #include "animation/animator.h"
 #include "geometry/vec2.h"
 #include "mainwindow/application.h"
+#include "mainwindow/exportoptions.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
 #include "objects/view.h"
 #include "renderers/painter.h"
 #include "scene/scene.h"
+#include "stringinterpolation.h"
 #include "ui_exportdialog.h"
 #include "widgets/numericedit.h"
 #include "widgets/referencelineedit.h"
+#include <QAbstractListModel>
 #include <QFileDialog>
 #include <QFrame>
 #include <QLabel>
@@ -21,11 +22,9 @@
 #include <QSettings>
 #include <QVBoxLayout>
 #include <QtSvg/QSvgGenerator>
-#include <QAbstractListModel>
 
 namespace
 {
-
 static constexpr auto ALLOW_OVERWRITE_KEY = "allow_overwrite";
 
 template<std::size_t i, typename Ts> std::vector<QString> get(Ts&& vs)
@@ -65,18 +64,14 @@ QString interpolate_filename(const QString& pattern,
                              const QString& scene_name,
                              int frame)
 {
-  return omm::StringInterpolation(pattern, {
-      {"path", scene_path},
-      {"name", scene_name},
-      {"frame", frame}
-  });
+  return omm::StringInterpolation(pattern,
+                                  {{"path", scene_path}, {"name", scene_name}, {"frame", frame}});
 }
 
 }  // namespace
 
 namespace omm
 {
-
 class FilenamePatternValidator : public QValidator
 {
 public:
@@ -107,7 +102,7 @@ private:
 };
 
 ExportDialog::MapListModel::MapListModel(const map_type& values)
-  : labels(::get<0>(values)), codes(::get<1>(values))
+    : labels(::get<0>(values)), codes(::get<1>(values))
 {
 }
 
@@ -128,12 +123,11 @@ int ExportDialog::MapListModel::rowCount([[maybe_unused]] const QModelIndex& ind
 }
 
 ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
-    : QDialog(parent), m_scene(scene)
-    , m_ui(std::make_unique<::Ui::ExportDialog>())
-    , m_validator(std::make_unique<FilenamePatternValidator>())
-    , m_raster_format_list_model(new MapListModel{{{tr("PNG"), ".png"}, {tr("JPEG"), ".jpg"}}})
-    , m_svg_format_list_model(new MapListModel{{{tr("SVG"), ".svg"}}})
-    , m_variable_list_model(new MapListModel{{{tr("Scene Name"), "{name}"},
+    : QDialog(parent), m_scene(scene), m_ui(std::make_unique<::Ui::ExportDialog>()),
+      m_validator(std::make_unique<FilenamePatternValidator>()),
+      m_raster_format_list_model(new MapListModel{{{tr("PNG"), ".png"}, {tr("JPEG"), ".jpg"}}}),
+      m_svg_format_list_model(new MapListModel{{{tr("SVG"), ".svg"}}}),
+      m_variable_list_model(new MapListModel{{{tr("Scene Name"), "{name}"},
                                               {tr("Scene Path"), "{path}"},
                                               {tr("Frame Number"), "{frame:04}"}}})
 {

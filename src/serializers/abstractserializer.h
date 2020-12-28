@@ -128,7 +128,9 @@ public:
   [[nodiscard]] virtual Vec2f get_vec2f(const Pointer& pointer) = 0;
   [[nodiscard]] virtual Vec2i get_vec2i(const Pointer& pointer) = 0;
   [[nodiscard]] virtual PolarCoordinates get_polarcoordinates(const Pointer& pointer) = 0;
-  [[nodiscard]] virtual TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual TriggerPropertyDummyValueType
+  get_trigger_dummy_value(const Pointer& pointer)
+      = 0;
   [[nodiscard]] virtual SplineType get_spline(const Pointer& pointer) = 0;
 
   void register_reference(std::size_t id, AbstractPropertyOwner& reference);

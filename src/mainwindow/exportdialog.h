@@ -1,10 +1,10 @@
 #pragma once
 
+#include <QAbstractListModel>
 #include <QDialog>
 #include <QImage>
 #include <QPicture>
 #include <memory>
-#include <QAbstractListModel>
 
 class QPushButton;
 class QLabel;

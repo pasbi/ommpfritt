@@ -1,12 +1,11 @@
 #pragma once
 
+#include <QString>
 #include <map>
 #include <variant>
-#include <QString>
 
 namespace omm
 {
-
 class StringInterpolation
 {
 public:
@@ -17,7 +16,9 @@ public:
   class InvalidFormatException : public std::runtime_error
   {
   public:
-    InvalidFormatException(const QString& what) : std::runtime_error(what.toStdString()) {}
+    InvalidFormatException(const QString& what) : std::runtime_error(what.toStdString())
+    {
+    }
   };
 
   using value_variant = std::variant<int, QString>;
@@ -33,4 +34,4 @@ private:
   QString m_string;
 };
 
-}  // namespace
+}  // namespace omm

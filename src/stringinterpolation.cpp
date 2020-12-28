@@ -1,11 +1,10 @@
 #include "stringinterpolation.h"
 #include "logging.h"
-#include <QStringList>
 #include <QRegExp>
+#include <QStringList>
 
 namespace
 {
-
 std::pair<QString, QString> split_key(const QString& key)
 {
   const int colon_pos = key.indexOf(omm::StringInterpolation::SEPARATOR);
@@ -55,9 +54,8 @@ QString format(const omm::StringInterpolation::value_variant& value, const QStri
 
 namespace omm
 {
-
 StringInterpolation::StringInterpolation(const QString& pattern, const map_type& values)
-  : m_string(pattern)
+    : m_string(pattern)
 {
   for (auto&& [key, value] : values) {
     replace_all(compile_regexp(key), value);
@@ -92,8 +90,9 @@ void StringInterpolation::replace_all(const QRegExp& regexp, const value_variant
   }
 }
 
-int
-StringInterpolation::replace_first(const QRegExp& regexp, const value_variant& value, int offset)
+int StringInterpolation::replace_first(const QRegExp& regexp,
+                                       const value_variant& value,
+                                       int offset)
 {
   offset = regexp.indexIn(m_string, offset);
   if (offset >= 0) {

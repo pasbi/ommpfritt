@@ -232,6 +232,7 @@ public:
 public:
   const ExportOptions& export_options() const;
   void set_export_options(const ExportOptions& export_options);
+
 private:
   std::unique_ptr<ExportOptions> m_export_options;
 };

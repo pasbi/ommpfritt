@@ -1,6 +1,6 @@
 #include "logging.h"
-#include "ommpfrittconfig.h"
 #include "git_describe.h"
+#include "ommpfrittconfig.h"
 #include <QApplication>
 #include <QDateTime>
 #include <QDir>
@@ -42,9 +42,8 @@ void setup_logfile(QFile& logfile)
   }
 
   static const auto hex = [](const QByteArray& data) { return QString(data.toHex()); };
-  static const auto write = [&logfile](const QString& text) {
-    return logfile.write(text.toUtf8());
-  };
+  static const auto write
+      = [&logfile](const QString& text) { return logfile.write(text.toUtf8()); };
 
   write(QString("Log of the %1 application.\n").arg(qAppName()));
   write(QString("Application started at %1.\n").arg(timestamp));

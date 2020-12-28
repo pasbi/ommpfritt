@@ -1,11 +1,10 @@
 #include "mainwindow/exportoptions.h"
-#include "objects/view.h"
 #include "aspects/abstractpropertyowner.h"
+#include "objects/view.h"
 #include "serializers/abstractserializer.h"
 
 namespace omm
 {
-
 void ExportOptions::serialize(AbstractSerializer& serializer, const Pointer& pointer) const
 {
   Serializable::serialize(serializer, pointer);

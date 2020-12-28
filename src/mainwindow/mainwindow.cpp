@@ -171,8 +171,7 @@ void MainWindow::update_window_title()
   QString filename = m_app.scene.filename();
   static const QString clean_indicator = tr("");
   static const QString dirty_indicator = tr("*");
-  QString indicator
-      = m_app.scene.has_pending_changes() ? dirty_indicator : clean_indicator;
+  QString indicator = m_app.scene.has_pending_changes() ? dirty_indicator : clean_indicator;
   if (filename.isEmpty()) {
     filename = tr("unnamed");
     indicator = clean_indicator;  // never show dirty indicator if no filename is set.

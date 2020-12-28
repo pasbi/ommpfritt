@@ -13,11 +13,11 @@
 #define MAKE_Q_MESSAGE_LOGGER(level) \
   QMessageLogger(static_cast<const char*>(__FILE__), \
                  __LINE__, \
-                 static_cast<const char*>(Q_FUNC_INFO)).level
+                 static_cast<const char*>(Q_FUNC_INFO)) \
+      .level
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define MAKE_DECORATED_Q_MESSAGE_LOGGER(level) MAKE_Q_MESSAGE_LOGGER(level()).nospace().noquote()
-
 
 #define LDEBUG MAKE_DECORATED_Q_MESSAGE_LOGGER(debug)  // NOLINT(cppcoreguidelines-macro-usage)
 #define LINFO MAKE_DECORATED_Q_MESSAGE_LOGGER(info)  // NOLINT(cppcoreguidelines-macro-usage)

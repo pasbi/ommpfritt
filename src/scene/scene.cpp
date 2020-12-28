@@ -8,12 +8,12 @@
 #include <random>
 #include <variant>
 
-#include "mainwindow/exportoptions.h"
 #include "commands/command.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
 #include "external/json.hpp"
 #include "logging.h"
+#include "mainwindow/exportoptions.h"
 #include "objects/empty.h"
 #include "objects/object.h"
 #include "properties/boolproperty.h"
@@ -106,15 +106,10 @@ std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scen
 namespace omm
 {
 Scene::Scene(PythonEngine& python_engine)
-    : python_engine(python_engine),
-      point_selection(*this),
-      m_mail_box(new MailBox()),
-      m_object_tree(new ObjectTree(make_root(), *this)),
-      m_styles(new StyleList(*this)),
-      m_history(new HistoryModel()),
-      m_tool_box(new ToolBox(*this)),
-      m_animator(new Animator(*this)),
-      m_named_colors(new NamedColors()),
+    : python_engine(python_engine), point_selection(*this), m_mail_box(new MailBox()),
+      m_object_tree(new ObjectTree(make_root(), *this)), m_styles(new StyleList(*this)),
+      m_history(new HistoryModel()), m_tool_box(new ToolBox(*this)),
+      m_animator(new Animator(*this)), m_named_colors(new NamedColors()),
       m_export_options(new ExportOptions())
 {
   object_tree().root().set_object_tree(object_tree());
