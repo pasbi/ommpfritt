@@ -46,4 +46,17 @@ void ExportOptions::update_references(const std::map<std::size_t, AbstractProper
   }
 }
 
+bool ExportOptions::operator==(const ExportOptions& other) const
+{
+  static const auto to_tuple = [](const ExportOptions& o) {
+    return std::tuple{o.view, o.x_resolution, o.pattern, o.start_frame, o.end_frame, o.animated};
+  };
+  return to_tuple(*this) == to_tuple(other);
+}
+
+bool ExportOptions::operator!=(const ExportOptions& other) const
+{
+  return !(*this == other);
+}
+
 }  // namespace omm

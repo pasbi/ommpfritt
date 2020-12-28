@@ -91,10 +91,10 @@ class ReferencePolisher
 public:
   virtual ~ReferencePolisher() = default;
   ReferencePolisher() = default;
-  ReferencePolisher(ReferencePolisher&&) = delete;
+  ReferencePolisher(ReferencePolisher&&) = default;
   ReferencePolisher(const ReferencePolisher&) = default;
-  ReferencePolisher& operator=(ReferencePolisher&&) = delete;
-  ReferencePolisher& operator=(const ReferencePolisher&) = delete;
+  ReferencePolisher& operator=(ReferencePolisher&&) = default;
+  ReferencePolisher& operator=(const ReferencePolisher&) = default;
 
 protected:
   virtual void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;

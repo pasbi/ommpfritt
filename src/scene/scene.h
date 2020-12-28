@@ -14,7 +14,6 @@
 #include "scene/cycleguard.h"
 #include "scene/list.h"
 #include "scene/pointselection.h"
-#include "mainwindow/exportoptions.h"
 
 namespace omm
 {
@@ -30,6 +29,7 @@ class Animator;
 class NamedColors;
 class ColorProperty;
 class Node;
+struct ExportOptions;
 
 template<typename> struct SceneStructure;
 template<> struct SceneStructure<Object> {
@@ -173,6 +173,7 @@ private:
   // === Commands ===
 private:
   std::unique_ptr<HistoryModel> m_history;
+  bool m_has_pending_changes = false;
 
 public:
   [[nodiscard]] HistoryModel& history() const
@@ -184,6 +185,7 @@ public:
     submit(std::make_unique<CommandT>(std::forward<Args>(args)...));
   }
   void submit(std::unique_ptr<Command> command) const;
+  [[nodiscard]] bool has_pending_changes() const;
 
   // === Tools ===
 private:
@@ -228,7 +230,10 @@ public:
 
   // === ExportOptions ===
 public:
-  ExportOptions export_options;
+  const ExportOptions& export_options() const;
+  void set_export_options(const ExportOptions& export_options);
+private:
+  std::unique_ptr<ExportOptions> m_export_options;
 };
 
 }  // namespace omm

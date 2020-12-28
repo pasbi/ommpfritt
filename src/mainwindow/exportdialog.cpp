@@ -1,4 +1,5 @@
 #include "mainwindow/exportdialog.h"
+#include "mainwindow/exportoptions.h"
 #include "stringinterpolation.h"
 #include "animation/animator.h"
 #include "geometry/vec2.h"
@@ -268,12 +269,14 @@ void ExportDialog::save_settings()
   QSettings settings;
   settings.setValue(ALLOW_OVERWRITE_KEY, m_ui->cb_overwrite->isChecked());
 
-  auto& eo = m_scene.export_options;
+  ExportOptions eo;
   eo.pattern = m_ui->le_pattern->path();
   eo.start_frame = m_ui->sb_start->value();
   eo.end_frame = m_ui->sb_end->value();
   eo.animated = m_ui->cb_animation->isChecked();
   eo.view = type_cast<View*>(m_ui->cb_view->value());
+  eo.x_resolution = m_ui->ne_resolution_x->value();
+  m_scene.set_export_options(eo);
 }
 
 void ExportDialog::set_animation_range(int start, int end)
@@ -295,7 +298,7 @@ void ExportDialog::restore_settings()
   QSettings settings;
   m_ui->cb_overwrite->setChecked(settings.value(ALLOW_OVERWRITE_KEY, false).toBool());
 
-  const auto& eo = m_scene.export_options;
+  const auto& eo = m_scene.export_options();
   m_ui->le_pattern->set_path(eo.pattern);
   m_ui->cb_animation->setChecked(eo.animated);
   m_ui->cb_view->set_value(eo.view);

@@ -8,6 +8,7 @@
 #include <random>
 #include <variant>
 
+#include "mainwindow/exportoptions.h"
 #include "commands/command.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
@@ -105,10 +106,16 @@ std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scen
 namespace omm
 {
 Scene::Scene(PythonEngine& python_engine)
-    : python_engine(python_engine), point_selection(*this), m_mail_box(new MailBox()),
-      m_object_tree(new ObjectTree(make_root(), *this)), m_styles(new StyleList(*this)),
-      m_history(new HistoryModel()), m_tool_box(new ToolBox(*this)),
-      m_animator(new Animator(*this)), m_named_colors(new NamedColors())
+    : python_engine(python_engine),
+      point_selection(*this),
+      m_mail_box(new MailBox()),
+      m_object_tree(new ObjectTree(make_root(), *this)),
+      m_styles(new StyleList(*this)),
+      m_history(new HistoryModel()),
+      m_tool_box(new ToolBox(*this)),
+      m_animator(new Animator(*this)),
+      m_named_colors(new NamedColors()),
+      m_export_options(new ExportOptions())
 {
   object_tree().root().set_object_tree(object_tree());
   for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, Node::KIND}) {
@@ -197,6 +204,20 @@ std::set<ColorProperty*> Scene::find_named_color_holders(const QString& name) co
   });
 }
 
+const ExportOptions& Scene::export_options() const
+{
+  return *m_export_options;
+}
+
+void Scene::set_export_options(const ExportOptions& export_options)
+{
+  if (*m_export_options != export_options) {
+    *m_export_options = export_options;
+    m_has_pending_changes = true;
+    Q_EMIT mail_box().filename_changed();
+  }
+}
+
 bool Scene::save_as(const QString& filename)
 {
   std::ofstream ofstream(filename.toStdString());
@@ -216,10 +237,11 @@ bool Scene::save_as(const QString& filename)
 
   animator().serialize(serializer, ANIMATOR_POINTER);
   named_colors().serialize(serializer, NAMED_COLORS_POINTER);
-  export_options.serialize(serializer, EXPORT_OPTIONS_POINTER);
+  export_options().serialize(serializer, EXPORT_OPTIONS_POINTER);
 
   LINFO << "Saved current scene to '" << filename << "'.";
   history().set_saved_index();
+  m_has_pending_changes = false;
   m_filename = filename;
   Q_EMIT mail_box().filename_changed();
   return true;
@@ -269,7 +291,7 @@ bool Scene::load_from(const QString& filename)
 
     animator().deserialize(deserializer, ANIMATOR_POINTER);
     named_colors().deserialize(deserializer, NAMED_COLORS_POINTER);
-    export_options.deserialize(deserializer, EXPORT_OPTIONS_POINTER);
+    m_export_options->deserialize(deserializer, EXPORT_OPTIONS_POINTER);
     deserializer.polish();
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
@@ -306,6 +328,11 @@ void Scene::submit(std::unique_ptr<Command> command) const
     history().push(std::move(command));
     Q_EMIT mail_box().filename_changed();
   }
+}
+
+bool Scene::has_pending_changes() const
+{
+  return m_has_pending_changes || history().has_pending_changes();
 }
 
 std::set<Tag*> Scene::tags() const

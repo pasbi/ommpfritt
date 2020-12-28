@@ -212,7 +212,7 @@ void Application::update_undo_redo_enabled()
 
 bool Application::can_close()
 {
-  if (scene.history().has_pending_changes()) {
+  if (scene.has_pending_changes()) {
     const auto decision
         = QMessageBox::question(m_main_window,
                                 tr("Question."),

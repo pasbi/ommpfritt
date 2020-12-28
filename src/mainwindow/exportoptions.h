@@ -10,6 +10,8 @@ class View;
 
 struct ExportOptions : Serializable, ReferencePolisher
 {
+  bool operator==(const ExportOptions& other) const;
+  bool operator!=(const ExportOptions& other) const;
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
 
