@@ -11,7 +11,7 @@ namespace omm
 UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColorEdit)
 {
   m_ui->setupUi(this);
-  m_ui->pb_reset->setIcon(QIcon(":/icons/revert.png"));
+  m_ui->pb_reset->setIcon(QIcon(":/icons/revert_128.png"));
   m_ui->pb_reset->setFocusPolicy(Qt::NoFocus);
 
   connect(m_ui->pb_reset, &QPushButton::clicked, [this]() {

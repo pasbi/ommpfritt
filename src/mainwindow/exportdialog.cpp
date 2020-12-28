@@ -336,7 +336,7 @@ For numeric values, placeholder and length options may be specified after a colo
   m_ui->le_pattern->setToolTip(path_variable_tooltip);
 
   for (auto&& pb : {m_ui->pb_reset_end, m_ui->pb_reset_start}) {
-    pb->setIcon(QIcon(":/icons/revert.png"));
+    pb->setIcon(QIcon(":/icons/revert_128.png"));
     Application::instance().register_auto_invert_icon_button(*pb);
   }
 
