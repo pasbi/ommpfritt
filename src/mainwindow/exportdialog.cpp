@@ -272,6 +272,7 @@ void ExportDialog::save_settings()
   eo.animated = m_ui->cb_animation->isChecked();
   eo.view = type_cast<View*>(m_ui->cb_view->value());
   eo.x_resolution = m_ui->ne_resolution_x->value();
+  eo.format = static_cast<ExportOptions::Format>(m_ui->cb_format->currentIndex());
   m_scene.set_export_options(eo);
 }
 
@@ -299,6 +300,7 @@ void ExportDialog::restore_settings()
   m_ui->cb_animation->setChecked(eo.animated);
   m_ui->cb_view->set_value(eo.view);
   set_animation_range(eo.start_frame, eo.end_frame);
+  m_ui->cb_format->setCurrentIndex(static_cast<int>(eo.format));
 }
 
 void ExportDialog::set_default_values()

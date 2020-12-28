@@ -15,12 +15,15 @@ struct ExportOptions
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
 
+  enum class Format {Raster, Vector};
+
   static constexpr auto VIEW_KEY = "view";
   static constexpr auto X_RESOLUTION_KEY = "x_resolution";
   static constexpr auto PATTERN_KEY = "pattern";
   static constexpr auto START_FRAME_KEY = "start";
   static constexpr auto END_FRAME_KEY = "end";
   static constexpr auto ANIMATED_KEY = "animated";
+  static constexpr auto FORMAT_KEY = "format";
 
   View* view = nullptr;
   int x_resolution;
@@ -28,6 +31,7 @@ struct ExportOptions
   int start_frame;
   int end_frame;
   bool animated;
+  Format format;
 
 private:
   std::size_t m_view_id;  // required for deserialization only
