@@ -83,7 +83,6 @@ public:
   {
     try {
       interpolate_filename(input, "", "", 0);
-      StringInterpolation(input, m_values);
     } catch (const StringInterpolation::InvalidFormatException& e) {
       return QValidator::Intermediate;
     }
@@ -102,14 +101,8 @@ public:
     Q_EMIT changed();
   }
 
-  void set_variable_values(const StringInterpolation::map_type& values)
-  {
-    m_values = values;
-  }
-
 private:
   std::vector<QString> m_allowed_endings;
-  StringInterpolation::map_type m_values;
 };
 
 ExportDialog::MapListModel::MapListModel(const map_type& values)
@@ -245,7 +238,7 @@ QString ExportDialog::filename(int frame) const
 {
   const QFileInfo scene_fi(m_scene.filename());
   const auto scene_path = scene_fi.dir().path();
-  const auto scene_name = scene_fi.fileName();
+  const auto scene_name = scene_fi.baseName();
 
   QString pattern = m_ui->le_pattern->path();
 
@@ -343,6 +336,10 @@ For numeric values, placeholder and length options may be specified after a colo
   m_ui->cb_variable->setModel(m_variable_list_model.get());
   m_ui->cb_ending->setModel(m_raster_format_list_model.get());
   restore_settings();
+
+  if (m_ui->le_pattern->path().isEmpty()) {
+    m_ui->le_pattern->set_path(tr("{name}_{frame:04}.png"));
+  }
 }
 
 void ExportDialog::connect_gui()
@@ -417,7 +414,7 @@ void ExportDialog::connect_gui()
   connect(m_validator.get(), &QValidator::changed, this, [this]() {
     update_pattern_edit_background();
   });
-  connect(&m_ui->le_pattern->line_edit(), &QLineEdit::textChanged, this, [this]() {
+  connect(m_ui->le_pattern, &FilePathEdit::path_changed, this, [this]() {
     update_pattern_edit_background();
     update_ending_cb();
   });
@@ -530,6 +527,14 @@ void ExportDialog::start_export()
   const bool animation = m_ui->cb_animation->isChecked();
   const int start_frame = m_ui->sb_start->value();
   const int end_frame = animation ? m_ui->sb_end->value() : start_frame;
+
+  if (animation && filename(start_frame) == filename(end_frame)) {
+    QMessageBox::warning(this,
+                         tr("Invalid pattern."),
+                         tr("The pattern generates the same file name for multiple frames."
+                            "Insert the frame number placeholder {frame}."));
+    return;
+  }
 
   bool cancel = false;
   bool retry = true;
