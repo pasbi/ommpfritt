@@ -220,9 +220,11 @@ bool ExportDialog::save_as_svg(const QString& filename)
   QSvgGenerator generator;
   generator.setFileName(filename);
   const auto scale = m_ui->ne_scaling->value();
-  auto view_box_size = view()->property(View::SIZE_PROPERTY_KEY)->value<Vec2f>();
-  view_box_size *= scale / view_box_size.x;
-  generator.setViewBox(QRectF(0.0, 0.0, view_box_size.x, view_box_size.y));
+  if (const auto* view = this->view(); view != nullptr) {
+    auto view_box_size = view->property(View::SIZE_PROPERTY_KEY)->value<Vec2f>();
+    view_box_size *= scale / view_box_size.x;
+    generator.setViewBox(QRectF(0.0, 0.0, view_box_size.x, view_box_size.y));
+  }
   static constexpr double SVG_SCALE_FACTOR = -4.0 / 3.0;
   render(m_scene, view(), generator, SVG_SCALE_FACTOR * scale);
   LINFO << "Wrote file '" << filename << "'.";
