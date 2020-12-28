@@ -4,6 +4,7 @@
 #include <QImage>
 #include <QPicture>
 #include <memory>
+#include <QAbstractListModel>
 
 class QPushButton;
 class QLabel;
@@ -20,10 +21,23 @@ class Scene;
 template<typename> class NumericEdit;
 class ReferenceLineEdit;
 class View;
+class FilenamePatternValidator;
 
 class ExportDialog : public QDialog
 {
   Q_OBJECT
+private:
+  class MapListModel : public QAbstractListModel
+  {
+  public:
+    using map_type = std::vector<std::pair<QString, QString>>;
+    explicit MapListModel(const map_type& values);
+    const std::vector<QString> labels;
+    const std::vector<QString> codes;
+    QVariant data(const QModelIndex& index, int role) const override;
+    int rowCount([[maybe_unused]] const QModelIndex& index) const override;
+  };
+
 public:
   ExportDialog(Scene& scene, QWidget* parent);
   ~ExportDialog() override;
@@ -42,33 +56,35 @@ protected:
 private:
   Scene& m_scene;
 
-  void save_as();
   void update_preview();
   [[nodiscard]] const View* view() const;
-  void save_as_raster();
-  void save_as_svg();
-  QPicture m_picture;
-  QString m_filepath;
-  QString m_animation_directory;
-  static QString filename(QString pattern, int frame_number);
+  bool save_as_raster(const QString& filename);
+  bool save_as_svg(const QString& filename);
+
+  int render(int frame, bool allow_overwrite);
+  [[nodiscard]] QString filename(int frame) const;
 
   std::unique_ptr<::Ui::ExportDialog> m_ui;
-  std::unique_ptr<QValidator> m_validator;
+  std::unique_ptr<FilenamePatternValidator> m_validator;
+  std::unique_ptr<MapListModel> m_raster_format_list_model;
+  std::unique_ptr<MapListModel> m_svg_format_list_model;
+  std::unique_ptr<MapListModel> m_variable_list_model;
 
   static constexpr auto FORMAT_SETTINGS_KEY = "last_format";
   void update_active_view();
   void save_settings();
   void restore_settings();
-  void set_default_values(Scene& scene);
+  void set_default_values();
   void connect_gui();
 
 private Q_SLOTS:
   void update_pattern_edit_background();
+  void update_ending_cb();
   void reset_start_frame();
   void reset_end_frame();
   void set_maximum_start(int max);
   void set_minimum_end(int min);
-  void start_export_animation();
+  void start_export();
   void update_y_edit();
   void update_x_edit();
 };
