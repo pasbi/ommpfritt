@@ -341,6 +341,8 @@ For numeric values, placeholder and length options may be specified after a colo
   if (m_ui->le_pattern->path().isEmpty()) {
     m_ui->le_pattern->set_path(tr("{name}_{frame:04}.png"));
   }
+
+  m_ui->w_progress->hide();
 }
 
 void ExportDialog::connect_gui()
@@ -419,6 +421,16 @@ void ExportDialog::connect_gui()
     update_pattern_edit_background();
     update_ending_cb();
   });
+  connect(this, &ExportDialog::append_status, this, [this](const QString& message) {
+    auto& te = *m_ui->te_status;
+    te.moveCursor(QTextCursor::End);
+    te.insertPlainText(message);
+    te.moveCursor(QTextCursor::End);
+  });
+  connect(this, &ExportDialog::progress, this, [this](int current, int total) {
+    m_ui->pb_progress->setMaximum(total);
+    m_ui->pb_progress->setValue(current);
+  });
 }
 
 void ExportDialog::update_pattern_edit_background()
@@ -475,6 +487,7 @@ int ExportDialog::render(int frame, bool allow_overwrite)
 
   try {
     const QString filename = this->filename(frame);
+    Q_EMIT append_status(tr("Writing %1 ...").arg(filename));
     const QFileInfo fi(filename);
     const auto dir = fi.dir();
     if (!dir.exists()) {
@@ -529,6 +542,9 @@ void ExportDialog::start_export()
   const int start_frame = m_ui->sb_start->value();
   const int end_frame = animation ? m_ui->sb_end->value() : start_frame;
 
+  m_ui->w_progress->show();
+  m_ui->te_status->clear();
+
   if (animation && filename(start_frame) == filename(end_frame)) {
     QMessageBox::warning(this,
                          tr("Invalid pattern."),
@@ -539,14 +555,22 @@ void ExportDialog::start_export()
 
   bool cancel = false;
   bool retry = true;
+  Q_EMIT progress(0, end_frame - start_frame);
   for (int frame = start_frame; !cancel && frame <= end_frame; ++frame) {
     m_scene.animator().set_current(frame);
 
     do {
       const auto status = render(frame, allow_overwrite);
+      if (status == QMessageBox::Ok) {
+        Q_EMIT append_status(tr("done.\n"));
+      } else {
+        Q_EMIT append_status(tr("fail.\n"));
+      }
+
       retry = !!(status & QMessageBox::Retry);
       cancel = !!(status & QMessageBox::Cancel);
     } while (retry);
+    Q_EMIT progress(frame - start_frame, end_frame - start_frame);
   }
   if (!cancel) {
     QMessageBox::information(this, tr("Done."), tr("Exporting done."));

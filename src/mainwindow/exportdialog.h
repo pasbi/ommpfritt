@@ -86,6 +86,10 @@ private Q_SLOTS:
   void start_export();
   void update_y_edit();
   void update_x_edit();
+
+Q_SIGNALS:
+  void append_status(const QString& msg);
+  void progress(int current, int total);
 };
 
 }  // namespace omm
