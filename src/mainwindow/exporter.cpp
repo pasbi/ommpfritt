@@ -1,25 +1,23 @@
 #include "mainwindow/exporter.h"
 #include "animation/animator.h"
-#include "mainwindow/viewport/viewport.h"
-#include "scene/scene.h"
-#include <QPaintDevice>
-#include "objects/view.h"
-#include <QSvgGenerator>
 #include "geometry/vec2.h"
-#include <QDir>
-#include <QApplication>
-#include <QFileInfo>
-#include "stringinterpolation.h"
 #include "logging.h"
+#include "mainwindow/viewport/viewport.h"
+#include "objects/view.h"
+#include "scene/scene.h"
+#include "stringinterpolation.h"
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QImage>
+#include <QPaintDevice>
+#include <QSvgGenerator>
 #include <QThread>
-
 
 namespace omm
 {
-
 Exporter::Exporter(Scene& scene, const Viewport* viewport, QThread* thread)
-  : m_scene(scene), m_viewport(viewport)
+    : m_scene(scene), m_viewport(viewport)
 {
   if (thread != nullptr) {
     connect(thread, &QThread::started, this, &Exporter::start);
@@ -41,7 +39,7 @@ void Exporter::start()
     const auto n = eo.end_frame - eo.start_frame + 1;
     Q_EMIT progress_changed(count, n);
 
-    #pragma omp parallel for
+#pragma omp parallel for
     for (int frame = eo.start_frame; frame <= eo.end_frame; ++frame) {
       if (cancel) {
         break;
@@ -211,6 +209,5 @@ void Exporter::render(QPaintDevice& device, double scale)
   final_painter.scale(scale, scale);
   final_painter.drawPicture(QPointF(0.0, 0.0), picture);
 }
-
 
 }  // namespace omm

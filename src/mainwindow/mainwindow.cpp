@@ -479,7 +479,8 @@ void MainWindow::handle_corrupted_config_file(const QSettings& s, const QString&
 {
   const auto msg = tr("The configuration file %1 is corrupted.\n"
                       "Delete the file and restart the application.\n"
-                      "%2").arg(s.fileName(), what);
+                      "%2")
+                       .arg(s.fileName(), what);
   LERROR << msg;
   QMessageBox::critical(this, tr("Corrupted config file"), msg);
   LFATAL("Corrupted config file.");

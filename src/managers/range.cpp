@@ -1,9 +1,9 @@
 #include "managers/range.h"
+#include "logging.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <list>
-#include "logging.h"
 
 namespace omm
 {

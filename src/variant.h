@@ -2,10 +2,10 @@
 
 #include "color/color.h"
 #include "geometry/vec2.h"
+#include "logging.h"
 #include "splinetype.h"
 #include <QString>
 #include <variant>
-#include "logging.h"
 
 namespace omm
 {

@@ -16,7 +16,8 @@
 namespace omm
 {
 ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
-    : QComboBox(parent), m_filter(PropertyFilter::accept_anything()), m_null_label(QObject::tr("< none >", "ReferenceLineEdit"))
+    : QComboBox(parent), m_filter(PropertyFilter::accept_anything()),
+      m_null_label(QObject::tr("< none >", "ReferenceLineEdit"))
 {
   setEditable(true);
   setAcceptDrops(true);

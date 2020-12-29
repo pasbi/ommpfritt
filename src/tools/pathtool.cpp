@@ -1,10 +1,10 @@
 #include "tools/pathtool.h"
 #include "commands/addcommand.h"
 #include "commands/modifypointscommand.h"
+#include "mainwindow/application.h"
 #include "scene/scene.h"
 #include "tools/selecttool.h"
 #include <QMouseEvent>
-#include "mainwindow/application.h"
 
 namespace omm
 {

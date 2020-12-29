@@ -1,9 +1,9 @@
 #pragma once
 
 #include "common.h"
+#include <QDebug>
 #include <QString>
 #include <sstream>
-#include <QDebug>
 
 #if defined(LDEBUG) || defined(LINFO) || defined(LERROR) || defined(LWARNING)
 #  error Failed to define logging-macros due to name collision.

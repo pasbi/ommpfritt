@@ -9,7 +9,6 @@ class QPaintDevice;
 
 namespace omm
 {
-
 class Scene;
 class View;
 class Viewport;
@@ -30,7 +29,7 @@ public:
                                       const QString& scene_path,
                                       const QString& scene_name,
                                       int frame);
-  enum class Status {Waiting, Done, IOError};
+  enum class Status { Waiting, Done, IOError };
   std::map<int, Status> status;
 
   QString error_msg;

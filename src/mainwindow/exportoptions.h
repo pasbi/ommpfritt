@@ -15,7 +15,7 @@ struct ExportOptions
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
 
-  enum class Format {Raster, Vector};
+  enum class Format { Raster, Vector };
 
   static constexpr auto VIEW_KEY = "view";
   static constexpr auto X_RESOLUTION_KEY = "x_resolution";

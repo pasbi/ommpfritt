@@ -2,9 +2,9 @@
 #include "aspects/propertyowner.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
+#include "properties/integerproperty.h"
 #include "properties/optionproperty.h"
 #include "properties/stringproperty.h"
-#include "properties/integerproperty.h"
 
 namespace omm
 {

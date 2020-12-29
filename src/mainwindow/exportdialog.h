@@ -5,8 +5,8 @@
 #include <QDialog>
 #include <QImage>
 #include <QPicture>
-#include <memory>
 #include <QThread>
+#include <memory>
 
 class QPushButton;
 class QLabel;
