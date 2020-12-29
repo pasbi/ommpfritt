@@ -126,7 +126,6 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   set_default_values();
   connect_gui();
   update_y_edit();
-  update_active_view();
   update_pattern_edit_background();
   m_ui->splitter->setSizes({width(), 1});
 }
@@ -165,17 +164,6 @@ void ExportDialog::update_preview()
 View* ExportDialog::view() const
 {
   return type_cast<View*>(kind_cast<Object*>(m_ui->cb_view->value()));
-}
-
-void ExportDialog::update_active_view()
-{
-  m_ui->cb_view->update_candidates();
-  for (auto* view : type_casts<View*>(m_scene.object_tree().items())) {
-    if (view->property(View::OUTPUT_VIEW_PROPERTY_KEY)->value<bool>()) {
-      m_ui->cb_view->set_value(view);
-      break;
-    }
-  }
 }
 
 ExportOptions ExportDialog::export_options() const
@@ -220,7 +208,6 @@ void ExportDialog::restore_settings()
   const auto& eo = m_scene.export_options();
   m_ui->le_pattern->set_path(eo.pattern);
   m_ui->cb_animation->setChecked(eo.animated);
-  LINFO << "SET VIEW: " << (eo.view == nullptr ? "null" : eo.view->name());
   m_ui->cb_view->set_value(eo.view);
   set_animation_range(eo.start_frame, eo.end_frame);
   m_ui->cb_format->setCurrentIndex(static_cast<int>(eo.format));
@@ -235,7 +222,7 @@ void ExportDialog::set_default_values()
   m_ui->ne_resolution_x->set_value(default_resolution_x);
 
   m_ui->cb_view->set_filter(PropertyFilter({Kind::Object}, {{Flag::IsView}}));
-  m_ui->cb_view->set_null_label(tr("Viewport"));
+  update_view_null_label(nullptr);
   m_ui->cb_view->set_scene(m_scene);
 
   m_ui->ne_scaling->set_value(SCALING_DEFAULT);
@@ -352,6 +339,7 @@ void ExportDialog::connect_gui()
   connect(m_ui->pb_cancel, &QPushButton::clicked, this, [this]() {
     m_exporter->cancel = true;
   });
+  connect(&*m_exporter, &Exporter::auto_view_changed, this, &ExportDialog::update_view_null_label);
 }
 
 void ExportDialog::update_pattern_edit_background()
@@ -428,7 +416,7 @@ void ExportDialog::resizeEvent(QResizeEvent* e)
 void ExportDialog::showEvent(QShowEvent* e)
 {
   update_preview();
-  update_active_view();
+  m_ui->cb_view->update_candidates();
   m_ui->stackedWidget->setCurrentIndex(m_ui->cb_format->currentIndex());
   QDialog::showEvent(e);
 }
@@ -453,6 +441,12 @@ void ExportDialog::closeEvent(QCloseEvent* e)
     }
   }
   QDialog::closeEvent(e);
+}
+
+void ExportDialog::update_view_null_label(const View* view)
+{
+  const QString label = view == nullptr ? tr("Viewport") : view->name();
+  m_ui->cb_view->set_null_label(tr("Auto (%1)").arg(label));
 }
 
 }  // namespace omm

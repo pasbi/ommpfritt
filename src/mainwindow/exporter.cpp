@@ -124,6 +124,16 @@ void Exporter::render(int frame, bool allow_overwrite)
   Q_EMIT finished();
 }
 
+View* Exporter::active_view() const
+{
+  for (auto* view : type_casts<View*>(m_scene.object_tree().items())) {
+    if (view->property(View::OUTPUT_VIEW_PROPERTY_KEY)->value<bool>()) {
+      return view;
+    }
+  }
+  return nullptr;
+}
+
 bool Exporter::save_as_raster(const QString& filename)
 {
   QImage image({export_options.x_resolution, y_resolution}, QImage::Format_ARGB32_Premultiplied);
@@ -158,11 +168,21 @@ void Exporter::render(QPaintDevice& device, double scale)
     renderer.painter = &painter;
 
     const auto transformation = [this, &device]() {
-      const auto* view = export_options.view;
+      auto* view = export_options.view;
+      if (view == nullptr) {
+        // The output view might have changed because it may be animated.
+        // If no view is explicitely given, we want to respect that and broadcast a notification.
+        auto* auto_view = active_view();
+        if (auto_view != view) {
+          view = auto_view;
+          Q_EMIT auto_view_changed(view);
+        }
+      }
+
       if (view == nullptr && m_viewport == nullptr) {
         LWARNING << "View and viewport are invalid.";
         return ObjectTransformation{};
-      } else if (view != nullptr ) {
+      } else if (view != nullptr) {
         const auto t = view->global_transformation(Space::Scene).inverted();
         const auto view_size = view->property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
         const auto s = device.width() / double(view_size.x);

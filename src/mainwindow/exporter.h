@@ -44,6 +44,7 @@ private:
   const Viewport* const m_viewport;
   [[nodiscard]] QString filename(int frame) const;
   void render(int frame, bool allow_overwrite);
+  View* active_view() const;
 
 public Q_SLOTS:
   void start();
@@ -52,6 +53,7 @@ Q_SIGNALS:
   void post_status(const QString& msg);
   void progress_changed(int current, int total);
   void finished();
+  void auto_view_changed(View* view);
 };
 
 }  // namespace omm

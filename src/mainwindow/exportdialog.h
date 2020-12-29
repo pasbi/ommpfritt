@@ -69,13 +69,13 @@ private:
   QThread m_exporter_thread;
   std::unique_ptr<Exporter> m_exporter;
 
-  void update_active_view();
   void save_settings();
   void restore_settings();
   void set_default_values();
   void connect_gui();
   void set_animation_range(int start, int end);
   void update_frame_range_limits();
+  void update_view_null_label(const View* view);
   ExportOptions export_options() const;
 
 private Q_SLOTS:
