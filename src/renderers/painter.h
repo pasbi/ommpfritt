@@ -42,7 +42,7 @@ public:
     BoundingBox = 0x4,
     All = Objects | Handles | BoundingBox
   };
-  explicit Painter(Scene& scene, Category filter);
+  explicit Painter(const Scene& scene, Category filter);
   void render(Options options);
 
   void push_transformation(const ObjectTransformation& transformation);
@@ -60,7 +60,7 @@ public:
 
   void set_style(const Style& style, const Object& object, const Options& options) const;
 
-  Scene& scene;
+  const Scene& scene;
   Category category_filter;
   QPainter* painter = nullptr;
   ImageCache image_cache;
