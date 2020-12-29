@@ -98,7 +98,8 @@ void ReferenceLineEdit::update_candidates()
 
 void ReferenceLineEdit::convert_text_to_placeholder_text()
 {
-  if (const auto pt = lineEdit()->text(); !pt.isEmpty()) {
+  const auto pt = lineEdit()->text();
+  if (!pt.isEmpty()) {
     lineEdit()->setPlaceholderText(pt);
     lineEdit()->setText("");
   }
