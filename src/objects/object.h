@@ -63,7 +63,7 @@ public:
   virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const;
   virtual BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const;
   std::unique_ptr<Object> repudiate(Object& repudiatee) override;
-  Object& adopt(std::unique_ptr<Object> adoptee, size_t pos) override;
+  Object& adopt(std::unique_ptr<Object> adoptee, std::size_t pos) override;
   using TreeElement::adopt;
 
   struct ConvertedObject {

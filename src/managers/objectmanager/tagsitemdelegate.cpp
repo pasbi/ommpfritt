@@ -1,6 +1,5 @@
 #include "managers/objectmanager/tagsitemdelegate.h"
 
-#include <QDebug>
 #include <QMouseEvent>
 #include <QPainter>
 #include <cmath>
@@ -34,7 +33,7 @@ void TagsItemDelegate::paint(QPainter* painter,
 
   const auto& object = m_view.model()->item_at(index);
 
-  for (size_t i = 0; i < object.tags.size(); ++i) {
+  for (std::size_t i = 0; i < object.tags.size(); ++i) {
     const QRect tag_rect = TagsItemDelegate::tag_rect(pos, i);
     auto& tag = object.tags.item(i);
     painter->setClipRect(tag_rect);
@@ -52,7 +51,7 @@ void TagsItemDelegate::paint(QPainter* painter,
       case QItemSelectionModel::Deselect:
         return selected && !tmp_selected;
       default:
-        qFatal("Unexpected selection command");
+        LFATAL("Unexpected selection command");
         Q_UNREACHABLE();
         return false;
       };

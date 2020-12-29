@@ -4,7 +4,7 @@
 #include "scene/scene.h"
 #include "tools/selecttool.h"
 #include <QMouseEvent>
-#include <mainwindow/application.h>
+#include "mainwindow/application.h"
 
 namespace omm
 {

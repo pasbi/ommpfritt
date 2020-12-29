@@ -40,7 +40,7 @@ public:
   }
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  virtual void start_array(size_t size, const Pointer& pointer) = 0;
+  virtual void start_array(std::size_t size, const Pointer& pointer) = 0;
   virtual void end_array() = 0;
   virtual void set_value(bool value, const Pointer& pointer) = 0;
   virtual void set_value(int value, const Pointer& pointer) = 0;
@@ -118,7 +118,7 @@ public:
   void add_references(const std::set<AbstractPropertyOwner*>& existing_references);
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  [[nodiscard]] virtual size_t array_size(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual std::size_t array_size(const Pointer& pointer) = 0;
   [[nodiscard]] virtual bool get_bool(const Pointer& pointer) = 0;
   [[nodiscard]] virtual int get_int(const Pointer& pointer) = 0;
   [[nodiscard]] virtual double get_double(const Pointer& pointer) = 0;
@@ -128,9 +128,7 @@ public:
   [[nodiscard]] virtual Vec2f get_vec2f(const Pointer& pointer) = 0;
   [[nodiscard]] virtual Vec2i get_vec2i(const Pointer& pointer) = 0;
   [[nodiscard]] virtual PolarCoordinates get_polarcoordinates(const Pointer& pointer) = 0;
-  [[nodiscard]] virtual TriggerPropertyDummyValueType
-  get_trigger_dummy_value(const Pointer& pointer)
-      = 0;
+  [[nodiscard]] virtual TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) = 0;
   [[nodiscard]] virtual SplineType get_spline(const Pointer& pointer) = 0;
 
   void register_reference(std::size_t id, AbstractPropertyOwner& reference);

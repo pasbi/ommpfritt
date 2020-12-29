@@ -4,8 +4,7 @@
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 #include "properties/stringproperty.h"
-#include <QDebug>
-#include <properties/integerproperty.h>
+#include "properties/integerproperty.h"
 
 namespace omm
 {

@@ -4,7 +4,6 @@
 #include "nodesystem/nodecompilerglsl.h"
 #include "objects/object.h"
 #include <QApplication>
-#include <QDebug>
 #include <QImage>
 #include <QOffscreenSurface>
 #include <QOpenGLFramebufferObject>

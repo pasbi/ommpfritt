@@ -6,7 +6,7 @@
 
 namespace omm
 {
-class OptionProperty : public TypedProperty<size_t>
+class OptionProperty : public TypedProperty<std::size_t>
 {
 public:
   using TypedProperty::TypedProperty;

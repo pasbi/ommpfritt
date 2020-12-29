@@ -1,7 +1,6 @@
 #include "managers/objectmanager/objecttreeview.h"
 
 #include <QApplication>
-#include <QDebug>
 #include <QDrag>
 #include <QMouseEvent>
 #include <memory>

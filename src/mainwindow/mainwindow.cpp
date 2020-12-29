@@ -357,7 +357,7 @@ void MainWindow::load_layout(QSettings& settings)
     delete toolbar;
   }
 
-  {
+  try {
     const auto size = settings.beginReadArray(QString::fromStdString(TOOLBAR_SETTINGS_KEY));
     for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
       settings.setArrayIndex(i);
@@ -374,11 +374,13 @@ void MainWindow::load_layout(QSettings& settings)
       addToolBar(toolbar.release());
     }
     settings.endArray();
+  } catch (const ToolBarItemModel::BadConfigurationError& e) {
+    handle_corrupted_config_file(settings, e.what());
   }
 
   restoreState(settings.value(WINDOWSTATE_SETTINGS_KEY).toByteArray());
 
-  {
+  try {
     const auto size = settings.beginReadArray(QString::fromStdString(MANAGER_SETTINGS_KEY));
     for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
       settings.setArrayIndex(i);
@@ -400,6 +402,8 @@ void MainWindow::load_layout(QSettings& settings)
       }
     }
     settings.endArray();
+  } catch (const Manager::InvalidKeyError& e) {
+    handle_corrupted_config_file(settings, e.what());
   }
 }
 
@@ -469,6 +473,16 @@ void MainWindow::update_recent_scenes_menu()
       break;
     }
   }
+}
+
+void MainWindow::handle_corrupted_config_file(const QSettings& s, const QString& what)
+{
+  const auto msg = tr("The configuration file %1 is corrupted.\n"
+                      "Delete the file and restart the application.\n"
+                      "%2").arg(s.fileName(), what);
+  LERROR << msg;
+  QMessageBox::critical(this, tr("Corrupted config file"), msg);
+  LFATAL("Corrupted config file.");
 }
 
 }  // namespace omm

@@ -5,6 +5,7 @@
 #include "splinetype.h"
 #include <QString>
 #include <variant>
+#include "logging.h"
 
 namespace omm
 {
@@ -29,7 +30,7 @@ using variant_type = std::variant<bool,
                                   int,
                                   AbstractPropertyOwner*,
                                   QString,
-                                  size_t,
+                                  std::size_t,
                                   TriggerPropertyDummyValueType,
                                   Vec2f,
                                   Vec2i,
@@ -51,7 +52,7 @@ template<typename T> constexpr std::string_view variant_type_name() noexcept
     return QT_TRANSLATE_NOOP("DataType", "Reference");
   } else if constexpr (std::is_same_v<T, QString>) {
     return QT_TRANSLATE_NOOP("DataType", "String");
-  } else if constexpr (std::is_same_v<T, size_t>) {
+  } else if constexpr (std::is_same_v<T, std::size_t>) {
     return QT_TRANSLATE_NOOP("DataType", "Option");
   } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
     return QT_TRANSLATE_NOOP("DataType", "Trigger");
@@ -107,7 +108,7 @@ template<typename T> double get_channel_value(const T& v, [[maybe_unused]] std::
   } else if constexpr (std::is_same_v<T, bool>) {
     return v ? 1.0 : 0.0;
   } else {
-    qFatal("tried get numeric value from non-numeric type.");
+    LFATAL("tried get numeric value from non-numeric type.");
     Q_UNREACHABLE();
     return 0.0;
   }
@@ -134,7 +135,7 @@ void set_channel_value(T& v, [[maybe_unused]] std::size_t channel, [[maybe_unuse
     static constexpr double BOOL_THRESHOLD = 0.5;
     v = std::abs(value) > BOOL_THRESHOLD;
   } else {
-    qFatal("tried set numeric value of non-numeric type.");
+    LFATAL("tried set numeric value of non-numeric type.");
     Q_UNREACHABLE();
   }
 }

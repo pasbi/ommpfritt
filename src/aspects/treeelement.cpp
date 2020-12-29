@@ -15,7 +15,7 @@ TreeElement<T>::TreeElement(const TreeElement& other)
   }
 }
 
-template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const size_t pos)
+template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const std::size_t pos)
 {
   assert(object->is_root());
   object->m_parent = &get();
@@ -48,11 +48,11 @@ template<typename T> std::vector<T*> TreeElement<T>::tree_children() const
   return ::transform<T*>(m_children, [](const auto& up) { return up.get(); });
 }
 
-template<typename T> size_t TreeElement<T>::n_children() const
+template<typename T> std::size_t TreeElement<T>::n_children() const
 {
   return m_children.size();
 }
-template<typename T> T& TreeElement<T>::tree_child(size_t i) const
+template<typename T> T& TreeElement<T>::tree_child(std::size_t i) const
 {
   return *m_children[i];
 }
@@ -89,7 +89,7 @@ template<typename T> std::set<T*> TreeElement<T>::all_descendants() const
   return all_descendants;
 }
 
-template<typename T> size_t TreeElement<T>::position() const
+template<typename T> std::size_t TreeElement<T>::position() const
 {
   assert(!is_root());
   const auto siblings = tree_parent().tree_children();

@@ -23,16 +23,16 @@ public:
   virtual void remove(ListOwningContext<T>& t);
   std::unique_ptr<T> remove(T& item) override;
   virtual void move(ListMoveContext<T>& context);
-  T& item(size_t i) const;
+  T& item(std::size_t i) const;
   virtual std::vector<std::unique_ptr<T>> set(std::vector<std::unique_ptr<T>> items);
 
   std::set<T*> items() const override;
   std::vector<T*> ordered_items() const;
   const T* predecessor(const T& item) const override;
   using Structure<T>::predecessor;
-  size_t position(const T& item) const override;
-  size_t insert_position(const T* predecessor) const override;
-  [[nodiscard]] size_t size() const;
+  std::size_t position(const T& item) const override;
+  std::size_t insert_position(const T* predecessor) const override;
+  [[nodiscard]] std::size_t size() const;
   bool contains(const T& item) const;
 
 private:

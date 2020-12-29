@@ -73,7 +73,7 @@ void AbstractPropertyOwner::serialize(AbstractSerializer& serializer, const Poin
 
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
   serializer.start_array(m_properties.size(), properties_pointer);
-  for (size_t i = 0; i < m_properties.size(); ++i) {
+  for (std::size_t i = 0; i < m_properties.size(); ++i) {
     const auto property_key = m_properties.keys().at(i);
     const auto property_pointer = make_pointer(properties_pointer, i);
     const auto& property = *this->property(property_key);
@@ -93,8 +93,8 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   deserializer.register_reference(m_id, *this);
 
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
-  size_t n_properties = deserializer.array_size(properties_pointer);
-  for (size_t i = 0; i < n_properties; ++i) {
+  std::size_t n_properties = deserializer.array_size(properties_pointer);
+  for (std::size_t i = 0; i < n_properties; ++i) {
     const auto property_pointer = make_pointer(properties_pointer, i);
 
     const auto property_key

@@ -255,7 +255,7 @@ void Object::serialize(AbstractSerializer& serializer, const Pointer& root) cons
 
   const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
   serializer.start_array(n_children(), children_pointer);
-  for (size_t i = 0; i < n_children(); ++i) {
+  for (std::size_t i = 0; i < n_children(); ++i) {
     const auto& child = this->tree_child(i);
     const auto child_pointer = make_pointer(children_pointer, i);
     serializer.set_value(child.type(), make_pointer(child_pointer, TYPE_POINTER));
@@ -265,7 +265,7 @@ void Object::serialize(AbstractSerializer& serializer, const Pointer& root) cons
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
   serializer.start_array(tags.size(), tags_pointer);
-  for (size_t i = 0; i < tags.size(); ++i) {
+  for (std::size_t i = 0; i < tags.size(); ++i) {
     const auto& tag = tags.item(i);
     const auto tag_pointer = make_pointer(tags_pointer, i);
     serializer.set_value(tag.type(), make_pointer(tag_pointer, TYPE_POINTER));
@@ -279,8 +279,8 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   PropertyOwner::deserialize(deserializer, root);
 
   const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
-  size_t n_children = deserializer.array_size(children_pointer);
-  for (size_t i = 0; i < n_children; ++i) {
+  std::size_t n_children = deserializer.array_size(children_pointer);
+  for (std::size_t i = 0; i < n_children; ++i) {
     const auto child_pointer = make_pointer(children_pointer, i);
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
     try {
@@ -300,10 +300,10 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   }
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
-  size_t n_tags = deserializer.array_size(tags_pointer);
+  std::size_t n_tags = deserializer.array_size(tags_pointer);
   std::vector<std::unique_ptr<Tag>> tags;
   tags.reserve(n_tags);
-  for (size_t i = 0; i < n_tags; ++i) {
+  for (std::size_t i = 0; i < n_tags; ++i) {
     const auto tag_pointer = make_pointer(tags_pointer, i);
     const auto tag_type = deserializer.get_string(make_pointer(tag_pointer, TYPE_POINTER));
     auto tag = Tag::make(tag_type, *this);
@@ -378,7 +378,7 @@ std::unique_ptr<Object> Object::repudiate(Object& repudiatee)
   return o;
 }
 
-Object& Object::adopt(std::unique_ptr<Object> adoptee, const size_t pos)
+Object& Object::adopt(std::unique_ptr<Object> adoptee, const std::size_t pos)
 {
   const auto global_transformation = adoptee->global_transformation(Space::Scene);
   Object& o = TreeElement<Object>::adopt(std::move(adoptee), pos);

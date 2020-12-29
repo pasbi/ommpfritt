@@ -29,7 +29,7 @@ SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
 
 PointSelectHandle::TangentMode SelectPointsBaseTool::tangent_mode() const
 {
-  const auto i = property(TANGENT_MODE_PROPERTY_KEY)->value<size_t>();
+  const auto i = property(TANGENT_MODE_PROPERTY_KEY)->value<std::size_t>();
   return static_cast<PointSelectHandle::TangentMode>(i);
 }
 

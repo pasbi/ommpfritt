@@ -66,12 +66,12 @@ template<typename T, typename F> T& transfer(std::unique_ptr<T> object, F consum
   return ref;
 }
 
-template<typename T, template<typename...> class Container> void reserve(Container<T>&, size_t)
+template<typename T, template<typename...> class Container> void reserve(Container<T>&, std::size_t)
 {
   // for most containers, reserving is a no op.
 }
 
-template<typename T> void reserve(std::vector<T>& c, size_t n)
+template<typename T> void reserve(std::vector<T>& c, std::size_t n)
 {
   c.reserve(n);
 }
@@ -144,7 +144,7 @@ auto is_uniform(const Ts& container,
 }
 
 template<typename T, template<typename...> class ContainerT>
-T& insert(ContainerT<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, size_t pos)
+T& insert(ContainerT<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, std::size_t pos)
 {
   auto pos_it = container.begin();
   std::advance(pos_it, pos);

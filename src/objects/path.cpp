@@ -72,14 +72,14 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   const std::size_t n_paths = deserializer.array_size(subpath_ptr);
   segments.clear();
   segments.reserve(n_paths);
-  for (size_t i = 0; i < n_paths; ++i) {
+  for (std::size_t i = 0; i < n_paths; ++i) {
     const auto pts_ptr = make_pointer(subpath_ptr, i);
     const std::size_t n_points = deserializer.array_size(pts_ptr);
     if (n_points == 0) {
       throw AbstractDeserializer::DeserializeError("Empty sub-paths are not allowed.");
     }
     segments.emplace_back();
-    for (size_t j = 0; j < n_points; ++j) {
+    for (std::size_t j = 0; j < n_points; ++j) {
       Point p;
       p.deserialize(deserializer, make_pointer(pts_ptr, j));
       segments[i].push_back(p);
