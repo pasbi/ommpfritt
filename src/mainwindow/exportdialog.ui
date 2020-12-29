@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ExportDialog</class>
- <widget class="QWidget" name="ExportDialog">
+ <widget class="QDialog" name="ExportDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>819</width>
-    <height>610</height>
+    <width>806</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,8 +39,8 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+     <widget class="QWidget" name="">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QComboBox" name="cb_format">
          <item>
@@ -60,7 +60,7 @@
          <item row="0" column="0" colspan="2">
           <widget class="omm::ReferenceLineEdit" name="cb_view"/>
          </item>
-         <item row="2" column="0" colspan="2">
+         <item row="1" column="0" colspan="2">
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -121,7 +121,7 @@
            </widget>
           </widget>
          </item>
-         <item row="3" column="0" colspan="2">
+         <item row="2" column="0" colspan="2">
           <widget class="QCheckBox" name="cb_overwrite">
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
@@ -134,7 +134,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0" colspan="2">
+         <item row="3" column="0" colspan="2">
           <widget class="QCheckBox" name="cb_animation">
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
@@ -144,7 +144,7 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
             <string>&amp;Start:</string>
@@ -154,7 +154,7 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="4" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,0">
            <item>
             <widget class="QSpinBox" name="sb_start">
@@ -190,7 +190,7 @@
            </item>
           </layout>
          </item>
-         <item row="6" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
             <string>&amp;End:</string>
@@ -200,7 +200,7 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
+         <item row="5" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,0">
            <item>
             <widget class="QSpinBox" name="sb_end">
@@ -236,7 +236,7 @@
            </item>
           </layout>
          </item>
-         <item row="7" column="0">
+         <item row="6" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
             <string>Path:</string>
@@ -246,7 +246,7 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
+         <item row="6" column="1">
           <widget class="QWidget" name="widget_1" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
             <property name="leftMargin">
@@ -267,7 +267,7 @@
            </layout>
           </widget>
          </item>
-         <item row="8" column="0" colspan="2">
+         <item row="7" column="0" colspan="2">
           <widget class="QWidget" name="widget_2" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <property name="leftMargin">
@@ -330,13 +330,6 @@
            </layout>
           </widget>
          </item>
-         <item row="9" column="0" colspan="2">
-          <widget class="QPushButton" name="pb_start">
-           <property name="text">
-            <string>St&amp;art ...</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item>
@@ -353,55 +346,51 @@
         </spacer>
        </item>
        <item>
-        <widget class="QWidget" name="w_progress" native="true">
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QPlainTextEdit" name="te_status">
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAsNeeded</enum>
-            </property>
-            <property name="undoRedoEnabled">
-             <bool>false</bool>
-            </property>
-            <property name="lineWrapMode">
-             <enum>QPlainTextEdit::NoWrap</enum>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QProgressBar" name="pb_progress">
-              <property name="value">
-               <number>0</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pb_cancel">
-              <property name="text">
-               <string>Cancel</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+        <widget class="QPlainTextEdit" name="te_status">
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAsNeeded</enum>
+         </property>
+         <property name="undoRedoEnabled">
+          <bool>false</bool>
+         </property>
+         <property name="lineWrapMode">
+          <enum>QPlainTextEdit::NoWrap</enum>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QProgressBar" name="pb_progress">
+           <property name="value">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pb_start">
+           <property name="text">
+            <string>St&amp;art ...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pb_cancel">
+           <property name="text">
+            <string>Cancel</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QDialogButtonBox" name="buttonBox">
+         <property name="standardButtons">
+          <set>QDialogButtonBox::Close</set>
+         </property>
         </widget>
        </item>
       </layout>
@@ -442,12 +431,28 @@
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>804</x>
-     <y>60</y>
+     <x>795</x>
+     <y>32</y>
     </hint>
     <hint type="destinationlabel">
-     <x>804</x>
-     <y>109</y>
+     <x>794</x>
+     <y>123</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>ExportDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>751</x>
+     <y>694</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1056</x>
+     <y>626</y>
     </hint>
    </hints>
   </connection>

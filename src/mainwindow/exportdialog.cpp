@@ -1,12 +1,12 @@
 #include "mainwindow/exportdialog.h"
-#include "mainwindow/viewport/viewport.h"
 #include "animation/animator.h"
+#include "mainwindow/application.h"
 #include "mainwindow/exporter.h"
 #include "mainwindow/exportoptions.h"
-#include "preferences/uicolors.h"
-#include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
+#include "mainwindow/viewport/viewport.h"
 #include "objects/view.h"
+#include "preferences/uicolors.h"
 #include "scene/scene.h"
 #include "stringinterpolation.h"
 #include "ui_exportdialog.h"
@@ -252,7 +252,8 @@ For numeric values, placeholder and length options may be specified after a colo
     m_ui->le_pattern->set_path(tr("{name}_{frame:04}.png"));
   }
 
-  m_ui->w_progress->hide();
+  update_enabledness(false);
+  m_ui->te_status->hide();
 }
 
 void ExportDialog::connect_gui()
@@ -336,24 +337,58 @@ void ExportDialog::connect_gui()
     m_ui->pb_progress->setMaximum(total);
     m_ui->pb_progress->setValue(current);
   });
-  connect(m_ui->pb_cancel, &QPushButton::clicked, this, [this]() {
-    m_exporter->cancel = true;
-  });
+  connect(m_ui->pb_cancel, &QPushButton::clicked, this, [this]() { m_exporter->cancel = true; });
   connect(&*m_exporter, &Exporter::auto_view_changed, this, &ExportDialog::update_view_null_label);
+
+  connect(&*m_exporter, &Exporter::finished, this, [&]() { update_enabledness(false); });
+  connect(&*m_exporter, &Exporter::started, this, [&]() { update_enabledness(true); });
 }
+
+void ExportDialog::update_enabledness(bool job_running)
+{
+  m_ui->pb_cancel->setEnabled(job_running);
+  m_ui->pb_progress->setVisible(job_running);
+  m_ui->pb_cancel->setVisible(job_running);
+  m_ui->pb_start->setEnabled(!job_running && m_options_are_plausible);
+  m_ui->pb_start->setVisible(!job_running);
+
+  const std::set<QWidget*> option_widgets{
+      m_ui->cb_format,
+      m_ui->cb_view,
+      m_ui->ne_resolution_x,
+      m_ui->ne_resolution_y,
+      m_ui->cb_overwrite,
+      m_ui->cb_animation,
+      m_ui->sb_start,
+      m_ui->sb_end,
+      m_ui->le_pattern,
+      m_ui->pb_reset_end,
+      m_ui->pb_reset_start,
+      m_ui->cb_variable,
+      m_ui->cb_ending,
+  };
+  for (auto&& w : option_widgets) {
+    w->setEnabled(!job_running);
+  }
+
+  if (job_running) {
+    m_ui->te_status->show();
+  }
+};
 
 void ExportDialog::update_pattern_edit_background()
 {
   QPalette palette = m_ui->le_pattern->palette();
   if (m_ui->le_pattern->line_edit().hasAcceptableInput()) {
     palette.setColor(QPalette::Base, ui_color(*this, QPalette::Base));
-    m_ui->pb_start->setEnabled(true);
+    m_options_are_plausible = true;
     m_ui->pb_start->setToolTip("");
   } else {
     palette.setColor(QPalette::Base, ui_color(*this, "Widget", "invalid base"));
-    m_ui->pb_start->setEnabled(false);
+    m_options_are_plausible = false;
     m_ui->pb_start->setToolTip(tr("Invalid pattern."));
   }
+  update_enabledness(m_exporter_thread.isRunning());
 
   m_ui->le_pattern->setPalette(palette);
 }
@@ -391,7 +426,6 @@ void ExportDialog::start_export()
   m_exporter->y_resolution = m_ui->ne_resolution_y->value();
   m_exporter->export_options = export_options();
 
-  m_ui->w_progress->show();
   m_ui->te_status->clear();
 
   m_exporter_thread.start();

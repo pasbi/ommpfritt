@@ -50,6 +50,7 @@ public Q_SLOTS:
   void start();
 
 Q_SIGNALS:
+  void started();
   void post_status(const QString& msg);
   void progress_changed(int current, int total);
   void finished();

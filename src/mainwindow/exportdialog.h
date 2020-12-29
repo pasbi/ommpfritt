@@ -77,6 +77,8 @@ private:
   void update_frame_range_limits();
   void update_view_null_label(const View* view);
   ExportOptions export_options() const;
+  bool m_options_are_plausible = false;
+  void update_enabledness(bool job_running);
 
 private Q_SLOTS:
   void update_pattern_edit_background();

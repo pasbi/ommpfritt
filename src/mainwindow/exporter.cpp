@@ -30,6 +30,7 @@ Exporter::Exporter(Scene& scene, const Viewport* viewport, QThread* thread)
 
 void Exporter::start()
 {
+  Q_EMIT started();
   cancel = false;
   const auto& eo = export_options;
   if (eo.animated && filename(eo.start_frame) == filename(eo.end_frame)) {
@@ -51,6 +52,7 @@ void Exporter::start()
       Q_EMIT progress_changed(count, n);
     }
   }
+  Q_EMIT finished();
 }
 
 QString Exporter::filename(int frame) const
@@ -121,7 +123,6 @@ void Exporter::render(int frame, bool allow_overwrite)
   } catch (StringInterpolation::InvalidFormatException& e) {
     Q_EMIT post_status(tr("The filename pattern is invalid."));
   }
-  Q_EMIT finished();
 }
 
 View* Exporter::active_view() const
