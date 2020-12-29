@@ -16,7 +16,7 @@
 namespace omm
 {
 ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
-    : QComboBox(parent), m_filter(PropertyFilter::accept_anything())
+    : QComboBox(parent), m_filter(PropertyFilter::accept_anything()), m_null_label(QObject::tr("< none >", "ReferenceLineEdit"))
 {
   setEditable(true);
   setAcceptDrops(true);
@@ -42,8 +42,6 @@ void ReferenceLineEdit::set_null_label(const QString& value)
 
 void ReferenceLineEdit::set_scene(Scene& scene)
 {
-  set_null_label(QObject::tr("< none >", "ReferenceLineEdit"));
-
   // scene must not be re-set and must not be cleared.
   // There's nothing fundamentally speaking against this, however, it is not required and slightly
   // simpler to program...
@@ -100,8 +98,10 @@ void ReferenceLineEdit::update_candidates()
 
 void ReferenceLineEdit::convert_text_to_placeholder_text()
 {
-  lineEdit()->setPlaceholderText(lineEdit()->text());
-  lineEdit()->setText("");
+  if (const auto pt = lineEdit()->text(); !pt.isEmpty()) {
+    lineEdit()->setPlaceholderText(pt);
+    lineEdit()->setText("");
+  }
 }
 
 void ReferenceLineEdit::set_value(const value_type& value)
