@@ -124,7 +124,7 @@ ExportDialog::~ExportDialog()
 {
   m_exporter->cancel = true;
   m_exporter_thread.quit();
-  if (!m_exporter_thread.wait(std::chrono::seconds{1})) {
+  if (!m_exporter_thread.wait(1000)) {
     LWARNING << "Failed to quit exporter thread.";
     m_exporter_thread.terminate();
   }
