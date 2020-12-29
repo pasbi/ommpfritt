@@ -125,14 +125,21 @@ void Exporter::render(int frame, bool allow_overwrite)
   }
 }
 
-View* Exporter::active_view() const
+View* Exporter::view() const
 {
-  for (auto* view : type_casts<View*>(m_scene.object_tree().items())) {
-    if (view->property(View::OUTPUT_VIEW_PROPERTY_KEY)->value<bool>()) {
-      return view;
+  auto* view = export_options.view;
+  if (view == nullptr) {
+    LINFO << "View is null. ";
+    // The output view might have changed because it may be animated.
+    // If no view is explicitely given, we want to respect that and broadcast a notification.
+    for (auto* v : type_casts<View*>(m_scene.object_tree().items())) {
+      if (v->property(View::OUTPUT_VIEW_PROPERTY_KEY)->value<bool>()) {
+        view = v;
+        break;
+      }
     }
   }
-  return nullptr;
+  return view;
 }
 
 bool Exporter::save_as_raster(const QString& filename)
@@ -169,15 +176,9 @@ void Exporter::render(QPaintDevice& device, double scale)
     renderer.painter = &painter;
 
     const auto transformation = [this, &device]() {
-      auto* view = export_options.view;
-      if (view == nullptr) {
-        // The output view might have changed because it may be animated.
-        // If no view is explicitely given, we want to respect that and broadcast a notification.
-        auto* auto_view = active_view();
-        if (auto_view != view) {
-          view = auto_view;
-          Q_EMIT auto_view_changed(view);
-        }
+      auto* view = this->view();
+      if (export_options.view == nullptr && view != nullptr) {
+        Q_EMIT auto_view_changed(view);
       }
 
       if (view == nullptr && m_viewport == nullptr) {

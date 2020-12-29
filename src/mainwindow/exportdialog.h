@@ -59,7 +59,6 @@ private:
   Scene& m_scene;
 
   void update_preview();
-  [[nodiscard]] View* view() const;
 
   std::unique_ptr<::Ui::ExportDialog> m_ui;
   std::unique_ptr<FilenamePatternValidator> m_validator;
@@ -79,6 +78,8 @@ private:
   ExportOptions export_options() const;
   bool m_options_are_plausible = false;
   void update_enabledness(bool job_running);
+  double compute_aspect_ratio() const;
+  void update_exporter();
 
 private Q_SLOTS:
   void update_pattern_edit_background();

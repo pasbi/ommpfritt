@@ -38,13 +38,13 @@ public:
   bool save_as_svg(const QString& filename);
   bool save_as_raster(const QString& filename);
   void render(QPaintDevice& device, double scale);
+  View* view() const;
 
 private:
   Scene& m_scene;
   const Viewport* const m_viewport;
   [[nodiscard]] QString filename(int frame) const;
   void render(int frame, bool allow_overwrite);
-  View* active_view() const;
 
 public Q_SLOTS:
   void start();

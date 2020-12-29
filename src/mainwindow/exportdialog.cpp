@@ -40,16 +40,6 @@ omm::Viewport& viewport()
   return omm::Application::instance().main_window()->viewport();
 }
 
-double compute_aspect_ratio(const omm::View* view)
-{
-  if (view == nullptr) {
-    return double(viewport().width()) / double(viewport().height());
-  } else {
-    const omm::Vec2f s = view->property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
-    return s.x / s.y;
-  }
-}
-
 void update_edit(omm::IntNumericEdit& primary, omm::IntNumericEdit& secondary, double aspect_ratio)
 {
   const int p_value = primary.value();
@@ -145,7 +135,8 @@ void ExportDialog::update_preview()
   int width = m_ui->lb_preview->width();
   int height = m_ui->lb_preview->height();
 
-  if (const double ar = compute_aspect_ratio(view()); double(width) / double(height) > ar) {
+  const double ar = compute_aspect_ratio();
+  if (double(width) / double(height) > ar) {
     width = static_cast<int>(height * ar);
   } else {
     height = static_cast<int>(width / ar);
@@ -161,11 +152,6 @@ void ExportDialog::update_preview()
   m_ui->lb_preview->setPixmap(QPixmap::fromImage(image));
 }
 
-View* ExportDialog::view() const
-{
-  return type_cast<View*>(kind_cast<Object*>(m_ui->cb_view->value()));
-}
-
 ExportOptions ExportDialog::export_options() const
 {
   ExportOptions eo;
@@ -173,7 +159,7 @@ ExportOptions ExportDialog::export_options() const
   eo.start_frame = m_ui->sb_start->value();
   eo.end_frame = m_ui->sb_end->value();
   eo.animated = m_ui->cb_animation->isChecked();
-  eo.view = view();
+  eo.view = type_cast<View*>(m_ui->cb_view->value());
   eo.x_resolution = m_ui->ne_resolution_x->value();
   eo.format = static_cast<ExportOptions::Format>(m_ui->cb_format->currentIndex());
   return eo;
@@ -206,11 +192,18 @@ void ExportDialog::restore_settings()
   m_ui->cb_overwrite->setChecked(settings.value(ALLOW_OVERWRITE_KEY, false).toBool());
 
   const auto& eo = m_scene.export_options();
+  update_exporter();
   m_ui->le_pattern->set_path(eo.pattern);
   m_ui->cb_animation->setChecked(eo.animated);
   m_ui->cb_view->set_value(eo.view);
   set_animation_range(eo.start_frame, eo.end_frame);
   m_ui->cb_format->setCurrentIndex(static_cast<int>(eo.format));
+}
+
+void ExportDialog::update_exporter()
+{
+  m_exporter->export_options = export_options();
+  update_view_null_label(m_exporter->view());
 }
 
 void ExportDialog::set_default_values()
@@ -219,6 +212,7 @@ void ExportDialog::set_default_values()
   static constexpr double SCALING_DEFAULT = 100.0;
   static constexpr double SCALING_STEP = 0.01;
 
+  m_ui->ne_resolution_x->set_range(0, std::numeric_limits<int>::max());
   m_ui->ne_resolution_x->set_value(default_resolution_x);
 
   m_ui->cb_view->set_filter(PropertyFilter({Kind::Object}, {{Flag::IsView}}));
@@ -342,6 +336,7 @@ void ExportDialog::connect_gui()
 
   connect(&*m_exporter, &Exporter::finished, this, [&]() { update_enabledness(false); });
   connect(&*m_exporter, &Exporter::started, this, [&]() { update_enabledness(true); });
+  connect(m_ui->cb_view, &ReferenceLineEdit::value_changed, this, &ExportDialog::update_exporter);
 }
 
 void ExportDialog::update_enabledness(bool job_running)
@@ -433,12 +428,12 @@ void ExportDialog::start_export()
 
 void ExportDialog::update_x_edit()
 {
-  update_edit(*m_ui->ne_resolution_y, *m_ui->ne_resolution_x, compute_aspect_ratio(view()));
+  update_edit(*m_ui->ne_resolution_y, *m_ui->ne_resolution_x, compute_aspect_ratio());
 }
 
 void ExportDialog::update_y_edit()
 {
-  update_edit(*m_ui->ne_resolution_x, *m_ui->ne_resolution_y, 1.0 / compute_aspect_ratio(view()));
+  update_edit(*m_ui->ne_resolution_x, *m_ui->ne_resolution_y, 1.0 / compute_aspect_ratio());
 }
 
 void ExportDialog::resizeEvent(QResizeEvent* e)
@@ -481,6 +476,17 @@ void ExportDialog::update_view_null_label(const View* view)
 {
   const QString label = view == nullptr ? tr("Viewport") : view->name();
   m_ui->cb_view->set_null_label(tr("Auto (%1)").arg(label));
+}
+
+double ExportDialog::compute_aspect_ratio() const
+{
+  const View* view = m_exporter->view();
+  if (view == nullptr) {
+    return double(viewport().width()) / double(viewport().height());
+  } else {
+    const omm::Vec2f s = view->property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
+    return s.x / s.y;
+  }
 }
 
 }  // namespace omm
