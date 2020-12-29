@@ -127,7 +127,6 @@ View* Exporter::view() const
 {
   auto* view = export_options.view;
   if (view == nullptr) {
-    LINFO << "View is null. ";
     // The output view might have changed because it may be animated.
     // If no view is explicitely given, we want to respect that and broadcast a notification.
     for (auto* v : type_casts<View*>(m_scene.object_tree().items())) {
