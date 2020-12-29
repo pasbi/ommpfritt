@@ -1,14 +1,14 @@
 #pragma once
 
-#include "properties/typedproperty.h"
+#include "properties/numericproperty.h"
 #include <Qt>
 
 namespace omm
 {
-class BoolProperty : public TypedProperty<bool>
+class BoolProperty : public NumericProperty<bool>
 {
 public:
-  using TypedProperty::TypedProperty;
+  using NumericProperty::NumericProperty;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static const PropertyDetail detail;
