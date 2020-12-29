@@ -2,7 +2,7 @@
 #include "enumnames.h"
 #include "logging.h"
 #include "mainwindow/application.h"
-#include "mainwindow/exportdialog.h"
+#include "mainwindow/exporter.h"
 #include "objects/view.h"
 #include "scene/scene.h"
 #include "subcommandlineparser.h"
@@ -24,7 +24,7 @@ void exit(omm::ExitStatus status)
 
 }  // namespace
 
-template<typename T> const T& find(omm::Scene& scene, const QString& name)
+template<typename T> T& find(omm::Scene& scene, const QString& name)
 {
   const auto type_matches = ::filter_if(scene.object_tree().items(), [](const auto* c) {
     return c->type() == T::TYPE || std::is_same_v<T, omm::Object>;
@@ -46,7 +46,7 @@ template<typename T> const T& find(omm::Scene& scene, const QString& name)
                     .arg(name)
                     .arg(name_type_matches.size());
   }
-  return static_cast<const omm::View&>(**name_type_matches.begin());
+  return static_cast<omm::View&>(**name_type_matches.begin());
 }
 
 QString interpolate_filename(QString fn_template, int i)
@@ -143,7 +143,7 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
   prepare_scene(app.scene, args);
   const int start_frame = args.get<int>("start-frame", 1);
   const int n_frames = args.get<int>("sequence-length", 1);
-  const auto& view = find<omm::View>(app.scene, args.get<QString>("view"));
+  omm::View& view = find<omm::View>(app.scene, args.get<QString>("view"));
   const bool force = args.isSet("overwrite");
   const auto resolution = calculate_resolution(args.get<int>("width"), view);
 
@@ -153,11 +153,16 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
       LERROR << QObject::tr("Refuse to overwrite existing file '%1'.").arg(filename);
       exit(omm::ExitStatus::refuse_overwrite_file);
     }
-    QImage image(resolution, QImage::Format_ARGB32_Premultiplied);
-    image.fill(Qt::red);
-    image.fill(Qt::transparent);
-    omm::ExportDialog::render(animator.scene, &view, image);
-    image.save(filename);
+    omm::Exporter exporter{animator.scene};
+    exporter.export_options.view = &view;
+    if (filename.toLower().endsWith(".svg")) {
+      exporter.export_options.scale = omm::Exporter::SVG_SCALE_FACTOR;
+      exporter.save_as_svg(filename);
+    } else {
+      exporter.export_options.x_resolution = resolution.width();
+      exporter.y_resolution = resolution.height();
+      exporter.save_as_raster(filename);
+    }
   };
 
   auto& animator = app.scene.animator();

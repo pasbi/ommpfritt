@@ -1,10 +1,12 @@
 #pragma once
 
+#include "mainwindow/exportoptions.h"
 #include <QAbstractListModel>
 #include <QDialog>
 #include <QImage>
 #include <QPicture>
 #include <memory>
+#include <QThread>
 
 class QPushButton;
 class QLabel;
@@ -22,6 +24,7 @@ template<typename> class NumericEdit;
 class ReferenceLineEdit;
 class View;
 class FilenamePatternValidator;
+class Exporter;
 
 class ExportDialog : public QDialog
 {
@@ -46,29 +49,25 @@ public:
   ExportDialog& operator=(ExportDialog&&) = delete;
   ExportDialog& operator=(const ExportDialog&) = delete;
 
-  static void render(Scene& scene, const View* view, QPaintDevice& device, double scale = 1.0);
-
 protected:
   void resizeEvent(QResizeEvent* e) override;
   void showEvent(QShowEvent* e) override;
   void hideEvent(QHideEvent* e) override;
+  void closeEvent(QCloseEvent* e) override;
 
 private:
   Scene& m_scene;
 
   void update_preview();
-  [[nodiscard]] const View* view() const;
-  bool save_as_raster(const QString& filename);
-  bool save_as_svg(const QString& filename);
-
-  int render(int frame, bool allow_overwrite);
-  [[nodiscard]] QString filename(int frame) const;
+  [[nodiscard]] View* view() const;
 
   std::unique_ptr<::Ui::ExportDialog> m_ui;
   std::unique_ptr<FilenamePatternValidator> m_validator;
   std::unique_ptr<MapListModel> m_raster_format_list_model;
   std::unique_ptr<MapListModel> m_svg_format_list_model;
   std::unique_ptr<MapListModel> m_variable_list_model;
+  QThread m_exporter_thread;
+  std::unique_ptr<Exporter> m_exporter;
 
   void update_active_view();
   void save_settings();
@@ -77,6 +76,7 @@ private:
   void connect_gui();
   void set_animation_range(int start, int end);
   void update_frame_range_limits();
+  ExportOptions export_options() const;
 
 private Q_SLOTS:
   void update_pattern_edit_background();
@@ -86,10 +86,6 @@ private Q_SLOTS:
   void start_export();
   void update_y_edit();
   void update_x_edit();
-
-Q_SIGNALS:
-  void append_status(const QString& msg);
-  void progress(int current, int total);
 };
 
 }  // namespace omm

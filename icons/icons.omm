@@ -2,12 +2,20 @@
     "animation": {
         "current-frame": 1,
         "end-frame": 100,
-        "filename-pattern": "frame_%%%%.png",
-        "overwrite-file": false,
         "play-mode": 0,
         "start-frame": 1
     },
     "colors": [],
+    "export_options": {
+        "animated": true,
+        "end": 17,
+        "format": 0,
+        "pattern": "{name}{frame:04}.png",
+        "scale": 6.9533392334306e-310,
+        "start": 14,
+        "view": 3608978758057117396,
+        "x_resolution": 1000
+    },
     "root": {
         "children": [
             {

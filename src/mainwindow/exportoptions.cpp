@@ -14,6 +14,7 @@ void ExportOptions::serialize(AbstractSerializer& serializer, const Pointer& poi
   serializer.set_value(end_frame, make_pointer(pointer, END_FRAME_KEY));
   serializer.set_value(pattern, make_pointer(pointer, PATTERN_KEY));
   serializer.set_value(animated, make_pointer(pointer, ANIMATED_KEY));
+  serializer.set_value(scale, make_pointer(pointer, SCALE_KEY));
   serializer.set_value(static_cast<int>(format), make_pointer(pointer, FORMAT_KEY));
 }
 
@@ -26,6 +27,7 @@ void ExportOptions::deserialize(AbstractDeserializer& deserializer, const Pointe
   end_frame = deserializer.get_int(make_pointer(pointer, END_FRAME_KEY));
   pattern = deserializer.get_string(make_pointer(pointer, PATTERN_KEY));
   animated = deserializer.get_int(make_pointer(pointer, ANIMATED_KEY));
+  scale = deserializer.get_double(make_pointer(pointer, SCALE_KEY));
   format = static_cast<Format>(deserializer.get_int(make_pointer(pointer, FORMAT_KEY)));
   deserializer.register_reference_polisher(*this);
 }

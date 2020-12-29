@@ -24,6 +24,7 @@ struct ExportOptions
   static constexpr auto END_FRAME_KEY = "end";
   static constexpr auto ANIMATED_KEY = "animated";
   static constexpr auto FORMAT_KEY = "format";
+  static constexpr auto SCALE_KEY = "scale";
 
   View* view = nullptr;
   int x_resolution;
@@ -32,6 +33,7 @@ struct ExportOptions
   int end_frame;
   bool animated;
   Format format;
+  double scale;
 
 private:
   std::size_t m_view_id;  // required for deserialization only

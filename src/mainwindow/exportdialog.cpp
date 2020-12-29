@@ -1,12 +1,12 @@
 #include "mainwindow/exportdialog.h"
-#include "animation/animator.h"
-#include "geometry/vec2.h"
-#include "mainwindow/application.h"
-#include "mainwindow/exportoptions.h"
-#include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
+#include "animation/animator.h"
+#include "mainwindow/exporter.h"
+#include "mainwindow/exportoptions.h"
+#include "preferences/uicolors.h"
+#include "mainwindow/application.h"
+#include "mainwindow/mainwindow.h"
 #include "objects/view.h"
-#include "renderers/painter.h"
 #include "scene/scene.h"
 #include "stringinterpolation.h"
 #include "ui_exportdialog.h"
@@ -21,7 +21,6 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QVBoxLayout>
-#include <QtSvg/QSvgGenerator>
 
 namespace
 {
@@ -59,15 +58,6 @@ void update_edit(omm::IntNumericEdit& primary, omm::IntNumericEdit& secondary, d
   secondary.set_value(s_value);
 }
 
-QString interpolate_filename(const QString& pattern,
-                             const QString& scene_path,
-                             const QString& scene_name,
-                             int frame)
-{
-  return omm::StringInterpolation(pattern,
-                                  {{"path", scene_path}, {"name", scene_name}, {"frame", frame}});
-}
-
 }  // namespace
 
 namespace omm
@@ -78,7 +68,7 @@ public:
   QValidator::State validate(QString& input, int&) const override
   {
     try {
-      interpolate_filename(input, "", "", 0);
+      Exporter::interpolate_filename(input, "", "", 0);
     } catch (const StringInterpolation::InvalidFormatException& e) {
       return QValidator::Intermediate;
     }
@@ -129,19 +119,27 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
       m_svg_format_list_model(new MapListModel{{{tr("SVG"), ".svg"}}}),
       m_variable_list_model(new MapListModel{{{tr("Scene Name"), "{name}"},
                                               {tr("Scene Path"), "{path}"},
-                                              {tr("Frame Number"), "{frame:04}"}}})
+                                              {tr("Frame Number"), "{frame:04}"}}}),
+      m_exporter(new Exporter(scene, &viewport(), &m_exporter_thread))
 {
   m_ui->setupUi(this);
   set_default_values();
   connect_gui();
   update_y_edit();
-  update_preview();
   update_active_view();
   update_pattern_edit_background();
   m_ui->splitter->setSizes({width(), 1});
 }
 
-ExportDialog::~ExportDialog() = default;
+ExportDialog::~ExportDialog()
+{
+  m_exporter->cancel = true;
+  m_exporter_thread.quit();
+  if (!m_exporter_thread.wait(std::chrono::seconds{1})) {
+    LWARNING << "Failed to quit exporter thread.";
+    m_exporter_thread.terminate();
+  }
+}
 
 void ExportDialog::update_preview()
 {
@@ -159,94 +157,14 @@ void ExportDialog::update_preview()
     QPainter painter(&image);
     UiColors::draw_background(painter, image.rect());
   }
-  render(m_scene, view(), image);
+  m_exporter->export_options = export_options();
+  m_exporter->render(image, 1.0);
   m_ui->lb_preview->setPixmap(QPixmap::fromImage(image));
 }
 
-const View* ExportDialog::view() const
+View* ExportDialog::view() const
 {
-  return type_cast<const View*>(kind_cast<Object*>(m_ui->cb_view->value()));
-}
-
-void ExportDialog::render(Scene& scene, const View* view, QPaintDevice& device, double scale)
-{
-  QPicture picture;
-  {
-    QPainter painter(&picture);
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    Painter renderer(scene, Painter::Category::Objects);
-    renderer.painter = &painter;
-
-    const auto transformation = [&device, view]() {
-      if (view == nullptr) {
-        const auto t = viewport().viewport_transformation();
-        const auto s = device.width() / double(viewport().width());
-        return ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
-      } else {
-        const auto t = view->global_transformation(Space::Scene).inverted();
-        const auto view_size = view->property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
-        const auto s = device.width() / double(view_size.x);
-        const auto d = view_size / 2.0;
-        return ObjectTransformation().scaled(Vec2f(s, s)).apply(t.translated(d));
-      }
-    }();
-
-    scene.object_tree().root().set_transformation(transformation);
-    scene.evaluate_tags();
-
-    Painter::Options options(device);
-    renderer.render(options);
-  }
-
-  QPainter final_painter(&device);
-  final_painter.scale(scale, scale);
-  final_painter.drawPicture(QPointF(0.0, 0.0), picture);
-}
-
-bool ExportDialog::save_as_raster(const QString& filename)
-{
-  QImage image(m_ui->ne_resolution_x->value(),
-               m_ui->ne_resolution_y->value(),
-               QImage::Format_ARGB32_Premultiplied);
-  image.fill(Qt::transparent);
-  render(m_scene, view(), image);
-  LINFO << "Wrote file '" << filename << "'.";
-  return image.save(filename);
-}
-
-bool ExportDialog::save_as_svg(const QString& filename)
-{
-  QSvgGenerator generator;
-  generator.setFileName(filename);
-  const auto scale = m_ui->ne_scaling->value();
-  if (const auto* view = this->view(); view != nullptr) {
-    auto view_box_size = view->property(View::SIZE_PROPERTY_KEY)->value<Vec2f>();
-    view_box_size *= scale / view_box_size.x;
-    generator.setViewBox(QRectF(0.0, 0.0, view_box_size.x, view_box_size.y));
-  }
-  static constexpr double SVG_SCALE_FACTOR = -4.0 / 3.0;
-  render(m_scene, view(), generator, SVG_SCALE_FACTOR * scale);
-  LINFO << "Wrote file '" << filename << "'.";
-  return true;
-}
-
-QString ExportDialog::filename(int frame) const
-{
-  const QFileInfo scene_fi(m_scene.filename());
-  const auto scene_path = scene_fi.dir().path();
-  const auto scene_name = scene_fi.baseName();
-
-  QString pattern = m_ui->le_pattern->path();
-
-  if (!QFileInfo(pattern).isAbsolute()) {
-    pattern = scene_path + "/" + pattern;
-  }
-  if (!QFileInfo(pattern).isAbsolute()) {
-    pattern = QApplication::applicationDirPath() + "/" + pattern;
-  }
-
-  return ::interpolate_filename(pattern, scene_path, scene_name, frame);
+  return type_cast<View*>(kind_cast<Object*>(m_ui->cb_view->value()));
 }
 
 void ExportDialog::update_active_view()
@@ -260,20 +178,24 @@ void ExportDialog::update_active_view()
   }
 }
 
-void ExportDialog::save_settings()
+ExportOptions ExportDialog::export_options() const
 {
-  QSettings settings;
-  settings.setValue(ALLOW_OVERWRITE_KEY, m_ui->cb_overwrite->isChecked());
-
   ExportOptions eo;
   eo.pattern = m_ui->le_pattern->path();
   eo.start_frame = m_ui->sb_start->value();
   eo.end_frame = m_ui->sb_end->value();
   eo.animated = m_ui->cb_animation->isChecked();
-  eo.view = type_cast<View*>(m_ui->cb_view->value());
+  eo.view = view();
   eo.x_resolution = m_ui->ne_resolution_x->value();
   eo.format = static_cast<ExportOptions::Format>(m_ui->cb_format->currentIndex());
-  m_scene.set_export_options(eo);
+  return eo;
+}
+
+void ExportDialog::save_settings()
+{
+  QSettings settings;
+  settings.setValue(ALLOW_OVERWRITE_KEY, m_ui->cb_overwrite->isChecked());
+  m_scene.set_export_options(export_options());
 }
 
 void ExportDialog::set_animation_range(int start, int end)
@@ -298,6 +220,7 @@ void ExportDialog::restore_settings()
   const auto& eo = m_scene.export_options();
   m_ui->le_pattern->set_path(eo.pattern);
   m_ui->cb_animation->setChecked(eo.animated);
+  LINFO << "SET VIEW: " << (eo.view == nullptr ? "null" : eo.view->name());
   m_ui->cb_view->set_value(eo.view);
   set_animation_range(eo.start_frame, eo.end_frame);
   m_ui->cb_format->setCurrentIndex(static_cast<int>(eo.format));
@@ -421,15 +344,13 @@ void ExportDialog::connect_gui()
     update_pattern_edit_background();
     update_ending_cb();
   });
-  connect(this, &ExportDialog::append_status, this, [this](const QString& message) {
-    auto& te = *m_ui->te_status;
-    te.moveCursor(QTextCursor::End);
-    te.insertPlainText(message);
-    te.moveCursor(QTextCursor::End);
-  });
-  connect(this, &ExportDialog::progress, this, [this](int current, int total) {
+  connect(&*m_exporter, &Exporter::post_status, m_ui->te_status, &QPlainTextEdit::appendPlainText);
+  connect(&*m_exporter, &Exporter::progress_changed, this, [this](int current, int total) {
     m_ui->pb_progress->setMaximum(total);
     m_ui->pb_progress->setValue(current);
+  });
+  connect(m_ui->pb_cancel, &QPushButton::clicked, this, [this]() {
+    m_exporter->cancel = true;
   });
 }
 
@@ -476,105 +397,16 @@ void ExportDialog::reset_end_frame()
   set_animation_range(start_frame, end_frame);
 }
 
-int ExportDialog::render(int frame, bool allow_overwrite)
-{
-  const auto mb = [this](const QMessageBox::Icon icon, const QString& title, const QString& msg) {
-    const auto buttons = QMessageBox::Cancel | QMessageBox::Ignore | QMessageBox::Retry;
-    QMessageBox mb{icon, title, msg, buttons, this};
-    mb.setDefaultButton(QMessageBox::Cancel);
-    return mb.exec();
-  };
-
-  try {
-    const QString filename = this->filename(frame);
-    Q_EMIT append_status(tr("Writing %1 ...").arg(filename));
-    const QFileInfo fi(filename);
-    const auto dir = fi.dir();
-    if (!dir.exists()) {
-      if (!dir.mkpath(dir.path())) {
-        LERROR << "Failed to create directory '" << dir.path() << "'.";
-        return mb(QMessageBox::Critical,
-                  tr("Failed to create directory"),
-                  tr("Failed to create directory '%1'.").arg(dir.path()));
-      } else {
-        LINFO << "Created directory '" << dir.path() << "'.";
-      }
-    }
-
-    if (fi.exists() && !allow_overwrite) {
-      LINFO << "Did not overwrite existing '" << filename << "'.";
-      return mb(QMessageBox::Information,
-                tr("Failed to overwrite"),
-                tr("No permission to overwrite existing file '%1'.").arg(filename));
-      return QMessageBox::Ignore;
-    } else if (QFileInfo(fi.dir().path()).isWritable()) {
-      const auto save_as = [this, filename]() {
-        switch (m_ui->cb_format->currentIndex()) {
-        case 0:
-          return save_as_raster(filename);
-        case 1:
-          return save_as_svg(filename);
-        default:
-          Q_UNREACHABLE();
-        }
-      };
-      if (save_as()) {
-        return QMessageBox::Ok;
-      } else {
-        LERROR << "Exporting frame " << frame << " failed.";
-        return mb(QMessageBox::Critical, tr("Error"), tr("Unexpected error."));
-      }
-    } else {
-      LERROR << "Failed to write '" << filename << "'.";
-      return mb(QMessageBox::Critical,
-                tr("Invalid filename"),
-                tr("The filename '%1' cannot be written.").arg(filename));
-    }
-  } catch (StringInterpolation::InvalidFormatException& e) {
-    return mb(QMessageBox::Critical, tr("Invalid Pattern"), tr("The filename pattern is invalid."));
-  }
-}
-
 void ExportDialog::start_export()
 {
-  const bool allow_overwrite = m_ui->cb_overwrite->isChecked();
-  const bool animation = m_ui->cb_animation->isChecked();
-  const int start_frame = m_ui->sb_start->value();
-  const int end_frame = animation ? m_ui->sb_end->value() : start_frame;
+  m_exporter->allow_overwrite = m_ui->cb_overwrite->isChecked();
+  m_exporter->y_resolution = m_ui->ne_resolution_y->value();
+  m_exporter->export_options = export_options();
 
   m_ui->w_progress->show();
   m_ui->te_status->clear();
 
-  if (animation && filename(start_frame) == filename(end_frame)) {
-    QMessageBox::warning(this,
-                         tr("Invalid pattern."),
-                         tr("The pattern generates the same file name for multiple frames."
-                            "Insert the frame number placeholder {frame}."));
-    return;
-  }
-
-  bool cancel = false;
-  bool retry = true;
-  Q_EMIT progress(0, end_frame - start_frame);
-  for (int frame = start_frame; !cancel && frame <= end_frame; ++frame) {
-    m_scene.animator().set_current(frame);
-
-    do {
-      const auto status = render(frame, allow_overwrite);
-      if (status == QMessageBox::Ok) {
-        Q_EMIT append_status(tr("done.\n"));
-      } else {
-        Q_EMIT append_status(tr("fail.\n"));
-      }
-
-      retry = !!(status & QMessageBox::Retry);
-      cancel = !!(status & QMessageBox::Cancel);
-    } while (retry);
-    Q_EMIT progress(frame - start_frame, end_frame - start_frame);
-  }
-  if (!cancel) {
-    QMessageBox::information(this, tr("Done."), tr("Exporting done."));
-  }
+  m_exporter_thread.start();
 }
 
 void ExportDialog::update_x_edit()
@@ -605,6 +437,22 @@ void ExportDialog::hideEvent(QHideEvent* e)
 {
   save_settings();
   QDialog::hideEvent(e);
+}
+
+void ExportDialog::closeEvent(QCloseEvent* e)
+{
+  if (m_exporter_thread.isRunning()) {
+    const auto msg = tr("A rendering job is currently running. Do you want to cancel it?");
+    const auto answer = QMessageBox::question(this,
+                                              QApplication::applicationName(),
+                                              msg,
+                                              QMessageBox::Yes | QMessageBox::No);
+    if (answer == QMessageBox::No) {
+      e->ignore();
+      return;
+    }
+  }
+  QDialog::closeEvent(e);
 }
 
 }  // namespace omm

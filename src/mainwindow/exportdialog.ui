@@ -39,26 +39,26 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QComboBox" name="cb_format">
+         <item>
+          <property name="text">
+           <string>Raster</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SVG</string>
+          </property>
+         </item>
+        </widget>
+       </item>
        <item>
         <layout class="QFormLayout" name="formLayout_3">
          <item row="0" column="0" colspan="2">
           <widget class="omm::ReferenceLineEdit" name="cb_view"/>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QComboBox" name="cb_format">
-           <item>
-            <property name="text">
-             <string>Raster</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>SVG</string>
-            </property>
-           </item>
-          </widget>
          </item>
          <item row="2" column="0" colspan="2">
           <widget class="QStackedWidget" name="stackedWidget">
