@@ -188,6 +188,7 @@ jobs:
           mingw-w64-x86_64-cmake \
           mingw-w64-x86_64-mesa \
           mingw-w64-x86_64-gtkmm3 \
+          mingw-w64-x86_64-icu \
           mingw-w64-x86_64-imagemagick
       taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
       export PATH=/C/tools/msys64/mingw64/bin:$PATH
