@@ -369,7 +369,7 @@ void ExportDialog::update_enabledness(bool job_running)
   if (job_running) {
     m_ui->te_status->show();
   }
-};
+}
 
 void ExportDialog::update_pattern_edit_background()
 {
