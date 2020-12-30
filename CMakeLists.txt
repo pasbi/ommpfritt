@@ -108,9 +108,9 @@ if (MINGW)
         libgslcblas-0.dll
         libharfbuzz-0.dll
         libiconv-2.dll
-        libicudt67.dll
-        libicuin67.dll
-        libicuuc67.dll
+        libicudt68.dll
+        libicuin68.dll
+        libicuuc68.dll
         libidn2-0.dll
         libintl-8.dll
         libjpeg-8.dll
