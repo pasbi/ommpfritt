@@ -39,7 +39,6 @@ void Exporter::start()
     const auto n = eo.end_frame - eo.start_frame + 1;
     Q_EMIT progress_changed(count, n);
 
-#pragma omp parallel for
     for (int frame = eo.start_frame; frame <= eo.end_frame; ++frame) {
       if (cancel) {
         break;
