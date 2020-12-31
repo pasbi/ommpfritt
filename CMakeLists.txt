@@ -93,7 +93,7 @@ add_library(libommpfritt STATIC)
 
 if (MINGW)
   get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
-  FILE (GLOB required_system_dlls RELATIVE 
+  FILE (GLOB required_system_dlls 
         "${MinGWPath}/libbrotlicommon.dll"
         "${MinGWPath}/libbrotlidec.dll"
         "${MinGWPath}/libbz2-1.dll"
