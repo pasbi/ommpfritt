@@ -93,7 +93,7 @@ add_library(libommpfritt STATIC)
 
 if (MINGW)
   get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
-  SET(required_system_dlls
+  FILE (GLOB required_system_dlls RELATIVE "${MinGWPath}"
         libbrotlicommon.dll
         libbrotlidec.dll
         libbz2-1.dll
@@ -108,9 +108,9 @@ if (MINGW)
         libgslcblas-0.dll
         libharfbuzz-0.dll
         libiconv-2.dll
-        libicudt68.dll
-        libicuin68.dll
-        libicuuc68.dll
+        libicudt*.dll
+        libicuin*.dll
+        libicuuc*.dll
         libidn2-0.dll
         libintl-8.dll
         libjpeg-8.dll
@@ -125,7 +125,7 @@ if (MINGW)
         libplc4.dll
         libplds4.dll
         libpng16-16.dll
-        libpoppler-103.dll
+        libpoppler-*.dll
         libpoppler-qt5-1.dll
         libpsl-5.dll
         libpython3.8.dll
@@ -148,7 +148,9 @@ if (MINGW)
         zlib1.dll
   )
   message(STATUS "mingw path: ${MinGWPath}")
+  message(STATUS "dlls: ${required_system_dlls}")
   list(TRANSFORM required_system_dlls PREPEND "${MinGWPath}/")
+  message(STATUS "absolute dlls: ${required_system_dlls}")
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
   install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
 
