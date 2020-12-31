@@ -93,75 +93,72 @@ add_library(libommpfritt STATIC)
 
 if (MINGW)
   get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
-  FILE (GLOB required_system_dlls RELATIVE "${MinGWPath}"
-        libbrotlicommon.dll
-        libbrotlidec.dll
-        libbz2-1.dll
-        libcrypto-1_1-x64.dll
-        libcurl-4.dll
-        libdouble-conversion.dll
-        libfreetype-6.dll
-        libgcc_s_seh-1.dll
-        libglib-2.0-0.dll
-        libgraphite2.dll
-        libgsl-25.dll
-        libgslcblas-0.dll
-        libharfbuzz-0.dll
-        libiconv-2.dll
-        libicudt*.dll
-        libicuin*.dll
-        libicuuc*.dll
-        libidn2-0.dll
-        libintl-8.dll
-        libjpeg-8.dll
-        libKF5ItemModels.dll
-        liblcms2-2.dll
-        liblzma-5.dll
-        libnghttp2-14.dll
-        libnspr4.dll
-        libopenjp2-7.dll
-        libpcre-1.dll
-        libpcre2-16-0.dll
-        libplc4.dll
-        libplds4.dll
-        libpng16-16.dll
-        libpoppler-*.dll
-        libpoppler-qt5-1.dll
-        libpsl-5.dll
-        libpython3.8.dll
-        libssh2-1.dll
-        libssl-1_1-x64.dll
-        libstdc++-6.dll
-        libtiff-5.dll
-        libunistring-2.dll
-        libwinpthread-1.dll
-        libzstd.dll
-        nss3.dll
-        nssutil3.dll
-        Qt5Core.dll
-        Qt5Gui.dll
-        Qt5Svg.dll
-        Qt5Widgets.dll
-        Qt5WinExtras.dll
-        Qt5Xml.dll
-        smime3.dll
-        zlib1.dll
+  FILE (GLOB required_system_dlls RELATIVE 
+        "${MinGWPath}/libbrotlicommon.dll"
+        "${MinGWPath}/libbrotlidec.dll"
+        "${MinGWPath}/libbz2-1.dll"
+        "${MinGWPath}/libcrypto-1_1-x64.dll"
+        "${MinGWPath}/libcurl-4.dll"
+        "${MinGWPath}/libdouble-conversion.dll"
+        "${MinGWPath}/libfreetype-6.dll"
+        "${MinGWPath}/libgcc_s_seh-1.dll"
+        "${MinGWPath}/libglib-2.0-0.dll"
+        "${MinGWPath}/libgraphite2.dll"
+        "${MinGWPath}/libgsl-25.dll"
+        "${MinGWPath}/libgslcblas-0.dll"
+        "${MinGWPath}/libharfbuzz-0.dll"
+        "${MinGWPath}/libiconv-2.dll"
+        "${MinGWPath}/libicudt*.dll"
+        "${MinGWPath}/libicuin*.dll"
+        "${MinGWPath}/libicuuc*.dll"
+        "${MinGWPath}/libidn2-0.dll"
+        "${MinGWPath}/libintl-8.dll"
+        "${MinGWPath}/libjpeg-8.dll"
+        "${MinGWPath}/libKF5ItemModels.dll"
+        "${MinGWPath}/liblcms2-2.dll"
+        "${MinGWPath}/liblzma-5.dll"
+        "${MinGWPath}/libnghttp2-14.dll"
+        "${MinGWPath}/libnspr4.dll"
+        "${MinGWPath}/libopenjp2-7.dll"
+        "${MinGWPath}/libpcre-1.dll"
+        "${MinGWPath}/libpcre2-16-0.dll"
+        "${MinGWPath}/libplc4.dll"
+        "${MinGWPath}/libplds4.dll"
+        "${MinGWPath}/libpng16-16.dll"
+        "${MinGWPath}/libpoppler-*.dll"
+        "${MinGWPath}/libpoppler-qt5-1.dll"
+        "${MinGWPath}/libpsl-5.dll"
+        "${MinGWPath}/libpython3.8.dll"
+        "${MinGWPath}/libssh2-1.dll"
+        "${MinGWPath}/libssl-1_1-x64.dll"
+        "${MinGWPath}/libstdc++-6.dll"
+        "${MinGWPath}/libtiff-5.dll"
+        "${MinGWPath}/libunistring-2.dll"
+        "${MinGWPath}/libwinpthread-1.dll"
+        "${MinGWPath}/libzstd.dll"
+        "${MinGWPath}/nss3.dll"
+        "${MinGWPath}/nssutil3.dll"
+        "${MinGWPath}/Qt5Core.dll"
+        "${MinGWPath}/Qt5Gui.dll"
+        "${MinGWPath}/Qt5Svg.dll"
+        "${MinGWPath}/Qt5Widgets.dll"
+        "${MinGWPath}/Qt5WinExtras.dll"
+        "${MinGWPath}/Qt5Xml.dll"
+        "${MinGWPath}/smime3.dll"
   )
   message(STATUS "mingw path: ${MinGWPath}")
   message(STATUS "dlls: ${required_system_dlls}")
-  list(TRANSFORM required_system_dlls PREPEND "${MinGWPath}/")
-  message(STATUS "absolute dlls: ${required_system_dlls}")
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
   install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
 
-  file(GLOB python_filefwefwrs ${MinGWPath}/../lib/python3.8/*.py)
-  foreach (fn IN LISTS python_filefwefwrs)
+  file(GLOB python_files ${MinGWPath}/../lib/python3.8/*.py)
+  foreach (fn IN LISTS python_files)
     install(FILES ${fn} DESTINATION lib/python3.8/)
   endforeach()
 
   install(FILES ${MinGWPath}/../lib/python3.8/LICENSE.txt DESTINATION lib/)
-  list(APPEND python_dirsfwfrw collections ctypes encodings json multiprocessing)
-  foreach (dir IN LISTS python_dirsfwfrw)
+  list(APPEND python_dirs collections ctypes encodings json multiprocessing)
+  foreach (dir IN LISTS python_dirs)
     install(DIRECTORY "${MinGWPath}/../lib/python3.8/${dir}" DESTINATION lib/python3.8/)
   endforeach()
 
