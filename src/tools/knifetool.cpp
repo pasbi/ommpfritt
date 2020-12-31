@@ -52,7 +52,7 @@ bool KnifeTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEve
     return true;
   } else if (m_is_cutting) {
     m_points.clear();
-    for (auto&& path : ::type_cast<Path*>(scene()->item_selection<Object>())) {
+    for (auto&& path : ::type_casts<Path*>(scene()->item_selection<Object>())) {
       const auto path_vector
           = path->global_transformation(Space::Viewport).apply(path->geom_paths());
       const auto cut_points
@@ -83,7 +83,7 @@ bool KnifeTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
   if (m_is_cutting) {
-    if (const auto paths = ::type_cast<Path*>(scene()->item_selection<Object>()); !paths.empty()) {
+    if (const auto paths = ::type_casts<Path*>(scene()->item_selection<Object>()); !paths.empty()) {
       std::unique_ptr<Macro> macro;
       for (auto&& path : paths) {
         const auto path_vector

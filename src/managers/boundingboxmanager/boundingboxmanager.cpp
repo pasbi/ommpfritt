@@ -232,7 +232,7 @@ void BoundingBoxManager::reset_transformation()
   m_old_bounding_box = update_manager();
   switch (m_current_mode) {
   case Mode::Points:
-    m_transform_points_helper.update(type_cast<Path*>(scene().item_selection<Object>()));
+    m_transform_points_helper.update(type_casts<Path*>(scene().item_selection<Object>()));
     break;
   case Mode::Objects:
     m_transform_objects_helper.update(scene().item_selection<Object>());

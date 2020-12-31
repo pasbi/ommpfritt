@@ -91,10 +91,10 @@ class ReferencePolisher
 public:
   virtual ~ReferencePolisher() = default;
   ReferencePolisher() = default;
-  ReferencePolisher(ReferencePolisher&&) = delete;
+  ReferencePolisher(ReferencePolisher&&) = default;
   ReferencePolisher(const ReferencePolisher&) = default;
-  ReferencePolisher& operator=(ReferencePolisher&&) = delete;
-  ReferencePolisher& operator=(const ReferencePolisher&) = delete;
+  ReferencePolisher& operator=(ReferencePolisher&&) = default;
+  ReferencePolisher& operator=(const ReferencePolisher&) = default;
 
 protected:
   virtual void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;
@@ -118,18 +118,20 @@ public:
   void add_references(const std::set<AbstractPropertyOwner*>& existing_references);
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  virtual std::size_t array_size(const Pointer& pointer) = 0;
-  virtual bool get_bool(const Pointer& pointer) = 0;
-  virtual int get_int(const Pointer& pointer) = 0;
-  virtual double get_double(const Pointer& pointer) = 0;
-  virtual QString get_string(const Pointer& pointer) = 0;
-  virtual std::size_t get_size_t(const Pointer& pointer) = 0;
-  virtual Color get_color(const Pointer& pointer) = 0;
-  virtual Vec2f get_vec2f(const Pointer& pointer) = 0;
-  virtual Vec2i get_vec2i(const Pointer& pointer) = 0;
-  virtual PolarCoordinates get_polarcoordinates(const Pointer& pointer) = 0;
-  virtual TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) = 0;
-  virtual SplineType get_spline(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual std::size_t array_size(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual bool get_bool(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual int get_int(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual double get_double(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual QString get_string(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual std::size_t get_size_t(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual Color get_color(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual Vec2f get_vec2f(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual Vec2i get_vec2i(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual PolarCoordinates get_polarcoordinates(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual TriggerPropertyDummyValueType
+  get_trigger_dummy_value(const Pointer& pointer)
+      = 0;
+  [[nodiscard]] virtual SplineType get_spline(const Pointer& pointer) = 0;
 
   void register_reference(std::size_t id, AbstractPropertyOwner& reference);
   void register_reference_polisher(ReferencePolisher& polisher);

@@ -29,8 +29,9 @@ class Animator;
 class NamedColors;
 class ColorProperty;
 class Node;
+struct ExportOptions;
 
-template<typename T> struct SceneStructure;
+template<typename> struct SceneStructure;
 template<> struct SceneStructure<Object> {
   using type = ObjectTree;
 };
@@ -97,7 +98,7 @@ public:
   {
     static const auto type_matches = [](const auto* v) { return v->type() == ItemT::TYPE; };
     const auto items = item_selection<typename ItemT::factory_item_type>();
-    return type_cast<ItemT*>(::filter_if(items, type_matches));
+    return type_casts<ItemT*>(::filter_if(items, type_matches));
   }
 
   void emit_selection_changed_signal();
@@ -172,6 +173,7 @@ private:
   // === Commands ===
 private:
   std::unique_ptr<HistoryModel> m_history;
+  bool m_has_pending_changes = false;
 
 public:
   [[nodiscard]] HistoryModel& history() const
@@ -183,6 +185,7 @@ public:
     submit(std::make_unique<CommandT>(std::forward<Args>(args)...));
   }
   void submit(std::unique_ptr<Command> command) const;
+  [[nodiscard]] bool has_pending_changes() const;
 
   // === Tools ===
 private:
@@ -224,6 +227,14 @@ public:
     return *m_named_colors;
   }
   [[nodiscard]] std::set<ColorProperty*> find_named_color_holders(const QString& name) const;
+
+  // === ExportOptions ===
+public:
+  const ExportOptions& export_options() const;
+  void set_export_options(const ExportOptions& export_options);
+
+private:
+  std::unique_ptr<ExportOptions> m_export_options;
 };
 
 }  // namespace omm

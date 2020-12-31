@@ -61,7 +61,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool allow_clear)
 {
-  const auto paths = type_cast<Path*>(scene()->template item_selection<Object>());
+  const auto paths = type_casts<Path*>(scene()->template item_selection<Object>());
   if (AbstractSelectTool::mouse_press(pos, event)) {
     m_transform_points_helper.update(paths);
     return true;
@@ -80,7 +80,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 
 bool SelectPointsBaseTool::has_transformation() const
 {
-  const auto paths = type_cast<Path*>(scene()->template item_selection<Object>());
+  const auto paths = type_casts<Path*>(scene()->template item_selection<Object>());
   return std::any_of(paths.begin(), paths.end(), [](auto&& path) {
     return std::any_of(path->begin(), path->end(), [](auto&& point) { return point.is_selected; });
   });

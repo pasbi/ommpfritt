@@ -8,6 +8,8 @@ namespace omm
 {
 FilePathEdit::FilePathEdit(QWidget* parent) : QWidget(parent)
 {
+  static constexpr int BUTTON_WIDTH = 40;
+
   setLayout(std::make_unique<QHBoxLayout>().release());
 
   auto line_edit = std::make_unique<QLineEdit>(this);
@@ -15,6 +17,7 @@ FilePathEdit::FilePathEdit(QWidget* parent) : QWidget(parent)
   layout()->addWidget(line_edit.release());
 
   auto button = std::make_unique<QPushButton>(tr("..."), this);
+  button->setMaximumWidth(BUTTON_WIDTH);
   m_button = button.get();
   layout()->addWidget(button.release());
 
@@ -38,8 +41,11 @@ FilePathEdit::FilePathEdit(QWidget* parent) : QWidget(parent)
   });
 
   connect(m_line_edit, &QLineEdit::textChanged, [this](const QString& text) {
+    m_path = text;
     Q_EMIT path_changed(text);
   });
+
+  layout()->setContentsMargins(0, 0, 0, 0);
 }
 
 void FilePathEdit::set_path(const QString& path)
@@ -63,6 +69,11 @@ void FilePathEdit::clear()
 void FilePathEdit::set_placeholder_text(const QString& text)
 {
   m_line_edit->setPlaceholderText(text);
+}
+
+QLineEdit& FilePathEdit::line_edit() const
+{
+  return *m_line_edit;
 }
 
 }  // namespace omm

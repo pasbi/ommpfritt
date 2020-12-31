@@ -1,11 +1,11 @@
 #pragma once
 
 #include "aspects/typed.h"
+#include <QObject>
 #include <algorithm>
 #include <map>
 #include <memory>
 #include <set>
-#include <QObject>
 
 template<typename Key, bool enable_clone, typename GeneralT, typename... Args>
 class AbstractFactory : public virtual omm::Typed
@@ -57,7 +57,8 @@ public:
     if (it == m_creator_map.end()) {
       throw InvalidKeyError(QObject::tr("No such item: %2").arg(key));
     }
-    return it->second(std::forward<Args>(args)...);  // TODO shouldn't it be `Args_` instead of `Args`?
+    // TODO shouldn't it be `Args_` instead of `Args`?
+    return it->second(std::forward<Args>(args)...);
   }
 
   static std::unique_ptr<GeneralT> make(const Key& key)

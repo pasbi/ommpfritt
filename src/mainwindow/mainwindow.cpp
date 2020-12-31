@@ -171,8 +171,7 @@ void MainWindow::update_window_title()
   QString filename = m_app.scene.filename();
   static const QString clean_indicator = tr("");
   static const QString dirty_indicator = tr("*");
-  QString indicator
-      = m_app.scene.history().has_pending_changes() ? dirty_indicator : clean_indicator;
+  QString indicator = m_app.scene.has_pending_changes() ? dirty_indicator : clean_indicator;
   if (filename.isEmpty()) {
     filename = tr("unnamed");
     indicator = clean_indicator;  // never show dirty indicator if no filename is set.
@@ -480,7 +479,8 @@ void MainWindow::handle_corrupted_config_file(const QSettings& s, const QString&
 {
   const auto msg = tr("The configuration file %1 is corrupted.\n"
                       "Delete the file and restart the application.\n"
-                      "%2").arg(s.fileName(), what);
+                      "%2")
+                       .arg(s.fileName(), what);
   LERROR << msg;
   QMessageBox::critical(this, tr("Corrupted config file"), msg);
   LFATAL("Corrupted config file.");

@@ -190,9 +190,9 @@ void Instance::update_tags()
 {
   if (m_reference) {
     QSignalBlocker blocker(&scene()->mail_box());
-    const auto instance_style_tags = type_cast<StyleTag*>(tags.ordered_items());
+    const auto instance_style_tags = type_casts<StyleTag*>(tags.ordered_items());
     if (!instance_style_tags.empty()) {
-      for (Tag* tag : type_cast<StyleTag*>(m_reference->tags.ordered_items())) {
+      for (Tag* tag : type_casts<StyleTag*>(m_reference->tags.ordered_items())) {
         m_reference->tags.remove(*tag);
       }
     }

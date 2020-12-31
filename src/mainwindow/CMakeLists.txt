@@ -5,6 +5,10 @@ target_sources(libommpfritt PRIVATE
   application.h
   exportdialog.cpp
   exportdialog.h
+  exportoptions.cpp
+  exportoptions.h
+  exporter.cpp
+  exporter.h
   iconprovider.cpp
   iconprovider.h
   mainwindow.cpp

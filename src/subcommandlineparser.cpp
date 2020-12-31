@@ -49,7 +49,8 @@ static const std::map<QString, QList<QCommandLineOption>> options{
       },
       {
           {"u", "unique"},
-          QObject::tr("If this option is set, the target object (see 'object-path' or 'object-name' argument) "
+          QObject::tr("If this option is set, the target object (see 'object-path' or "
+                      "'object-name' argument) "
                       "must be unique, i.e., there must be exactly one such object. "
                       "The application terminates if this requirement is violated."),
       },

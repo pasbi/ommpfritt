@@ -75,8 +75,6 @@ void Animator::serialize(AbstractSerializer& serializer, const Serializable::Poi
   serializer.set_value(m_start_frame, make_pointer(pointer, START_FRAME_POINTER));
   serializer.set_value(m_end_frame, make_pointer(pointer, END_FRAME_POINTER));
   serializer.set_value(m_current_frame, make_pointer(pointer, CURRENT_FRAME_POINTER));
-  serializer.set_value(filename_pattern, make_pointer(pointer, "filename-pattern"));
-  serializer.set_value(overwrite_file, make_pointer(pointer, "overwrite-file"));
   serializer.set_value(static_cast<int>(m_play_mode), make_pointer(pointer, "play-mode"));
 }
 
@@ -87,8 +85,6 @@ void Animator::deserialize(AbstractDeserializer& deserializer, const Pointer& po
   set_start(deserializer.get_int(make_pointer(pointer, START_FRAME_POINTER)));
   set_end(deserializer.get_int(make_pointer(pointer, END_FRAME_POINTER)));
   m_current_frame = deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER));
-  filename_pattern = deserializer.get_string(make_pointer(pointer, "filename-pattern"));
-  overwrite_file = deserializer.get_bool(make_pointer(pointer, "overwrite-file"));
   m_play_mode = static_cast<PlayMode>(deserializer.get_int(make_pointer(pointer, "play-mode")));
   invalidate();
 }

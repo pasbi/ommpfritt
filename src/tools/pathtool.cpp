@@ -1,10 +1,10 @@
 #include "tools/pathtool.h"
 #include "commands/addcommand.h"
 #include "commands/modifypointscommand.h"
+#include "mainwindow/application.h"
 #include "scene/scene.h"
 #include "tools/selecttool.h"
 #include <QMouseEvent>
-#include "mainwindow/application.h"
 
 namespace omm
 {
@@ -102,7 +102,7 @@ void PathTool::end()
 
 void PathTool::reset()
 {
-  auto paths = type_cast<Path*>(scene()->item_selection<Object>());
+  auto paths = type_casts<Path*>(scene()->item_selection<Object>());
   if (paths.size() == 1) {
     m_path = *paths.begin();
   } else {

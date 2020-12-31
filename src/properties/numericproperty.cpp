@@ -85,7 +85,26 @@ template<> Vec2f NumericProperty<Vec2f>::smallest_step()
 template<> Vec2f NumericProperty<Vec2f>::default_step()
 {
   return {1.0, 1.0};
-  ;
+}
+
+template<> bool NumericProperty<bool>::highest_possible_value()
+{
+  return true;
+}
+
+template<> bool NumericProperty<bool>::lowest_possible_value()
+{
+  return false;
+}
+
+template<> bool NumericProperty<bool>::smallest_step()
+{
+  return true;
+}
+
+template<> bool NumericProperty<bool>::default_step()
+{
+  return true;
 }
 
 }  // namespace omm

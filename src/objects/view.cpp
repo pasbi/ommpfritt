@@ -86,11 +86,13 @@ void View::to_viewport()
 
 void View::make_output_unique()
 {
-  const auto views = type_cast<View*>(scene()->object_tree().items());
+  const auto views = type_casts<View*>(scene()->object_tree().items());
   for (View* view : views) {
     Property* property = view->property(OUTPUT_VIEW_PROPERTY_KEY);
-    QSignalBlocker blocker(property);
-    property->set(view == this);
+    const bool new_value = property->value<bool>() && view == this;
+    if (new_value != property->value<bool>()) {
+      property->set(new_value);
+    }
   }
 }
 

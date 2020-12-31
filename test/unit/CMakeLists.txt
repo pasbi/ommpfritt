@@ -7,6 +7,7 @@ target_sources(ommpfritt_unit_tests PRIVATE
   propertytest.cpp
   main.cpp
   splinetypetest.cpp
+  stringinterpolation.cpp
   tree.cpp
   iotest.cpp
 )

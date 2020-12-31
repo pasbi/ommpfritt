@@ -45,7 +45,7 @@ QTransform to_transformation(const omm::ObjectTransformation& transformation)
 
 namespace omm
 {
-omm::Painter::Painter(omm::Scene& scene, omm::Painter::Category filter)
+omm::Painter::Painter(const omm::Scene& scene, omm::Painter::Category filter)
     : scene(scene), category_filter(filter)
 {
 }
