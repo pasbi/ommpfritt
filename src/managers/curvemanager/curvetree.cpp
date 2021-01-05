@@ -102,7 +102,6 @@ CurveTree::CurveTree(Scene& scene)
   setModel(&scene.animator());
   setItemDelegateForColumn(m_quick_access_delegate_column, m_quick_access_delegate.get());
   header()->setSectionResizeMode(QHeaderView::Fixed);
-  header()->setStretchLastSection(true);
   header()->hide();
 }
 
@@ -230,7 +229,9 @@ void CurveTree::set_visible(const std::pair<Property*, std::size_t>& channel, bo
 void CurveTree::resizeEvent(QResizeEvent* event)
 {
   const int width = viewport()->width();
-  header()->resizeSection(0, width - quick_access_delegate_width);
+  static constexpr int gap = 6;
+  header()->resizeSection(0, width - quick_access_delegate_width - gap);
+  header()->resizeSection(1, quick_access_delegate_width);
   ItemProxyView::resizeEvent(event);
 }
 
