@@ -58,8 +58,9 @@ public:
     appendColumn();
   }
 
-  [[nodiscard]] QVariant extraColumnData([[maybe_unused]] const QModelIndex &parent,
-                                         [[maybe_unused]] int row, [[maybe_unused]] int extraColumn,
+  [[nodiscard]] QVariant extraColumnData([[maybe_unused]] const QModelIndex& parent,
+                                         [[maybe_unused]] int row,
+                                         [[maybe_unused]] int extraColumn,
                                          [[maybe_unused]] int role) const override
   {
     return QVariant();
