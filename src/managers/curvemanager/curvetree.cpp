@@ -50,30 +50,19 @@ private:
   omm::Animator& m_animator;
 };
 
-class AddColumnProxy : public QIdentityProxyModel
+class AddColumnProxy : public KExtraColumnsProxyModel
 {
 public:
-  explicit AddColumnProxy() = default;
-
-  [[nodiscard]] QModelIndex index(int row, int column, const QModelIndex& parent) const override
+  AddColumnProxy(QObject* parent = nullptr) : KExtraColumnsProxyModel(parent)
   {
-    const auto index = QIdentityProxyModel::index(row, 0, parent);
-    return createIndex(row, column, index.internalPointer());
+    appendColumn();
   }
 
-  [[nodiscard]] int columnCount(const QModelIndex& index) const override
+  [[nodiscard]] QVariant extraColumnData([[maybe_unused]] const QModelIndex &parent,
+                                         [[maybe_unused]] int row, [[maybe_unused]] int extraColumn,
+                                         [[maybe_unused]] int role) const override
   {
-    return sourceModel()->columnCount(mapToSource(index)) + 1;
-  }
-
-  [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override
-  {
-    if (index.column() < sourceModel()->columnCount(mapToSource(index))) {
-      return mapToSource(index).data(role);
-    } else {
-      // the extra column displays a delegate which does not rely on data.
-      return QVariant();
-    }
+    return QVariant();
   }
 };
 
