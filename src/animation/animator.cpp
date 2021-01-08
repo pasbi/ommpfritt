@@ -405,7 +405,7 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
 std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Property& property)
 {
   const QModelIndex parent = index(owner);
-  const auto properties = accelerator().properties();
+  const auto properties = accelerator().properties(owner);
   const int row = std::distance(properties.begin(),
                                 std::find(properties.begin(), properties.end(), &property));
   beginRemoveRows(parent, row, row);
@@ -414,6 +414,8 @@ std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Pro
     this->accelerator.invalidate();
     endRemoveRows();
     Q_EMIT track_removed(*track);
+  } else {
+    endRemoveRows();
   }
   return track;
 }
