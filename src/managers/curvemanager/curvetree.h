@@ -62,6 +62,9 @@ private:
   std::unique_ptr<QSortFilterProxyModel> m_sort_filter_proxy;
   std::unique_ptr<QAbstractProxyModel> m_add_column_proxy;
 
+  std::map<const void*, bool> m_expanded_state;
+  void restore_expanded_state_later();
+
 Q_SIGNALS:
   void visibility_changed();
 };
