@@ -195,7 +195,7 @@ QModelIndex Animator::index(int row, int column, const QModelIndex& parent) cons
   switch (index_type(parent)) {
   case IndexType::None:
     // child of root is owner
-    return index(*accelerator().owners()[row], column);
+    return index(*accelerator().owners().at(row), column);
   case IndexType::Owner:
     // child of owner is property
     return index(*accelerator().properties(*owner(parent)).at(row), column);
@@ -328,7 +328,7 @@ Animator::IndexType Animator::index_type(const QModelIndex& index)
     return IndexType::None;
   }
 
-  const QObject* internal_pointer = static_cast<QObject*>(index.internalPointer());
+  const auto* internal_pointer = static_cast<const QObject*>(index.internalPointer());
   if (internal_pointer->inherits(Property::staticMetaObject.className())) {
     return IndexType::Property;
   } else if (internal_pointer->inherits(AbstractPropertyOwner::staticMetaObject.className())) {
@@ -402,20 +402,17 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
   Q_EMIT track_inserted(track_ref);
 }
 
-std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Property& property)
+std::unique_ptr<Track> Animator::extract_track(Property& property)
 {
-  const QModelIndex parent = index(owner);
-  const auto properties = accelerator().properties(owner);
-  const int row = std::distance(properties.begin(),
-                                std::find(properties.begin(), properties.end(), &property));
-  beginRemoveRows(parent, row, row);
+  // complicated model changes may be caused if property is the last track in the relevant owner.
+  beginResetModel();
   auto track = property.extract_track();
   if (track) {
     this->accelerator.invalidate();
-    endRemoveRows();
+    endResetModel();
     Q_EMIT track_removed(*track);
   } else {
-    endRemoveRows();
+    endResetModel();
   }
   return track;
 }
