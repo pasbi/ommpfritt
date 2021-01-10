@@ -3,7 +3,6 @@
 #include "logging.h"
 #include "mainwindow/application.h"
 #include "managers/curvemanager/curvetree.h"
-#include "proxychain.h"
 #include "scene/scene.h"
 #include <QMouseEvent>
 #include <QPainter>
@@ -49,8 +48,7 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index)
     return;
   }
 
-  const auto& proxy_chain = *static_cast<omm::ProxyChain*>(m_view.model());
-  const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
   assert(!sindex.isValid() || sindex.model() == &m_animator);
 
   const auto visibility
@@ -76,8 +74,7 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index)
 void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
 {
   is_active = true;
-  const auto& proxy_chain = *static_cast<omm::ProxyChain*>(m_view.model());
-  const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
   if (sindex.isValid()) {
     if ((event.modifiers() & Qt::ControlModifier) != 0u) {
       is_active = false;
@@ -92,8 +89,7 @@ void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
 
 void VisibilityArea::perform(const QModelIndex& index, [[maybe_unused]] QMouseEvent& event)
 {
-  const auto& proxy_chain = *static_cast<omm::ProxyChain*>(m_view.model());
-  const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
   if (sindex.isValid()) {
     m_animator.visit_item(sindex, [this](auto&& item) { m_view.set_visible(item, m_visibility); });
   }

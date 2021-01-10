@@ -5,7 +5,6 @@
 #include "mainwindow/application.h"
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
 #include "properties/property.h"
-#include "proxychain.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <KF5/KItemModels/kextracolumnsproxymodel.h>
@@ -75,21 +74,18 @@ CurveTree::CurveTree(Scene& scene)
     : m_scene(scene),
       m_quick_access_delegate(
           std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this))
+    , m_sort_filter_proxy(std::make_unique<FilterSelectedProxyModel>(scene.animator()))
+    , m_add_column_proxy(std::make_unique<AddColumnProxy>())
 {
-  auto filter_proxy = std::make_unique<FilterSelectedProxyModel>(scene.animator());
-  auto add_proxy = std::make_unique<AddColumnProxy>();
   connect(&scene.mail_box(),
           &MailBox::selection_changed,
-          filter_proxy.get(),
+          m_sort_filter_proxy.get(),
           &QSortFilterProxyModel::invalidate);
 
-  m_add_column_proxy = add_proxy.get();
+  m_sort_filter_proxy->setSourceModel(&scene.animator());
+  m_add_column_proxy->setSourceModel(m_sort_filter_proxy.get());
+  setModel(m_add_column_proxy.get());
 
-  set_proxy(std::make_unique<ProxyChain>(
-      ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(std::move(filter_proxy),
-                                                                    std::move(add_proxy))));
-
-  setModel(&scene.animator());
   setItemDelegateForColumn(m_quick_access_delegate_column, m_quick_access_delegate.get());
   header()->setSectionResizeMode(QHeaderView::Fixed);
   header()->hide();
@@ -222,7 +218,7 @@ void CurveTree::resizeEvent(QResizeEvent* event)
   static constexpr int gap = 6;
   header()->resizeSection(0, width - quick_access_delegate_width - gap);
   header()->resizeSection(1, quick_access_delegate_width);
-  ItemProxyView::resizeEvent(event);
+  QTreeView::resizeEvent(event);
 }
 
 void CurveTree::mousePressEvent(QMouseEvent* event)
@@ -231,7 +227,7 @@ void CurveTree::mousePressEvent(QMouseEvent* event)
   if (m_mouse_down_index.column() == m_quick_access_delegate_column) {
     m_quick_access_delegate->on_mouse_button_press(*event);
   } else {
-    ItemProxyView::mousePressEvent(event);
+    QTreeView::mousePressEvent(event);
   }
 }
 
@@ -240,26 +236,34 @@ void CurveTree::mouseMoveEvent(QMouseEvent* event)
   if (m_mouse_down_index.column() == m_quick_access_delegate_column) {
     m_quick_access_delegate->on_mouse_move(*event);
   } else {
-    ItemProxyView::mouseMoveEvent(event);
+    QTreeView::mouseMoveEvent(event);
   }
 }
 
 void CurveTree::mouseReleaseEvent(QMouseEvent* event)
 {
   m_quick_access_delegate->on_mouse_release(*event);
-  ItemProxyView::mouseReleaseEvent(event);
+  QTreeView::mouseReleaseEvent(event);
 }
 
 void CurveTree::notify_second_column_changed(const QModelIndex& sindex)
 {
-  auto& proxy_chain = static_cast<ProxyChain&>(*ItemProxyView::model());
-  QModelIndex index
-      = proxy_chain.mapFromChainSource(sindex).siblingAtColumn(m_quick_access_delegate_column);
+  QModelIndex index = map_from_source(sindex).siblingAtColumn(m_quick_access_delegate_column);
   while (index.isValid()) {
     Q_EMIT m_add_column_proxy->dataChanged(index, index);
     index = index.parent().siblingAtColumn(m_quick_access_delegate_column);
   }
   Q_EMIT visibility_changed();
+}
+
+QModelIndex CurveTree::map_to_source(const QModelIndex& view_index) const
+{
+  return m_sort_filter_proxy->mapToSource(m_add_column_proxy->mapToSource(view_index));
+}
+
+QModelIndex CurveTree::map_from_source(const QModelIndex& animator_index) const
+{
+  return m_add_column_proxy->mapFromSource(m_sort_filter_proxy->mapFromSource(animator_index));
 }
 
 }  // namespace omm
