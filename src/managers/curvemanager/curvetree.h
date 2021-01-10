@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QTreeView>
-#include <map>
 #include <memory>
+#include "widgets/treeexpandmemory.h"
 
 class QSortFilterProxyModel;
 class QAbstractProxyModel;
@@ -62,8 +62,7 @@ private:
   std::unique_ptr<QSortFilterProxyModel> m_sort_filter_proxy;
   std::unique_ptr<QAbstractProxyModel> m_add_column_proxy;
 
-  std::map<const void*, bool> m_expanded_state;
-  void restore_expanded_state_later();
+  TreeExpandMemory m_expand_memory;
 
 Q_SIGNALS:
   void visibility_changed();

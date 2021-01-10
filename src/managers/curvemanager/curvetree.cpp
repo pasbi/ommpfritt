@@ -15,23 +15,6 @@
 namespace
 {
 
-void enumerate_indices(const QAbstractItemModel& model, std::set<QModelIndex>& indices, const QModelIndex& root)
-{
-  indices.insert(root);
-  for (int row = 0; row < model.rowCount(root); ++row) {
-    enumerate_indices(model, indices, model.index(row, 0, root));
-  }
-}
-
-std::set<QModelIndex> enumerate_indices(const QAbstractItemModel* model)
-{
-  std::set<QModelIndex> indices;
-  if (model != nullptr) {
-    enumerate_indices(*model, indices, QModelIndex());
-  }
-  return indices;
-}
-
 class FilterSelectedProxyModel : public QSortFilterProxyModel
 {
 public:
@@ -94,6 +77,7 @@ CurveTree::CurveTree(Scene& scene)
           std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this))
     , m_sort_filter_proxy(std::make_unique<FilterSelectedProxyModel>(scene.animator()))
     , m_add_column_proxy(std::make_unique<AddColumnProxy>())
+    , m_expand_memory(*this, [this](const QModelIndex& index) { return map_to_source(index); })
 {
   connect(&scene.mail_box(),
           &MailBox::selection_changed,
@@ -108,14 +92,8 @@ CurveTree::CurveTree(Scene& scene)
   header()->setSectionResizeMode(QHeaderView::Fixed);
   header()->hide();
 
-  connect(this, &QTreeView::expanded, this, [this](const QModelIndex& index) {
-    m_expanded_state[map_to_source(index).internalPointer()] = true;
-  });
-  connect(this, &QTreeView::collapsed, this, [this](const QModelIndex& index) {
-    m_expanded_state[map_to_source(index).internalPointer()] = false;
-  });
-  connect(&scene.animator(), &QAbstractItemModel::modelReset, this, &CurveTree::restore_expanded_state_later);
-  connect(&scene.animator(), &QAbstractItemModel::rowsInserted, this, &CurveTree::restore_expanded_state_later);
+  connect(&scene.animator(), &Animator::modelReset, &m_expand_memory, &TreeExpandMemory::restore_later);
+  connect(&scene.animator(), &Animator::rowsInserted, &m_expand_memory, &TreeExpandMemory::restore_later);
 }
 
 CurveTree::~CurveTree() = default;
@@ -281,21 +259,6 @@ void CurveTree::notify_second_column_changed(const QModelIndex& sindex)
     index = index.parent().siblingAtColumn(m_quick_access_delegate_column);
   }
   Q_EMIT visibility_changed();
-}
-
-void CurveTree::restore_expanded_state_later()
-{
-  QTimer::singleShot(1, this, [this]() {
-    for (auto&& index : enumerate_indices(model())) {
-      const QModelIndex sindex = map_to_source(index);
-      const auto it = m_expanded_state.find(sindex.internalPointer());
-      if (it != m_expanded_state.end()) {
-        setExpanded(index, it->second);
-      } else {
-        setExpanded(index, true);
-      }
-    }
-  });
 }
 
 QModelIndex CurveTree::map_to_source(const QModelIndex& view_index) const

@@ -20,6 +20,8 @@ target_sources(libommpfritt PRIVATE
   pointedit.h
   referencelineedit.cpp
   referencelineedit.h
+  treeexpandmemory.cpp
+  treeexpandmemory.h
 )
 
 add_subdirectory(colorwidget)
