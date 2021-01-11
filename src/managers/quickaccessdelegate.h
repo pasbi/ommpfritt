@@ -30,7 +30,7 @@ public:
     Area(const Area&) = delete;
     Area& operator=(Area&&) = delete;
     Area& operator=(const Area&) = delete;
-    virtual void draw(QPainter& painter, const QModelIndex& index) = 0;
+    virtual void draw(QPainter& painter, const QModelIndex& index, const QRectF& rect) = 0;
     const QRectF area;
     bool is_active = false;
     virtual void begin(const QModelIndex& index, QMouseEvent& event) = 0;

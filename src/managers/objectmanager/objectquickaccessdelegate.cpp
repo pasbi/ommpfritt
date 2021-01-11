@@ -42,7 +42,7 @@ class VisibilityPropertyArea : public PropertyArea
 {
 public:
   explicit VisibilityPropertyArea(ObjectTreeView& view, const QRectF& rect, const QString& key);
-  void draw(QPainter& painter, const QModelIndex& index) override;
+  void draw(QPainter& painter, const QModelIndex& index, const QRectF& rect) override;
 
 protected:
   std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) override;
@@ -55,7 +55,7 @@ class IsEnabledPropertyArea : public PropertyArea
 {
 public:
   explicit IsEnabledPropertyArea(ObjectTreeView& view);
-  void draw(QPainter& painter, const QModelIndex& index) override;
+  void draw(QPainter& painter, const QModelIndex& index, const QRectF& rect) override;
 
 protected:
   std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) override;
@@ -132,12 +132,15 @@ VisibilityPropertyArea::VisibilityPropertyArea(ObjectTreeView& view,
 {
 }
 
-void VisibilityPropertyArea::draw(QPainter& painter, const QModelIndex& index)
+void VisibilityPropertyArea::draw(QPainter& painter, const QModelIndex& index, const QRectF& rect)
 {
   static constexpr QMarginsF margins(0.05, 0.05, 0.05, 0.05);
   const auto visibility = property(index).value<Object::Visibility>();
 
   painter.save();
+  painter.translate(rect.topLeft());
+  painter.scale(rect.width(), rect.height());
+
   QPen pen;
   pen.setWidthF(2.0);
   pen.setCosmetic(true);
@@ -180,8 +183,12 @@ IsEnabledPropertyArea::IsEnabledPropertyArea(ObjectTreeView& view)
 {
 }
 
-void IsEnabledPropertyArea::draw(QPainter& painter, const QModelIndex& index)
+void IsEnabledPropertyArea::draw(QPainter& painter, const QModelIndex& index, const QRectF& rect)
 {
+  painter.save();
+  painter.translate(rect.topLeft());
+  painter.scale(rect.width(), rect.height());
+
   QPen pen;
   if (property(index).value<bool>()) {
     pen.setColor(ui_color(view, "ObjectManager", "enabled"));
@@ -193,13 +200,13 @@ void IsEnabledPropertyArea::draw(QPainter& painter, const QModelIndex& index)
   pen.setCosmetic(false);
   pen.setCapStyle(Qt::RoundCap);
 
-  const QMarginsF margins = QMarginsF(width, width, width, width);
-  const auto rect = area - margins;
-
-  painter.save();
-  painter.setPen(pen);
-  painter.drawLine(rect.topLeft(), rect.bottomRight());
-  painter.drawLine(rect.topRight(), rect.bottomLeft());
+  {
+    const QMarginsF margins = QMarginsF(width, width, width, width);
+    const auto rect = area - margins;
+    painter.setPen(pen);
+    painter.drawLine(rect.topLeft(), rect.bottomRight());
+    painter.drawLine(rect.topRight(), rect.bottomLeft());
+  }
   painter.restore();
 }
 

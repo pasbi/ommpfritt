@@ -1,4 +1,5 @@
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
+#include "geometry/util.h"
 #include "animation/animator.h"
 #include "logging.h"
 #include "mainwindow/application.h"
@@ -13,7 +14,7 @@ class VisibilityArea : public omm::QuickAccessDelegate::Area
 {
 public:
   VisibilityArea(omm::CurveTree& view, omm::Animator& animator, const QRectF& area);
-  void draw(QPainter& painter, const QModelIndex& index) override;
+  void draw(QPainter& painter, const QModelIndex& index, const QRectF& rect) override;
   void begin(const QModelIndex& index, QMouseEvent& event) override;
   void perform(const QModelIndex& index, QMouseEvent& event) override;
   void end() override;
@@ -42,7 +43,7 @@ VisibilityArea::VisibilityArea(omm::CurveTree& view, omm::Animator& animator, co
 {
 }
 
-void VisibilityArea::draw(QPainter& painter, const QModelIndex& index)
+void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRectF& rect)
 {
   if (!index.isValid()) {
     return;
@@ -54,21 +55,23 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index)
   const auto visibility
       = m_animator.visit_item(sindex, [this](auto&& item) { return m_view.is_visible(item); });
 
-  const auto color = [visibility]() {
+  auto icon = [visibility]() {
     switch (visibility) {
     case omm::CurveTree::Visibility::Visible:
-      return Qt::green;
+      return QImage{":/icons/visible_128.png"};
     case omm::CurveTree::Visibility::Hidden:
-      return Qt::red;
+      return QImage{":/icons/invisible_128.png"};
     case omm::CurveTree::Visibility::Undetermined:
-      return Qt::yellow;
+      return QImage{":/icons/partly-visible_128.png"};
     default:
       Q_UNREACHABLE();
-      return Qt::gray;
+      return QImage{};
     }
   }();
 
-  painter.fillRect(area, QColor(color));
+  icon = icon.scaledToWidth(rect.width(), Qt::SmoothTransformation);
+  const int y = rect.center().y() - icon.height() / 2.0;
+  painter.drawImage(rect.left(), y, icon);
 }
 
 void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
