@@ -1,5 +1,4 @@
 #include "geometry/objecttransformation.h"
-#include "geometry/util.h"
 #include "logging.h"
 #include "gtest/gtest.h"
 #include <random>
@@ -115,67 +114,6 @@ template<typename Rect> void test_resize_rect_keep_ar_identity()
   }
 }
 
-template<typename Rect> void test_resize_rect_keep_ar_random()
-{
-  using namespace omm;
-  std::mt19937 rng;
-  rng.seed(42);
-  const auto rand = [&rng]() { return std::uniform_real_distribution<>(-100, 100)(rng); };
-  const auto rand_align = [&rng](const std::array<Qt::Alignment, 3>& alignments) {
-    return alignments.at(std::uniform_int_distribution(0, 2)(rng));
-  };
-  constexpr auto n = 10000;
-  for (std::size_t i = 0; i < n; ++i) {
-    const Rect bb(rand(), rand(), std::abs(rand()), std::abs(rand()));
-    const Rect target(rand(), rand(), std::abs(rand()), std::abs(rand()));
-    const auto h_align = rand_align({Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight});
-    const auto v_align = rand_align({Qt::AlignTop, Qt::AlignVCenter, Qt::AlignBottom});
-    const Rect resized = resize_rect_keep_ar(target, bb, h_align | v_align);
-
-    const double target_aspect_ratio = compute_aspect_ratio(target.size());
-    using w_type = decltype(std::declval<Rect>().width());
-    using h_type = decltype(std::declval<Rect>().height());
-    static_assert(std::is_same_v<w_type, h_type>);
-    static constexpr bool is_floating_point = std::is_floating_point_v<w_type>;
-    if constexpr (is_floating_point) {
-      EXPECT_FLOAT_EQ(compute_aspect_ratio(resized), compute_aspect_ratio(target));
-    } else if (target.width() * target.height() > 0 && bb.width() * bb.height() > 0) {
-      EXPECT_LE(compute_aspect_ratio(QSizeF(resized.width(), resized.height() + 1.0)),
-                target_aspect_ratio);
-      EXPECT_GE(compute_aspect_ratio(QSizeF(resized.width() + 1.0, resized.height())),
-                target_aspect_ratio);
-    }
-    EXPECT_LE(resized.width(), bb.width());
-    EXPECT_LE(resized.height(), bb.height());
-    if (h_align & Qt::AlignLeft) {
-      EXPECT_FLOAT_EQ(resized.left(), bb.left());
-    }
-    if (h_align & Qt::AlignRight) {
-      EXPECT_FLOAT_EQ(resized.right(), bb.right());
-    }
-    if (h_align & Qt::AlignHCenter) {
-      if constexpr (is_floating_point) {
-        EXPECT_FLOAT_EQ(resized.center().x(), bb.center().x());
-      } else {
-        EXPECT_NEAR(resized.center().x(), bb.center().x(), 1);
-      }
-    }
-    if (v_align & Qt::AlignTop) {
-      EXPECT_FLOAT_EQ(resized.top(), bb.top());
-    }
-    if (v_align & Qt::AlignBottom) {
-      EXPECT_FLOAT_EQ(resized.bottom(), bb.bottom());
-    }
-    if (v_align & Qt::AlignVCenter) {
-      if constexpr (is_floating_point) {
-        EXPECT_FLOAT_EQ(resized.center().y(), bb.center().y());
-      } else {
-        EXPECT_NEAR(resized.center().y(), bb.center().y(), 1);
-      }
-    }
-  }
-}
-
 }  // namespace
 
 TEST(geometry, transform_to_from_mat_translate)
@@ -261,12 +199,4 @@ TEST(geometry, transform_to_from_mat_random)
     t.set_rotation(distribution(rng));
     EXPECT_TRUE(fuzzy_equal(t, omm::ObjectTransformation(t.to_mat())));
   }
-}
-
-TEST(geometry, resize_rect_keep_ar)
-{
-  test_resize_rect_keep_ar_identity<QRect>();
-  test_resize_rect_keep_ar_identity<QRectF>();
-  test_resize_rect_keep_ar_random<QRect>();
-  test_resize_rect_keep_ar_random<QRectF>();
 }
