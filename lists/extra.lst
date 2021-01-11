@@ -10,6 +10,9 @@
     "lock-closed",
     "lock-open",
     "omm",
-    "undetermined-type"
+    "undetermined-type",
+    "visible",
+    "partly-visible",
+    "invisible"
   ]
 }

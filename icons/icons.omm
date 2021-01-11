@@ -13,7 +13,7 @@
         "pattern": "{name}{frame:04}.png",
         "scale": 6.9533392334306e-310,
         "start": 14,
-        "view": 3608978758057117396,
+        "view": 0,
         "x_resolution": 1000
     },
     "root": {
@@ -3899,7 +3899,7 @@
                                         "key": "scale",
                                         "type": "FloatVectorProperty",
                                         "value": [
-                                            1.0000000000003628,
+                                            1.0000000000003633,
                                             0.9999999999999004
                                         ]
                                     },
@@ -3915,7 +3915,7 @@
                                         "animated": false,
                                         "key": "shear",
                                         "type": "FloatProperty",
-                                        "value": 3.3195668436298794e-14
+                                        "value": 3.325117958753006e-14
                                     },
                                     {
                                         "animatable": true,
@@ -9486,6 +9486,1286 @@
                         ],
                         "tags": [],
                         "type": "Empty"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [
+                                    {
+                                        "children": [
+                                            {
+                                                "children": [],
+                                                "id": 7224871665348369809,
+                                                "paths": [
+                                                    [
+                                                        {
+                                                            "left": [
+                                                                -1.6708373308527873,
+                                                                8.959306497371147
+                                                            ],
+                                                            "position": [
+                                                                108.2718151851126,
+                                                                2.842170943040401e-14
+                                                            ],
+                                                            "right": [
+                                                                1.9967179377806377,
+                                                                101.66243880748961
+                                                            ]
+                                                        },
+                                                        {
+                                                            "left": [
+                                                                0.0,
+                                                                50.0
+                                                            ],
+                                                            "position": [
+                                                                3.454494342614077e-14,
+                                                                149.46227479153993
+                                                            ],
+                                                            "right": [
+                                                                3.141592653589793,
+                                                                50.0
+                                                            ]
+                                                        }
+                                                    ]
+                                                ],
+                                                "properties": [
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "viewport-visibility",
+                                                        "type": "OptionProperty",
+                                                        "value": 0
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "visibility",
+                                                        "type": "OptionProperty",
+                                                        "value": 0
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "is_active",
+                                                        "type": "BoolProperty",
+                                                        "value": true
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "name",
+                                                        "type": "StringProperty",
+                                                        "value": "Ellipse 0"
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "position",
+                                                        "type": "FloatVectorProperty",
+                                                        "value": [
+                                                            0.0,
+                                                            0.0
+                                                        ]
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "scale",
+                                                        "type": "FloatVectorProperty",
+                                                        "value": [
+                                                            1.0,
+                                                            0.40000000000000013
+                                                        ]
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "rotation",
+                                                        "type": "FloatProperty",
+                                                        "value": 0.0
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "shear",
+                                                        "type": "FloatProperty",
+                                                        "value": 0.0
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "closed",
+                                                        "type": "BoolProperty",
+                                                        "value": false
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "interpolation",
+                                                        "type": "OptionProperty",
+                                                        "value": 2
+                                                    }
+                                                ],
+                                                "tags": [],
+                                                "type": "Path"
+                                            }
+                                        ],
+                                        "id": 13185437771219526046,
+                                        "properties": [
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "viewport-visibility",
+                                                "type": "OptionProperty",
+                                                "value": 0
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "visibility",
+                                                "type": "OptionProperty",
+                                                "value": 0
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "is_active",
+                                                "type": "BoolProperty",
+                                                "value": true
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "name",
+                                                "type": "StringProperty",
+                                                "value": "Mirror 1"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "position",
+                                                "type": "FloatVectorProperty",
+                                                "value": [
+                                                    0.0,
+                                                    0.0
+                                                ]
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "scale",
+                                                "type": "FloatVectorProperty",
+                                                "value": [
+                                                    1.0,
+                                                    1.0
+                                                ]
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "rotation",
+                                                "type": "FloatProperty",
+                                                "value": 0.0
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "shear",
+                                                "type": "FloatProperty",
+                                                "value": 0.0
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "direction",
+                                                "type": "OptionProperty",
+                                                "value": 1
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "as_path",
+                                                "type": "OptionProperty",
+                                                "value": 1
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "eps",
+                                                "type": "FloatProperty",
+                                                "value": 0.6
+                                            }
+                                        ],
+                                        "tags": [],
+                                        "type": "Mirror"
+                                    }
+                                ],
+                                "id": 6059546478622793908,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "viewport-visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "is_active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "name",
+                                        "type": "StringProperty",
+                                        "value": "Mirror 2"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "position",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            0.0,
+                                            0.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "scale",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            1.0,
+                                            1.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "rotation",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "shear",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "direction",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "as_path",
+                                        "type": "OptionProperty",
+                                        "value": 1
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "eps",
+                                        "type": "FloatProperty",
+                                        "value": 0.6
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "id": 9058519444197449512,
+                                        "properties": [
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "name",
+                                                "type": "StringProperty",
+                                                "value": "StyleTag 1"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "filter": {
+                                                    "flag": {
+                                                        "terms": [
+                                                            {
+                                                                "terms": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    "kind": {
+                                                        "terms": [
+                                                            {
+                                                                "i": 1,
+                                                                "v": true
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "key": "style",
+                                                "type": "ReferenceProperty",
+                                                "value": 94472848412128
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "edit-style",
+                                                "type": "TriggerProperty"
+                                            }
+                                        ],
+                                        "type": "StyleTag"
+                                    }
+                                ],
+                                "type": "Mirror"
+                            },
+                            {
+                                "children": [],
+                                "id": 11234952537323106147,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "viewport-visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "is_active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "name",
+                                        "type": "StringProperty",
+                                        "value": "Ellipse 3"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "position",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            -3.0936300684033845e-14,
+                                            6.989744600777537e-14
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "scale",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            0.8070219000042977,
+                                            0.8070219000042982
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "rotation",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "shear",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "r",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            43.0,
+                                            34.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "n",
+                                        "type": "IntegerProperty",
+                                        "value": 12
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "smooth",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "id": 12475890134846859890,
+                                        "properties": [
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "name",
+                                                "type": "StringProperty",
+                                                "value": "StyleTag 1"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "filter": {
+                                                    "flag": {
+                                                        "terms": [
+                                                            {
+                                                                "terms": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    "kind": {
+                                                        "terms": [
+                                                            {
+                                                                "i": 1,
+                                                                "v": true
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "key": "style",
+                                                "type": "ReferenceProperty",
+                                                "value": 94472848412128
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "edit-style",
+                                                "type": "TriggerProperty"
+                                            }
+                                        ],
+                                        "type": "StyleTag"
+                                    }
+                                ],
+                                "type": "Ellipse"
+                            }
+                        ],
+                        "id": 5178815318209295229,
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "viewport-visibility",
+                                "type": "OptionProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "visibility",
+                                "type": "OptionProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "is_active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "name",
+                                "type": "StringProperty",
+                                "value": "visible"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "position",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "scale",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "rotation",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "shear",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "join",
+                                "type": "BoolProperty",
+                                "value": false
+                            }
+                        ],
+                        "tags": [],
+                        "type": "Empty"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "id": 13473288247549513167,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "viewport-visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "is_active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "name",
+                                        "type": "StringProperty",
+                                        "value": "Instance 5"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "position",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            0.0,
+                                            0.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "scale",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            1.0,
+                                            1.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "rotation",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "shear",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "filter": {
+                                            "flag": {
+                                                "terms": [
+                                                    {
+                                                        "terms": []
+                                                    }
+                                                ]
+                                            },
+                                            "kind": {
+                                                "terms": [
+                                                    {
+                                                        "i": 2,
+                                                        "v": true
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "key": "reference",
+                                        "type": "ReferenceProperty",
+                                        "value": 5178815318209295229
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "identical",
+                                        "type": "BoolProperty",
+                                        "value": false
+                                    }
+                                ],
+                                "tags": [],
+                                "type": "Instance"
+                            },
+                            {
+                                "children": [],
+                                "id": 10774729117025680213,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "viewport-visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "is_active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "name",
+                                        "type": "StringProperty",
+                                        "value": "LineObject 11"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "position",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            0.0,
+                                            4.263256414560601e-14
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "scale",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            0.9999999999999993,
+                                            1.0000000000000007
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "rotation",
+                                        "type": "FloatProperty",
+                                        "value": -0.7853981633974488
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "shear",
+                                        "type": "FloatProperty",
+                                        "value": 1.2212453270876706e-15
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "length",
+                                        "type": "FloatProperty",
+                                        "value": 165.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "angle",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "center",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "id": 17147429073933741594,
+                                        "properties": [
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "name",
+                                                "type": "StringProperty",
+                                                "value": "StyleTag 4"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "filter": {
+                                                    "flag": {
+                                                        "terms": [
+                                                            {
+                                                                "terms": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    "kind": {
+                                                        "terms": [
+                                                            {
+                                                                "i": 1,
+                                                                "v": true
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "key": "style",
+                                                "type": "ReferenceProperty",
+                                                "value": 93825093450464
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "edit-style",
+                                                "type": "TriggerProperty"
+                                            }
+                                        ],
+                                        "type": "StyleTag"
+                                    }
+                                ],
+                                "type": "LineObject"
+                            }
+                        ],
+                        "id": 7206552133782894042,
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "viewport-visibility",
+                                "type": "OptionProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "visibility",
+                                "type": "OptionProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "is_active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "name",
+                                "type": "StringProperty",
+                                "value": "invisible"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "position",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "scale",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "rotation",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "shear",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "join",
+                                "type": "BoolProperty",
+                                "value": false
+                            }
+                        ],
+                        "tags": [],
+                        "type": "Empty"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "id": 412316105033564374,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "viewport-visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "is_active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "name",
+                                        "type": "StringProperty",
+                                        "value": "Instance 5"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "position",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            0.0,
+                                            0.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "scale",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            1.0,
+                                            1.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "rotation",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "shear",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "filter": {
+                                            "flag": {
+                                                "terms": [
+                                                    {
+                                                        "terms": []
+                                                    }
+                                                ]
+                                            },
+                                            "kind": {
+                                                "terms": [
+                                                    {
+                                                        "i": 2,
+                                                        "v": true
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "key": "reference",
+                                        "type": "ReferenceProperty",
+                                        "value": 5178815318209295229
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "identical",
+                                        "type": "BoolProperty",
+                                        "value": false
+                                    }
+                                ],
+                                "tags": [],
+                                "type": "Instance"
+                            },
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "id": 1546447739984115288,
+                                        "properties": [
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "viewport-visibility",
+                                                "type": "OptionProperty",
+                                                "value": 0
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "visibility",
+                                                "type": "OptionProperty",
+                                                "value": 0
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "is_active",
+                                                "type": "BoolProperty",
+                                                "value": true
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "name",
+                                                "type": "StringProperty",
+                                                "value": "LineObject 11"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "position",
+                                                "type": "FloatVectorProperty",
+                                                "value": [
+                                                    -55.055449692832326,
+                                                    -2.842170943040401e-14
+                                                ]
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "scale",
+                                                "type": "FloatVectorProperty",
+                                                "value": [
+                                                    1.0000000000000002,
+                                                    0.9999999999999996
+                                                ]
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "rotation",
+                                                "type": "FloatProperty",
+                                                "value": 2.220446049250314e-16
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "shear",
+                                                "type": "FloatProperty",
+                                                "value": -5.551115123125787e-16
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "length",
+                                                "type": "FloatProperty",
+                                                "value": 55.0
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "angle",
+                                                "type": "FloatProperty",
+                                                "value": 0.0
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "center",
+                                                "type": "BoolProperty",
+                                                "value": true
+                                            }
+                                        ],
+                                        "tags": [
+                                            {
+                                                "id": 3726585448185809137,
+                                                "properties": [
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "name",
+                                                        "type": "StringProperty",
+                                                        "value": "StyleTag 4"
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "filter": {
+                                                            "flag": {
+                                                                "terms": [
+                                                                    {
+                                                                        "terms": []
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "kind": {
+                                                                "terms": [
+                                                                    {
+                                                                        "i": 1,
+                                                                        "v": true
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        "key": "style",
+                                                        "type": "ReferenceProperty",
+                                                        "value": 93825093450464
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "edit-style",
+                                                        "type": "TriggerProperty"
+                                                    }
+                                                ],
+                                                "type": "StyleTag"
+                                            }
+                                        ],
+                                        "type": "LineObject"
+                                    }
+                                ],
+                                "id": 10200964447126857466,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "viewport-visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "visibility",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "is_active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "name",
+                                        "type": "StringProperty",
+                                        "value": "Mirror 13"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "position",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            0.0,
+                                            0.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "scale",
+                                        "type": "FloatVectorProperty",
+                                        "value": [
+                                            0.999999999999999,
+                                            1.0000000000000007
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "rotation",
+                                        "type": "FloatProperty",
+                                        "value": -0.7853981633974491
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "shear",
+                                        "type": "FloatProperty",
+                                        "value": 1.7208456881689903e-15
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "direction",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "as_path",
+                                        "type": "OptionProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "eps",
+                                        "type": "FloatProperty",
+                                        "value": 0.0
+                                    }
+                                ],
+                                "tags": [],
+                                "type": "Mirror"
+                            }
+                        ],
+                        "id": 9800930145807572782,
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "viewport-visibility",
+                                "type": "OptionProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "visibility",
+                                "type": "OptionProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "is_active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "name",
+                                "type": "StringProperty",
+                                "value": "partly-visible"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "position",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "scale",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    0.9999999999999999,
+                                    0.9999999999999999
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "rotation",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "shear",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "join",
+                                "type": "BoolProperty",
+                                "value": false
+                            }
+                        ],
+                        "tags": [],
+                        "type": "Empty"
                     }
                 ],
                 "id": 11595405618951393186,
@@ -10435,8 +11715,8 @@
                 "key": "position",
                 "type": "FloatVectorProperty",
                 "value": [
-                    994.9421379589346,
-                    400.01408299053764
+                    534.7603366522364,
+                    484.9788941529657
                 ]
             },
             {
@@ -10445,8 +11725,8 @@
                 "key": "scale",
                 "type": "FloatVectorProperty",
                 "value": [
-                    2.3695309891294274,
-                    2.369530989129425
+                    1.6221241908456823,
+                    1.6221241908456843
                 ]
             },
             {
@@ -12634,7 +13914,7 @@
                     "animated": false,
                     "key": "pen/cap",
                     "type": "OptionProperty",
-                    "value": 1
+                    "value": 2
                 },
                 {
                     "animatable": true,
