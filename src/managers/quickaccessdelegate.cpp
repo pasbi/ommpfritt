@@ -14,17 +14,12 @@ void QuickAccessDelegate::paint(QPainter* painter,
                                 const QModelIndex& index) const
 {
   painter->save();
-  painter->setRenderHint(QPainter::Antialiasing);
+  painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
   const auto rect = m_view.visualRect(index);
-  painter->translate(rect.topLeft());
-  painter->scale(rect.width(), rect.height());
-  painter->save();
   for (const auto& area : m_areas) {
-    painter->setClipRect(QRectF(0.0, 0.0, 1.0, 1.0));
-    area->draw(*painter, index);
+    painter->setClipRect(rect);
+    area->draw(*painter, index, rect);
   }
-  painter->restore();
-
   // draw_dot(*painter, export_visibility);
   painter->restore();
 }

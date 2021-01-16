@@ -2,6 +2,7 @@
 #include "logging.h"
 #include "gtest/gtest.h"
 #include <random>
+#include <list>
 
 namespace
 {
@@ -97,6 +98,20 @@ auto scaling_test_cases()
 auto shearing_test_cases()
 {
   return std::vector<double>({0.0, 1, -1, 2, -2, 100, -100, 1.2324, -32.3435});
+}
+
+template<typename Rect> void test_resize_rect_keep_ar_identity()
+{
+  using namespace omm;
+  for (auto align : {Qt::AlignLeft | Qt::AlignTop, Qt::AlignRight | Qt::AlignBottom}) {
+    for (auto&& size : std::list<QSize>{{0, 0}, {3, 3}, {10, 3}, {3, 10}, {0, 10}, {10, 0}}) {
+      for (auto&& pos : std::list<QPoint>{{0, 0}, {-3, 3}, {10, -3}}) {
+        const Rect rect{pos, size};
+        const auto resized = resize_rect_keep_ar(rect, rect, align);
+        EXPECT_TRUE(resized == rect);
+      }
+    }
+  }
 }
 
 }  // namespace

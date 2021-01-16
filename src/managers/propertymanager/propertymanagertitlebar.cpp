@@ -1,4 +1,5 @@
 #include "managers/propertymanager/propertymanagertitlebar.h"
+#include "tools/tool.h"
 #include "managers/propertymanager/propertymanager.h"
 #include "menuhelper.h"
 #include <QHBoxLayout>
@@ -31,7 +32,7 @@ void PropertyManagerTitleBar::set_selection(const std::set<AbstractPropertyOwner
 {
   if (selection.size() == 1) {
     m_first_selected = *selection.begin();
-    m_open_user_properties_dialog_button->setEnabled(true);
+    m_open_user_properties_dialog_button->setEnabled(m_first_selected->kind != Tool::KIND);
   } else {
     m_first_selected = nullptr;
     m_open_user_properties_dialog_button->setEnabled(false);

@@ -5,7 +5,6 @@
 #include "mainwindow/application.h"
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
 #include "properties/property.h"
-#include "proxychain.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <KF5/KItemModels/kextracolumnsproxymodel.h>
@@ -15,6 +14,7 @@
 
 namespace
 {
+
 class FilterSelectedProxyModel : public QSortFilterProxyModel
 {
 public:
@@ -50,30 +50,20 @@ private:
   omm::Animator& m_animator;
 };
 
-class AddColumnProxy : public QIdentityProxyModel
+class AddColumnProxy : public KExtraColumnsProxyModel
 {
 public:
-  explicit AddColumnProxy() = default;
-
-  [[nodiscard]] QModelIndex index(int row, int column, const QModelIndex& parent) const override
+  AddColumnProxy(QObject* parent = nullptr) : KExtraColumnsProxyModel(parent)
   {
-    const auto index = QIdentityProxyModel::index(row, 0, parent);
-    return createIndex(row, column, index.internalPointer());
+    appendColumn();
   }
 
-  [[nodiscard]] int columnCount(const QModelIndex& index) const override
+  [[nodiscard]] QVariant extraColumnData([[maybe_unused]] const QModelIndex& parent,
+                                         [[maybe_unused]] int row,
+                                         [[maybe_unused]] int extraColumn,
+                                         [[maybe_unused]] int role) const override
   {
-    return sourceModel()->columnCount(mapToSource(index)) + 1;
-  }
-
-  [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override
-  {
-    if (index.column() < sourceModel()->columnCount(mapToSource(index))) {
-      return mapToSource(index).data(role);
-    } else {
-      // the extra column displays a delegate which does not rely on data.
-      return QVariant();
-    }
+    return QVariant();
   }
 };
 
@@ -85,25 +75,25 @@ CurveTree::CurveTree(Scene& scene)
     : m_scene(scene),
       m_quick_access_delegate(
           std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this))
+    , m_sort_filter_proxy(std::make_unique<FilterSelectedProxyModel>(scene.animator()))
+    , m_add_column_proxy(std::make_unique<AddColumnProxy>())
+    , m_expand_memory(*this, [this](const QModelIndex& index) { return map_to_source(index); })
 {
-  auto filter_proxy = std::make_unique<FilterSelectedProxyModel>(scene.animator());
-  auto add_proxy = std::make_unique<AddColumnProxy>();
   connect(&scene.mail_box(),
           &MailBox::selection_changed,
-          filter_proxy.get(),
+          m_sort_filter_proxy.get(),
           &QSortFilterProxyModel::invalidate);
 
-  m_add_column_proxy = add_proxy.get();
+  m_sort_filter_proxy->setSourceModel(&scene.animator());
+  m_add_column_proxy->setSourceModel(m_sort_filter_proxy.get());
+  setModel(m_add_column_proxy.get());
 
-  set_proxy(std::make_unique<ProxyChain>(
-      ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(std::move(filter_proxy),
-                                                                    std::move(add_proxy))));
-
-  setModel(&scene.animator());
   setItemDelegateForColumn(m_quick_access_delegate_column, m_quick_access_delegate.get());
   header()->setSectionResizeMode(QHeaderView::Fixed);
-  header()->setStretchLastSection(true);
   header()->hide();
+
+  connect(&scene.animator(), &Animator::modelReset, &m_expand_memory, &TreeExpandMemory::restore_later);
+  connect(&scene.animator(), &Animator::rowsInserted, &m_expand_memory, &TreeExpandMemory::restore_later);
 }
 
 CurveTree::~CurveTree() = default;
@@ -230,8 +220,10 @@ void CurveTree::set_visible(const std::pair<Property*, std::size_t>& channel, bo
 void CurveTree::resizeEvent(QResizeEvent* event)
 {
   const int width = viewport()->width();
-  header()->resizeSection(0, width - quick_access_delegate_width);
-  ItemProxyView::resizeEvent(event);
+  static constexpr int gap = 6;
+  header()->resizeSection(0, width - quick_access_delegate_width - gap);
+  header()->resizeSection(1, quick_access_delegate_width);
+  QTreeView::resizeEvent(event);
 }
 
 void CurveTree::mousePressEvent(QMouseEvent* event)
@@ -240,7 +232,7 @@ void CurveTree::mousePressEvent(QMouseEvent* event)
   if (m_mouse_down_index.column() == m_quick_access_delegate_column) {
     m_quick_access_delegate->on_mouse_button_press(*event);
   } else {
-    ItemProxyView::mousePressEvent(event);
+    QTreeView::mousePressEvent(event);
   }
 }
 
@@ -249,26 +241,34 @@ void CurveTree::mouseMoveEvent(QMouseEvent* event)
   if (m_mouse_down_index.column() == m_quick_access_delegate_column) {
     m_quick_access_delegate->on_mouse_move(*event);
   } else {
-    ItemProxyView::mouseMoveEvent(event);
+    QTreeView::mouseMoveEvent(event);
   }
 }
 
 void CurveTree::mouseReleaseEvent(QMouseEvent* event)
 {
   m_quick_access_delegate->on_mouse_release(*event);
-  ItemProxyView::mouseReleaseEvent(event);
+  QTreeView::mouseReleaseEvent(event);
 }
 
 void CurveTree::notify_second_column_changed(const QModelIndex& sindex)
 {
-  auto& proxy_chain = static_cast<ProxyChain&>(*ItemProxyView::model());
-  QModelIndex index
-      = proxy_chain.mapFromChainSource(sindex).siblingAtColumn(m_quick_access_delegate_column);
+  QModelIndex index = map_from_source(sindex).siblingAtColumn(m_quick_access_delegate_column);
   while (index.isValid()) {
     Q_EMIT m_add_column_proxy->dataChanged(index, index);
     index = index.parent().siblingAtColumn(m_quick_access_delegate_column);
   }
   Q_EMIT visibility_changed();
+}
+
+QModelIndex CurveTree::map_to_source(const QModelIndex& view_index) const
+{
+  return m_sort_filter_proxy->mapToSource(m_add_column_proxy->mapToSource(view_index));
+}
+
+QModelIndex CurveTree::map_from_source(const QModelIndex& animator_index) const
+{
+  return m_add_column_proxy->mapFromSource(m_sort_filter_proxy->mapFromSource(animator_index));
 }
 
 }  // namespace omm
