@@ -1,19 +1,11 @@
 #include "managers/timeline/timeline.h"
 #include "animation/animator.h"
 #include "mainwindow/application.h"
+#include "mainwindow/iconprovider.h"
 #include "managers/timeline/slider.h"
 #include "managers/timeline/timelinetitlebar.h"
 #include "scene/scene.h"
 #include "ui_timelinetitlebar.h"
-
-namespace
-{
-QPixmap flip(const QString& fn)
-{
-  return QPixmap::fromImage(QImage(fn).mirrored(true, false));
-}
-
-}  // namespace
 
 namespace omm
 {
@@ -28,16 +20,17 @@ TimeLine::TimeLine(Scene& scene)
   m_slider = slider.get();
   set_widget(std::move(slider));
 
+  static constexpr auto flip = IconProvider::Orientation::FlippedHorizontally;
   m_slider->set_range(scene.animator().start(), scene.animator().end());
   m_title_bar->ui()->sp_min->setValue(scene.animator().start());
   m_title_bar->ui()->sp_max->setValue(scene.animator().end());
   m_title_bar->ui()->sp_value->setValue(scene.animator().current());
-  m_title_bar->ui()->pb_jump_left->setIcon(QIcon(flip(":/icons/jump-end_128.png")));
-  m_title_bar->ui()->pb_jump_right->setIcon(QIcon(":/icons/jump-end_128.png"));
-  m_title_bar->ui()->pb_step_left->setIcon(QIcon(flip(":/icons/next-frame_128.png")));
-  m_title_bar->ui()->pb_step_right->setIcon(QIcon(":/icons/next-frame_128.png"));
-  m_title_bar->ui()->pb_jump_left_key->setIcon(QIcon(flip(":/icons/next-frame-key_128.png")));
-  m_title_bar->ui()->pb_jump_right_key->setIcon(QIcon(":/icons/next-frame-key_128.png"));
+  m_title_bar->ui()->pb_jump_left->setIcon(IconProvider::pixmap("jump-end", flip));
+  m_title_bar->ui()->pb_jump_right->setIcon(IconProvider::pixmap("jump-end"));
+  m_title_bar->ui()->pb_step_left->setIcon(IconProvider::pixmap("next-frame", flip));
+  m_title_bar->ui()->pb_step_right->setIcon(IconProvider::pixmap("next-frame"));
+  m_title_bar->ui()->pb_jump_left_key->setIcon(IconProvider::pixmap("next-frame-key", flip));
+  m_title_bar->ui()->pb_jump_right_key->setIcon(IconProvider::pixmap("next-frame-key"));
 
   connect(&scene.animator(), &Animator::end_changed, this, [this](int end) {
     m_title_bar->ui()->sp_min->setValue(std::min(end, m_title_bar->ui()->sp_min->value()));
@@ -116,12 +109,11 @@ void TimeLine::update_play_pause_button(Animator::PlayDirection direction)
 {
   const bool forward = direction == Animator::PlayDirection::Forward;
   const bool backward = direction == Animator::PlayDirection::Backward;
-  static const auto icon_fn
-      = [](bool paused) { return QString(":/icons/%1_128.png").arg(paused ? "play" : "pause"); };
   m_title_bar->ui()->pb_play_left->setChecked(backward);
   m_title_bar->ui()->pb_play_right->setChecked(forward);
-  m_title_bar->ui()->pb_play_left->setIcon(QIcon(flip(icon_fn(!backward))));
-  m_title_bar->ui()->pb_play_right->setIcon(QIcon(icon_fn(!forward)));
+  m_title_bar->ui()->pb_play_left->setIcon(IconProvider::pixmap(backward ? "play" : "pause"));
+  static constexpr auto flip = IconProvider::Orientation::FlippedHorizontally;
+  m_title_bar->ui()->pb_play_right->setIcon(IconProvider::pixmap(forward ? "play" : "pause", flip));
 }
 
 void TimeLine::jump_to_next_keyframe(Animator::PlayDirection direction)

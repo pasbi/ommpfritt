@@ -1,9 +1,9 @@
 #include "managers/objectmanager/tagsitemdelegate.h"
-
 #include <QMouseEvent>
 #include <QPainter>
 #include <cmath>
 
+#include "mainwindow/iconprovider.h"
 #include "mainwindow/application.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "managers/objectmanager/objecttreeview.h"
@@ -37,8 +37,7 @@ void TagsItemDelegate::paint(QPainter* painter,
     const QRect tag_rect = TagsItemDelegate::tag_rect(pos, i);
     auto& tag = object.tags.item(i);
     painter->setClipRect(tag_rect);
-    const QIcon icon = Application::instance().icon_provider.icon(tag);
-    icon.paint(painter, tag_rect);
+    IconProvider::icon(tag).paint(painter, tag_rect);
 
     const bool is_selected = [this, tag_rect, &tag]() {
       const bool tmp_selected = rubberband.intersects(tag_rect);

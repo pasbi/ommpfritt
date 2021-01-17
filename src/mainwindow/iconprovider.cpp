@@ -7,30 +7,37 @@
 
 namespace omm
 {
-QIcon IconProvider::icon(AbstractPropertyOwner& owner) const
+QIcon IconProvider::icon(const AbstractPropertyOwner& owner)
 {
-  if (Tag* tag = kind_cast<Tag*>(&owner); tag != nullptr) {
-    if (auto* style_tag = type_cast<StyleTag*>(tag); style_tag != nullptr) {
+  if (const Tag* tag = kind_cast<const Tag*>(&owner); tag != nullptr) {
+    if (auto* style_tag = type_cast<const StyleTag*>(tag); style_tag != nullptr) {
       const Property* rprop = style_tag->property(StyleTag::STYLE_REFERENCE_PROPERTY_KEY);
       const auto* style = kind_cast<const Style*>(rprop->value<AbstractPropertyOwner*>());
       return QIcon(std::make_unique<StyleIconEngine>(style).release());
     }
-  } else if (auto* style = kind_cast<Style*>(&owner); style != nullptr) {
+  } else if (auto* style = kind_cast<const Style*>(&owner); style != nullptr) {
     return QIcon(std::make_unique<StyleIconEngine>(style).release());
   }
-  return icon(owner.type());
+  return pixmap(owner.type());
 }
 
-QIcon IconProvider::icon(const QString& name) const
+QPixmap IconProvider::pixmap(const QString& name, Size size)
 {
-  // Fallback: load icon file
-  const QString filename = ":/icons/" + name + "_128.png";
-  if (m_cached_icons_from_file.find(filename) == m_cached_icons_from_file.end()) {
-    const QPixmap pixmap(filename);
-    const auto icon = pixmap.isNull() ? QIcon() : QIcon(pixmap);
-    m_cached_icons_from_file.insert(std::pair(filename, icon));
+  return pixmap(name, Orientation::Normal, size);
+}
+
+QPixmap IconProvider::pixmap(const QString& name, Orientation orientation, Size size)
+{
+  constexpr auto icon_path_pattern = ":/icons/%1_%2.png";
+  const int resolution = static_cast<std::underlying_type_t<Size>>(size);
+  const auto fn = QString(icon_path_pattern).arg(name).arg(resolution);
+  if (orientation == Orientation::Normal) {
+    return QPixmap(fn);
+  } else {
+    const auto h = static_cast<bool>(orientation & Orientation::FlippedHorizontally);
+    const auto v = static_cast<bool>(orientation & Orientation::FlippedVertically);
+    return QPixmap::fromImage(QImage(fn).mirrored(h, v));
   }
-  return m_cached_icons_from_file.at(filename);
 }
 
 }  // namespace omm

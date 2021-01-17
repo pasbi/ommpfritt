@@ -1,5 +1,6 @@
 #include "preferences/keysequenceedit.h"
 #include "mainwindow/application.h"
+#include "mainwindow/iconprovider.h"
 #include <QFocusEvent>
 #include <QHBoxLayout>
 #include <QKeySequenceEdit>
@@ -14,7 +15,7 @@ KeySequenceEdit::KeySequenceEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui
 {
   m_ui->setupUi(this);
   m_ui->pb_clear->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCloseButton));
-  m_ui->pb_reset->setIcon(QIcon(":/icons/revert_128.png"));
+  m_ui->pb_reset->setIcon(IconProvider::pixmap("revert"));
 
   connect(m_ui->pb_reset, &QPushButton::clicked, [this]() {
     m_ui->key_sequence_edit->setKeySequence(m_default_key_sequence);

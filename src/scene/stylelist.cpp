@@ -1,6 +1,7 @@
 #include "scene/stylelist.h"
 #include "commands/propertycommand.h"
 #include "mainwindow/application.h"
+#include "mainwindow/iconprovider.h"
 #include "properties/stringproperty.h"
 #include "renderers/style.h"
 #include "scene/contextes.h"
@@ -82,7 +83,7 @@ QVariant StyleList::data(const QModelIndex& index, int role) const
   case Qt::EditRole:
     return item(index.row()).name();
   case Qt::DecorationRole:
-    return Application::instance().icon_provider.icon(item(index.row()));
+    return IconProvider::icon(item(index.row()));
     ;
   }
   return QVariant();

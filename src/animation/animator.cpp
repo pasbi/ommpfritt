@@ -12,6 +12,7 @@
 #include "tags/tag.h"
 #include <functional>
 #include <list>
+#include "mainwindow/iconprovider.h"
 
 namespace
 {
@@ -267,7 +268,7 @@ QVariant Animator::data(const QModelIndex& index, int role) const
     case Qt::DisplayRole:
       return owner(index)->name();
     case Qt::DecorationRole:
-      return Application::instance().icon_provider.icon(*owner(index));
+      return IconProvider::icon(*owner(index));
     default:
       return QVariant();
     }

@@ -1,4 +1,5 @@
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
+#include "mainwindow/iconprovider.h"
 #include "geometry/util.h"
 #include "animation/animator.h"
 #include "logging.h"
@@ -52,26 +53,29 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRe
   const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
   assert(!sindex.isValid() || sindex.model() == &m_animator);
 
-  const auto visibility
-      = m_animator.visit_item(sindex, [this](auto&& item) { return m_view.is_visible(item); });
+  const auto visibility = m_animator.visit_item(sindex, [this](auto&& item) {
+    return m_view.is_visible(item);
+  });
+
+  using namespace omm;
 
   auto icon = [visibility]() {
     switch (visibility) {
-    case omm::CurveTree::Visibility::Visible:
-      return QImage{":/icons/visible_128.png"};
-    case omm::CurveTree::Visibility::Hidden:
-      return QImage{":/icons/invisible_128.png"};
-    case omm::CurveTree::Visibility::Undetermined:
-      return QImage{":/icons/partly-visible_128.png"};
+    case CurveTree::Visibility::Visible:
+      return IconProvider::pixmap("visible");
+    case CurveTree::Visibility::Hidden:
+      return IconProvider::pixmap("invisible");
+    case CurveTree::Visibility::Undetermined:
+      return IconProvider::pixmap("partly-visible");
     default:
       Q_UNREACHABLE();
-      return QImage{};
+      return QPixmap{};
     }
   }();
 
   icon = icon.scaledToWidth(rect.width(), Qt::SmoothTransformation);
-  const int y = rect.center().y() - icon.height() / 2.0;
-  painter.drawImage(rect.left(), y, icon);
+  const auto y = static_cast<int>(rect.center().y() - icon.height() / 2);
+  painter.drawPixmap(rect.left(), y, icon);
 }
 
 void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)

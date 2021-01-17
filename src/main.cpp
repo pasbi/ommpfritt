@@ -1,6 +1,7 @@
 #include "logging.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
+#include "mainwindow/iconprovider.h"
 #include "qapplication.h"
 #include "serializers/abstractserializer.h"
 #include "tools/selectobjectstool.h"
@@ -21,7 +22,6 @@ QFile logfile;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int main(int argc, char* argv[])
 {
   QApplication qt_app(argc, argv);
-  QApplication::setWindowIcon(QIcon(":/icons/omm_48.png"));
 
   omm::setup_logfile(logfile);
   qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString& msg) {
@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
                                                 true  // have_opengl
   );
   omm::Application app(qt_app, std::move(options));
+  QApplication::setWindowIcon(omm::IconProvider::pixmap("omm"));
 
   omm::MainWindow window(app);
   app.set_main_window(window);
