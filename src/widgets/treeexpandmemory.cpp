@@ -1,12 +1,13 @@
 #include "widgets/treeexpandmemory.h"
-#include <set>
-#include <QTreeView>
 #include <QTimer>
+#include <QTreeView>
+#include <set>
 
 namespace
 {
-
-void enumerate_indices(const QAbstractItemModel& model, std::set<QModelIndex>& indices, const QModelIndex& root)
+void enumerate_indices(const QAbstractItemModel& model,
+                       std::set<QModelIndex>& indices,
+                       const QModelIndex& root)
 {
   indices.insert(root);
   for (int row = 0; row < model.rowCount(root); ++row) {
@@ -27,9 +28,8 @@ std::set<QModelIndex> enumerate_indices(const QAbstractItemModel* model)
 
 namespace omm
 {
-
 TreeExpandMemory::TreeExpandMemory(QTreeView& view, const IndexMapper& map_to_source)
-  : m_view(view), m_map_to_source(map_to_source)
+    : m_view(view), m_map_to_source(map_to_source)
 {
   connect(&view, &QTreeView::expanded, this, [this](const QModelIndex& index) {
     m_expanded_store[m_map_to_source(index).internalPointer()] = true;
@@ -40,9 +40,8 @@ TreeExpandMemory::TreeExpandMemory(QTreeView& view, const IndexMapper& map_to_so
 }
 
 TreeExpandMemory::TreeExpandMemory(QTreeView& view)
-  : TreeExpandMemory(view, [](const QModelIndex& i) { return i; })
+    : TreeExpandMemory(view, [](const QModelIndex& i) { return i; })
 {
-
 }
 
 void TreeExpandMemory::restore_later()
