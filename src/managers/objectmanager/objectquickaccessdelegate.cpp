@@ -202,10 +202,10 @@ void IsEnabledPropertyArea::draw(QPainter& painter, const QModelIndex& index, co
 
   {
     const QMarginsF margins = QMarginsF(width, width, width, width);
-    const auto rect = area - margins;
+    const auto net_area = area - margins;
     painter.setPen(pen);
-    painter.drawLine(rect.topLeft(), rect.bottomRight());
-    painter.drawLine(rect.topRight(), rect.bottomLeft());
+    painter.drawLine(net_area.topLeft(), net_area.bottomRight());
+    painter.drawLine(net_area.topRight(), net_area.bottomLeft());
   }
   painter.restore();
 }
