@@ -53,7 +53,7 @@ Q_SIGNALS:
   void post_status(const QString& msg);
   void progress_changed(int current, int total);
   void finished();
-  void auto_view_changed(View* view);
+  void auto_view_changed(omm::View* view);
 };
 
 }  // namespace omm

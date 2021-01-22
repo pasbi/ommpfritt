@@ -30,7 +30,7 @@ QString format(int value, const QString& format)
   } else {
     auto fill = format.front();
     bool ok = false;
-    auto size = format.mid(1).toInt(&ok);
+    auto size = format.midRef(1).toInt(&ok);
     if (ok) {
       const auto v = QString("%1").arg(value, size, 10, fill);
       return v;
@@ -75,7 +75,6 @@ QRegExp StringInterpolation::compile_regexp(const QString& key)
 {
   static const auto start = QRegExp::escape(QString(omm::StringInterpolation::START));
   static const auto end = QRegExp::escape(QString(omm::StringInterpolation::END));
-  static const auto separator = QRegExp::escape(QString(omm::StringInterpolation::SEPARATOR));
   const auto pattern = start + QRegExp::escape(key) + ".*" + end;
   QRegExp regexp(pattern);
   regexp.setMinimal(true);
