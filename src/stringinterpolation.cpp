@@ -32,8 +32,7 @@ QString format(int value, const QString& format)
     bool ok = false;
     auto size = format.midRef(1).toInt(&ok);
     if (ok) {
-      const auto v = QString("%1").arg(value, size, 10, fill);
-      return v;
+      return QString("%1").arg(value, size, 10, fill);
     } else {
       throw omm::StringInterpolation::InvalidFormatException{"Invalid format '" + format + "'."};
     }
@@ -97,7 +96,7 @@ int StringInterpolation::replace_first(const QRegExp& regexp,
   if (offset >= 0) {
     const auto captures = regexp.capturedTexts();
     assert(captures.size() == 1);
-    const auto capture = captures.front();
+    const auto& capture = captures.front();
     const auto&& [rawkey, format] = split_key(capture.mid(1, capture.size() - 2));
     const auto replacement = ::format(value, format);
     m_string = m_string.replace(offset, regexp.matchedLength(), replacement);

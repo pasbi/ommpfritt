@@ -46,6 +46,7 @@ TreeExpandMemory::TreeExpandMemory(QTreeView& view)
 
 void TreeExpandMemory::restore_later()
 {
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(1, this, [this]() {
     for (auto&& index : enumerate_indices(m_view.model())) {
       const QModelIndex sindex = m_map_to_source(index);

@@ -20,9 +20,9 @@ class Exporter : public QObject
 public:
   explicit Exporter(Scene& scene, const Viewport* viewport = nullptr, QThread* thread = nullptr);
 
-  bool allow_overwrite;
+  bool allow_overwrite = false;
   ExportOptions export_options;
-  int y_resolution;
+  int y_resolution = 1024;
 
   static constexpr double SVG_SCALE_FACTOR = -4.0 / 3.0;
   static QString interpolate_filename(const QString& pattern,
