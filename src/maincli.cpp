@@ -143,7 +143,7 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
   prepare_scene(app.scene, args);
   const int start_frame = args.get<int>("start-frame", 1);
   const int n_frames = args.get<int>("sequence-length", 1);
-  omm::View& view = find<omm::View>(app.scene, args.get<QString>("view"));
+  auto& view = find<omm::View>(app.scene, args.get<QString>("view"));
   const bool force = args.isSet("overwrite");
   const auto resolution = calculate_resolution(args.get<int>("width"), view);
 

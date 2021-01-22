@@ -156,7 +156,8 @@ public:
   // === Nodes ===
 public:
   [[nodiscard]] std::set<Node*> collect_nodes() const;
-  [[nodiscard]] std::set<Node*> collect_nodes(const std::set<AbstractPropertyOwner*>& owners) const;
+  [[nodiscard]] static std::set<Node*>
+  collect_nodes(const std::set<AbstractPropertyOwner*>& owners);
 
   // === Styles ===
 public:

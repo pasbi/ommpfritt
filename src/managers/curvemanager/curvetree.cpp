@@ -14,7 +14,6 @@
 
 namespace
 {
-
 class FilterSelectedProxyModel : public QSortFilterProxyModel
 {
 public:
@@ -74,10 +73,10 @@ namespace omm
 CurveTree::CurveTree(Scene& scene)
     : m_scene(scene),
       m_quick_access_delegate(
-          std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this))
-    , m_sort_filter_proxy(std::make_unique<FilterSelectedProxyModel>(scene.animator()))
-    , m_add_column_proxy(std::make_unique<AddColumnProxy>())
-    , m_expand_memory(*this, [this](const QModelIndex& index) { return map_to_source(index); })
+          std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this)),
+      m_sort_filter_proxy(std::make_unique<FilterSelectedProxyModel>(scene.animator())),
+      m_add_column_proxy(std::make_unique<AddColumnProxy>()),
+      m_expand_memory(*this, [this](const QModelIndex& index) { return map_to_source(index); })
 {
   connect(&scene.mail_box(),
           &MailBox::selection_changed,
@@ -92,8 +91,14 @@ CurveTree::CurveTree(Scene& scene)
   header()->setSectionResizeMode(QHeaderView::Fixed);
   header()->hide();
 
-  connect(&scene.animator(), &Animator::modelReset, &m_expand_memory, &TreeExpandMemory::restore_later);
-  connect(&scene.animator(), &Animator::rowsInserted, &m_expand_memory, &TreeExpandMemory::restore_later);
+  connect(&scene.animator(),
+          &Animator::modelReset,
+          &m_expand_memory,
+          &TreeExpandMemory::restore_later);
+  connect(&scene.animator(),
+          &Animator::rowsInserted,
+          &m_expand_memory,
+          &TreeExpandMemory::restore_later);
 }
 
 CurveTree::~CurveTree() = default;

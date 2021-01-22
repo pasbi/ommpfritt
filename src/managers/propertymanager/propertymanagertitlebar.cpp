@@ -1,7 +1,7 @@
 #include "managers/propertymanager/propertymanagertitlebar.h"
-#include "tools/tool.h"
 #include "managers/propertymanager/propertymanager.h"
 #include "menuhelper.h"
+#include "tools/tool.h"
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMenuBar>

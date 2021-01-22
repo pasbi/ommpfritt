@@ -26,7 +26,7 @@ void ExportOptions::deserialize(AbstractDeserializer& deserializer, const Pointe
   start_frame = deserializer.get_int(make_pointer(pointer, START_FRAME_KEY));
   end_frame = deserializer.get_int(make_pointer(pointer, END_FRAME_KEY));
   pattern = deserializer.get_string(make_pointer(pointer, PATTERN_KEY));
-  animated = deserializer.get_int(make_pointer(pointer, ANIMATED_KEY));
+  animated = deserializer.get_bool(make_pointer(pointer, ANIMATED_KEY));
   scale = deserializer.get_double(make_pointer(pointer, SCALE_KEY));
   format = static_cast<Format>(deserializer.get_int(make_pointer(pointer, FORMAT_KEY)));
   deserializer.register_reference_polisher(*this);
