@@ -1,6 +1,6 @@
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
-#include "geometry/util.h"
 #include "animation/animator.h"
+#include "geometry/util.h"
 #include "logging.h"
 #include "mainwindow/application.h"
 #include "managers/curvemanager/curvetree.h"
