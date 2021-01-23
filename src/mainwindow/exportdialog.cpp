@@ -25,7 +25,7 @@
 
 namespace
 {
-static constexpr auto ALLOW_OVERWRITE_KEY = "allow_overwrite";
+constexpr auto ALLOW_OVERWRITE_KEY = "allow_overwrite";
 
 template<std::size_t i, typename Ts> std::vector<QString> get(Ts&& vs)
 {
@@ -125,7 +125,8 @@ ExportDialog::~ExportDialog()
 {
   m_exporter->cancel = true;
   m_exporter_thread.quit();
-  if (!m_exporter_thread.wait(1000)) {
+  static constexpr auto ONE_SECOND = 1000;
+  if (!m_exporter_thread.wait(ONE_SECOND)) {
     LWARNING << "Failed to quit exporter thread.";
     m_exporter_thread.terminate();
   }
@@ -392,7 +393,7 @@ void ExportDialog::update_pattern_edit_background()
 void ExportDialog::update_ending_cb()
 {
   const QString ending = "." + QFileInfo(m_ui->le_pattern->path()).suffix().toLower();
-  const auto endings = static_cast<const MapListModel&>(*m_ui->cb_ending->model()).codes;
+  const auto endings = dynamic_cast<const MapListModel&>(*m_ui->cb_ending->model()).codes;
   const auto it = std::find(endings.begin(), endings.end(), ending);
   QSignalBlocker blocker(m_ui->cb_ending);
   if (it == endings.end()) {

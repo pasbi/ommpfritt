@@ -442,7 +442,7 @@ void Scene::evaluate_tags() const
   }
 }
 
-std::set<Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner*>& owners) const
+std::set<Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner*>& owners)
 {
   std::set<Node*> nodes;
   for (auto&& apo : owners) {

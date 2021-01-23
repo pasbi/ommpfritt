@@ -34,10 +34,11 @@ jobs:
     - wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
     - sudo apt-get install -y clang-format-11
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
+    - echo "Files to check. $files"
     script:
     - |
-      if [ -z "$(files)" ]; then
-        echo "Skip format check: no relevant files."
+      if [ -z "$files" ]; then
+        echo "Skip format check. No relevant files."
       else
         if ! build-scripts/check.py --files $files --mode format --format-exec clang-format-11 -v
         then

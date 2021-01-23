@@ -20,9 +20,9 @@ class Exporter : public QObject
 public:
   explicit Exporter(Scene& scene, const Viewport* viewport = nullptr, QThread* thread = nullptr);
 
-  bool allow_overwrite;
+  bool allow_overwrite = false;
   ExportOptions export_options;
-  int y_resolution;
+  int y_resolution = 1024;
 
   static constexpr double SVG_SCALE_FACTOR = -4.0 / 3.0;
   static QString interpolate_filename(const QString& pattern,
@@ -53,7 +53,7 @@ Q_SIGNALS:
   void post_status(const QString& msg);
   void progress_changed(int current, int total);
   void finished();
-  void auto_view_changed(View* view);
+  void auto_view_changed(omm::View* view);
 };
 
 }  // namespace omm

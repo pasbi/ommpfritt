@@ -1,8 +1,8 @@
 #pragma once
 
+#include "widgets/treeexpandmemory.h"
 #include <QTreeView>
 #include <memory>
-#include "widgets/treeexpandmemory.h"
 
 class QSortFilterProxyModel;
 class QAbstractProxyModel;

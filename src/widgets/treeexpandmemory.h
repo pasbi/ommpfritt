@@ -1,14 +1,13 @@
 #pragma once
 
 #include "common.h"
-#include <map>
 #include <QObject>
+#include <map>
 
 class QTreeView;
 
 namespace omm
 {
-
 class TreeExpandMemory : public QObject
 {
   Q_OBJECT
