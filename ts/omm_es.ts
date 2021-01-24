@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es">
 <context>
-    <name></name>
-    <message>
-        <source>Switch item has no mode selector.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>AboutDialog</name>
     <message>
         <source>About</source>
@@ -241,18 +234,6 @@
         <translation>&amp;Resolución:</translation>
     </message>
     <message>
-        <source>Still</source>
-        <translation>Fotograma</translation>
-    </message>
-    <message>
-        <source>&amp;Export ...</source>
-        <translation>&amp;Exportar ...</translation>
-    </message>
-    <message>
-        <source>Animation</source>
-        <translation>Animación</translation>
-    </message>
-    <message>
         <source>&amp;Start:</source>
         <translation>&amp;Comienzo:</translation>
     </message>
@@ -265,20 +246,44 @@
         <translation>&amp;Fin:</translation>
     </message>
     <message>
-        <source>&amp;Pattern:</source>
-        <translation>&amp;Patrón:</translation>
-    </message>
-    <message>
-        <source>frame_%%%%.png</source>
-        <translation>frame_%%%%.png</translation>
-    </message>
-    <message>
         <source>St&amp;art ...</source>
         <translation>St&amp;art ...</translation>
     </message>
     <message>
-        <source>&amp;Overwrite:</source>
-        <translation>&amp;Sobreescribir:</translation>
+        <source>&amp;Overwrite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scene Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scene Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>.png</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>.jpg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2595,36 +2600,85 @@ Borrar la selección de todos modos?</translation>
         <translation>Vista</translation>
     </message>
     <message>
-        <source>Export image ...</source>
-        <translation>Exportar imagen ...</translation>
+        <source>PNG</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Images (*.png *.jpg)</source>
-        <translation>Imagenes (*.png *.jpg)</translation>
+        <source>JPEG</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Writing image &apos;%1&apos; failed.</source>
-        <translation>No se pudo guardar la imagen como &apos;%1&apos;.</translation>
+        <source>SVG</source>
+        <translation type="unfinished">SVG</translation>
     </message>
     <message>
-        <source>Export image</source>
-        <translation>Exportar imagen</translation>
+        <source>Scene Name</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Export vector graphics...</source>
-        <translation>Exportar imagen vectorial ...</translation>
+        <source>Scene Path</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SVG (*.svg)</source>
-        <translation>SVG (*.svg)</translation>
+        <source>Frame Number</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>frame_%%%%.png</source>
-        <translation>frame_%%%%.png</translation>
+        <source>The following placeholders may be used:
+{name} -&gt; filename of the scene without path and extension.
+{frame} -&gt; the frame number
+{path} -&gt; path of the scene (non-absolute paths are relative to the scene location)
+For numeric values, placeholder and length options may be specified after a colon.
+{frame:04} will prepend zeros until the string has length four.
+</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Export animation to ...</source>
-        <translation>Exportar animación a ...</translation>
+        <source>{name}_{frame:04}.png</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid pattern.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A rendering job is currently running. Do you want to cancel it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::Exporter</name>
+    <message>
+        <source>The pattern generates the same file name for multiple frames. Insert the frame number placeholder {frame}.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Writing %1 ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create directory &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No permission to overwrite existing file &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The filename &apos;%1&apos; cannot be written.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The filename pattern is invalid.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3178,6 +3232,10 @@ Quieres convertirlos en colores regulares?</numerusform>
     </message>
     <message>
         <source>%1 is no valid command name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Switch item has no mode selector.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
