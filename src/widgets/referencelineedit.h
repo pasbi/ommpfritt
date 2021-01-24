@@ -43,10 +43,10 @@ private:
   bool drag_enter(QDragEnterEvent& event);
   bool drop(QDropEvent& event);
 
-public Q_SLOTS:
+public:
   void update_candidates();
 
-private Q_SLOTS:
+private:
   void convert_text_to_placeholder_text();
 
 Q_SIGNALS:

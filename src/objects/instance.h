@@ -45,7 +45,7 @@ private:
   bool m_cyclic_dependency = false;
   void polish();
 
-private Q_SLOTS:
+private:
   void update_tags();
 };
 

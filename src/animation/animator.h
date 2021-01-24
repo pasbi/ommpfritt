@@ -62,7 +62,7 @@ public:
 
   Scene& scene;
 
-public Q_SLOTS:
+public:
   void set_start(int start);
   void set_end(int end);
   void set_current(int current);

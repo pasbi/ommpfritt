@@ -16,7 +16,7 @@ public:
   explicit TreeExpandMemory(QTreeView& view, const IndexMapper& map_to_source);
   explicit TreeExpandMemory(QTreeView& view);
 
-public Q_SLOTS:
+public:
   void restore_later();
 
 private:

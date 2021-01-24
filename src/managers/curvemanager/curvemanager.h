@@ -24,7 +24,7 @@ public:
   }
   bool perform_action(const QString& name) override;
 
-public Q_SLOTS:
+public:
   void set_locked(bool locked)
   {
     m_is_locked = locked;

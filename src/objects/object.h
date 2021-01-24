@@ -154,7 +154,7 @@ public:
 
   virtual void post_create_hook();
 
-public Q_SLOTS:
+public:
   virtual void update();
 
 public:

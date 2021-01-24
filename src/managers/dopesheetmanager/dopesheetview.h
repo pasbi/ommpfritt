@@ -17,7 +17,7 @@ class DopeSheetView : public ItemProxyView<QTreeView>
 public:
   explicit DopeSheetView(Animator& animator);
 
-public Q_SLOTS:
+public:
   void update_second_column(omm::Track& track);
   void update_second_column();
 

@@ -90,7 +90,7 @@ public:
     NodeModel& m_model;
   };
 
-public Q_SLOTS:
+public:
   void set_error(const QString& error);
 
 Q_SIGNALS:
@@ -98,7 +98,7 @@ Q_SIGNALS:
   void node_added(omm::Node&);
   void node_removed(omm::Node&);
 
-public Q_SLOTS:
+public:
   void emit_topology_changed();
 
 private:

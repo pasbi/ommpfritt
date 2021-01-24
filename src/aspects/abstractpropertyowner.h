@@ -98,7 +98,7 @@ public:
   const Kind kind;
   void new_id() const;
 
-protected Q_SLOTS:
+protected:
   virtual void on_property_value_changed(omm::Property* property)
   {
     Q_UNUSED(property);

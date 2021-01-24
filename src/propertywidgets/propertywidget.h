@@ -29,7 +29,7 @@ public:
                                   [key](const Property& p) { return p.configuration.get<T>(key); });
   }
 
-public Q_SLOTS:
+public:
   void on_property_value_changed(omm::Property* property) const;
   void update_enabledness();
 
@@ -68,7 +68,7 @@ protected:
     void remove_old_thing();
   };
 
-protected Q_SLOTS:
+protected:
   virtual void update_edit() = 0;
   virtual void update_configuration()
   {

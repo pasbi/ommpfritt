@@ -24,7 +24,7 @@ public:
   [[nodiscard]] QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BoundingBoxManager");
 
-public Q_SLOTS:
+public:
   void on_property_value_changed(omm::Property& property);
 
 private:
@@ -46,7 +46,7 @@ protected:
   void enterEvent(QEvent* e) override;
   bool eventFilter(QObject* o, QEvent* e) override;
 
-private Q_SLOTS:
+private:
   omm::BoundingBox update_manager();
   void update_bounding_box();
   void reset_transformation();

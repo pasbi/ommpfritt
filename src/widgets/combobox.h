@@ -28,7 +28,7 @@ public:
     return m_combo_box;
   }
 
-public Q_SLOTS:
+public:
   void set_current_index(int index);
   void set_current_text(const QString& text);
 
@@ -39,7 +39,7 @@ private:
   QAbstractItemModel* m_model = nullptr;
   QComboBox* m_combo_box;
 
-private Q_SLOTS:
+private:
   void reset();
   void insert(const QModelIndex& index, int first, int last);
   void remove(const QModelIndex& index, int first, int last);

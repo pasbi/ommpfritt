@@ -23,7 +23,7 @@ public:
   }
   bool perform_action(const QString& name) override;
 
-public Q_SLOTS:
+public:
   void update_play_pause_button(Animator::PlayDirection direction);
 
 private:

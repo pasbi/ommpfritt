@@ -25,7 +25,7 @@ public:
 
   [[nodiscard]] bool require_gui() const;
 
-public Q_SLOTS:
+public:
   void set_anchor(omm::Options::Anchor anchor);
 
 Q_SIGNALS:

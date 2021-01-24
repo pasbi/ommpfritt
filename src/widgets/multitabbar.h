@@ -24,7 +24,7 @@ public:
 protected:
   bool eventFilter(QObject* o, QEvent* e) override;
 
-public Q_SLOTS:
+public:
   void set_current_indices(const std::set<int>& indices);
 
 Q_SIGNALS:

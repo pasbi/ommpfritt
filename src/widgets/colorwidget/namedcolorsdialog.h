@@ -28,7 +28,7 @@ public:
   NamedColorsDialog& operator=(NamedColorsDialog&&) = delete;
   NamedColorsDialog& operator=(const NamedColorsDialog&) = delete;
 
-public Q_SLOTS:
+public:
   static void add();
   void remove();
   void setCurrent(const QModelIndex& index);

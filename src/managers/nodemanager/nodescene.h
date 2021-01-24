@@ -35,7 +35,7 @@ public:
 
   void clear();
 
-public Q_SLOTS:
+public:
   void add_node(omm::Node& node, bool select = true);
   void remove_node(omm::Node& node);
 

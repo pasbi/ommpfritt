@@ -31,7 +31,7 @@ private:
   Point& m_point;
   Path* m_path{};
 
-private Q_SLOTS:
+private:
   void mirror_from_right();
   void mirror_from_left();
   void set_left_maybe(const omm::PolarCoordinates& old_right,
