@@ -23,7 +23,7 @@ public:
   PreferenceDialog& operator=(PreferenceDialog&&) = delete;
   PreferenceDialog& operator=(const PreferenceDialog&) = delete;
 
-public Q_SLOTS:
+public:
   void accept() override;
   void reject() override;
 

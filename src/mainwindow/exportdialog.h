@@ -81,7 +81,7 @@ private:
   double compute_aspect_ratio() const;
   void update_exporter();
 
-private Q_SLOTS:
+private:
   void update_pattern_edit_background();
   void update_ending_cb();
   void reset_start_frame();

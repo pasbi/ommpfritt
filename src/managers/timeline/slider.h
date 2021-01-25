@@ -18,7 +18,7 @@ public:
   explicit Slider(Animator& animator);
   [[nodiscard]] std::set<Track*> tracks() const;
 
-public Q_SLOTS:
+public:
   void set_range(double left, double right);
 
 Q_SIGNALS:

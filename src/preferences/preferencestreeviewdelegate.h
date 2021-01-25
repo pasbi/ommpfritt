@@ -13,7 +13,7 @@ public:
   void transfer_editor_data_to_model();
   void set_model(QAbstractItemModel& model);
 
-public Q_SLOTS:
+public:
   void close_current_editor();
 
 protected:

@@ -67,7 +67,7 @@ Q_SIGNALS:
   void compilation_succeeded(const QString& code);
   void compilation_failed(const QString& reason);
 
-public Q_SLOTS:
+public:
   virtual void invalidate();
 
 protected:

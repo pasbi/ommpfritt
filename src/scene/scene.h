@@ -59,7 +59,8 @@ public:
 
 private:
   void prepare_reset();
-public Q_SLOTS:
+
+public:
   void reset();
 
 private:
@@ -197,7 +198,8 @@ public:
   {
     return *m_tool_box;
   }
-public Q_SLOTS:
+
+public:
   void update_tool();
 
   // === Mode ===

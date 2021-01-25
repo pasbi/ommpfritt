@@ -15,7 +15,7 @@ public:
   [[nodiscard]] bool filterAcceptsRow(int source_row,
                                       const QModelIndex& source_parent) const override;
 
-public Q_SLOTS:
+public:
   /**
    * @brief set_action_filter the model will keep all actions where `action_name` is a part of
    *  the translated action label or key-sequence.

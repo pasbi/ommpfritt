@@ -44,7 +44,7 @@ protected:
   void keyPressEvent(QKeyEvent* event) override;
   void resizeEvent(QResizeEvent* event) override;
 
-public Q_SLOTS:
+public:
   void update();
 
 Q_SIGNALS:

@@ -183,7 +183,8 @@ public:
 
 Q_SIGNALS:
   void enabledness_changed(bool);
-public Q_SLOTS:
+
+public:
   void set_enabledness(bool enabled);
 
 public:

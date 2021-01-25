@@ -28,14 +28,14 @@ protected:
   void mouseDoubleClickEvent(QMouseEvent* event) override;
   void showEvent(QShowEvent* event) override;
 
-public Q_SLOTS:
+public:
   void set_selection(const std::set<Style*>& selection);
 
 private:
   const QSize m_icon_size;
   StyleListViewItemDelegate m_item_delegate;
 
-private Q_SLOTS:
+private:
   void update_layout();
 };
 

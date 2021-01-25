@@ -33,7 +33,7 @@ public:
 Q_SIGNALS:
   void mode_changed(int mode);
 
-public Q_SLOTS:
+public:
   void set_mode(int mode);
   void cycle();
 

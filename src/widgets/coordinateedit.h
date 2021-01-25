@@ -27,7 +27,7 @@ Q_SIGNALS:
                          const omm::PolarCoordinates& new_val);
   void value_changed();
 
-public Q_SLOTS:
+public:
   void set_coordinates(const omm::PolarCoordinates& coordinates);
   void set_coordinates(const omm::Vec2f& coordinates);
   void set_display_mode(const omm::DisplayMode& display_mode);
@@ -44,7 +44,7 @@ private:
 
   PolarCoordinates m_old_polar_coordinates;
 
-private Q_SLOTS:
+private:
   void update_polar();
   void update_cartesian();
   void emit_value_changed();

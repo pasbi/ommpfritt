@@ -60,7 +60,7 @@ public:
    */
   virtual QRect owner_rect(AbstractPropertyOwner& owner) = 0;
 
-public Q_SLOTS:
+public:
   /**
    * @brief update issues a redraw of the gui
    */

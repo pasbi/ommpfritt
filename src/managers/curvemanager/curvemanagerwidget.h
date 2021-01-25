@@ -88,7 +88,7 @@ private:
   [[nodiscard]] TangentHandle tangent_handle_at(const QPointF& point) const;
   TangentHandle m_dragged_tangent = TangentHandle();
 
-private Q_SLOTS:
+private:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   void add_track(omm::Track& track);
   void remove_track(omm::Track& track);

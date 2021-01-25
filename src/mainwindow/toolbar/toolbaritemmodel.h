@@ -33,7 +33,7 @@ public:
     BadConfigurationError(const QString& description) noexcept;
   };
 
-public Q_SLOTS:
+public:
   void remove_selection(const QItemSelection& selection);
   void add_group();
   void add_separator();

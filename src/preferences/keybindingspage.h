@@ -37,7 +37,7 @@ private:
   std::map<QString, std::map<QString, QKeySequence>> m_revert_cache;
   void update_expand();
 
-private Q_SLOTS:
+private:
   void reset();
   void reset_filter();
   void set_name_filter(const QString& filter);

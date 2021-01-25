@@ -38,7 +38,7 @@ public:
   [[nodiscard]] std::vector<const UserPropertyListItem*> items() const;
   bool contains(const Property* p) const;
 
-public Q_SLOTS:
+public:
   void add_property(const QString& type);
   void del_property(const QModelIndex& index);
 
