@@ -65,7 +65,6 @@ def run_clazy(files, build_dir, clazy_executable, fix):
         print("Skip clazy: no relevant files.")
         return True
     else:
-        print(f"Apply clazy to {len(files)} files ...")
         with multiprocessing.Pool() as pool:
             results = pool.map(worker, files)
             return all(results)
@@ -82,7 +81,6 @@ def run_clang_tidy(files, build_dir, clang_tidy_binary, run_clang_executable, fi
         print("Skip clang-tidy: no relevant files.")
         return True
     else:
-        print(f"Apply clang-tidy to {len(files)} files ...")
         proc = subprocess.run(command + files)
         return proc.returncode == 0
 
@@ -127,23 +125,27 @@ def main():
     if len(files) == 0:
         print("No relevant files.")
         sys.exit(RETURN_NO_ISSUES)
-    else:
-        print(f"Checking {len(files)} files ...")
 
     problem_found = False
 
     if not args.skip_style:
+        print(f"Check format of {len(files)} files ...")
         if not formatchecker.check(files):
             problem_found = True
+        print("Format checks done.")
 
     if not args.skip_clazy:
+        print(f"Apply clazy to {len(files)} files ...")
         if not run_clazy(files, args.build_dir, args.clazy_executable, args.fix):
             problem_found = True
+        print("clazy done.")
 
     if not args.skip_clang_tidy:
+        print(f"Apply clang-tidy to {len(files)} files ...")
         if not run_clang_tidy(files, args.build_dir, args.clang_tidy_binary,
                               args.run_clang_tidy_executable, args.fix):
             problem_found = True
+        print("clang-tidy done.")
 
     if problem_found:
         print(f"At least one file (out of {len(files)}) is not compliant.")

@@ -108,7 +108,6 @@ def check_single_file(filename):
 def check(filenames):
     results = list(check_single_file(fn) for fn in filenames)
     uncompliant_files = [f for r, f in zip(results, filenames) if not r]
-    print(f"Checked {len(filenames)} files. Uncompliant: {len(uncompliant_files)}.")
     for fn in uncompliant_files:
         print(fn)
 
