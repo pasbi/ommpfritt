@@ -16,7 +16,7 @@ RETURN_INTERNAL_ERROR = 2
 
 
 def find_files(mode):
-    cwd = os.path.join(os.path.dirname(sys.argv[0]), "..")
+    cwd = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]), ".."))
 
     if mode == "none":
         return []
@@ -121,7 +121,8 @@ def main():
 
     files = find_files(args.mode)
     if args.files is not None:
-        files += args.files
+        files += [os.path.join(os.getcwd(), fn) for fn in args.files]
+    files = list(set(files))
 
     if len(files) == 0:
         print("No relevant files.")
