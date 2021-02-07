@@ -76,7 +76,8 @@ def run_clang_tidy(files, build_dir, clang_tidy_binary, run_clang_executable, fi
     if fix:
         command += ["-fix"]
 
-    assert type(files) is list
+    if not isinstance(files, list):
+        raise AssertionError("files must be a list.")
     if len(files) == 0:
         print("Skip clang-tidy: no relevant files.")
         return True

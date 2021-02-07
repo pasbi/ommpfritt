@@ -42,9 +42,9 @@ class CppChecker(Checker):
         self.re_avoid_qdebug = re.compile(r'qdebug|qinfo|qwarning|qcritical|qfatal', re.IGNORECASE)
 
     def line_based_checks(self, line, n):
-        self.check_line_length(line, n),
-        self.check_trailing_whitespace(line, n),
-        self.check_no_tabs(line, n),
+        self.check_line_length(line, n)
+        self.check_trailing_whitespace(line, n)
+        self.check_no_tabs(line, n)
         self.check_unix_linebreak(line, n)
         self.check_bad_patterns(line, n)
         super(CppChecker, self).line_based_checks(line, n)
