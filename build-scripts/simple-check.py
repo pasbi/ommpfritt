@@ -106,7 +106,7 @@ def main():
                              "This argument is not required if clazy and clang are skipped.")
     parser.add_argument("--skip-clazy", action="store_true", help="Don't run the clazy checker.")
     parser.add_argument("--skip-clang-tidy", action="store_true", help="Don't run clang-tidy.")
-    parser.add_argument("--skip-style", action="store_true", help="Don't check formatting.")
+    parser.add_argument("--skip-format", action="store_true", help="Don't check formatting.")
 
     parser.add_argument("--clang-tidy-binary", default="clang-tidy")
     parser.add_argument("--run-clang-tidy-executable", default="run-clang-tidy")
