@@ -129,7 +129,7 @@ def main():
 
     problem_found = False
 
-    if not args.skip_style:
+    if not args.skip_format:
         print(f"Check format of {len(files)} files ...")
         if not formatchecker.check(files):
             problem_found = True
