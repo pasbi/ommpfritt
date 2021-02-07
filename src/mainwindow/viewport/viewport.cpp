@@ -325,27 +325,17 @@ HeadUpDisplay* Viewport::find_headup_display(const QPoint& pos) const
 
 void Viewport::update_cursor()
 {
-  static constexpr auto POINTER_SIZE = 24;
-  static constexpr auto CURSOR_SIZE = 128;
-  static constexpr QPoint POINTER_TIP{CURSOR_SIZE/2 - 3, CURSOR_SIZE/2 - 4};
-  const auto cursor = IconProvider::pixmap("viewport-cursor");
-  const auto scaled_cursor = cursor.scaledToWidth(POINTER_SIZE, Qt::SmoothTransformation);
+  const auto icon = [&tool=m_scene.tool_box().active_tool()]() {
+    const auto icon = IconProvider::pixmap(tool.type() + "-cursor");
+    if (icon.isNull()) {
+      return IconProvider::pixmap("viewport-cursor");
+    } else {
+      return icon;
+    }
+  }();
 
-  static constexpr auto IMAGE_OFFSET = POINTER_TIP + QPoint{POINTER_SIZE, POINTER_SIZE};
-  const auto& tag = m_scene.tool_box().active_tool();
-  const auto icon = IconProvider::pixmap(tag.type());
-  const constexpr QSize icon_size{CURSOR_SIZE - IMAGE_OFFSET.x(), CURSOR_SIZE - IMAGE_OFFSET.y()};
-  const auto scaled_icon = icon.scaled(icon_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-  QImage image({CURSOR_SIZE, CURSOR_SIZE}, QImage::Format_ARGB32_Premultiplied);
-  image.fill(Qt::transparent);
-  {
-    QPainter painter(&image);
-    painter.drawPixmap(POINTER_TIP, scaled_cursor);
-    painter.drawPixmap(IMAGE_OFFSET, scaled_icon);
-  }
-  setCursor(QPixmap::fromImage(image));
-
+  static constexpr QSize ICON_SIZE{32, 32};
+  setCursor(icon.scaled(ICON_SIZE, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
 
 }  // namespace omm
