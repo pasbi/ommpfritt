@@ -38,7 +38,7 @@ def find_files(mode):
             return False
         elif filename.startswith("src/external/"):
             return False
-        elif filename == "src/translations.h":
+        elif filename in ("src/translations.h", "src/registers.cpp"):
             return False
         else:
             return True
