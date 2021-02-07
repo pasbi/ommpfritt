@@ -7,8 +7,8 @@ import re
 class Checker:
     def __init__(self, filename):
         """Loads a file with given filename and constructs an extensible Checker class.
-           Define your checker member methods.
-           Then override self.line_based_checks and call them.
+
+           Define your checker member methods, then override self.line_based_checks and call them.
            Each checker must call self.error with a sensibe message, if a formatting error was
            detected that must be fixed, or self.warning for problems that are optional to fix.
         """
