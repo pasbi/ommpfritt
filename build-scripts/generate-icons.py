@@ -125,7 +125,7 @@ if __name__ == "__main__":
             return {16, 22, 32, 48, 64, 128, 2048}
         else:
             return {128}
-    
+
     processed_icons = set()
     for category, item in items:
         for resolution in required_resolutions(item):
