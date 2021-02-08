@@ -29,7 +29,7 @@ if __name__ == "__main__":
             help="The qrc output file",
             required=True)
     args = parser.parse_args()
-    
+
     args.qrc = os.path.abspath(args.qrc)
 
     items = []

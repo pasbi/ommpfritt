@@ -155,7 +155,7 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
     }
     omm::Exporter exporter{animator.scene};
     exporter.export_options.view = &view;
-    if (filename.toLower().endsWith(".svg")) {
+    if (filename.endsWith(".svg", Qt::CaseInsensitive)) {
       exporter.export_options.scale = omm::Exporter::SVG_SCALE_FACTOR;
       exporter.save_as_svg(filename);
     } else {
