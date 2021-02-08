@@ -74,7 +74,7 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRe
   }();
 
   icon = icon.scaledToWidth(rect.width(), Qt::SmoothTransformation);
-  const auto y = static_cast<int>(rect.center().y() - icon.height() / 2);
+  const auto y = static_cast<int>(rect.center().y() - icon.height() / 2.0);
   painter.drawPixmap(rect.left(), y, icon);
 }
 
