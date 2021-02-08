@@ -28,7 +28,7 @@ public:
   void about_to_accept() override;
   void about_to_reject() override;
 
-public Q_SLOTS:
+public:
   void load_skin(int index);
 
 private:

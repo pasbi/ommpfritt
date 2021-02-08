@@ -24,7 +24,7 @@ public:
 Q_SIGNALS:
   void color_changed(const omm::Color& color);
 
-public Q_SLOTS:
+public:
   virtual void set_color(const omm::Color& color);
 
 private:

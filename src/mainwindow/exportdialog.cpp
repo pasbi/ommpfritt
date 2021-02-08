@@ -287,7 +287,7 @@ void ExportDialog::connect_gui()
       if (i >= 0) {
         cb.setCurrentIndex(-1);
         auto&& [new_text, cursor_pos] = f(m_ui->le_pattern->path(),
-                                          static_cast<const MapListModel&>(*cb.model()).codes.at(i),
+                                          dynamic_cast<const MapListModel&>(*cb.model()).codes.at(i),
                                           m_ui->le_pattern->line_edit().cursorPosition());
         m_ui->le_pattern->set_path(new_text);
         m_ui->le_pattern->line_edit().setCursorPosition(cursor_pos);

@@ -24,7 +24,7 @@ public:
   [[nodiscard]] bool has_track() const;
   [[nodiscard]] bool value_is_inconsistent() const;
 
-public Q_SLOTS:
+public:
   void set_key();
   void remove_key();
   void remove_track();

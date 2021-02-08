@@ -31,7 +31,7 @@ public:
 Q_SIGNALS:
   void anchor_changed(omm::Options::Anchor anchor);
 
-public Q_SLOTS:
+public:
   void set_anchor(const omm::Options::Anchor& anchor);
 
 private:

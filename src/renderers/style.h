@@ -64,7 +64,8 @@ private:
   void update_uniform_values() const;
   std::set<Property*> m_uniform_values;
   void polish();
-private Q_SLOTS:
+
+private:
   void set_code(const QString& code) const;
   void set_error(const QString& error) const;
 };

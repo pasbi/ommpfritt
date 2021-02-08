@@ -28,7 +28,7 @@ public:
   void set_compact();
   void hide_named_colors();
 
-public Q_SLOTS:
+public:
   void set_color(const omm::Color& color) override;
 
 private:
@@ -37,7 +37,7 @@ private:
   void add_color_picker(std::unique_ptr<ColorPicker> picker);
   std::map<Color::Role, std::list<AbstractColorComponentWidget*>> m_component_widgets;
 
-private Q_SLOTS:
+private:
   void show_named_colors_dialog();
 };
 

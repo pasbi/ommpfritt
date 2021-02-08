@@ -47,7 +47,7 @@ private:
   using QDockWidget::setWidget;  // use set_widget instead
   bool m_is_locked = false;
 
-public Q_SLOTS:
+public:
   void set_locked(bool locked)
   {
     m_is_locked = locked;

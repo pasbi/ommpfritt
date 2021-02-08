@@ -15,7 +15,7 @@ public:
   [[nodiscard]] Color color() const;
   [[nodiscard]] virtual QString name() const = 0;
 
-public Q_SLOTS:
+public:
   virtual void set_color(const omm::Color& color);
 
 Q_SIGNALS:

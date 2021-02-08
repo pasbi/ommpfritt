@@ -51,7 +51,7 @@ public:
   void reset_scene_rect();
   std::set<Node*> selected_nodes() const;
 
-public Q_SLOTS:
+public:
   void copy_to_clipboard() const;
   void paste_from_clipboard();
 

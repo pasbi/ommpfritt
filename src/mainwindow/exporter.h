@@ -45,7 +45,7 @@ private:
   [[nodiscard]] QString filename(int frame) const;
   void render(int frame, bool allow_overwrite);
 
-public Q_SLOTS:
+public:
   void start();
 
 Q_SIGNALS:

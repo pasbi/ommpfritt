@@ -40,8 +40,11 @@ make_contextes(const ItemModelAdapterT& adapter,
   using item_type = typename ContextT::item_type;
 
   const auto* property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
+  if (property_owner_mime_data == nullptr) {
+    return contextes;
+  }
   auto items = ::transform<item_type*, std::set>(property_owner_mime_data->items<item_type>());
-  if (property_owner_mime_data == nullptr || items.empty()) {
+  if (items.empty()) {
     return contextes;
   }
 
@@ -72,9 +75,12 @@ make_contextes(const ItemModelAdapterT& adapter,
   using item_type = typename ContextT::item_type;
 
   const auto* property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
+  if (property_owner_mime_data == nullptr) {
+    return {};
+  }
   const auto items = property_owner_mime_data->items<item_type>();
-  if (property_owner_mime_data == nullptr || items.empty()) {
-    return std::vector<ContextT>();
+  if (items.empty()) {
+    return {};
   }
 
   std::vector<ContextT> contextes;

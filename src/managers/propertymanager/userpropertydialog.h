@@ -22,7 +22,8 @@ public:
   explicit UserPropertyDialog(AbstractPropertyOwner& owner,
                               const std::set<QString>& disabled_types,
                               QWidget* parent = nullptr);
-public Q_SLOTS:
+
+public:
   void submit();
 
 private:

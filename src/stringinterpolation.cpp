@@ -32,7 +32,8 @@ QString format(int value, const QString& format)
     bool ok = false;
     auto size = format.midRef(1).toInt(&ok);
     if (ok) {
-      return QString("%1").arg(value, size, 10, fill);
+      static constexpr auto base = 10;
+      return QString("%1").arg(value, size, base, fill);
     } else {
       throw omm::StringInterpolation::InvalidFormatException{"Invalid format '" + format + "'."};
     }

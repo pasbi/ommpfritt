@@ -31,25 +31,8 @@ jobs:
       apt:
         update: true
     install:
-    - wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
-    - sudo apt-get install -y clang-format-11
-    - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
-    - echo "Files to check. $files"
     script:
-    - |
-      if [ -z "$files" ]; then
-        echo "Skip format check. No relevant files."
-      else
-        if ! build-scripts/check.py --files $files --mode format --format-exec clang-format-11 -v
-        then
-          echo "Format check failed."
-          travis_terminate 1
-        fi
-      fi
-      if ! build-scripts/check-bad-patterns.sh; then
-        echo "Bad pattern detected. Check failed."
-        travis_terminate 1
-      fi
+    - build-scripts/simple-check.py --skip-clazy --skip-clang-tidy --mode all || travis_terminate 1
     before_deploy: skip
     deploy:
       provider: script
@@ -68,15 +51,8 @@ jobs:
     - export build_target="all"
     - export files="$(build-scripts/find-changed-files.sh)"
     after_success:
-    - |
-      if [ -z "$(files)" ]; then
-        echo "Skip clang-tidy check: no relevant files."
-      else
-        if ! run-clang-tidy-11 -clang-tidy-binary clang-tidy-11 -p build/ $files
-        then
-          travis_terminate 2
-        fi
-      fi
+    - build-scripts/simple-check.py --skip-format --skip-clazy --build-dir build/
+        --run-clang-tidy-executable run-clang-tidy-11 --clang-tidy-binary clang-tidy-11 || travis_terminate 2
     before_deploy: skip
     deploy:
       provider: script
@@ -95,15 +71,7 @@ jobs:
     - export build_target="all"
     - export files="$(git diff --name-only --diff-filter=d origin/master..HEAD)"
     after_success:
-    - |
-      if [ -z "$(files)" ]; then
-        echo "Skip clazy check: no relevant files."
-      else
-        if ! build-scripts/check.py --files $files --mode clazy --compile-commands build/compile_commands.json -v
-        then
-          travis_terminate 3
-        fi
-      fi
+    - build-scripts/simple-check.py --skip-clang-tidy --skip-format --build-dir build/ || travis_terminate 3
     before_deploy: skip
     deploy:
       provider: script

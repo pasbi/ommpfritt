@@ -68,7 +68,7 @@ private:
 
   void handle_corrupted_config_file(const QSettings& s, const QString& what);
 
-private Q_SLOTS:
+private:
   void update_window_title();
 };
 

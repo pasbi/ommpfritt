@@ -28,7 +28,7 @@ public:
 
   void set_model(NodeModel* model);
 
-public Q_SLOTS:
+public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
 
 private:

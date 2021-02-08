@@ -49,10 +49,10 @@ private:
   std::map<std::set<AbstractPropertyOwner*>, std::set<int>> m_current_categroy_indices;
   PropertyManagerTitleBar* m_title_bar;
 
-private Q_SLOTS:
+private:
   void activate_tabs(const std::set<int>& indices);
 
-public Q_SLOTS:
+public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   void update_property_widgets();
 };

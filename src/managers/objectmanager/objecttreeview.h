@@ -27,7 +27,7 @@ public:
   [[nodiscard]] Scene& scene() const;
   static constexpr int row_height = 20;
 
-public Q_SLOTS:
+public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selected_items);
   void update_tag_column_size();
 

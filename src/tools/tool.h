@@ -57,7 +57,7 @@ public:
   virtual SceneMode scene_mode() const = 0;
   static QRectF centered_rectangle(const Vec2f& center, double radius);
 
-public Q_SLOTS:
+public:
   virtual void reset()
   {
   }
