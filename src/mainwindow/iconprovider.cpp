@@ -15,7 +15,7 @@ QIcon IconProvider::icon(const AbstractPropertyOwner& owner)
       const auto* style = kind_cast<const Style*>(rprop->value<AbstractPropertyOwner*>());
       return QIcon(std::make_unique<StyleIconEngine>(style).release());
     }
-  } else if (auto* style = kind_cast<const Style*>(&owner); style != nullptr) {
+  } else if (const auto* style = kind_cast<const Style*>(&owner); style != nullptr) {
     return QIcon(std::make_unique<StyleIconEngine>(style).release());
   }
   return pixmap(owner.type());
