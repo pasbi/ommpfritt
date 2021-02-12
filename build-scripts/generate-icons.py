@@ -5,6 +5,7 @@ import json
 import sys
 import argparse
 import subprocess
+import multiprocessing
 
 def generate_qrc(items):
     lines = []
@@ -39,6 +40,36 @@ def cfg_decoder(fn):
             else:
                 item = line.split(":")[0]
                 yield "actions", item
+
+def render_icon(args, resolution, category, item):
+    command = [
+        args.command,
+        "render",
+        "-f", args.scenefile,
+        "-V", "view",
+        "-w", f"{resolution}",
+        "-p", f"_root_/{category}/{item}$",
+        "-o", f"{args.output}/{item}_{resolution}.png",
+        "-y",
+        "--no-opengl",
+        "--unique"
+    ]
+    cp = subprocess.run(command, capture_output=True)
+    print(f"Render icon for {category}/{item} @{resolution}... ", end="")
+    print(" ".join(command))
+    if cp.returncode == object_name_not_found_code:
+        print(f" skip (undefined in {args.scenefile}).")
+    elif cp.returncode != 0:
+        print(f" failed with code {cp.returncode}.")
+        print("Command was:")
+        print(cp.args)
+        print("Message:")
+        print(cp.stderr)
+        exit(1)
+    else:
+        return (resolution, item)
+        print(" done.")
+
 
 def get_omm_status_code(omm_command, description):
     command = [
@@ -126,36 +157,14 @@ if __name__ == "__main__":
         else:
             return {128}
 
-    processed_icons = set()
+    processed_icons = []
+    configurations = []
     for category, item in items:
         for resolution in required_resolutions(item):
-            command = [
-                args.command,
-                "render",
-                "-f", args.scenefile,
-                "-V", "view",
-                "-w", f"{resolution}",
-                "-p", f"_root_/{category}/{item}$",
-                "-o", f"{args.output}/{item}_{resolution}.png",
-                "-y",
-                "--no-opengl",
-                "--unique"
-            ]
-            cp = subprocess.run(command, capture_output=True)
-            print(f"Render icon for {category}/{item} @{resolution}...", end="")
-            print(" ".join(command))
-            if cp.returncode == object_name_not_found_code:
-                print(f" skip (undefined in {args.scenefile}).")
-            elif cp.returncode != 0:
-                print(f" failed with code {cp.returncode}.")
-                print("Command was:")
-                print(cp.args)
-                print("Message:")
-                print(cp.stderr)
-                exit(1)
-            else:
-                processed_icons.add((resolution, item))
-                print(" done.")
+            configurations.append((args, resolution, category, item))
+
+    with multiprocessing.Pool() as pool:
+        processed_icons += pool.starmap(render_icon, configurations)
 
     for item in args.canned_icons:
         filename = item
@@ -168,9 +177,16 @@ if __name__ == "__main__":
                 f'{args.output}/{item}_{resolution}.png'
             ])
             if cp.returncode == 0:
-                processed_icons.add((resolution, item))
+                processed_icons.append((resolution, item))
             else:
                 print(f"Error: Failed to convert image {filename} (code {cp.returncode}).")
+
+    processed_icons = set(processed_icons)
+
+    try:
+        processed_icons.remove(None)
+    except KeyError:
+        pass
 
     with open(args.qrc, 'w') as f:
         f.write(generate_qrc(processed_icons))
