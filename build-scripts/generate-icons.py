@@ -67,9 +67,8 @@ def render_icon(args, resolution, category, item):
         print(cp.stderr)
         exit(1)
     else:
-        return (resolution, item)
         print(" done.")
-
+        return (resolution, item)
 
 def get_omm_status_code(omm_command, description):
     command = [
