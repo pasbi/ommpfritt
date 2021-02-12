@@ -3,6 +3,7 @@
 #include "commands/movetagscommand.h"
 #include "commands/propertycommand.h"
 #include "mainwindow/application.h"
+#include "mainwindow/iconprovider.h"
 #include "properties/referenceproperty.h"
 #include "propertyownermimedata.h"
 #include "scene/history/historymodel.h"
@@ -248,7 +249,7 @@ QVariant ObjectTree::data(const QModelIndex& index, int role) const
     case Qt::EditRole:
       return item_at(index).name();
     case Qt::DecorationRole:
-      return Application::instance().icon_provider.icon(item_at(index).type());
+      return QIcon(IconProvider::pixmap(item_at(index).type()));
     }
   }
   return QVariant();

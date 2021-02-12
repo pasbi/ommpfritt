@@ -13,6 +13,7 @@
     "undetermined-type",
     "visible",
     "partly-visible",
-    "invisible"
+    "invisible",
+    "viewport-cursor"
   ]
 }

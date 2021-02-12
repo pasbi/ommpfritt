@@ -1,6 +1,7 @@
 #include "preferences/preferencestreeitem.h"
 #include "logging.h"
 #include "mainwindow/application.h"
+#include "mainwindow/iconprovider.h"
 #include <QCoreApplication>
 
 namespace omm
@@ -67,7 +68,7 @@ QString PreferencesTreeValueItem::translated_name() const
 
 QIcon PreferencesTreeValueItem::icon() const
 {
-  return Application::instance().icon_provider.icon(name);
+  return IconProvider::pixmap(name);
 }
 
 QString PreferencesTreeValueItem::value(const QString& value, std::size_t column)
@@ -83,8 +84,8 @@ PreferencesTreeGroupItem::PreferencesTreeGroupItem(const QString& group,
 
 QString PreferencesTreeGroupItem::translated_name() const
 {
-  return QCoreApplication::translate((translation_context + "/" + name).toUtf8().constData(),
-                                     name.toUtf8().constData());
+  const auto context = translation_context + "/" + name;
+  return QCoreApplication::translate(context.toUtf8().constData(), name.toUtf8().constData());
 }
 
 }  // namespace omm

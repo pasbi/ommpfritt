@@ -68,6 +68,7 @@ private:
 
   std::vector<std::unique_ptr<HeadUpDisplay>> m_headup_displays;
   HeadUpDisplay* find_headup_display(const QPoint& pos) const;
+  void update_cursor();
 };
 
 }  // namespace omm

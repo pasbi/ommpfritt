@@ -1,5 +1,6 @@
 #include "managers/managertitlebar.h"
 #include "managers/manager.h"
+#include "mainwindow/iconprovider.h"
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QStyle>
@@ -51,8 +52,7 @@ std::unique_ptr<QPushButton> ManagerTitleBar::make_lock_button() const
 {
   auto lock_button = std::make_unique<QPushButton>();
   const auto update_lock_button_icon = [&btn = *lock_button](bool checked) {
-    btn.setIcon(QPixmap::fromImage(
-        QImage(checked ? ":/icons/lock-closed_128.png" : ":/icons/lock-open_128.png")));
+    btn.setIcon(IconProvider::pixmap(checked ? "lock-closed" : "lock-open"));
   };
   update_lock_button_icon(lock_button->isChecked());
   static constexpr int MAX_BUTTON_SIZE = 24;

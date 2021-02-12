@@ -1,6 +1,7 @@
 #include "mainwindow/exportdialog.h"
 #include "animation/animator.h"
 #include "mainwindow/application.h"
+#include "mainwindow/iconprovider.h"
 #include "mainwindow/exporter.h"
 #include "mainwindow/exportoptions.h"
 #include "mainwindow/mainwindow.h"
@@ -235,7 +236,7 @@ For numeric values, placeholder and length options may be specified after a colo
   m_ui->le_pattern->setToolTip(path_variable_tooltip);
 
   for (auto&& pb : {m_ui->pb_reset_end, m_ui->pb_reset_start}) {
-    pb->setIcon(QIcon(":/icons/revert_128.png"));
+    pb->setIcon(IconProvider::pixmap("revert"));
     Application::instance().register_auto_invert_icon_button(*pb);
   }
 

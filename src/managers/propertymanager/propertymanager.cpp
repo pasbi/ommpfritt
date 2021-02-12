@@ -10,6 +10,7 @@
 #include "aspects/propertyowner.h"
 #include "common.h"
 #include "logging.h"
+#include "mainwindow/iconprovider.h"
 #include "managers/propertymanager/propertymanagertab.h"
 #include "managers/propertymanager/propertymanagertitlebar.h"
 #include "properties/optionproperty.h"
@@ -193,17 +194,14 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 
       // text in m_selection_label can get huge but is not very important. Don't mess up the layout.
       m_selection_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
-
-      const QString icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + "_128.png"
-                                                      : ":/icons/undetermined-type_128.png";
-
-      const QImage image(icon_filename);
+      const auto icon_name = types.size() == 1 ? *types.begin() : "undetermined-type";
+      const auto image = IconProvider::pixmap(icon_name);
       if (image.isNull()) {
         m_icon_label->clear();
       } else {
-        static constexpr int ICON_SIZE = 24;
-        m_icon_label->setPixmap(QPixmap::fromImage(
-            image.scaled(ICON_SIZE, ICON_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+        static constexpr QSize ICON_SIZE{24, 24};
+        const auto scaled = image.scaled(ICON_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        m_icon_label->setPixmap(scaled);
       }
     }
   }

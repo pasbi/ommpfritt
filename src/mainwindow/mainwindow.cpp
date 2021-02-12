@@ -19,6 +19,7 @@
 #include "mainwindow/application.h"
 #include "mainwindow/gpl3.h"
 #include "mainwindow/toolbar/toolbar.h"
+#include "mainwindow/iconprovider.h"
 #include "mainwindow/viewport/viewport.h"
 #include "managers/manager.h"
 #include "managers/timeline/timeline.h"
@@ -230,7 +231,7 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
     ui.setupUi(&about_dialog);
     ui.te_gpl30->hide();
     ui.te_gpl30->setText(QString::fromStdString(std::string(GPL3_TEXT)));
-    ui.lb_splash->setPixmap(QPixmap::fromImage(QImage(":/icons/omm_2048.png")));
+    ui.lb_splash->setPixmap(IconProvider::pixmap("omm", IconProvider::Size::Gigantic));
     about_dialog.exec();
   });
 

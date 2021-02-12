@@ -2,7 +2,6 @@
 
 #include "keybindings/commandinterface.h"
 #include "keybindings/keybindings.h"
-#include "mainwindow/iconprovider.h"
 #include "mainwindow/options.h"
 #include "managers/manager.h"
 #include "preferences/preferences.h"
@@ -73,7 +72,6 @@ public:
   Scene scene;
   MailBox& mail_box() const;
   MainWindow* main_window() const;
-  const IconProvider icon_provider;
 
   enum class InsertionMode { Default, AsParent, AsChild };
   Object& insert_object(const QString& key, InsertionMode mode);

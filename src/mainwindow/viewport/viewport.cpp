@@ -1,4 +1,5 @@
 #include "mainwindow/viewport/viewport.h"
+#include "mainwindow/iconprovider.h"
 
 #include "mainwindow/application.h"
 #include "mainwindow/viewport/anchorhud.h"
@@ -73,6 +74,9 @@ Viewport::Viewport(Scene& scene)
   });
 
   m_headup_displays.push_back(std::make_unique<AnchorHUD>(*this));
+  connect(&scene.tool_box(), &ToolBox::active_tool_changed, this, [this]() {
+    update_cursor();
+  });
 }
 
 void Viewport::draw_grid(QPainter& painter,
@@ -317,6 +321,21 @@ HeadUpDisplay* Viewport::find_headup_display(const QPoint& pos) const
     }
   }
   return nullptr;
+}
+
+void Viewport::update_cursor()
+{
+  const auto icon = [&tool=m_scene.tool_box().active_tool()]() {
+    const auto icon = IconProvider::pixmap(tool.type() + "-cursor");
+    if (icon.isNull()) {
+      return IconProvider::pixmap("viewport-cursor");
+    } else {
+      return icon;
+    }
+  }();
+
+  static constexpr QSize ICON_SIZE{32, 32};
+  setCursor(icon.scaled(ICON_SIZE, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
 
 }  // namespace omm
