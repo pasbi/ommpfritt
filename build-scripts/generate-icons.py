@@ -7,6 +7,8 @@ import argparse
 import subprocess
 import multiprocessing
 
+object_name_not_found_code = 2  # see src/common.h
+
 def generate_qrc(items):
     lines = []
     lines.append('<RCC>')
@@ -147,8 +149,6 @@ if __name__ == "__main__":
                 for item in decoder(fn):
                     items.append(item)
                 break
-
-    object_name_not_found_code = 2  # see src/common.h
 
     def required_resolutions(item):
         if item == "omm":
