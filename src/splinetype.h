@@ -3,6 +3,7 @@
 #include "common.h"
 #include <QObject>
 #include <map>
+#include <optional>
 
 namespace omm
 {
