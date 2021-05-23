@@ -145,6 +145,10 @@ if (MINGW)
         "${MinGWPath}/Qt5WinExtras.dll"
         "${MinGWPath}/Qt5Xml.dll"
         "${MinGWPath}/smime3.dll"
+        "${MinGWPath}/libdeflate.dll"
+        "${MinGWPath}/libwebp-7.dll"
+        "${MinGWPath}/zlib1.dll"
+
   )
   message(STATUS "mingw path: ${MinGWPath}")
   message(STATUS "dlls: ${required_system_dlls}")

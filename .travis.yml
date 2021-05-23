@@ -158,7 +158,9 @@ jobs:
           mingw-w64-x86_64-mesa \
           mingw-w64-x86_64-gtkmm3 \
           mingw-w64-x86_64-icu \
-          mingw-w64-x86_64-imagemagick
+          mingw-w64-x86_64-imagemagick \
+          mingw-w64-x86_64-libdeflate \
+          mingw-w64-x86_64-libwebp
       taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
       export PATH=/C/tools/msys64/mingw64/bin:$PATH
       export MAKE=mingw32-make  # so that Autotools can find it
