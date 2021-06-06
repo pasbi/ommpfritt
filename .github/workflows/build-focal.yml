@@ -26,8 +26,12 @@ jobs:
              python3-dev
              qt5-default
              qtbase5-dev
+             qtchooser
              qttools5-dev-tools
+             qttools5-dev
              zlib1g-dev
+      - name: check lrelease
+        run: which lrelease && lrelease -version
       - name: Checkout lib2geom
         run: |
           git clone https://gitlab.com/inkscape/lib2geom.git
