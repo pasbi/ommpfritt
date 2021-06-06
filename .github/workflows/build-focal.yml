@@ -8,10 +8,21 @@ jobs:
         uses: actions/checkout@v2
       - name: install dependencies
         run: sudo apt-get update && sudo apt-get install -y
-             g++ qt5-default
-             python3-dev ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev
-             libboost-all-dev libdouble-conversion-dev libgsl-dev libcairo2-dev
-             libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
+             g++
+             libboost-all-dev
+             libcairo2-dev
+             libdouble-conversion-dev
+             libffi-dev
+             libgl-dev
+             libgsl-dev
+             libkf5itemmodels-dev
+             libpoppler-qt5-dev
+             libssl-dev
+             imagemagick
+             ninja-build
+             python3-dev
+             qt5-default
+             zlib1g-dev
       - name: Checkout lib2geom
         run: |
           git clone https://gitlab.com/inkscape/lib2geom.git
