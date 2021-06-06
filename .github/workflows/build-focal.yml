@@ -24,10 +24,8 @@ jobs:
                    -DCMAKE_INSTALL_PREFIX=install
       - name: build lib2geom
         run: cmake --build build-lib2geom --target install
-      - name: debug
-        run: pwd; ls
       - name: configure omm
-        run: cmake -S .
+        run: cmake -S ${{ github.workspace }}
                    -B build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
