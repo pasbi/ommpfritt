@@ -17,6 +17,7 @@ jobs:
              libgsl-dev
              libkf5itemmodels-dev
              libpoppler-qt5-dev
+             libqt5svg5-dev
              libssl-dev
              imagemagick
              ninja-build
