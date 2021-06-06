@@ -35,9 +35,8 @@ jobs:
                    -B build-lib2geom
                    -GNinja
                    -D2GEOM_TESTING=OFF
-                   -DCMAKE_INSTALL_PREFIX=install
       - name: build lib2geom
-        run: cmake --build build-lib2geom --target install
+        run: sudo cmake --build build-lib2geom --target install
       - name: configure omm
         run: cmake -S ${{ github.workspace }}
                    -B build
