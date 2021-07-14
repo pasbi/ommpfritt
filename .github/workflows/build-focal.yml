@@ -1,8 +1,55 @@
 name: GitHub Actions Demo
 on: [push]
 jobs:
-  Build-Focal-Travis:
+  Build-Lib2Geom-Focal:
     runs-on: ubuntu-20.04
+    steps:
+      - name: install dependencies
+        run: sudo apt-get update && sudo apt-get install -y
+             build-essential
+             cmake
+             g++
+             libboost-all-dev
+             libcairo2-dev
+             libdouble-conversion-dev
+             libffi-dev
+             libgl-dev
+             libgsl-dev
+             libkf5itemmodels-dev
+             libpoppler-qt5-dev
+             libqt5svg5-dev
+             libssl-dev
+             imagemagick
+             ninja-build
+             python3-dev
+             qt5-default
+             qtbase5-dev
+             qtchooser
+             qttools5-dev-tools
+             qttools5-dev
+             zlib1g-dev
+      - name: Checkout lib2geom
+        run: |
+          git clone https://gitlab.com/inkscape/lib2geom.git
+          cd lib2geom
+          git checkout 37876ed4
+          cd ..
+      - name: configure lib2geom
+        run: cmake -S lib2geom
+                   -B build-lib2geom
+                   -GNinja
+                   -D2GEOM_TESTING=OFF
+                   -DCMAKE_INSTALL_PREFIX=lib2geom-install
+      - name: build lib2geom
+        run: sudo cmake --build build-lib2geom --target install
+      - name: Upload lib2geom focal
+        uses: actions/upload-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
+  Build-Omm-Library-Focal:
+    runs-on: ubuntu-20.04
+    needs: Build-Lib2Geom-Focal
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -30,21 +77,11 @@ jobs:
              qttools5-dev-tools
              qttools5-dev
              zlib1g-dev
-      - name: check lrelease
-        run: which lrelease && lrelease -version
-      - name: Checkout lib2geom
-        run: |
-          git clone https://gitlab.com/inkscape/lib2geom.git
-          cd lib2geom
-          git checkout 37876ed4
-          cd ..
-      - name: configure lib2geom
-        run: cmake -S lib2geom
-                   -B build-lib2geom
-                   -GNinja
-                   -D2GEOM_TESTING=OFF
-      - name: build lib2geom
-        run: sudo cmake --build build-lib2geom --target install
+      - name: Download lib2geom installation
+        uses: actions/download-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
       - name: configure omm
         run: cmake -S ${{ github.workspace }}
                    -B build
@@ -52,5 +89,6 @@ jobs:
                    -DCMAKE_BUILD_TYPE=Release
                    -DQT_QM_PATH=/usr/share/qt5/translations/
                    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-      - name: build omm
-        run: cmake --build build --target package
+                   -DCMAKE_PREFIX_PATH=lib2geom-install
+      - name: Build Omm Library
+        run: cmake --build build --target libommpfritt
