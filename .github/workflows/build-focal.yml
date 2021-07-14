@@ -1,33 +1,17 @@
 name: GitHub Actions Demo
 on: [push]
 jobs:
-  Build-Lib2Geom-Focal:
+  Build-lib2geom-Focal:
     runs-on: ubuntu-20.04
     steps:
       - name: install dependencies
         run: sudo apt-get update && sudo apt-get install -y
-             build-essential
-             cmake
-             g++
-             libboost-all-dev
-             libcairo2-dev
-             libdouble-conversion-dev
-             libffi-dev
-             libgl-dev
-             libgsl-dev
-             libkf5itemmodels-dev
-             libpoppler-qt5-dev
-             libqt5svg5-dev
-             libssl-dev
-             imagemagick
-             ninja-build
-             python3-dev
-             qt5-default
-             qtbase5-dev
-             qtchooser
-             qttools5-dev-tools
-             qttools5-dev
-             zlib1g-dev
+           build-essential
+           cmake
+           g++
+           libboost-all-dev
+           libdouble-conversion-dev
+           ninja-build
       - name: Checkout lib2geom
         run: |
           git clone https://gitlab.com/inkscape/lib2geom.git
@@ -47,42 +31,20 @@ jobs:
         with:
           name: lib2geom-focal
           path: lib2geom-install
-  Build-Omm-Library-Focal:
+  Build-libommpfritt-Focal:
     runs-on: ubuntu-20.04
-    needs: Build-Lib2Geom-Focal
+    needs: Build-lib2geom-Focal
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: install dependencies
-        run: sudo apt-get update && sudo apt-get install -y
-             build-essential
-             cmake
-             g++
-             libboost-all-dev
-             libcairo2-dev
-             libdouble-conversion-dev
-             libffi-dev
-             libgl-dev
-             libgsl-dev
-             libkf5itemmodels-dev
-             libpoppler-qt5-dev
-             libqt5svg5-dev
-             libssl-dev
-             imagemagick
-             ninja-build
-             python3-dev
-             qt5-default
-             qtbase5-dev
-             qtchooser
-             qttools5-dev-tools
-             qttools5-dev
-             zlib1g-dev
+        uses: ./.github/actions/prepare-focal
       - name: Download lib2geom installation
         uses: actions/download-artifact@v2
         with:
           name: lib2geom-focal
           path: lib2geom-install
-      - name: configure omm
+      - name: configure ommpfritt
         run: cmake -S ${{ github.workspace }}
                    -B build
                    -GNinja
@@ -90,5 +52,54 @@ jobs:
                    -DQT_QM_PATH=/usr/share/qt5/translations/
                    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
                    -DCMAKE_PREFIX_PATH=lib2geom-install
-      - name: Build Omm Library
+      - name: Build libommpfritt
         run: cmake --build build --target libommpfritt
+      - name: Upload libommpfritt build (Focal)
+        uses: actions/upload-artifact@v2
+        with:
+          name: libommpfritt-focal
+          path: build
+  Build-ommpfritt-Focal:
+    runs-on: ubuntu-20.04
+    needs: Build-libommpfritt-Focal
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        uses: ./.github/actions/prepare-focal
+      - name: Download lib2geom installation
+        uses: actions/download-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
+      - name: Download libommpfritt build
+        uses: actions/download-artifact@v2
+        with:
+          name: libommpfritt-focal
+          path: build
+      - name: Build ommpfritt
+        run: cmake --build build --target ommpfritt
+      - name: Upload ommpfritt build (Focal)
+        uses: actions/upload-artifact@v2
+        with:
+          name: ommpfritt-focal
+          path: build
+  Unit-Test-libommpfritt:
+    runs-on: ubuntu-20.04
+    needs: Build-libommpfritt-Focal
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        uses: ./.github/actions/prepare-focal
+      - name: Download libommpfritt build
+        uses: actions/download-artifact@v2
+        with:
+          name: libommpfritt-focal
+          path: build
+      - name: Unit Tests
+        run: |
+          ctest --version
+          cd build
+          ls
+          ctest
