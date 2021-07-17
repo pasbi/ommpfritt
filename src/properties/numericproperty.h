@@ -87,7 +87,7 @@ public:
   {
     TypedProperty<T>::deserialize(deserializer, root);
     if (this->is_user_property()) {
-      for (const QString& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
+      for (const auto& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
         this->configuration.set(key, deserializer.get<T>(Serializable::make_pointer(root, key)));
       }
       this->configuration.set(
@@ -100,7 +100,7 @@ public:
   {
     TypedProperty<T>::serialize(serializer, root);
     if (this->is_user_property()) {
-      for (const QString& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
+      for (const auto& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
         serializer.set_value(this->configuration.template get<T>(key),
                              Serializable::make_pointer(root, key));
       }
