@@ -620,8 +620,8 @@ const Preferences& preferences()
 
 void Application::install_translators()
 {
-  const auto qms = {"qtbase", "omm"};
-  for (const QString& qm : qms) {
+  static constexpr std::array qms{"qtbase", "omm"};
+  for (const auto& qm : qms) {
     auto translator = load_translator(qm, m_locale);
     if (translator) {
       QCoreApplication::installTranslator(translator.get());
