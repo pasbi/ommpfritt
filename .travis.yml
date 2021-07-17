@@ -179,7 +179,6 @@ script:
 - echo "using cmake-exe= ${cmake:-cmake}"
 - ${cmake:-cmake} -GNinja
                   -DCMAKE_BUILD_TYPE=Release
-                  -DQT_QM_PATH=${QT_QM_PATH:-/usr/share/qt5/translations/}
                   -DCMAKE_PREFIX_PATH=${QT_PREFIX:-}
                   -DCMAKE_CXX_COMPILER=${CXX_COMPILER:-g++}
                   -DCMAKE_C_COMPILER=${C_COMPILER:-gcc}

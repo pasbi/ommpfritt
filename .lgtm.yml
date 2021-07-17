@@ -26,6 +26,9 @@ extraction:
         - build-essential
     configure:
       command:
+        - echo "YYYYYYY"
+        - /usr/lib/x86_64-linux-gnu/qt5/bin/qmake -query QT_INSTALL_TRANSLATIONS
+        - echo "YYYYYYY"
         - git clone https://gitlab.com/inkscape/lib2geom.git
         - pushd lib2geom
         - git checkout 37876ed4
@@ -34,7 +37,7 @@ extraction:
         - popd
         - mkdir build
         - cd build
-        - cmake -DGENERATE_ICONS=off -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="/usr/share/qt5/translations/" -DCMAKE_INSTALL_PREFIX="/usr;../lib2geom/build/install/lib/cmake" ..
+        - cmake -DGENERATE_ICONS=off -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="/usr;../lib2geom/build/install/lib/cmake" ..
     index:
       build_command:
         - cd build

@@ -32,9 +32,6 @@ include(generate_resources)
 list(APPEND classes tags managers nodes properties tools objects)
 generate_registers("${classes}")
 
-set (QT_QM_PATH CACHE PATH
-    "path where to find the Qt translation files (qt_en.qm, qtbase_de.qm, etc.")
-
 include(update_git_describe)
 
 configure_file (
