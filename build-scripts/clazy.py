@@ -6,13 +6,13 @@ import subprocess
 import files
 import json
 import sys
+import os
 
 
 parser = argparse.ArgumentParser(description='Perform Clazy Checks')
 parser.add_argument('--clazy-executable', default='clazy')
 parser.add_argument('--mode', choices=["changed", "all", "manual"])
-parser.add_argument('--compile-commands', required=True,
-                    help="Path of the compile_commands.json file in your build directory.")
+parser.add_argument('-p', required=True, help="Your build directory.")
 parser.add_argument('files', nargs='*')
 
 args = parser.parse_args()
@@ -30,7 +30,7 @@ elif args.mode == "manual":
 else:
     assert False, f"Unexpected mode: {args.files}"
 
-with open(args.compile_commands) as f:
+with open(os.path.join(args.p, 'compile_commands.json')) as f:
     compile_commands = json.load(f)
     compilers = set(cmd['command'].split(' ', 1)[0] for cmd in compile_commands)
     if any('gcc' in compiler or 'g++' in compiler for compiler in compilers):
@@ -42,7 +42,7 @@ command = [
         "--standalone",
         "--ignore-included-files",
         f"-checks={clazychecks.checks}",
-        "-p", args.compile_commands,
+        "-p", args.p,
         *files
 ]
 

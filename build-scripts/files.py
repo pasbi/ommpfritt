@@ -7,7 +7,7 @@ import argparse
 
 
 def is_blacklisted(fn):
-    bad_patterns = ['src/external', 'text/external', 'test/unit']
+    bad_patterns = ['src/external', 'test/external', 'test/unit']
     return any(bad_pattern in fn for bad_pattern in bad_patterns)
 
 exts = ['cpp', 'h']

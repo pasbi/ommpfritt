@@ -31,7 +31,7 @@ jobs:
         with:
           name: lib2geom-focal
           path: lib2geom-install
-  Build-libommpfritt-Focal:
+  Build-libommpfritt-Focal-gcc:
     runs-on: ubuntu-20.04
     needs: Build-lib2geom-Focal
     steps:
@@ -57,11 +57,41 @@ jobs:
       - name: Upload libommpfritt build (Focal)
         uses: actions/upload-artifact@v2
         with:
-          name: libommpfritt-focal
+          name: libommpfritt-focal-gcc
           path: build
-  Build-ommpfritt-Focal:
+  Build-libommpfritt-Focal-clang:
     runs-on: ubuntu-20.04
-    needs: Build-libommpfritt-Focal
+    needs: Build-lib2geom-Focal
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        uses: ./.github/actions/prepare-focal
+      - name: Download lib2geom installation
+        uses: actions/download-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
+      - name: configure ommpfritt
+        run: cmake -S ${{ github.workspace }}
+                   -B build
+                   -GNinja
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DQT_QM_PATH=/usr/share/qt5/translations/
+                   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+                   -DCMAKE_PREFIX_PATH=lib2geom-install
+                   -DCMAKE_CXX_COMPILER=clang
+                   -DCMAKE_C_COMPILER=clang
+      - name: Build libommpfritt
+        run: cmake --build build --target libommpfritt
+      - name: Upload libommpfritt build (Focal)
+        uses: actions/upload-artifact@v2
+        with:
+          name: libommpfritt-focal-clang
+          path: build
+  Build-ommpfritt-Focal-gcc:
+    runs-on: ubuntu-20.04
+    needs: Build-libommpfritt-Focal-gcc
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -75,18 +105,40 @@ jobs:
       - name: Download libommpfritt build
         uses: actions/download-artifact@v2
         with:
-          name: libommpfritt-focal
+          name: libommpfritt-focal-gcc
           path: build
       - name: Build ommpfritt
         run: cmake --build build --target ommpfritt
       - name: Upload ommpfritt build (Focal)
         uses: actions/upload-artifact@v2
         with:
-          name: ommpfritt-focal
+          name: ommpfritt-focal-gcc
           path: build
+  Clazy-Check:
+    runs-on: ubuntu-20.04
+    needs: Build-libommpfritt-Focal-clang
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        uses: ./.github/actions/prepare-focal
+      - name: install clazy
+        run: sudo apt-get update && sudo apt-get install clazy
+      - name: Download libommpfritt build
+        uses: actions/download-artifact@v2
+        with:
+          name: libommpfritt-focal-clang
+          path: build
+      - name: Download lib2geom installation
+        uses: actions/download-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
+      - name: Perform clazy checks
+        run: build-scripts/clazy.py --mode changed -p build
   Unit-Test-libommpfritt:
     runs-on: ubuntu-20.04
-    needs: Build-libommpfritt-Focal
+    needs: Build-libommpfritt-Focal-gcc
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -95,7 +147,7 @@ jobs:
       - name: Download libommpfritt build
         uses: actions/download-artifact@v2
         with:
-          name: libommpfritt-focal
+          name: libommpfritt-focal-gcc
           path: build
       - name: Unit Tests
         run: |
