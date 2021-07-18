@@ -7,30 +7,21 @@ jobs:
       - run: choco install boost-msvc-14.1 qt5-default
       - run: git clone https://github.com/google/double-conversion
       - run: cd double-conversion; git checkout v3.1.5; cd ..
-      - run: |
-          cmake
-            -S double-conversion
-            -B build-double-conversion
-            -DCMAKE_INSTALL_PREFIX=install-double-conversion
-            -DCMAKE_BUILD_TYPE=Release
+      - run: cmake -S double-conversion
+                   -B build-double-conversion
+                   -DCMAKE_INSTALL_PREFIX=install-double-conversion
+                   -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build-double-conversion --target install --config Release
-      - name: Checkout lib2geom
-        run: |
-          git clone https://gitlab.com/inkscape/lib2geom.git
-          cd lib2geom
-          git checkout 37876ed4
-          cd ..
-      - name: configure lib2geom
-        run: cmake -S lib2geom
+      - run: git clone https://gitlab.com/inkscape/lib2geom.git
+      - run: cd lib2geom; git checkout 37876ed4; cd ..
+      - run: cmake -S lib2geom
                    -B build-lib2geom
                    -G "Visual Studio 16 2019"
                    -D2GEOM_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=lib2geom-install
                    -DCMAKE_PREFIX_PATH=install-double-conversion
-      - name: build lib2geom
-        run: cmake --build build-lib2geom --target install --config Release
-      - name: Upload lib2geom win2019
-        uses: actions/upload-artifact@v2
+      - run: cmake --build build-lib2geom --target install --config Release
+      - uses: actions/upload-artifact@v2
         with:
           name: lib2geom-win2019
           path: lib2geom-install

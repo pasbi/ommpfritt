@@ -4,14 +4,11 @@ jobs:
   Check-Style:
     runs-on: ubuntu-latest
     steps:
-      - name: install dependencies
-        run: sudo apt-get update && sudo apt-get install -y
+      - run: sudo apt-get update && sudo apt-get install -y
           python3
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - name: check style
-        run: |
+      - run: |
           stylechecker/main.py --root src --options stylechecker-options.json
           stylechecker/main.py --root test --options stylechecker-options.json
