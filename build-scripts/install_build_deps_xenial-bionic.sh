@@ -21,7 +21,6 @@ tar xf cmake-3.14.5-Linux-x86_64.tar.gz
 export CXX_COMPILER=g++-9
 export C_COMPILER=gcc-9
 export QT_PREFIX="/opt/qt512"
-export QT_QM_PATH="/opt/qt512/translations/"
 export PATH="/opt/qt512/bin:$PATH"
 export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
 echo "exported cmake: '$cmake'"

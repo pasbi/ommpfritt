@@ -24,12 +24,9 @@ cmake -GNinja \
 echo "build lib2geom:"
 cmake --build build-lib2geom --target install --parallel 4
 
-QT_QM_PATH=/mingw64/share/qt5/translations/
-
 echo "Configure omm"
 cmake -GNinja \
        -DCMAKE_BUILD_TYPE=Release \
-       -DQT_QM_PATH="$QT_QM_PATH" \
        -S . \
        -B build \
        -DCMAKE_PREFIX_PATH="install-lib2geom/lib/cmake" \
