@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Build on Ubuntu Focal
 on: [push]
 jobs:
   Build-lib2geom-Focal:
