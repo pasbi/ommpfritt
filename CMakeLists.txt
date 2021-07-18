@@ -12,7 +12,6 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
-option(BUILD_TESTS "build the unit tests." ON)
 
 find_package(Qt5Widgets CONFIG REQUIRED)
 find_package(Qt5Svg REQUIRED)
@@ -214,7 +213,11 @@ else()
 endif()
 
 add_subdirectory(src)
-add_subdirectory(test)
+
+if (BUILD_TESTING)
+  include(CTest)
+  add_subdirectory(test)
+endif()
 
 install(
     TARGETS ommpfritt ommpfritt-cli

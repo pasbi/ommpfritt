@@ -201,8 +201,4 @@ jobs:
           name: libommpfritt-focal-gcc
           path: build
       - name: Unit Tests
-        run: |
-          ctest --version
-          cd build
-          ls
-          ctest
+        run: ctest --test-dir build
