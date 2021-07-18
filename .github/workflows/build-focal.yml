@@ -135,7 +135,7 @@ jobs:
           name: lib2geom-focal
           path: lib2geom-install
       - name: Perform clazy checks
-        run: build-scripts/clazy.py --mode changed -p build
+        run: clazy --standalone -p build --ignore-included-files $(build-scripts/files.py --mode changed)
   Unit-Test-libommpfritt:
     runs-on: ubuntu-20.04
     needs: Build-libommpfritt-Focal-gcc
