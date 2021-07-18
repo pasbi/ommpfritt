@@ -136,6 +136,28 @@ jobs:
           path: lib2geom-install
       - name: Perform clazy checks
         run: clazy --standalone -p build --ignore-included-files $(build-scripts/files.py --mode changed)
+  Clang-Tidy-Check:
+    runs-on: ubuntu-20.04
+    needs: Build-libommpfritt-Focal-clang
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        uses: ./.github/actions/prepare-focal
+      - name: install clazy
+        run: sudo apt-get update && sudo apt-get install clazy
+      - name: Download libommpfritt build
+        uses: actions/download-artifact@v2
+        with:
+          name: libommpfritt-focal-clang
+          path: build
+      - name: Download lib2geom installation
+        uses: actions/download-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
+      - name: Perform clazy checks
+        run: build-scripts/clang-tidy.py --mode changed -p build
   Unit-Test-libommpfritt:
     runs-on: ubuntu-20.04
     needs: Build-libommpfritt-Focal-gcc
