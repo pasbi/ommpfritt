@@ -129,13 +129,19 @@ jobs:
         with:
           name: libommpfritt-focal-clang
           path: build
-      - name: Download lib2geom installation
+      - name: Download libommpfritt build
         uses: actions/download-artifact@v2
         with:
-          name: lib2geom-focal
-          path: lib2geom-install
+          name: libommpfritt-focal-clang
+          path: build
       - name: Perform clazy checks
-        run: clazy --standalone -p build --ignore-included-files $(build-scripts/files.py --mode changed)
+        run: |
+          files="$(build-scripts/files.py --mode changed)"
+          if [ -z "$files" ]; then
+            echo "Skip clazy: No relevant files have changed."
+          else
+            clazy --standalone -p build --ignore-included-files $files
+          fi
   Clang-Tidy-Check:
     runs-on: ubuntu-20.04
     needs: Build-libommpfritt-Focal-clang
@@ -151,13 +157,19 @@ jobs:
         with:
           name: libommpfritt-focal-clang
           path: build
-      - name: Download lib2geom installation
+      - name: Download libompfritt build
         uses: actions/download-artifact@v2
         with:
-          name: lib2geom-focal
-          path: lib2geom-install
-      - name: Perform clazy checks
-        run: build-scripts/clang-tidy.py --mode changed -p build
+          name: libommpfritt-focal-clang
+          path: path
+      - name: Perform clang-tidy checks
+        run: |
+          files="$(build-scripts/files.py --mode changed)"
+          if [ -z "$files" ]; then
+            echo "Skip clang-tidy: No relevant files have changed."
+          else
+            clang-tidy -p build $(build-scripts/files.py --mode changed) $files
+          fi
   Unit-Test-libommpfritt:
     runs-on: ubuntu-20.04
     needs: Build-libommpfritt-Focal-gcc
