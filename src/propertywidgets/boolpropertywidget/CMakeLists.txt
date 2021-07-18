@@ -6,6 +6,3 @@ target_sources(libommpfritt PRIVATE
   checkbox.cpp
   checkbox.h
 )
-
-
-

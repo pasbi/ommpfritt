@@ -4,6 +4,3 @@ target_sources(libommpfritt PRIVATE
   color.cpp
   color.h
 )
-
-
-

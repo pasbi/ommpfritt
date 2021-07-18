@@ -41,6 +41,3 @@ target_sources(libommpfritt PRIVATE
   userpropertycommand.cpp
   userpropertycommand.h
 )
-
-
-
