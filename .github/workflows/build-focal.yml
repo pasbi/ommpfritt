@@ -52,6 +52,7 @@ jobs:
                    -DQT_QM_PATH=/usr/share/qt5/translations/
                    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
                    -DCMAKE_PREFIX_PATH=lib2geom-install
+                   -DGENERATE_ICONS=OFF
       - name: Build libommpfritt
         run: cmake --build build --target libommpfritt
       - name: Upload libommpfritt build (Focal)
