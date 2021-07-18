@@ -9,7 +9,7 @@ jobs:
       - run: cd double-conversion; git checkout v3.1.5; cd ..
       - run: cmake -S double-conversion
                    -B build-double-conversion
-                   -DCMAKE_INSTALL_PREFIX=install-double-conversion
+                   -DCMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/install-double-conversion
                    -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build-double-conversion --target install --config Release
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
@@ -19,7 +19,7 @@ jobs:
                    -G "Visual Studio 16 2019"
                    -D2GEOM_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=lib2geom-install
-                   -DCMAKE_PREFIX_PATH=install-double-conversion
+                   -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/install-double-conversion
       - run: cmake --build build-lib2geom --target install --config Release
       - uses: actions/upload-artifact@v2
         with:
