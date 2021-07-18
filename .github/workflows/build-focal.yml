@@ -59,7 +59,7 @@ jobs:
         with:
           name: libommpfritt-focal-gcc
           path: build
-  Build-libommpfritt-Focal-clang:
+  Configure-libommpfritt-Focal-clang:
     runs-on: ubuntu-20.04
     needs: Build-lib2geom-Focal
     steps:
@@ -82,13 +82,30 @@ jobs:
                    -DCMAKE_PREFIX_PATH=lib2geom-install
                    -DCMAKE_CXX_COMPILER=clang
                    -DCMAKE_C_COMPILER=clang
-      - name: Build libommpfritt
-        run: cmake --build build --target libommpfritt
-      - name: Upload libommpfritt build (Focal)
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: libommpfritt-focal-clang
           path: build
+  Build-libommpfritt-Focal-clang:
+    runs-on: ubuntu-20.04
+    needs: Configure-libommpfritt-Focal-clang
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        uses: ./.github/actions/prepare-focal
+      - name: Download lib2geom installation
+        uses: actions/download-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
+      - name: Download libommpfritt build config
+        uses: actions/download-artifact@v2
+        with:
+          name: libommpfritt-focal-clang
+          path: build
+      - name: Build libommpfritt
+        run: cmake --build build --target libommpfritt
   Build-ommpfritt-Focal-gcc:
     runs-on: ubuntu-20.04
     needs: Build-libommpfritt-Focal-gcc
@@ -116,7 +133,7 @@ jobs:
           path: build
   Clazy-Check:
     runs-on: ubuntu-20.04
-    needs: Build-libommpfritt-Focal-clang
+    needs: Configure-libommpfritt-Focal-clang
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -144,7 +161,7 @@ jobs:
           fi
   Clang-Tidy-Check:
     runs-on: ubuntu-20.04
-    needs: Build-libommpfritt-Focal-clang
+    needs: Configure-libommpfritt-Focal-clang
     steps:
       - name: Checkout
         uses: actions/checkout@v2
