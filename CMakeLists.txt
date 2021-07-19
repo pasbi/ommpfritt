@@ -123,7 +123,7 @@ if (MINGW)
         "${MinGWPath}/libpoppler-*.dll"
         "${MinGWPath}/libpoppler-qt5-1.dll"
         "${MinGWPath}/libpsl-5.dll"
-        "${MinGWPath}/libpython3.8.dll"
+        "${MinGWPath}/libpython${Python_VERSION}.dll"
         "${MinGWPath}/libssh2-1.dll"
         "${MinGWPath}/libssl-1_1-x64.dll"
         "${MinGWPath}/libstdc++-6.dll"
@@ -150,15 +150,17 @@ if (MINGW)
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
   install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
 
-  file(GLOB python_files ${MinGWPath}/../lib/python3.8/*.py)
+  message("Python version: X${Python_VERSION}X")
+
+  file(GLOB python_files ${MinGWPath}/../lib/python${Python_VERSION}/*.py)
   foreach (fn IN LISTS python_files)
-    install(FILES ${fn} DESTINATION lib/python3.8/)
+    install(FILES ${fn} DESTINATION lib/python${Python_VERSION}/)
   endforeach()
 
-  install(FILES ${MinGWPath}/../lib/python3.8/LICENSE.txt DESTINATION lib/)
+  install(FILES ${MinGWPath}/../lib/python${Python_VERSION}/LICENSE.txt DESTINATION lib/)
   list(APPEND python_dirs collections ctypes encodings json multiprocessing)
   foreach (dir IN LISTS python_dirs)
-    install(DIRECTORY "${MinGWPath}/../lib/python3.8/${dir}" DESTINATION lib/python3.8/)
+    install(DIRECTORY "${MinGWPath}/../lib/python${Python_VERSION}/${dir}" DESTINATION lib/python${Python_VERSION}/)
   endforeach()
 
   add_custom_command(TARGET ommpfritt-cli POST_BUILD
