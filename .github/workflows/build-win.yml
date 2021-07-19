@@ -45,9 +45,17 @@ jobs:
                    -B build-lib2geom
                    -G"MSYS Makefiles"
                    -D2GEOM_TESTING=OFF
-                   -DCMAKE_INSTALL_PREFIX=lib2geom-install
+                   -DCMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
       - run: cmake --build build-lib2geom --target install --config Release
       - uses: actions/upload-artifact@v2
         with:
           name: lib2geom-win2019
           path: lib2geom-install
+      - uses: actions/checkout@v2
+      - run: cmake -S .
+                   -B build
+                   -G"MSYS Makefiles"
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
+                   -DGENERATE_ICONS=OFF
+      - run: cmake --build build --target package --config Release -j4
