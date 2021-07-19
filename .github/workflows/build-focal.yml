@@ -19,7 +19,10 @@ jobs:
                    -GNinja
                    -D2GEOM_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=lib2geom-install
-      - run: sudo cmake --build build-lib2geom --target install
+      - run: sudo cmake --build build-lib2geom
+                        --target install
+                        --config Release
+                        -j4
       - uses: actions/upload-artifact@v2
         with:
           name: lib2geom-focal
@@ -38,11 +41,13 @@ jobs:
                    -B build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
-                   -DQT_QM_PATH=/usr/share/qt5/translations/
                    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
                    -DCMAKE_PREFIX_PATH=lib2geom-install
                    -DGENERATE_ICONS=OFF
-      - run: cmake --build build --target libommpfritt
+      - run: cmake --build build
+                   --target libommpfritt
+                   --config Release
+                   -j4
       - uses: actions/upload-artifact@v2
         with:
           name: libommpfritt-focal-gcc
@@ -84,7 +89,10 @@ jobs:
         with:
           name: libommpfritt-focal-clang
           path: build
-      - run: cmake --build build --target libommpfritt
+      - run: cmake --build build
+                   --target libommpfritt
+                   --config Release
+                   -j4
   Build-ommpfritt-Focal-gcc:
     runs-on: ubuntu-20.04
     needs: Build-libommpfritt-Focal-gcc
@@ -99,7 +107,10 @@ jobs:
         with:
           name: libommpfritt-focal-gcc
           path: build
-      - run: cmake --build build --target ommpfritt
+      - run: cmake --build build
+                   --target ommpfritt
+                   --config Release
+                   -j4
       - uses: actions/upload-artifact@v2
         with:
           name: ommpfritt-focal-gcc
