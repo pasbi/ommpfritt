@@ -3,23 +3,49 @@ on: [push]
 jobs:
   Build-lib2geom-Win2019:
     runs-on: windows-2019
+    defaults:
+      run:
+        shell: msys2 {0}
     steps:
-      - run: choco install boost-msvc-14.1 qt5-default
-      - run: git clone https://github.com/google/double-conversion
-      - run: cd double-conversion; git checkout v3.1.5; cd ..
-      - run: cmake -S double-conversion
-                   -B build-double-conversion
-                   -DCMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/install-double-conversion
-                   -DCMAKE_BUILD_TYPE=Release
-      - run: cmake --build build-double-conversion --target install --config Release
+      - uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            make
+            python
+            git
+            base-devel
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-cython
+            mingw-w64-x86_64-dlfcn
+            mingw-w64-x86_64-double-conversion
+            mingw-w64-x86_64-gsl
+            mingw-w64-x86_64-gtk3
+            mingw-w64-x86_64-gtkmm3
+            mingw-w64-x86_64-icu
+            mingw-w64-x86_64-imagemagick
+            mingw-w64-x86_64-kitemmodels-qt5
+            mingw-w64-x86_64-libffi
+            mingw-w64-x86_64-libdeflate
+            mingw-w64-x86_64-libwebp
+            mingw-w64-x86_64-mesa
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-nsis
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-poppler
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-python-pytest
+            mingw-w64-x86_64-qt5
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-zlib
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
       - run: cd lib2geom; git checkout 37876ed4; cd ..
       - run: cmake -S lib2geom
                    -B build-lib2geom
-                   -G "Visual Studio 16 2019"
+                   -G"MSYS Makefiles"
                    -D2GEOM_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=lib2geom-install
-                   -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/install-double-conversion
       - run: cmake --build build-lib2geom --target install --config Release
       - uses: actions/upload-artifact@v2
         with:
