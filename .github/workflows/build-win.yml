@@ -58,4 +58,8 @@ jobs:
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
                    -DGENERATE_ICONS=OFF
-      - run: cmake --build build --target package --config Release -j4
+                   -DBUILD_TESTING=OFF
+      - run: cmake --build build
+                   --target package
+                   --config Release
+                   -j4
