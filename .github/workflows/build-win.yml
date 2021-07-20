@@ -63,6 +63,7 @@ jobs:
           name: ommpfritt-installer-win2019
           path: build/ommpfritt-*.exe
   Make-Release:
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     needs: Build-Ommpfritt-Win2019
     steps:

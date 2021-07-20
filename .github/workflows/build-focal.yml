@@ -171,3 +171,27 @@ jobs:
           name: libommpfritt-focal-gcc
           path: build
       - run: ctest --test-dir build
+  Create-AppImage:
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: ubuntu-20.04
+    needs: Build-ommpfritt-Focal-gcc
+    steps:
+      - run: wget -c -nv 'https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage'
+      - run: chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/prepare-focal
+      - uses: actions/download-artifact@v2
+        with:
+          name: ommpfritt-focal-gcc
+          path: build
+      - run: cmake -DCMAKE_INSTALL_PREFIX=AppDir -B build
+      - run: cmake --build build --config Release --target install
+      - run: mkdir -p AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/256x256/apps/
+      - run: cp build/icons/omm.png AppDir/usr/share/icons/hicolor/256x256/apps/ommpfritt.png
+      - run: cp build-scripts/ommpfritt.desktop AppDir/usr/share/applications/
+      - run: ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications -appimage
+      - run: ls
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Ommpfritt-AppImage-Focal
+          path: ommpfritt*.AppImage
