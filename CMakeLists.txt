@@ -87,6 +87,7 @@ add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
 add_library(libommpfritt STATIC)
 
 if (MINGW)
+  set(python_name "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
   get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
   FILE (GLOB required_system_dlls 
         "${MinGWPath}/libbrotlicommon.dll"
@@ -123,7 +124,7 @@ if (MINGW)
         "${MinGWPath}/libpoppler-*.dll"
         "${MinGWPath}/libpoppler-qt5-1.dll"
         "${MinGWPath}/libpsl-5.dll"
-        "${MinGWPath}/libpython${Python_VERSION}.dll"
+        "${MinGWPath}/lib${python_name}.dll"
         "${MinGWPath}/libssh2-1.dll"
         "${MinGWPath}/libssl-1_1-x64.dll"
         "${MinGWPath}/libstdc++-6.dll"
@@ -143,24 +144,22 @@ if (MINGW)
         "${MinGWPath}/libdeflate.dll"
         "${MinGWPath}/libwebp-7.dll"
         "${MinGWPath}/zlib1.dll"
-
   )
   message(STATUS "mingw path: ${MinGWPath}")
   message(STATUS "dlls: ${required_system_dlls}")
+  message(STATUS "python name: ${python_name}")
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
   install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
 
-  message("Python version: X${Python_VERSION}X")
-
-  file(GLOB python_files ${MinGWPath}/../lib/python${Python_VERSION}/*.py)
+  file(GLOB python_files ${MinGWPath}/../lib/${python_name}/*.py)
   foreach (fn IN LISTS python_files)
-    install(FILES ${fn} DESTINATION lib/python${Python_VERSION}/)
+    install(FILES ${fn} DESTINATION lib/${python_name}/)
   endforeach()
 
-  install(FILES ${MinGWPath}/../lib/python${Python_VERSION}/LICENSE.txt DESTINATION lib/)
+  install(FILES ${MinGWPath}/../lib/${python_name}/LICENSE.txt DESTINATION lib/)
   list(APPEND python_dirs collections ctypes encodings json multiprocessing)
   foreach (dir IN LISTS python_dirs)
-    install(DIRECTORY "${MinGWPath}/../lib/python${Python_VERSION}/${dir}" DESTINATION lib/python${Python_VERSION}/)
+    install(DIRECTORY "${MinGWPath}/../lib/${python_name}/${dir}" DESTINATION lib/${python_name}/)
   endforeach()
 
   add_custom_command(TARGET ommpfritt-cli POST_BUILD
