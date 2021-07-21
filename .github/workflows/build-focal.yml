@@ -112,6 +112,7 @@ jobs:
                    --target ommpfritt
                    --config Release
                    -j4
+                   -- -d explain
       - uses: actions/upload-artifact@v2
         with:
           name: ommpfritt-focal-gcc
