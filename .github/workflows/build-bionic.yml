@@ -1,0 +1,47 @@
+name: Create AppImage on Bionic
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  Create-AppImage-Bionic:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/prepare-bionic
+      - run: git clone https://gitlab.com/inkscape/lib2geom.git
+      - run: cd lib2geom; git checkout 37876ed4; cd ..
+      - run: cmake -S lib2geom
+                   -B build-lib2geom
+                   -GNinja
+                   -D2GEOM_TESTING=OFF
+                   -DCMAKE_INSTALL_PREFIX=lib2geom-install
+      - run: cmake --build build-lib2geom
+                        --target install
+                        --config Release
+                        -j4
+      - run: cmake -S ${{ github.workspace }}
+                   -B build
+                   -GNinja
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+                   -DCMAKE_PREFIX_PATH=lib2geom-install
+                   -DGENERATE_ICONS=OFF
+                   -DBUILD_TESTING=ON
+                   -DCMAKE_INSTALL_PREFIX=AppDir
+      - run: cmake --build build
+                   --target install
+                   --config Release
+                   -j4
+      - run: wget -c -nv 'https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage'
+      - run: chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+      - run: mkdir -p AppDir/usr/share/applications
+      # - run: mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps/
+      # - run: cp build/icons/omm_256.png AppDir/usr/share/icons/hicolor/256x256/apps/ommpfritt.png
+      - run: cp build-scripts/ommpfritt.desktop AppDir/usr/share/applications/
+      - run: ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/ommpfritt.desktop -appimage
+      - run: ls
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Ommpfritt-AppImage-Focal
+          path: ommpfritt*.AppImage
