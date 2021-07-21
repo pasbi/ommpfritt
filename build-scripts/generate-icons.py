@@ -152,7 +152,7 @@ if __name__ == "__main__":
 
     def required_resolutions(item):
         if item == "omm":
-            return {16, 22, 32, 48, 64, 128, 2048}
+            return {16, 22, 32, 48, 64, 128, 256, 2048}
         else:
             return {128}
 

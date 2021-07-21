@@ -191,7 +191,7 @@ jobs:
       - run: cmake -DCMAKE_INSTALL_PREFIX=AppDir -B build
       - run: cmake --build build --config Release --target install
       - run: mkdir -p AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/256x256/apps/
-      - run: cp build/icons/omm.png AppDir/usr/share/icons/hicolor/256x256/apps/ommpfritt.png
+      - run: cp build/icons/omm_256.png AppDir/usr/share/icons/hicolor/256x256/apps/ommpfritt.png
       - run: cp build-scripts/ommpfritt.desktop AppDir/usr/share/applications/
       - run: ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications -appimage
       - run: ls
