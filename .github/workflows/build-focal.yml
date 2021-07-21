@@ -184,6 +184,10 @@ jobs:
         with:
           name: ommpfritt-focal-gcc
           path: build
+      - uses: actions/download-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
       - run: cmake -DCMAKE_INSTALL_PREFIX=AppDir -B build
       - run: cmake --build build --config Release --target install
       - run: mkdir -p AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/256x256/apps/
