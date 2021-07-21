@@ -17,7 +17,7 @@ find_package(Qt5Widgets CONFIG REQUIRED)
 find_package(Qt5Svg REQUIRED)
 find_package(Qt5 COMPONENTS LinguistTools)
 find_package(PkgConfig)
-find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
 
