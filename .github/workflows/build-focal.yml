@@ -173,23 +173,34 @@ jobs:
           path: build
       - run: ctest --test-dir build
   Create-AppImage:
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    # if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-20.04
-    needs: Build-ommpfritt-Focal-gcc
+      # needs: Build-ommpfritt-Focal-gcc
+    needs: Configure-libommpfritt-Focal-clang
     steps:
-      - run: wget -c -nv 'https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage'
-      - run: chmod a+x linuxdeployqt-continuous-x86_64.AppImage
       - uses: actions/checkout@v2
       - uses: ./.github/actions/prepare-focal
-      - uses: actions/download-artifact@v2
-        with:
-          name: ommpfritt-focal-gcc
-          path: build
+      - run: wget -c -nv 'https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage'
+      - run: chmod a+x linuxdeployqt-continuous-x86_64.AppImage
       - uses: actions/download-artifact@v2
         with:
           name: lib2geom-focal
           path: lib2geom-install
-      - run: cmake -DCMAKE_INSTALL_PREFIX=AppDir -B build
+      - run: cmake -S ${{ github.workspace }}
+                   -B build
+                   -GNinja
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+                   -DCMAKE_PREFIX_PATH=lib2geom-install
+                   -DGENERATE_ICONS=OFF
+                   -DBUILD_TESTING=ON
+                   -DCMAKE_INSTALL_PREFIX=AppDir
+     # - uses: actions/download-artifact@v2
+     #   with:
+     #     name: ommpfritt-focal-gcc
+     #     path: build
+      - run: ls
+      - run: find
       - run: cmake --build build --config Release --target install
       - run: mkdir -p AppDir/usr/share/applications
       # - run: mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps/
