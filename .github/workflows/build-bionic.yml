@@ -15,7 +15,7 @@ jobs:
                    -B build-lib2geom
                    -GNinja
                    -D2GEOM_TESTING=OFF
-                   -DCMAKE_INSTALL_PREFIX=lib2geom-install
+                   -DCMAKE_INSTALL_PREFIX=AppDir
       - run: cmake --build build-lib2geom
                         --target install
                         --config Release
@@ -24,8 +24,7 @@ jobs:
                    -B build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-                   -DCMAKE_PREFIX_PATH=lib2geom-install
+                   -DCMAKE_PREFIX_PATH=AppDir
                    -DGENERATE_ICONS=OFF
                    -DBUILD_TESTING=ON
                    -DCMAKE_INSTALL_PREFIX=AppDir
