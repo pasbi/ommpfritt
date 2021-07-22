@@ -4,11 +4,15 @@ runs:
   using: composite
   steps:
     - shell: bash
+      run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+    - shell: bash
+      run: sudo add-apt-repository ppa:beineri/opt-qt-5.15.2-bionic
+    - shell: bash
       run: sudo apt-get update && sudo apt-get install -y
            build-essential
-           clang
            cmake
-           g++
+           g++-9
+           gcc-9
            libboost-all-dev
            libcairo2-dev
            libdouble-conversion-dev
@@ -22,9 +26,9 @@ runs:
            imagemagick
            ninja-build
            python3-dev
-           qt5-default
-           qtbase5-dev
-           qtchooser
-           qttools5-dev-tools
-           qttools5-dev
+           qt515base
+           qt515svg
+           qt515tools
+           qt515translations
+           qt515x11extras
            zlib1g-dev
