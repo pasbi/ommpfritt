@@ -18,6 +18,7 @@ jobs:
                    -B build-lib2geom
                    -GNinja
                    -D2GEOM_TESTING=OFF
+                   -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_INSTALL_PREFIX=lib2geom-install
       - run: sudo cmake --build build-lib2geom
                         --target install

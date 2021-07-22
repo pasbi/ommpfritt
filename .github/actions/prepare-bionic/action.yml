@@ -1,3 +1,9 @@
+#  There is already a `cmake` (3.20) installed miraculously
+#  and `dpkg -S cmake` does not find a corresponding package.
+#  We must not install the `libkf5itemmodels-dev` package because
+#  it depends on the bionic Qt5-packages (5.9) which will hide
+#  the beineri-Qt5-packages (5.15).
+
 name: 'Prepare Focal'
 description: 'Install required packages'
 runs:
@@ -10,7 +16,6 @@ runs:
     - shell: bash
       run: sudo apt-get update && sudo apt-get install -y
            build-essential
-           cmake
            g++-9
            gcc-9
            libboost-all-dev
@@ -19,9 +24,7 @@ runs:
            libffi-dev
            libgl-dev
            libgsl-dev
-           libkf5itemmodels-dev
-           libpoppler-qt5-dev
-           libqt5svg5-dev
+           libopenjp2-7-dev
            libssl-dev
            imagemagick
            ninja-build
@@ -32,3 +35,7 @@ runs:
            qt515translations
            qt515x11extras
            zlib1g-dev
+    - shell: bash
+      run: sudo update-alternatives
+            --install /usr/bin/gcc gcc /usr/bin/gcc-9 60
+            --slave /usr/bin/g++ g++ /usr/bin/g++-9

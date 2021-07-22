@@ -1,45 +1,99 @@
 name: Create AppImage on Bionic
-on:
-  push:
-    tags:
-      - '*'
+on: [push]
+  #  push:
+  #  tags:
+  #    - '*'
 jobs:
   Create-AppImage-Bionic:
     runs-on: ubuntu-18.04
+    env:
+      QT_PREFIX: "/opt/qt515"
+      LD_LIBRARY_PATH: "/usr/local/lib/:/usr/local/lib/x86_64-linux-gnu/"
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/prepare-bionic
+
+      # Build extra cmake modules
+      - run: git clone https://github.com/KDE/extra-cmake-modules
+      - run: cmake -S extra-cmake-modules/
+                   -B build-extra-cmake-modules
+      - run: sudo cmake --build build-extra-cmake-modules
+                        --target install
+                        -j4
+
+      # Build kitemmodels
+      - run: git clone https://invent.kde.org/frameworks/kitemmodels.git
+      - run: cd kitemmodels; git checkout v5.84.0; cd ..
+      - run: cmake -S kitemmodels
+                   -B build-kitemmodels
+                   -GNinja
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_PREFIX_PATH=${QT_PREFIX}
+      - run: sudo cmake --build build-kitemmodels
+                        --target install
+                        --config Release
+                        -j4
+
+      # Build lib2geom
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
       - run: cd lib2geom; git checkout 37876ed4; cd ..
       - run: cmake -S lib2geom
                    -B build-lib2geom
                    -GNinja
                    -D2GEOM_TESTING=OFF
-                   -DCMAKE_INSTALL_PREFIX=AppDir
-      - run: cmake --build build-lib2geom
+                   -DCMAKE_BUILD_TYPE=Release
+      - run: sudo cmake --build build-lib2geom
                         --target install
                         --config Release
                         -j4
+
+      # build poppler
+      - run: git clone https://gitlab.freedesktop.org/poppler/poppler
+      - run: cd poppler; git checkout poppler-21.07.0; cd ..
+      - run: cmake -S poppler/
+                   -B build-poppler
+                   -GNinja
+                   -DCMAKE_PREFIX_PATH=${QT_PREFIX}
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DBUILD_CPP_TESTS=OFF
+                   -DBUILD_GTK_TESTS=OFF
+                   -DBUILD_QT5_TESTS=OFF
+                   -DBUILD_QT6_TESTS=OFF
+                   -DBUILD_MANUAL_TESTS=OFF
+                   -DENABLE_BOOST=OFF
+                   -DENABLE_CPP=OFF
+                   -DENABLE_GLIB=OFF
+                   -DENABLE_LIBCURL=OFF
+                   -DENABLE_UNSTABLE_API_ABI_HEADERS=OFF
+                   -DENABLE_UTILS=OFF
+      - run: sudo cmake --build build-poppler
+                        --target install
+                        --config Release
+                        -j4
+
+      # Build omm
       - run: cmake -S ${{ github.workspace }}
                    -B build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH=AppDir
+                   -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
                    -DGENERATE_ICONS=OFF
-                   -DBUILD_TESTING=ON
-                   -DCMAKE_INSTALL_PREFIX=AppDir
+                   -DBUILD_TESTING=OFF
+                   -DCMAKE_INSTALL_PREFIX=install
       - run: cmake --build build
                    --target install
                    --config Release
                    -j4
+
       - run: wget -c -nv 'https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage'
       - run: chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-      - run: mkdir -p AppDir/usr/share/applications
-      # - run: mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps/
-      # - run: cp build/icons/omm_256.png AppDir/usr/share/icons/hicolor/256x256/apps/ommpfritt.png
+      - run: mkdir -p AppDir/usr/share/applications AppDir/usr/bin AppDir/usr/share/icons/hicolor/256x256
       - run: cp build-scripts/ommpfritt.desktop AppDir/usr/share/applications/
-      - run: ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/ommpfritt.desktop -appimage
-      - run: ls
+      - run: cp install/bin/ommpfritt AppDir/usr/bin/
+      - run: wget https://upload.wikimedia.org/wikipedia/commons/3/3e/Tree-256x256.png
+      - run: mv Tree-256x256.png AppDir/usr/share/icons/hicolor/256x256/ommpfritt.png
+      - uses: mxschmitt/action-tmate@v3
+      - run: ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/ommpfritt.desktop -appimage -qmake=${QT_PREFIX}/bin/qmake
       - uses: actions/upload-artifact@v2
         with:
           name: Ommpfritt-AppImage-Focal

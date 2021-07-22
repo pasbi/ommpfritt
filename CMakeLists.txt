@@ -13,9 +13,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
 
-find_package(Qt5Widgets CONFIG REQUIRED)
-find_package(Qt5Svg REQUIRED)
-find_package(Qt5 COMPONENTS LinguistTools)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
 find_package(PkgConfig)
 find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(KF5ItemModels REQUIRED)
