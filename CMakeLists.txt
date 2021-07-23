@@ -84,8 +84,9 @@ add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file_cli}")
 add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
 add_library(libommpfritt STATIC)
 
+set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
+set(python_major "python${Python3_VERSION_MAJOR}")
 if (MINGW)
-  set(python_name "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
   get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
   FILE (GLOB required_system_dlls 
         "${MinGWPath}/libbrotlicommon.dll"
@@ -122,7 +123,7 @@ if (MINGW)
         "${MinGWPath}/libpoppler-*.dll"
         "${MinGWPath}/libpoppler-qt5-1.dll"
         "${MinGWPath}/libpsl-5.dll"
-        "${MinGWPath}/lib${python_name}.dll"
+        "${MinGWPath}/lib${python_major_minor}.dll"
         "${MinGWPath}/libssh2-1.dll"
         "${MinGWPath}/libssl-1_1-x64.dll"
         "${MinGWPath}/libstdc++-6.dll"
@@ -145,19 +146,19 @@ if (MINGW)
   )
   message(STATUS "mingw path: ${MinGWPath}")
   message(STATUS "dlls: ${required_system_dlls}")
-  message(STATUS "python name: ${python_name}")
+  message(STATUS "python name: ${python_major_minor}")
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
   install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
 
-  file(GLOB python_files ${MinGWPath}/../lib/${python_name}/*.py)
+  file(GLOB python_files ${MinGWPath}/../lib/${python_major_minor}/*.py)
   foreach (fn IN LISTS python_files)
-    install(FILES ${fn} DESTINATION lib/${python_name}/)
+    install(FILES ${fn} DESTINATION lib/${python_major_minor}/)
   endforeach()
 
-  install(FILES ${MinGWPath}/../lib/${python_name}/LICENSE.txt DESTINATION lib/)
+  install(FILES ${MinGWPath}/../lib/${python_major_minor}/LICENSE.txt DESTINATION lib/)
   list(APPEND python_dirs collections ctypes encodings json multiprocessing)
   foreach (dir IN LISTS python_dirs)
-    install(DIRECTORY "${MinGWPath}/../lib/${python_name}/${dir}" DESTINATION lib/${python_name}/)
+    install(DIRECTORY "${MinGWPath}/../lib/${python_major_minor}/${dir}" DESTINATION lib/${python_major_minor}/)
   endforeach()
 
   add_custom_command(TARGET ommpfritt-cli POST_BUILD
@@ -229,3 +230,9 @@ SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
 include(CPack)
 include(InstallRequiredSystemLibraries)
 
+get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
+configure_file(${CMAKE_SOURCE_DIR}/cmake/make-appimage.sh.in ${CMAKE_BINARY_DIR}/make-appimage.sh @ONLY)
+add_custom_target(appimage
+                  COMMAND "${CMAKE_BINARY_DIR}/make-appimage.sh"
+                  COMMENT "Packing AppImage"
+)
