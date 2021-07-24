@@ -111,7 +111,6 @@ jobs:
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
-                   -DGENERATE_ICONS=OFF
                    -DBUILD_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=install
       - run: cmake --build build

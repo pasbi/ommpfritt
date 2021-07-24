@@ -56,7 +56,7 @@ def render_icon(args, resolution, category, item):
         "--no-opengl",
         "--unique"
     ]
-    cp = subprocess.run(command, capture_output=True)
+    cp = subprocess.run(command)
     print(f"Render icon for {category}/{item} @{resolution}... ", end="")
     print(" ".join(command))
     if cp.returncode == object_name_not_found_code:

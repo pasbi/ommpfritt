@@ -11,8 +11,7 @@ mkdir -p $appdir/usr/share/applications
 cp @CMAKE_SOURCE_DIR@/build-scripts/ommpfritt.desktop $appdir/usr/share/applications/
 
 mkdir -p $appdir/usr/share/icons/hicolor/scalable/apps/256x256/
-wget https://upload.wikimedia.org/wikipedia/commons/3/3e/Tree-256x256.png -O ommpfritt.png
-mv ommpfritt.png $appdir/usr/share/icons/hicolor/scalable/apps/256x256/
+cp @CMAKE_BINARY_DIR@/icons/omm_256.png $appdir/usr/share/icons/hicolor/scalable/apps/256x256/
 
 mkdir -p $appdir/usr/lib
 cp -r /usr/lib/@python_major_minor@ $appdir/usr/lib
