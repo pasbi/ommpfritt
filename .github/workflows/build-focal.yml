@@ -44,7 +44,6 @@ jobs:
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
                    -DCMAKE_PREFIX_PATH=lib2geom-install
-                   -DGENERATE_ICONS=OFF
                    -DBUILD_TESTING=ON
       - run: cmake --build build
                    --target libommpfritt
