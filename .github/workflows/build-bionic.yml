@@ -113,12 +113,11 @@ jobs:
                    -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
                    -DBUILD_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=install
-                   -DGENERATE_ICONS=OFF
+                   -DGENERATE_ICONS=ON
       - run: cmake --build build
                    --target install
                    --config Release
                    -j4
-      - uses: mxschmitt/action-tmate@v3
       - run: cmake --build build
                    --target appimage
                    --config Release
