@@ -4,7 +4,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/testconfig.h.in ${CMAKE_CURRENT_BINAR
 
 macro(package_add_test SOURCE_FILE)
     string(REGEX REPLACE "\.[^.]*$" "" TESTNAME "${SOURCE_FILE}")
-    add_executable(${TESTNAME} main.cpp ${SOURCE_FILE})
+    add_executable(${TESTNAME} main.cpp ${SOURCE_FILE} ${compiled_resource_file_cli})
     target_link_libraries(${TESTNAME} PRIVATE gtest gmock libommpfritt)
     target_compile_definitions(${TESTNAME} PRIVATE "PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}")
     target_include_directories(${TESTNAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
