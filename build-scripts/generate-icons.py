@@ -54,7 +54,8 @@ def render_icon(args, resolution, category, item):
         "-o", f"{args.output}/{item}_{resolution}.png",
         "-y",
         "--no-opengl",
-        "--unique"
+        "--unique",
+        "-platform", "offscreen",
     ]
     print(f"Render icon for {category}/{item} @{resolution}... ", end="")
     cp = subprocess.run(command)
