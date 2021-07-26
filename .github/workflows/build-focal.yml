@@ -172,4 +172,11 @@ jobs:
         with:
           name: libommpfritt-focal-gcc
           path: build
+      - uses: actions/download-artifact@v2
+        with:
+          name: lib2geom-focal
+          path: lib2geom-install
+      - run: cmake --build build
+                   --config Release
+                   -j4
       - run: ctest --test-dir build
