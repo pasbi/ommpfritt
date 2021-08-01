@@ -1,6 +1,5 @@
 #include "logging.h"
 #include "git_describe.h"
-#include "ommpfrittconfig.h"
 #include <QApplication>
 #include <QDateTime>
 #include <QDir>
@@ -9,6 +8,7 @@
 #include <ctime>
 #include <iomanip>
 #include <iostream>
+#include "config.h"
 
 QDebug operator<<(QDebug d, const std::string& string)
 {

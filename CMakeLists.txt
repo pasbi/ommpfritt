@@ -31,11 +31,6 @@ generate_registers("${classes}")
 
 include(update_git_describe)
 
-configure_file (
-  "${PROJECT_SOURCE_DIR}/ommpfrittconfig.h.in"
-  "${PROJECT_BINARY_DIR}/ommpfrittconfig.h"
-)
-
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
 set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
