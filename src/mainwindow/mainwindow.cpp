@@ -29,6 +29,7 @@
 #include "tools/tool.h"
 #include "ui_aboutdialog.h"
 #include "widgets/colorwidget/colorwidget.h"
+#include "config.h"
 
 namespace
 {
@@ -232,6 +233,8 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
     ui.te_gpl30->hide();
     ui.te_gpl30->setText(QString::fromStdString(std::string(GPL3_TEXT)));
     ui.lb_splash->setPixmap(IconProvider::pixmap("omm", IconProvider::Size::Gigantic));
+    ui.lb_version->setText(git_describe().data());
+    about_dialog.adjustSize();
     about_dialog.exec();
   });
 
