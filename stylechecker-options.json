@@ -1,0 +1,17 @@
+{
+    "maxcols_soft": 100,
+    "maxcols": 120,
+    "c_style_include_exceptions": [
+        "direct.h",
+        "unistd.h",
+        "pwd.h",
+        "omp.h",
+        "Windows.h",
+        "dlfcn.h",
+        "Python.h"
+    ],
+    "excluded_paths": [
+      "src/external",
+      "test/external"
+    ]
+}

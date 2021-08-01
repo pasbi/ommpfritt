@@ -5,5 +5,3 @@ target_sources(libommpfritt PRIVATE
   modeselector.cpp
   modeselector.h
 )
-
-

@@ -12,13 +12,10 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
-option(BUILD_TESTS "build the unit tests." ON)
 
-find_package(Qt5Widgets CONFIG REQUIRED)
-find_package(Qt5Svg REQUIRED)
-find_package(Qt5 COMPONENTS LinguistTools)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
 find_package(PkgConfig)
-find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
 
@@ -85,9 +82,10 @@ endmacro()
 
 add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file_cli}")
 add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
-add_executable(ommpfritt_unit_tests)
 add_library(libommpfritt STATIC)
 
+set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
+set(python_major "python${Python3_VERSION_MAJOR}")
 if (MINGW)
   get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
   FILE (GLOB required_system_dlls 
@@ -125,7 +123,7 @@ if (MINGW)
         "${MinGWPath}/libpoppler-*.dll"
         "${MinGWPath}/libpoppler-qt5-1.dll"
         "${MinGWPath}/libpsl-5.dll"
-        "${MinGWPath}/libpython3.8.dll"
+        "${MinGWPath}/lib${python_major_minor}.dll"
         "${MinGWPath}/libssh2-1.dll"
         "${MinGWPath}/libssl-1_1-x64.dll"
         "${MinGWPath}/libstdc++-6.dll"
@@ -145,22 +143,22 @@ if (MINGW)
         "${MinGWPath}/libdeflate.dll"
         "${MinGWPath}/libwebp-7.dll"
         "${MinGWPath}/zlib1.dll"
-
   )
   message(STATUS "mingw path: ${MinGWPath}")
   message(STATUS "dlls: ${required_system_dlls}")
+  message(STATUS "python name: ${python_major_minor}")
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
   install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
 
-  file(GLOB python_files ${MinGWPath}/../lib/python3.8/*.py)
+  file(GLOB python_files ${MinGWPath}/../lib/${python_major_minor}/*.py)
   foreach (fn IN LISTS python_files)
-    install(FILES ${fn} DESTINATION lib/python3.8/)
+    install(FILES ${fn} DESTINATION lib/${python_major_minor}/)
   endforeach()
 
-  install(FILES ${MinGWPath}/../lib/python3.8/LICENSE.txt DESTINATION lib/)
+  install(FILES ${MinGWPath}/../lib/${python_major_minor}/LICENSE.txt DESTINATION lib/)
   list(APPEND python_dirs collections ctypes encodings json multiprocessing)
   foreach (dir IN LISTS python_dirs)
-    install(DIRECTORY "${MinGWPath}/../lib/python3.8/${dir}" DESTINATION lib/python3.8/)
+    install(DIRECTORY "${MinGWPath}/../lib/${python_major_minor}/${dir}" DESTINATION lib/${python_major_minor}/)
   endforeach()
 
   add_custom_command(TARGET ommpfritt-cli POST_BUILD
@@ -174,7 +172,6 @@ endif()
 
 set_warning_level(ommpfritt-cli)
 set_warning_level(ommpfritt)
-set_warning_level(ommpfritt_unit_tests)
 set_warning_level(libommpfritt)
 
 if (GENERATE_ICONS)
@@ -186,7 +183,6 @@ add_dependencies(resources translations_qm)
 add_dependencies(libommpfritt registers)
 add_dependencies(libommpfritt update-git-describe)
 add_dependencies(ommpfritt libommpfritt resources)
-add_dependencies(ommpfritt_unit_tests resources_cli)
 add_dependencies(ommpfritt-cli libommpfritt resources_cli)
 
 target_include_directories(libommpfritt PUBLIC
@@ -202,9 +198,6 @@ target_link_libraries(libommpfritt KF5ItemModels)
 target_link_libraries(libommpfritt 2Geom::2geom)
 target_link_libraries(ommpfritt libommpfritt)
 target_link_libraries(ommpfritt-cli libommpfritt)
-target_link_libraries(ommpfritt_unit_tests libommpfritt)
-target_link_libraries(ommpfritt_unit_tests gtest)
-target_link_libraries(ommpfritt_unit_tests gtest_main)
 
 if (WIN32)
   target_link_libraries(libommpfritt -lopengl32)
@@ -214,7 +207,17 @@ else()
 endif()
 
 add_subdirectory(src)
-add_subdirectory(test)
+
+if (BUILD_TESTING)
+  add_executable(ommpfritt_unit_tests)
+  set_warning_level(ommpfritt_unit_tests)
+  add_dependencies(ommpfritt_unit_tests resources_cli)
+  target_link_libraries(ommpfritt_unit_tests libommpfritt)
+  target_link_libraries(ommpfritt_unit_tests gtest)
+  target_link_libraries(ommpfritt_unit_tests gtest_main)
+  include(CTest)
+  add_subdirectory(test)
+endif()
 
 install(
     TARGETS ommpfritt ommpfritt-cli
@@ -227,3 +230,9 @@ SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
 include(CPack)
 include(InstallRequiredSystemLibraries)
 
+get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
+configure_file(${CMAKE_SOURCE_DIR}/cmake/make-appimage.sh.in ${CMAKE_BINARY_DIR}/make-appimage.sh @ONLY)
+add_custom_target(appimage
+                  COMMAND "${CMAKE_BINARY_DIR}/make-appimage.sh"
+                  COMMENT "Packing AppImage"
+)

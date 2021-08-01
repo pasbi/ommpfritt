@@ -1,0 +1,31 @@
+name: 'Prepare Focal'
+description: 'Install required packages'
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: sudo apt-get update && sudo apt-get install -y
+           build-essential
+           clang
+           cmake
+           g++
+           libboost-all-dev
+           libcairo2-dev
+           libdouble-conversion-dev
+           libffi-dev
+           libgl-dev
+           libgsl-dev
+           libkf5itemmodels-dev
+           libpoppler-qt5-dev
+           libqt5svg5-dev
+           libssl-dev
+           imagemagick
+           ninja-build
+           python3-dev
+           python3-numpy
+           qt5-default
+           qtbase5-dev
+           qtchooser
+           qttools5-dev-tools
+           qttools5-dev
+           zlib1g-dev

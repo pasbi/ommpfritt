@@ -57,16 +57,6 @@ function(generate_translations translations_qrc ts_dir languages cfg_files)
                     ERROR_VARIABLE QT_QM_PATH_ERROR
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-    execute_process(COMMAND ls
-                    OUTPUT_VARIABLE LS_STD
-                    ERROR_VARIABLE LS_ERR
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-    message("XXXXX")
-    message("XXXXX qt5_qmake_location: ${qt5_qmake_location}, QT_QM_PATH: ${QT_QM_PATH}, QT_QM_PATH_ERROR: ${QT_QM_PATH_ERROR}")
-    message("ls std: X${LS_STD}X X${LS_ERR}X")
-    message("XXXXX")
-
     foreach (lang IN LISTS languages)
         SET(qm "${qm_dir}/omm_${lang}.qm")
         SET(ts "${ts_dir}/omm_${lang}.ts")

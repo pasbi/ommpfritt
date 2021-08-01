@@ -7,6 +7,3 @@ target_sources(libommpfritt PRIVATE
   serializable.h
   typed.h
 )
-
-
-
