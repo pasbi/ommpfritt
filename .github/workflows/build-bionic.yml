@@ -6,9 +6,6 @@
 
 name: Create AppImage on Bionic
 on: [push]
-  #  push:
-  #  tags:
-  #    - '*'
 jobs:
   Create-AppImage-Bionic:
     runs-on: ubuntu-18.04
@@ -125,3 +122,15 @@ jobs:
         with:
           name: Ommpfritt-AppImage-Focal
           path: build/ommpfritt*.AppImage
+  Make-Release:
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: Create-AppImage-Bionic
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: Ommpfritt-AppImage-Focal
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "ommpfritt-*.AppImage"
+          token: ${{ secrets.GITHUB_TOKEN }}
