@@ -25,15 +25,23 @@ extraction:
         - zlib1g-dev
     configure:
       command:
+        - cmake --version
         - git clone https://gitlab.com/inkscape/lib2geom.git
-        - pushd lib2geom
-        - git checkout 37876ed4
-        - cmake -B build -GNinja -DCMAKE_INSTALL_PREFIX=build/install -D2GEOM_TESTING=OFF -DNO_TRANSLATION
-        - cmake --build build --target install
-        - popd
-        - mkdir build
-        - cd build
-        - cmake -DGENERATE_ICONS=off -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="/usr/share/qt5/translations/" -DCMAKE_INSTALL_PREFIX="/usr;../lib2geom/build/install/lib/cmake" ..
+        - cd lib2geom; git checkout 37876ed4; cd ..
+        - cmake
+            -S lib2geom
+            -B build-lib2geom
+            -GNinja
+            -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
+            -D2GEOM_TESTING=OFF
+        - cmake --build build-lib2geom --target install
+        - cmake
+            -S .
+            -B build
+            -DGENERATE_ICONS=OFF
+            -DBUILD_TRANSLATION=OFF
+            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
     index:
       build_command:
         - cd build
