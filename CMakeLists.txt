@@ -24,11 +24,11 @@ include(generate_registers)
 include(generate_translations)
 include(generate_icons)
 include(generate_resources)
+include(GetGitRevisionDescription)
+git_describe(GIT_DESCRIBE "--tags")
 
 list(APPEND classes tags managers nodes properties tools objects)
 generate_registers("${classes}")
-
-include(update_git_describe)
 
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
@@ -175,7 +175,6 @@ endif()
 add_dependencies(resources_cli translations_qm)
 add_dependencies(resources translations_qm)
 add_dependencies(libommpfritt registers)
-add_dependencies(libommpfritt update-git-describe)
 add_dependencies(ommpfritt libommpfritt resources)
 add_dependencies(ommpfritt-cli libommpfritt resources_cli)
 
