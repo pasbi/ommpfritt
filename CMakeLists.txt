@@ -11,7 +11,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
+option(GENERATE_ICONS "Generate the icons that are used in the application." ON)
+option(BUILD_TRANSLATION "Build translations of the application." ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
 find_package(PkgConfig)
@@ -22,8 +23,12 @@ find_package(2Geom REQUIRED)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
 include(check_version_consistency)
 include(generate_registers)
-include(generate_translations)
-include(generate_icons)
+if (BUILD_TRANSLATION)
+  include(generate_translations)
+endif()
+if (GENERATE_ICONS)
+  include(generate_icons)
+endif()
 include(generate_resources)
 
 list(APPEND classes tags managers nodes properties tools objects)
@@ -38,21 +43,22 @@ configure_file (
 
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
-set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
-set(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
-set(languages de en es)
-set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
-set(cfg_files
-  ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-light.cfg
-  ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-dark.cfg
-  ${CMAKE_CURRENT_SOURCE_DIR}/keybindings/default_keybindings.cfg
-)
-generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${cfg_files}")
+set(qrc_files_cli "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc")
 
-set(qrc_files_cli
-    "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc"
-    ${translations_qrc}
-)
+if (BUILD_TRANSLATION)
+  set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
+  set(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
+  set(languages de en es)
+  set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
+  set(cfg_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-light.cfg
+    ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-dark.cfg
+    ${CMAKE_CURRENT_SOURCE_DIR}/keybindings/default_keybindings.cfg
+  )
+  generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${cfg_files}")
+  list(APPEND qrc_files_cli ${translations_qrc})
+endif()
+
 set(compiled_resource_file_cli ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources_cli.cpp)
 generate_resources(resources_cli ${compiled_resource_file_cli} "${qrc_files_cli}")
 
@@ -178,8 +184,10 @@ if (GENERATE_ICONS)
   add_dependencies(icons_png ommpfritt-cli)
 endif()
 
-add_dependencies(resources_cli translations_qm)
-add_dependencies(resources translations_qm)
+if (BUILD_TRANSLATION)
+  add_dependencies(resources_cli translations_qm)
+  add_dependencies(resources translations_qm)
+endif()
 add_dependencies(libommpfritt registers)
 add_dependencies(libommpfritt update-git-describe)
 add_dependencies(ommpfritt libommpfritt resources)
