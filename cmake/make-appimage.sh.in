@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -e
+
+appdir=$(mktemp -d)
+
+mkdir -p $appdir/usr/bin
+cp @CMAKE_INSTALL_PREFIX@/bin/ommpfritt $appdir/usr/bin/
+
+mkdir -p $appdir/usr/share/applications
+cp @CMAKE_SOURCE_DIR@/build-scripts/ommpfritt.desktop $appdir/usr/share/applications/
+
+for fn in @CMAKE_BINARY_DIR@/icons/omm_*.png; do
+  resolution=$(echo "$fn" | sed -e 's/.*omm_\([1-9][0-9]*\).png$/\1/')
+  dir="$appdir/usr/share/icons/hicolor/scalable/apps/${resolution}x${resolution}/"
+  mkdir -p "$dir"
+  cp "$fn" "$dir/ommpfritt.png"
+done
+
+mkdir -p $appdir/usr/lib
+cp -r /usr/lib/@python_major_minor@ $appdir/usr/lib
+cp -r /usr/lib/@python_major@ $appdir/usr/lib  # makes many distpackages available, but also makes the appimage much bigger
+
+wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+
+wget -c "https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64" -O $appdir/AppRun
+chmod +x $appdir/AppRun
+
+find_executables() {
+  for f in $appdir/usr/lib/@python_major_minor@/lib-dynload/*.so; do
+    echo "-executable=$(readlink -f $f)"
+  done
+}
+
+./linuxdeployqt-continuous-x86_64.AppImage \
+    $appdir/usr/share/applications/*.desktop \
+    -appimage \
+    -qmake=@qt5_qmake_location@ \
+    $(find_executables)
+
+rm -r "$appdir"

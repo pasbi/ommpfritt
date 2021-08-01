@@ -54,45 +54,18 @@ def render_icon(args, resolution, category, item):
         "-o", f"{args.output}/{item}_{resolution}.png",
         "-y",
         "--no-opengl",
-        "--unique"
+        "--unique",
+        "-platform", "offscreen",
     ]
-    cp = subprocess.run(command, capture_output=True)
     print(f"Render icon for {category}/{item} @{resolution}... ", end="")
-    print(" ".join(command))
+    cp = subprocess.run(command)
     if cp.returncode == object_name_not_found_code:
         print(f" skip (undefined in {args.scenefile}).")
     elif cp.returncode != 0:
-        print(f" failed with code {cp.returncode}.")
-        print("Command was:")
-        print(cp.args)
-        print("Message:")
-        print(cp.stderr)
-        exit(1)
+        raise RuntimeError(f"Command \n{' '.join(cp.args)}\nfailed with code {cp.returncode}.")
     else:
         print(" done.")
         return (resolution, item)
-
-def get_omm_status_code(omm_command, description):
-    command = [
-        omm_command,
-        "status",
-        "-c", description
-    ]
-    print("run command: ", command)
-    cp = subprocess.run(command, capture_output=True)
-    if cp.returncode == 0:
-        try:
-            return int(cp.stdout)
-        except ValueError:
-            print(f"Failed to parse status code '{cp.stdout}' as int.")
-            sys.exit(1);
-    else:
-        print(f"Failed to retrieve return code for '{description}'.")
-        print(f"command: {command} exited with code '{cp.returncode}'.")
-        print("STDOUT: \n", cp.stdout)
-        print("STDERR: \n", cp.stderr)
-        sys.exit(2);
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -152,7 +125,7 @@ if __name__ == "__main__":
 
     def required_resolutions(item):
         if item == "omm":
-            return {16, 22, 32, 48, 64, 128, 2048}
+            return {16, 22, 32, 48, 64, 128, 256, 2048}
         else:
             return {128}
 
@@ -163,7 +136,11 @@ if __name__ == "__main__":
             configurations.append((args, resolution, category, item))
 
     with multiprocessing.Pool() as pool:
-        processed_icons += pool.starmap(render_icon, configurations)
+        try:
+           processed_icons += pool.starmap(render_icon, configurations)
+        except RuntimeError as e:
+            print("Failed to generate icons")
+            print(str(e))
 
     for item in args.canned_icons:
         filename = item
@@ -189,5 +166,3 @@ if __name__ == "__main__":
 
     with open(args.qrc, 'w') as f:
         f.write(generate_qrc(processed_icons))
-
-

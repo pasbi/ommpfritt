@@ -209,7 +209,7 @@ QString level = "";  // NOLINT(cppcoreguidelines-avoid-non-const-global-variable
 int main(int argc, char* argv[])
 {
   using namespace omm;
-  QGuiApplication app(argc, argv);
+  QGuiApplication app(argc, argv);  // QCoreApplication does not provide font metrics
   SubcommandLineParser args(QApplication::arguments());
 
   level = args.get<QString>("verbosity", "warning");
