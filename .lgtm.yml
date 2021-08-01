@@ -6,23 +6,23 @@ extraction:
   cpp:
     prepare:
       packages:
-        - libpoppler-qt5-dev
-        - zlib1g-dev
-        - libssl-dev
-        - libffi-dev
-        - pybind11-dev
-        - libgl-dev
-        - python3-dev
-        - qtbase5-dev-tools
-        - qtbase5-dev
-        - qt5-default
-        - qtchooser
-        - qt5-qmake
-        - libqt5svg5-dev
-        - qttools5-dev
+        - build-essential
         - cmake
         - gcc
-        - build-essential
+        - libffi-dev
+        - libgl-dev
+        - libpoppler-qt5-dev
+        - libqt5svg5-dev
+        - libssl-dev
+        - pybind11-dev
+        - python3-dev
+        - qt5-default
+        - qt5-qmake
+        - qtchooser
+        - qtbase5-dev
+        - qtbase5-dev-tools
+        - qttools5-dev
+        - zlib1g-dev
     configure:
       command:
         - git clone https://gitlab.com/inkscape/lib2geom.git
