@@ -1,0 +1,6 @@
+#include "config.h"
+
+std::string_view git_describe()
+{
+  return "@GIT_DESCRIBE@";
+}
