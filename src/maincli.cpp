@@ -229,8 +229,8 @@ int main(int argc, char* argv[])
 
   using subcommand_t = std::function<void(Application&, const SubcommandLineParser&)>;
   static const std::map<QString, subcommand_t> f_map{
-      {"render", &render},
-      {"tree", &tree},
+      {SubcommandLineParser::COMMAND_RENDER, &render},
+      {SubcommandLineParser::COMMAND_TREE, &tree},
   };
 
   if (const auto it = f_map.find(args.command()); it == f_map.end()) {

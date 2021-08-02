@@ -77,21 +77,25 @@ static const std::map<QString, QList<QCommandLineOption>> options{
          make_input_option(),
          make_verbosity_option(),
      }},
-    {omm::SubcommandLineParser::STATUS_CODE,
+    {omm::SubcommandLineParser::COMMAND_STATUS_CODE,
      {make_verbosity_option(),
       {
           {"c", "get-code"},
           QObject::tr("Get status code for given description."),
           QObject::tr("DESCRIPTION"),
       },
-      {{"l", "list"}, QObject::tr("List status codes and descriptions.")}}}};
+      {{"l", "list"}, QObject::tr("List status codes and descriptions.")}}},
+  };
 
 namespace omm
 {
 SubcommandLineParser::SubcommandLineParser(const QStringList& args)
     : m_appname(args.front()), m_command(args.size() == 1 ? "" : args.at(1))
 {
-  if (args.size() == 1 || m_command == "--help" || m_command == "-h") {
+  if (m_command == "--help" || m_command == "-h") {
+    print_help();
+    exit(EXIT_FAILURE);
+  } else if (args.size() == 1) {
     print_help();
     exit(EXIT_SUCCESS);
   }
