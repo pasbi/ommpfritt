@@ -52,8 +52,14 @@ jobs:
                    -G"MSYS Makefiles"
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
-                   -DGENERATE_ICONS=OFF
                    -DBUILD_TESTING=OFF
+      - run: cmake --build build
+                   --target install
+                   --config Release
+                   -j4
+      - run: python build/generate-icons.py
+      - run: cmake -S .
+                   -B build
       - run: cmake --build build
                    --target package
                    --config Release

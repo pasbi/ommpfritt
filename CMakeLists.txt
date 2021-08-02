@@ -11,7 +11,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(GENERATE_ICONS "Generate the icons that are used in the application." ON)
 option(BUILD_TRANSLATION "Build translations of the application." ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
@@ -25,9 +24,6 @@ include(generate_registers)
 if (BUILD_TRANSLATION)
   include(generate_translations)
 endif()
-if (GENERATE_ICONS)
-  include(generate_icons)
-endif()
 include(generate_resources)
 include(GetGitRevisionDescription)
 git_describe(GIT_DESCRIBE "--tags")
@@ -36,8 +32,6 @@ list(APPEND classes tags managers nodes properties tools objects)
 generate_registers("${classes}")
 
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
-
-set(qrc_files_cli "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc")
 
 if (BUILD_TRANSLATION)
   set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
@@ -53,22 +47,15 @@ if (BUILD_TRANSLATION)
   list(APPEND qrc_files_cli ${translations_qrc})
 endif()
 
-set(compiled_resource_file_cli ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources_cli.cpp)
-generate_resources(resources_cli ${compiled_resource_file_cli} "${qrc_files_cli}")
-
-set(icons_qrc "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
-if (GENERATE_ICONS)
-  set(specs "${classes};extra")
-  list(TRANSFORM specs PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/lists/")
-  list(TRANSFORM specs APPEND ".lst")
-  set(specs "${specs};${CMAKE_CURRENT_SOURCE_DIR}/keybindings/default_keybindings.cfg")
-  generate_icons("${icons_qrc}" "${specs}")
+set(qrc_files "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc" ${translations_qrc})
+set(icons_qrc_file "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
+if (EXISTS ${icons_qrc_file})
+  message(NOTICE "Found icons: ${icons_qrc_file}.")
+  list(APPEND qrc_files ${icons_qrc_file})
+else()
+  message(NOTICE "Did not find icons at ${icons_qrc_file}.")
 endif()
 
-set(qrc_files "${qrc_files_cli}")
-if (GENERATE_ICONS)
-  list(APPEND qrc_files ${icons_qrc})
-endif()
 set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
 generate_resources(resources ${compiled_resource_file} "${qrc_files}")
 
@@ -80,7 +67,7 @@ macro(set_warning_level target)
   endif()
 endmacro()
 
-add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file_cli}")
+add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file}")
 add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
 add_library(libommpfritt STATIC)
 
@@ -88,7 +75,7 @@ set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}"
 set(python_major "python${Python3_VERSION_MAJOR}")
 if (MINGW)
   get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
-  FILE (GLOB required_system_dlls 
+  FILE (GLOB required_system_dlls
         "${MinGWPath}/libbrotlicommon.dll"
         "${MinGWPath}/libbrotlidec.dll"
         "${MinGWPath}/libbz2-1.dll"
@@ -174,17 +161,12 @@ set_warning_level(ommpfritt-cli)
 set_warning_level(ommpfritt)
 set_warning_level(libommpfritt)
 
-if (GENERATE_ICONS)
-  add_dependencies(icons_png ommpfritt-cli)
-endif()
-
 if (BUILD_TRANSLATION)
-  add_dependencies(resources_cli translations_qm)
   add_dependencies(resources translations_qm)
 endif()
 add_dependencies(libommpfritt registers)
 add_dependencies(ommpfritt libommpfritt resources)
-add_dependencies(ommpfritt-cli libommpfritt resources_cli)
+add_dependencies(ommpfritt-cli libommpfritt resources)
 
 target_include_directories(libommpfritt PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -212,7 +194,7 @@ add_subdirectory(src)
 if (BUILD_TESTING)
   add_executable(ommpfritt_unit_tests)
   set_warning_level(ommpfritt_unit_tests)
-  add_dependencies(ommpfritt_unit_tests resources_cli)
+  add_dependencies(ommpfritt_unit_tests resources)
   target_link_libraries(ommpfritt_unit_tests libommpfritt)
   target_link_libraries(ommpfritt_unit_tests gtest)
   target_link_libraries(ommpfritt_unit_tests gtest_main)
@@ -231,6 +213,9 @@ SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
 include(CPack)
 include(InstallRequiredSystemLibraries)
 
+configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
+message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
+        to integrate the icons into the application.")
 get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/make-appimage.sh.in ${CMAKE_BINARY_DIR}/make-appimage.sh @ONLY)
 add_custom_target(appimage

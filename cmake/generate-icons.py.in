@@ -1,0 +1,131 @@
+#!/usr/bin/env python3
+
+import os
+import json
+import sys
+import argparse
+import subprocess
+import multiprocessing
+from glob import glob
+
+object_name_not_found_code = 2  # see src/common.h
+icons_target_dir = "@CMAKE_BINARY_DIR@/icons"
+
+def generate_qrc(items):
+    lines = []
+    lines.append('<RCC>')
+    lines.append('    <qresource prefix="/icons">')
+    ind = ' '*8
+    for resolution, item in items:
+        lines.append(ind + f'<file>{item}_{resolution}.png</file>')
+    lines.append('    </qresource>')
+    lines.append('</RCC>')
+    lines.append('')
+    return "\n".join(lines)
+
+def lst_decoder(fn):
+    with open(fn, 'r') as f:
+        spec = json.load(f)
+    category = spec["category"]
+    for item in spec["items"]:
+        yield category, item
+
+def cfg_decoder(fn):
+    with open(fn, 'r') as f:
+        for line in f.readlines():
+            line = line.strip()
+            if line.startswith("[") and line.endswith("]"):
+                # category = line[1:-1]
+                pass
+            elif line.startswith("#"):
+                pass
+            elif len(line.strip()) == 0:
+                pass
+            else:
+                item = line.split(":")[0]
+                yield "actions", item
+
+def render_icon(resolution, category, item):
+    scenefile = "@CMAKE_SOURCE_DIR@/icons/icons.omm"
+    command = [
+        "@CMAKE_INSTALL_PREFIX@/bin/ommpfritt-cli",
+        "render",
+        "-f", scenefile,
+        "-V", "view",
+        "-w", f"{resolution}",
+        "-p", f"_root_/{category}/{item}$",
+        "-o", f"{icons_target_dir}/{item}_{resolution}.png",
+        "-y",
+        "--no-opengl",
+        "--unique",
+        "-platform", "offscreen",
+    ]
+    print(f"Render icon for {category}/{item} @{resolution}... ", end="")
+    cp = subprocess.run(command)
+    if cp.returncode == object_name_not_found_code:
+        print(f" skip (undefined in {scenefile}).")
+    elif cp.returncode != 0:
+        raise RuntimeError(f"Command \n{' '.join(cp.args)}\nfailed with code {cp.returncode}.")
+    else:
+        print(" done.")
+        return (resolution, item)
+
+def required_resolutions(item):
+    if item == "omm":
+        return {16, 22, 32, 48, 64, 128, 256, 2048}
+    else:
+        return {128}
+
+def find_items():
+    items = []
+    for fn in glob("@CMAKE_SOURCE_DIR@/lists/*.lst"):
+        for item in lst_decoder(fn):
+            yield item
+    for item in cfg_decoder("@CMAKE_SOURCE_DIR@/keybindings/default_keybindings.cfg"):
+        yield item
+
+def process_canned_icons():
+    for fn in glob("@CMAKE_SOURCE_DIR@/icons/*.png"):
+        item = os.path.splitext(os.path.basename(fn))[0]
+        for resolution in required_resolutions(item):
+            cp = subprocess.run([
+                'convert',
+                fn,
+                "-resize", f'{resolution}x{resolution}!',
+                f"{icons_target_dir}/{item}_{resolution}.png"
+            ])
+            if cp.returncode == 0:
+                yield ((resolution, item))
+            else:
+                print(f"Error: Failed to convert image {fn} (code {cp.returncode}).")
+
+if __name__ == "__main__":
+    items = list(find_items())
+    try:
+        os.mkdir(icons_target_dir)
+    except FileExistsError:
+        assert os.path.isdir(icons_target_dir)
+
+    processed_icons = []
+    configurations = []
+    for category, item in items:
+        for resolution in required_resolutions(item):
+            configurations.append((resolution, category, item))
+
+    with multiprocessing.Pool() as pool:
+        try:
+           processed_icons += pool.starmap(render_icon, configurations)
+        except RuntimeError as e:
+            print("Failed to generate icons")
+            print(str(e))
+
+    processed_icons += list(process_canned_icons())
+    processed_icons = set(processed_icons)
+
+    try:
+        processed_icons.remove(None)
+    except KeyError:
+        pass
+
+    with open(f"{icons_target_dir}/icons.qrc", 'w') as f:
+        f.write(generate_qrc(processed_icons))

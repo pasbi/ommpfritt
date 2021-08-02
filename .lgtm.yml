@@ -38,7 +38,6 @@ extraction:
         - cmake
             -S .
             -B build
-            -DGENERATE_ICONS=OFF
             -DBUILD_TRANSLATION=OFF
             -DCMAKE_BUILD_TYPE=Release
             -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
