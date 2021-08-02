@@ -21,7 +21,6 @@ find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
-include(check_version_consistency)
 include(generate_registers)
 if (BUILD_TRANSLATION)
   include(generate_translations)
@@ -30,16 +29,11 @@ if (GENERATE_ICONS)
   include(generate_icons)
 endif()
 include(generate_resources)
+include(GetGitRevisionDescription)
+git_describe(GIT_DESCRIBE "--tags")
 
 list(APPEND classes tags managers nodes properties tools objects)
 generate_registers("${classes}")
-
-include(update_git_describe)
-
-configure_file (
-  "${PROJECT_SOURCE_DIR}/ommpfrittconfig.h.in"
-  "${PROJECT_BINARY_DIR}/ommpfrittconfig.h"
-)
 
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
@@ -189,7 +183,6 @@ if (BUILD_TRANSLATION)
   add_dependencies(resources translations_qm)
 endif()
 add_dependencies(libommpfritt registers)
-add_dependencies(libommpfritt update-git-describe)
 add_dependencies(ommpfritt libommpfritt resources)
 add_dependencies(ommpfritt-cli libommpfritt resources_cli)
 
