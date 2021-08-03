@@ -116,31 +116,33 @@ if (BUILD_TESTING)
 endif()
 
 install(TARGETS ommpfritt)
-
-SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
+include(InstallRequiredSystemLibraries)
 include(Packaging)
 
 get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
-execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
-                RESULT_VARIABLE return_code
-                OUTPUT_VARIABLE qt5_install_prefix
-                OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-install(CODE "
-  include(\"BundleUtilities\")
-  execute_process(COMMAND
-                  \"${qt5_install_prefix}/bin/windeployqt.exe\"
-                  \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
-  )
-  fixup_bundle(
-    \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
-    \"\"
-    \"\"
-  )"
-  COMPONENT Runtim
-)
 
-install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
+if (WIN32)
+  execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
+      RESULT_VARIABLE return_code
+      OUTPUT_VARIABLE qt5_install_prefix
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  install(CODE "
+    include(\"BundleUtilities\")
+    execute_process(COMMAND
+        \"${qt5_install_prefix}/bin/windeployqt.exe\"
+        \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
+    )
+    fixup_bundle(
+      \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
+      \"\"
+      \"\"
+    )"
+    COMPONENT Runtim
+  )
+
+  install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
+endif()
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
 message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
