@@ -117,6 +117,9 @@ endif()
 
 install(TARGETS ommpfritt)
 
+SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
+include(Packaging)
+
 get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
 execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
                 RESULT_VARIABLE return_code
@@ -138,10 +141,6 @@ install(CODE "
 )
 
 install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
-
-
-SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
-include(CPack)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
 message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
