@@ -72,82 +72,6 @@ add_library(libommpfritt STATIC)
 
 set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
 set(python_major "python${Python3_VERSION_MAJOR}")
-if (MINGW)
-  get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
-  FILE (GLOB required_system_dlls
-        "${MinGWPath}/libbrotlicommon.dll"
-        "${MinGWPath}/libbrotlidec.dll"
-        "${MinGWPath}/libbz2-1.dll"
-        "${MinGWPath}/libcrypto-1_1-x64.dll"
-        "${MinGWPath}/libcurl-4.dll"
-        "${MinGWPath}/libdouble-conversion.dll"
-        "${MinGWPath}/libfreetype-6.dll"
-        "${MinGWPath}/libgcc_s_seh-1.dll"
-        "${MinGWPath}/libglib-2.0-0.dll"
-        "${MinGWPath}/libgraphite2.dll"
-        "${MinGWPath}/libgsl-25.dll"
-        "${MinGWPath}/libgslcblas-0.dll"
-        "${MinGWPath}/libharfbuzz-0.dll"
-        "${MinGWPath}/libiconv-2.dll"
-        "${MinGWPath}/libicudt*.dll"
-        "${MinGWPath}/libicuin*.dll"
-        "${MinGWPath}/libicuuc*.dll"
-        "${MinGWPath}/libidn2-0.dll"
-        "${MinGWPath}/libintl-8.dll"
-        "${MinGWPath}/libjpeg-8.dll"
-        "${MinGWPath}/libKF5ItemModels.dll"
-        "${MinGWPath}/liblcms2-2.dll"
-        "${MinGWPath}/liblzma-5.dll"
-        "${MinGWPath}/libnghttp2-14.dll"
-        "${MinGWPath}/libnspr4.dll"
-        "${MinGWPath}/libopenjp2-7.dll"
-        "${MinGWPath}/libpcre-1.dll"
-        "${MinGWPath}/libpcre2-16-0.dll"
-        "${MinGWPath}/libplc4.dll"
-        "${MinGWPath}/libplds4.dll"
-        "${MinGWPath}/libpng16-16.dll"
-        "${MinGWPath}/libpoppler-*.dll"
-        "${MinGWPath}/libpoppler-qt5-1.dll"
-        "${MinGWPath}/libpsl-5.dll"
-        "${MinGWPath}/lib${python_major_minor}.dll"
-        "${MinGWPath}/libssh2-1.dll"
-        "${MinGWPath}/libssl-1_1-x64.dll"
-        "${MinGWPath}/libstdc++-6.dll"
-        "${MinGWPath}/libtiff-5.dll"
-        "${MinGWPath}/libunistring-2.dll"
-        "${MinGWPath}/libwinpthread-1.dll"
-        "${MinGWPath}/libzstd.dll"
-        "${MinGWPath}/nss3.dll"
-        "${MinGWPath}/nssutil3.dll"
-        "${MinGWPath}/Qt5Core.dll"
-        "${MinGWPath}/Qt5Gui.dll"
-        "${MinGWPath}/Qt5Svg.dll"
-        "${MinGWPath}/Qt5Widgets.dll"
-        "${MinGWPath}/Qt5WinExtras.dll"
-        "${MinGWPath}/Qt5Xml.dll"
-        "${MinGWPath}/smime3.dll"
-        "${MinGWPath}/libdeflate.dll"
-        "${MinGWPath}/libwebp-7.dll"
-        "${MinGWPath}/zlib1.dll"
-  )
-  message(STATUS "mingw path: ${MinGWPath}")
-  message(STATUS "dlls: ${required_system_dlls}")
-  message(STATUS "python name: ${python_major_minor}")
-  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
-  install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
-
-  file(GLOB python_files ${MinGWPath}/../lib/${python_major_minor}/*.py)
-  foreach (fn IN LISTS python_files)
-    install(FILES ${fn} DESTINATION lib/${python_major_minor}/)
-  endforeach()
-
-  install(FILES ${MinGWPath}/../lib/${python_major_minor}/LICENSE.txt DESTINATION lib/)
-  list(APPEND python_dirs collections ctypes encodings json multiprocessing)
-  foreach (dir IN LISTS python_dirs)
-    install(DIRECTORY "${MinGWPath}/../lib/${python_major_minor}/${dir}" DESTINATION lib/${python_major_minor}/)
-  endforeach()
-
-endif()
 
 set_warning_level(ommpfritt)
 set_warning_level(libommpfritt)
@@ -191,21 +115,37 @@ if (BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-install(
-    TARGETS ommpfritt
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static
+install(TARGETS ommpfritt)
+
+get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
+execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
+                RESULT_VARIABLE return_code
+                OUTPUT_VARIABLE qt5_install_prefix
+                OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+install(CODE "
+  include(\"BundleUtilities\")
+  execute_process(COMMAND
+                  \"${qt5_install_prefix}/bin/windeployqt.exe\"
+                  \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
+  )
+  fixup_bundle(
+    \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
+    \"\"
+    \"\"
+  )"
+  COMPONENT Runtim
+)
+
+install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
+
 
 SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
 include(CPack)
-include(InstallRequiredSystemLibraries)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
 message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
         to integrate the icons into the application.")
-get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/make-appimage.sh.in ${CMAKE_BINARY_DIR}/make-appimage.sh @ONLY)
 add_custom_target(appimage
                   COMMAND "${CMAKE_BINARY_DIR}/make-appimage.sh"
