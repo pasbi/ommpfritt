@@ -7,7 +7,7 @@
 #include "commands/removecommand.h"
 #include "commands/subdividepathcommand.h"
 #include "common.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"

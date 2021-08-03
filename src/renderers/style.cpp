@@ -1,5 +1,5 @@
 #include "renderers/style.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/nodemanager/nodemanager.h"
 #include "nodesystem/node.h"
 #include "nodesystem/nodemodel.h"

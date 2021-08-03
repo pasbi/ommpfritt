@@ -1,5 +1,5 @@
 #include "managers/manager.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include <QContextMenuEvent>
 #include <QGuiApplication>
 #include <QScreen>

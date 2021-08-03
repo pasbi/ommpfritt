@@ -1,6 +1,6 @@
 #include "nodesystem/nodemodel.h"
 #include "common.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "nodesystem/node.h"
 #include "nodesystem/nodecompilerglsl.h"
 #include "nodesystem/nodecompilerpython.h"

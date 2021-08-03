@@ -1,7 +1,7 @@
 #include "managers/objectmanager/objectmanager.h"
 #include "commands/addcommand.h"
 #include "commands/movecommand.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "objects/empty.h"
 #include "scene/mailbox.h"

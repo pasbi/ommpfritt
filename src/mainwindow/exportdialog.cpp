@@ -1,6 +1,6 @@
 #include "mainwindow/exportdialog.h"
 #include "animation/animator.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/iconprovider.h"
 #include "mainwindow/exporter.h"
 #include "mainwindow/exportoptions.h"

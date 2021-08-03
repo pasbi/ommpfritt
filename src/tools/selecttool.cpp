@@ -2,7 +2,7 @@
 #include "commands/objectstransformationcommand.h"
 #include "commands/pointstransformationcommand.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "menuhelper.h"
 #include "objects/path.h"

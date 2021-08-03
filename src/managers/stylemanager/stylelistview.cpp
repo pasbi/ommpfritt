@@ -1,5 +1,5 @@
 #include "managers/stylemanager/stylelistview.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
 #include "scene/stylelist.h"

@@ -1,7 +1,7 @@
 #include "preferences/uicolors.h"
 #include "color/color.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include <QApplication>
 #include <QColor>
 #include <QCoreApplication>

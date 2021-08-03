@@ -1,7 +1,7 @@
 #include "managers/curvemanager/curvemanagerwidget.h"
 #include "animation/animator.h"
 #include "commands/keyframecommand.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/curvemanager/curvetree.h"
 #include "managers/manager.h"
 #include "managers/panzoomcontroller.h"

@@ -2,7 +2,7 @@
 #include "commands/addcommand.h"
 #include "commands/movetagscommand.h"
 #include "commands/propertycommand.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/iconprovider.h"
 #include "properties/referenceproperty.h"
 #include "propertyownermimedata.h"

@@ -1,8 +1,6 @@
 target_sources(libommpfritt PRIVATE
   pathactions.cpp
   pathactions.h
-  application.cpp
-  application.h
   exportdialog.cpp
   exportdialog.h
   exportoptions.cpp
@@ -13,8 +11,6 @@ target_sources(libommpfritt PRIVATE
   iconprovider.h
   mainwindow.cpp
   mainwindow.h
-  options.cpp
-  options.h
   gpl3.h
 )
 

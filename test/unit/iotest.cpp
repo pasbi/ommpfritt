@@ -1,7 +1,7 @@
 #include "logging.h"
 #include "gtest/gtest.h"
 #include "testconfig.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include <QApplication>
 
 namespace

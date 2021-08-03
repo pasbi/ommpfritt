@@ -1,7 +1,7 @@
 #include "mainwindow/viewport/viewport.h"
 #include "mainwindow/iconprovider.h"
 
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/viewport/anchorhud.h"
 
 #include <QMouseEvent>

@@ -2,7 +2,7 @@
 
 #include "keybindings/commandinterface.h"
 #include "keybindings/keybindings.h"
-#include "mainwindow/options.h"
+#include "main/options.h"
 #include "managers/manager.h"
 #include "preferences/preferences.h"
 #include "preferences/uicolors.h"

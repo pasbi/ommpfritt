@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mainwindow/options.h"
+#include "main/options.h"
 #include "mainwindow/viewport/headupdisplay.h"
 #include <QObject>
 #include <QRectF>

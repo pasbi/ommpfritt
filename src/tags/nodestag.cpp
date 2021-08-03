@@ -1,6 +1,6 @@
 #include "tags/nodestag.h"
 #include "external/pybind11/embed.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/nodemanager/nodemanager.h"
 #include "nodesystem/nodecompiler.h"
 #include "nodesystem/nodemodel.h"

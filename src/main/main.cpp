@@ -5,7 +5,7 @@
 #include <iostream>
 #include "logging.h"
 #include "main/commandlineparser.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 
 const bool print_long_message = true;
 

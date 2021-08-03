@@ -2,7 +2,7 @@
 #include "color/namedcolors.h"
 #include "commands/namedcolorscommand.h"
 #include "commands/propertycommand.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "properties/colorproperty.h"
 #include "scene/history/historymodel.h"
 #include "widgets/colorwidget/ui_namedcolorsdialog.h"

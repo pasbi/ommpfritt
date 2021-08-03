@@ -6,7 +6,7 @@
 #include "logging.h"
 #include "objects/view.h"
 #include "mainwindow/exporter.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "animation/animator.h"
 
 namespace

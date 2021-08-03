@@ -1,6 +1,6 @@
 #include "commands/namedcolorscommand.h"
 #include "color/namedcolors.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include <QObject>
 
 namespace omm

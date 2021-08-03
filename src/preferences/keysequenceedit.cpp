@@ -1,5 +1,5 @@
 #include "preferences/keysequenceedit.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/iconprovider.h"
 #include <QFocusEvent>
 #include <QHBoxLayout>

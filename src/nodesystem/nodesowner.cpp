@@ -1,5 +1,5 @@
 #include "nodesystem/nodesowner.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/nodemanager/nodemanager.h"
 #include "nodesystem/nodemodel.h"
 #include "properties/triggerproperty.h"

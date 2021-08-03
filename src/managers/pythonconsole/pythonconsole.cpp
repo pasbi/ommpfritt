@@ -1,5 +1,5 @@
 #include "managers/pythonconsole/pythonconsole.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/pythonconsole/pythonconsoletitlebar.h"
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"

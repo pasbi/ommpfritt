@@ -1,5 +1,5 @@
 #include "main/commandlineparser.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "tags/tag.h"
 #include "objects/object.h"
 
