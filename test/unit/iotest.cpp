@@ -18,8 +18,6 @@ std::vector<char*> string_array_to_charpp(std::array<std::string, N>& string_arr
   return vs;
 }
 
-}  // namespace
-
 std::unique_ptr<omm::Application> get_application(int kill_after_msec = 1)
 {
   std::array<std::string, 3> args{"omm", "-platform", "offscreen"};
@@ -35,6 +33,8 @@ std::unique_ptr<omm::Application> get_application(int kill_after_msec = 1)
   QTimer::singleShot(kill_after_msec, &app, [] { QApplication::quit(); });
   return omm_app;
 }
+
+}  // namespace
 
 TEST(IOTest, load_icons)
 {
