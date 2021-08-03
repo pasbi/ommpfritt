@@ -67,8 +67,7 @@ macro(set_warning_level target)
   endif()
 endmacro()
 
-add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file}")
-add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
+add_executable(ommpfritt "${compiled_resource_file}")
 add_library(libommpfritt STATIC)
 
 set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
@@ -148,16 +147,8 @@ if (MINGW)
     install(DIRECTORY "${MinGWPath}/../lib/${python_major_minor}/${dir}" DESTINATION lib/${python_major_minor}/)
   endforeach()
 
-  add_custom_command(TARGET ommpfritt-cli POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/platforms"
-          COMMAND ${CMAKE_COMMAND} -E copy "${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll" "${PROJECT_BINARY_DIR}/platforms/"
-          COMMAND ${CMAKE_COMMAND} -E copy ${required_system_dlls} ${PROJECT_BINARY_DIR}
-          COMMAND_EXPAND_LISTS
-          COMMENT "Copying dependencies into build directory."
-          )
 endif()
 
-set_warning_level(ommpfritt-cli)
 set_warning_level(ommpfritt)
 set_warning_level(libommpfritt)
 
@@ -166,7 +157,6 @@ if (BUILD_TRANSLATION)
 endif()
 add_dependencies(libommpfritt registers)
 add_dependencies(ommpfritt libommpfritt resources)
-add_dependencies(ommpfritt-cli libommpfritt resources)
 
 target_include_directories(libommpfritt PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -180,7 +170,6 @@ target_link_libraries(libommpfritt -lpthread -lm)
 target_link_libraries(libommpfritt KF5ItemModels)
 target_link_libraries(libommpfritt 2Geom::2geom)
 target_link_libraries(ommpfritt libommpfritt)
-target_link_libraries(ommpfritt-cli libommpfritt)
 
 if (WIN32)
   target_link_libraries(libommpfritt -lopengl32)
@@ -203,7 +192,7 @@ if (BUILD_TESTING)
 endif()
 
 install(
-    TARGETS ommpfritt ommpfritt-cli
+    TARGETS ommpfritt
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib/static

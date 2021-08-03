@@ -8,7 +8,6 @@ import subprocess
 import multiprocessing
 from glob import glob
 
-object_name_not_found_code = 2  # see src/common.h
 icons_target_dir = "@CMAKE_BINARY_DIR@/icons"
 
 def generate_qrc(items):
@@ -48,27 +47,24 @@ def cfg_decoder(fn):
 def render_icon(resolution, category, item):
     scenefile = "@CMAKE_SOURCE_DIR@/icons/icons.omm"
     command = [
-        "@CMAKE_INSTALL_PREFIX@/bin/ommpfritt-cli",
-        "render",
-        "-f", scenefile,
-        "-V", "view",
-        "-w", f"{resolution}",
-        "-p", f"_root_/{category}/{item}$",
-        "-o", f"{icons_target_dir}/{item}_{resolution}.png",
-        "-y",
+        "@CMAKE_INSTALL_PREFIX@/bin/ommpfritt",
+        "--mode", "render",
+        "--view", "view",
+        "--width", f"{resolution}",
+        "--object-path", f"_root_/{category}/{item}$",
+        "--output", f"{icons_target_dir}/{item}_{resolution}.png",
+        "--overwrite",
         "--no-opengl",
         "--unique",
         "-platform", "offscreen",
+        scenefile,
     ]
-    print(f"Render icon for {category}/{item} @{resolution}... ", end="")
     cp = subprocess.run(command)
-    if cp.returncode == object_name_not_found_code:
-        print(f" skip (undefined in {scenefile}).")
-    elif cp.returncode != 0:
-        raise RuntimeError(f"Command \n{' '.join(cp.args)}\nfailed with code {cp.returncode}.")
-    else:
-        print(" done.")
+    if cp.returncode == 0:
+        print(f"Rendering icon for {category}/{item} @{resolution} SUCCEEDED.")
         return (resolution, item)
+    else:
+        print(f"Rendering icon for {category}/{item} @{resolution} FAILED. Skip.")
 
 def required_resolutions(item):
     if item == "omm":
@@ -113,11 +109,7 @@ if __name__ == "__main__":
             configurations.append((resolution, category, item))
 
     with multiprocessing.Pool() as pool:
-        try:
-           processed_icons += pool.starmap(render_icon, configurations)
-        except RuntimeError as e:
-            print("Failed to generate icons")
-            print(str(e))
+       processed_icons += pool.starmap(render_icon, configurations)
 
     processed_icons += list(process_canned_icons())
     processed_icons = set(processed_icons)

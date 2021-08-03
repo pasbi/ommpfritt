@@ -22,8 +22,6 @@ target_sources(libommpfritt PRIVATE
   splinetype.h
   stringinterpolation.cpp
   stringinterpolation.h
-  subcommandlineparser.cpp
-  subcommandlineparser.h
   abstractfactory.h
   registers.cpp
   registers.h
@@ -35,6 +33,7 @@ add_subdirectory(color)
 add_subdirectory(commands)
 add_subdirectory(geometry)
 add_subdirectory(keybindings)
+add_subdirectory(main)
 add_subdirectory(mainwindow)
 add_subdirectory(managers)
 add_subdirectory(objects)

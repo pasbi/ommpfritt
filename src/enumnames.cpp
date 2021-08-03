@@ -65,37 +65,4 @@ template<> bool is_flag<Flag>()
   return true;
 }
 
-template<> const char* enum_name_impl<ExitStatus>(ExitStatus e)
-{
-  switch (e) {
-  case ExitStatus::invalid_input_format:
-    return QT_TRANSLATE_NOOP("Enum", "invalid input format");
-  case ExitStatus::object_name_not_found:
-    return QT_TRANSLATE_NOOP("Enum", "object name not found");
-  case ExitStatus::object_type_not_found:
-    return QT_TRANSLATE_NOOP("Enum", "object type not found");
-  case ExitStatus::refuse_overwrite_file:
-    return QT_TRANSLATE_NOOP("Enum", "refuse overwrite file");
-  case ExitStatus::non_unique_object_reference:
-    return QT_TRANSLATE_NOOP("Enum", "non unique object reference");
-  default:
-    Q_UNREACHABLE();
-    return "";
-  }
-}
-
-template<> std::set<ExitStatus> enumerate_enum<ExitStatus>()
-{
-  return {ExitStatus::invalid_input_format,
-          ExitStatus::object_name_not_found,
-          ExitStatus::object_type_not_found,
-          ExitStatus::refuse_overwrite_file,
-          ExitStatus::non_unique_object_reference};
-}
-
-template<> bool is_flag<ExitStatus>()
-{
-  return false;
-}
-
 }  // namespace omm
