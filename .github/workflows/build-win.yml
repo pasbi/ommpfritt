@@ -34,10 +34,13 @@ jobs:
             mingw-w64-x86_64-nsis
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-poppler
+            mingw-w64-x86_64-python
             mingw-w64-x86_64-python-pytest
             mingw-w64-x86_64-qt5
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-zlib
+      - run: pacman -Q
+      - run: pacman -Q | wc -l
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
       - run: cd lib2geom; git checkout 37876ed4; cd ..
       - run: cmake -S lib2geom
@@ -45,7 +48,10 @@ jobs:
                    -G"MSYS Makefiles"
                    -D2GEOM_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
-      - run: cmake --build build-lib2geom --target install --config Release
+      - run: cmake --build build-lib2geom
+                   --target install
+                   --config Release
+                   -j4
       - uses: actions/checkout@v2
       - run: cmake -P cmake/patch_getprerequisites_module.cmake
       - run: cmake -S .
@@ -55,6 +61,13 @@ jobs:
                    -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
                    -DCMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/omm-install
                    -DBUILD_TESTING=OFF
+      - run: cmake --build build
+                   --target all
+                   --config Release
+                   -j4
+      - run: uname -a
+      - run: pacman -Q
+      - run: pacman -Q | wc -l
       - uses: mxschmitt/action-tmate@v3
       - run: cmake --build build
                    --target install

@@ -110,7 +110,7 @@ if (BUILD_TESTING)
 endif()
 
 install(TARGETS ommpfritt)
-include(InstallRequiredSystemLibraries)
+# include(InstallRequiredSystemLibraries)
 include(Packaging)
 
 get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
