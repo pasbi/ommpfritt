@@ -37,6 +37,7 @@ jobs:
             mingw-w64-x86_64-qt5
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-zlib
+      - uses: mxschmitt/action-tmate@v3
       - run: pacman -Q
       - run: pacman -Q | wc -l
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
@@ -66,7 +67,6 @@ jobs:
       - run: uname -a
       - run: pacman -Q
       - run: pacman -Q | wc -l
-        #- uses: mxschmitt/action-tmate@v3
       - run: cmake --build build
                    --target install
                    --config Release
