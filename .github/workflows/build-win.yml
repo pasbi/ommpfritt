@@ -33,11 +33,12 @@ jobs:
             mingw-w64-x86_64-openssl
             mingw-w64-x86_64-poppler
             mingw-w64-x86_64-python
+            mingw-w64-x86_64-python-numpy
             mingw-w64-x86_64-python-pytest
             mingw-w64-x86_64-qt5
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-zlib
-      - uses: mxschmitt/action-tmate@v3
+            #      - uses: mxschmitt/action-tmate@v3
       - run: pacman -Q
       - run: pacman -Q | wc -l
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
@@ -60,6 +61,7 @@ jobs:
                    -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
                    -DCMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/omm-install
                    -DBUILD_TESTING=OFF
+                   -DPython3_ROOT_DIR=/mingw64/bin
       - run: cmake --build build
                    --target all
                    --config Release
