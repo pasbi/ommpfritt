@@ -11,6 +11,8 @@ jobs:
         with:
           update: true
           install: >-
+            git
+            make
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-cython
@@ -64,7 +66,7 @@ jobs:
       - run: uname -a
       - run: pacman -Q
       - run: pacman -Q | wc -l
-      - uses: mxschmitt/action-tmate@v3
+        #- uses: mxschmitt/action-tmate@v3
       - run: cmake --build build
                    --target install
                    --config Release
