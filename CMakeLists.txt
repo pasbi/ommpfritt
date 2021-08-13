@@ -117,8 +117,11 @@ get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
 
 if (WIN32)
   execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
-      RESULT_VARIABLE return_code
       OUTPUT_VARIABLE qt5_install_prefix
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PLUGINS
+      OUTPUT_VARIABLE qt5_install_plugins
       OUTPUT_STRIP_TRAILING_WHITESPACE
   )
   install(CODE "
@@ -127,12 +130,16 @@ if (WIN32)
         \"${qt5_install_prefix}/bin/windeployqt.exe\"
         \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
     )
+    file(COPY
+         \"${qt5_install_plugins}/platforms/qoffscreen.dll\"
+         DESTINATION \"${CMAKE_INSTALL_PREFIX}/bin/platforms/\"
+    )
     fixup_bundle(
       \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
       \"\"
       \"\"
     )"
-    COMPONENT Runtim
+    COMPONENT Runtime
   )
 
   install(DIRECTORY ${Python3_STDLIB} TYPE LIB)

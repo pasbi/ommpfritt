@@ -38,9 +38,11 @@ jobs:
             mingw-w64-x86_64-qt5
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-zlib
-            #      - uses: mxschmitt/action-tmate@v3
       - run: pacman -Q
       - run: pacman -Q | wc -l
+      - run: find /mingw64/ | grep qoffscreen
+      - run: qmake -query QT_INSTALL_PLUGINS
+      - run: ls $(qmake -query QT_INSTALL_PLUGINS)/platforms
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
       - run: cd lib2geom; git checkout 37876ed4; cd ..
       - run: cmake -S lib2geom
