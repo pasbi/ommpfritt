@@ -110,12 +110,13 @@ if (BUILD_TESTING)
 endif()
 
 install(TARGETS ommpfritt)
-# include(InstallRequiredSystemLibraries)
 include(Packaging)
 
 get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
 
 if (WIN32)
+  set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
+  include(InstallRequiredSystemLibraries)
   execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
       OUTPUT_VARIABLE qt5_install_prefix
       OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -124,15 +125,14 @@ if (WIN32)
       OUTPUT_VARIABLE qt5_install_plugins
       OUTPUT_STRIP_TRAILING_WHITESPACE
   )
+  install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
+  install(FILES "${qt5_install_plugins}/platforms/qoffscreen.dll"
+          DESTINATION "bin/platforms/")
   install(CODE "
-    include(\"BundleUtilities\")
+    include(BundleUtilities)
     execute_process(COMMAND
         \"${qt5_install_prefix}/bin/windeployqt.exe\"
         \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
-    )
-    file(COPY
-         \"${qt5_install_plugins}/platforms/qoffscreen.dll\"
-         DESTINATION \"${CMAKE_INSTALL_PREFIX}/bin/platforms/\"
     )
     fixup_bundle(
       \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
@@ -141,8 +141,6 @@ if (WIN32)
     )"
     COMPONENT Runtime
   )
-
-  install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
 endif()
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
