@@ -9,8 +9,8 @@ import multiprocessing
 from glob import glob
 
 icons_target_dir = "@CMAKE_BINARY_DIR@/icons"
-
 application_icon_name = "omm"  # this one is special.
+platform_windows = os.name == 'nt'
 
 def generate_qrc(items):
     lines = []
@@ -61,9 +61,10 @@ def render_icon(resolution, category, item):
         "--overwrite",
         "--no-opengl",
         "--unique",
-        "-platform", "offscreen",
         scenefile,
     ]
+    if not platform_windows:
+        command += ["-platform", "offscreen"]
     cp = subprocess.run(command)
     if cp.returncode == 0:
         print(f"Rendering icon for {category}/{item} @{resolution} SUCCEEDED.")
@@ -101,7 +102,7 @@ def process_canned_icons():
                 print(f"Error: Failed to convert image {fn} (code {cp.returncode}).")
 
 def generate_application_icon():
-    if os.name != 'nt':
+    if not platform_windows:
         return
 
     fns = [icon_filename(application_icon_name, resolution) for resolution in required_resolutions(application_icon_name)]
