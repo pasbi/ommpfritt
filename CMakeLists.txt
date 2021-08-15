@@ -168,3 +168,5 @@ add_custom_target(appimage
                   COMMAND "${CMAKE_BINARY_DIR}/make-appimage.sh"
                   COMMENT "Packing AppImage"
 )
+
+install(FILES "${CMAKE_SOURCE_DIR}/LICENSE" DESTINATION "." RENAME LICENSE.txt)
