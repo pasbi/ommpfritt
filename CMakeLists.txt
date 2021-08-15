@@ -37,6 +37,7 @@ generate_registers("${classes}")
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
 add_executable(ommpfritt "${compiled_resource_file}")
+set_target_properties(ommpfritt PROPERTIES WIN32_EXECUTABLE ON)
 add_library(libommpfritt STATIC)
 
 macro(set_warning_level target)
@@ -70,6 +71,10 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR
 if (EXISTS ${icons_qrc_file})
   message(NOTICE "Found icons: ${icons_qrc_file}.")
   list(APPEND qrc_files ${icons_qrc_file})
+  if (WIN32)
+    configure_file(${CMAKE_SOURCE_DIR}/icons/resource.rc.in ${CMAKE_BINARY_DIR}/resource.rc COPYONLY)
+    target_sources(ommpfritt PRIVATE "${CMAKE_BINARY_DIR}/resource.rc")
+  endif()
 else()
   message(NOTICE "Did not find icons at ${icons_qrc_file}.")
   message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again

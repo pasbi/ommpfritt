@@ -10,6 +10,8 @@ from glob import glob
 
 icons_target_dir = "@CMAKE_BINARY_DIR@/icons"
 
+application_icon_name = "omm"  # this one is special.
+
 def generate_qrc(items):
     lines = []
     lines.append('<RCC>')
@@ -44,6 +46,9 @@ def cfg_decoder(fn):
                 item = line.split(":")[0]
                 yield "actions", item
 
+def icon_filename(item, resolution):
+    return f"{icons_target_dir}/{item}_{resolution}.png"
+
 def render_icon(resolution, category, item):
     scenefile = "@CMAKE_SOURCE_DIR@/icons/icons.omm"
     command = [
@@ -52,7 +57,7 @@ def render_icon(resolution, category, item):
         "--view", "view",
         "--width", f"{resolution}",
         "--object-path", f"_root_/{category}/{item}$",
-        "--output", f"{icons_target_dir}/{item}_{resolution}.png",
+        "--output", icon_filename(item, resolution),
         "--overwrite",
         "--no-opengl",
         "--unique",
@@ -67,7 +72,7 @@ def render_icon(resolution, category, item):
         print(f"Rendering icon for {category}/{item} @{resolution} FAILED. Skip.")
 
 def required_resolutions(item):
-    if item == "omm":
+    if item == application_icon_name:
         return {16, 22, 32, 48, 64, 128, 256, 2048}
     else:
         return {128}
@@ -88,12 +93,23 @@ def process_canned_icons():
                 'convert',
                 fn,
                 "-resize", f'{resolution}x{resolution}!',
-                f"{icons_target_dir}/{item}_{resolution}.png"
+                icon_filename(item, resolution)
             ])
             if cp.returncode == 0:
                 yield ((resolution, item))
             else:
                 print(f"Error: Failed to convert image {fn} (code {cp.returncode}).")
+
+def generate_application_icon():
+    if os.name != 'nt':
+        return
+
+    fns = [icon_filename(application_icon_name, resolution) for resolution in required_resolutions(application_icon_name)]
+    cp = subprocess.run(['convert'] + fns + ['@CMAKE_BINARY_DIR@/omm.ico'])
+    if cp.returncode != 0:
+        print(f"Error: Failed to generate application icon (code {cp.returncode}).")
+    else:
+        print("Generate application icon SUCCEEDED.")
 
 if __name__ == "__main__":
     items = list(find_items())
@@ -121,3 +137,5 @@ if __name__ == "__main__":
 
     with open(f"{icons_target_dir}/icons.qrc", 'w') as f:
         f.write(generate_qrc(processed_icons))
+
+    generate_application_icon()
