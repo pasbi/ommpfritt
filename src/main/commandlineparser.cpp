@@ -91,7 +91,7 @@ namespace omm
 CommandLineParser::CommandLineParser(const QStringList& args)
 {
   parser.addOptions(options());
-//  parser.addHelpOption();
+  parser.addHelpOption();
   parser.addVersionOption();
   parser.process(args);
 }

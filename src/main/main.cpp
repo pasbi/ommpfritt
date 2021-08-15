@@ -58,5 +58,8 @@ int main(int argc, char* argv[])
     return omm::tree_main(args, app);
   } else if (mode == CommandLineParser::RENDER_MODE_NAME) {
     return omm::render_main(args, app);
+  } else {
+    std::cerr << "Unexpected mode: " << mode << "." << std::endl;
+    return EXIT_FAILURE;
   }
 }
