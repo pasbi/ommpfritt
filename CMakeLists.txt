@@ -137,6 +137,17 @@ if (WIN32)
   install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
   install(FILES "${qt5_install_plugins}/platforms/qoffscreen.dll"
           DESTINATION "bin/platforms/")
+
+  get_filename_component(MinGW_bin_path ${CMAKE_CXX_COMPILER} PATH)
+
+  # These two dependencies are strange:
+  # I don't know why this project depdends on them.
+  # On my PC, fixup_bundle finds them and installs and packages them correctly.
+  # On github's CI, however, these files are not installed/packaged, which results in a corrupted
+  # artifact (the installed application will not be executable).
+  install(FILES "${MinGW_bin_path}/libssl-1_1-x64.dll" "${MinGW_bin_path}/libcrypto-1_1-x64.dll"
+          TYPE BIN)
+
   install(CODE "
     include(BundleUtilities)
     execute_process(COMMAND
