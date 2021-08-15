@@ -40,9 +40,10 @@ jobs:
             mingw-w64-x86_64-zlib
       - run: pacman -Q
       - run: pacman -Q | wc -l
-      - run: find /mingw64/ | grep qoffscreen
-      - run: qmake -query QT_INSTALL_PLUGINS
-      - run: ls $(qmake -query QT_INSTALL_PLUGINS)/platforms
+      - run: pacman -Fy
+      - run: pacman -F libcrypto-1_1-x64.dll
+      - run: pacman -F libssl-1_1-x64.dll
+      - run: ls /mingw64/bin/libssl-1_1-x64.dll /mingw64/bin/libcrypto-1_1-x64.dll
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
       - run: cd lib2geom; git checkout 37876ed4; cd ..
       - run: cmake -S lib2geom
@@ -68,9 +69,6 @@ jobs:
                    --target all
                    --config Release
                    -j4
-      - run: uname -a
-      - run: pacman -Q
-      - run: pacman -Q | wc -l
       - run: cmake --build build
                    --target install
                    --config Release
