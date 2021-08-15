@@ -19,6 +19,9 @@ find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
 
+set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
+set(python_major "python${Python3_VERSION_MAJOR}")
+
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
 include(generate_registers)
 if (BUILD_TRANSLATION)
@@ -32,6 +35,19 @@ list(APPEND classes tags managers nodes properties tools objects)
 generate_registers("${classes}")
 
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
+
+add_executable(ommpfritt "${compiled_resource_file}")
+add_library(libommpfritt STATIC)
+
+macro(set_warning_level target)
+  if(MSVC)
+    target_compile_options(${target} PRIVATE /W4 /WX)
+  else()
+    target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic -Werror)
+  endif()
+endmacro()
+set_warning_level(ommpfritt)
+set_warning_level(libommpfritt)
 
 if (BUILD_TRANSLATION)
   set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
@@ -48,33 +64,21 @@ if (BUILD_TRANSLATION)
 endif()
 
 set(qrc_files "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc" ${translations_qrc})
+
 set(icons_qrc_file "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
+configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
 if (EXISTS ${icons_qrc_file})
   message(NOTICE "Found icons: ${icons_qrc_file}.")
   list(APPEND qrc_files ${icons_qrc_file})
 else()
   message(NOTICE "Did not find icons at ${icons_qrc_file}.")
+  message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
+          to integrate the icons into the application.")
 endif()
 
 set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
 generate_resources(resources ${compiled_resource_file} "${qrc_files}")
-
-macro(set_warning_level target)
-  if(MSVC)
-    target_compile_options(${target} PRIVATE /W4 /WX)
-  else()
-    target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic -Werror)
-  endif()
-endmacro()
-
-add_executable(ommpfritt "${compiled_resource_file}")
-add_library(libommpfritt STATIC)
-
-set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
-set(python_major "python${Python3_VERSION_MAJOR}")
-
-set_warning_level(ommpfritt)
-set_warning_level(libommpfritt)
+target_sources(ommpfritt PRIVATE "${compiled_resource_file}")
 
 if (BUILD_TRANSLATION)
   add_dependencies(resources translations_qm)
@@ -143,9 +147,6 @@ if (WIN32)
   )
 endif()
 
-configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
-message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
-        to integrate the icons into the application.")
 configure_file(${CMAKE_SOURCE_DIR}/cmake/make-appimage.sh.in ${CMAKE_BINARY_DIR}/make-appimage.sh @ONLY)
 add_custom_target(appimage
                   COMMAND "${CMAKE_BINARY_DIR}/make-appimage.sh"
