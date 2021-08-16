@@ -34,11 +34,11 @@ git_describe(GIT_DESCRIBE "--tags")
 list(APPEND classes tags managers nodes properties tools objects)
 generate_registers("${classes}")
 
-ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
-
 add_executable(ommpfritt "${compiled_resource_file}")
 set_target_properties(ommpfritt PROPERTIES WIN32_EXECUTABLE ON)
 add_library(libommpfritt STATIC)
+target_compile_definitions(libommpfritt PUBLIC QT_NO_KEYWORDS)
+target_compile_definitions(ommpfritt PUBLIC QT_NO_KEYWORDS)
 
 macro(set_warning_level target)
   if(MSVC)
