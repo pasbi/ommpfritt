@@ -118,7 +118,7 @@ if (BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-install(TARGETS ommpfritt)
+install(TARGETS ommpfritt RUNTIME DESTINATION bin)
 include(Packaging)
 
 get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
