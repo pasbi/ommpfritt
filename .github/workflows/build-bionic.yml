@@ -123,7 +123,7 @@ jobs:
                    --config Release
       - uses: actions/upload-artifact@v2
         with:
-          name: Ommpfritt-AppImage-Focal
+          name: Ommpfritt-AppImage
           path: build/ommpfritt*.AppImage
   Make-Release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
@@ -132,7 +132,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: Ommpfritt-AppImage-Focal
+          name: Ommpfritt-AppImage
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "ommpfritt-*.AppImage"
