@@ -117,6 +117,7 @@ jobs:
       - run: build/generate-icons.py
       - run: cmake -S ${{ github.workspace }}
                    -B build
+      - run: cmake --build build --target install --config Release -j4
       - run: cmake --build build
                    --target appimage
                    --config Release
