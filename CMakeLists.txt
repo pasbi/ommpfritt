@@ -23,7 +23,6 @@ set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}"
 set(python_major "python${Python3_VERSION_MAJOR}")
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
-include(generate_registers)
 if (BUILD_TRANSLATION)
   include(generate_translations)
 endif()
@@ -31,8 +30,6 @@ include(generate_resources)
 include(GetGitRevisionDescription)
 git_describe(GIT_DESCRIBE "--tags")
 
-list(APPEND classes tags managers nodes properties tools objects)
-generate_registers("${classes}")
 
 add_executable(ommpfritt "${compiled_resource_file}")
 set_target_properties(ommpfritt PROPERTIES WIN32_EXECUTABLE ON)
@@ -49,6 +46,22 @@ macro(set_warning_level target)
 endmacro()
 set_warning_level(ommpfritt)
 set_warning_level(libommpfritt)
+
+set(generated_src "${CMAKE_BINARY_DIR}/generated")
+set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-code.py")
+file(MAKE_DIRECTORY "${generated_src}")
+foreach(R tags managers nodes properties tools objects)
+    SET(generated_cpp "${generated_src}/register_${R}.cpp")
+    SET(spec_file "${CMAKE_SOURCE_DIR}/lists/${R}.lst")
+    add_custom_command(
+        OUTPUT ${generated_cpp}
+        DEPENDS ${spec_file} ${script}
+        COMMAND Python3::Interpreter ${script} ${spec_file} ${generated_cpp}
+        COMMENT "Generating ${R} register."
+        VERBATIM
+    )
+    target_sources(libommpfritt PRIVATE "${generated_cpp}")
+endforeach()
 
 if (BUILD_TRANSLATION)
   set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
@@ -88,7 +101,6 @@ target_sources(ommpfritt PRIVATE "${compiled_resource_file}")
 if (BUILD_TRANSLATION)
   add_dependencies(resources translations_qm)
 endif()
-add_dependencies(libommpfritt registers)
 add_dependencies(ommpfritt libommpfritt resources)
 
 target_include_directories(libommpfritt PUBLIC
