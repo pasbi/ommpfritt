@@ -26,7 +26,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
 include(GetGitRevisionDescription)
 git_describe(GIT_DESCRIBE "--tags")
 
-add_executable(ommpfritt "${compiled_resource_file}")
+add_executable(ommpfritt)
 set_target_properties(ommpfritt PROPERTIES WIN32_EXECUTABLE ON)
 add_library(libommpfritt STATIC)
 target_compile_definitions(libommpfritt PUBLIC QT_NO_KEYWORDS)
