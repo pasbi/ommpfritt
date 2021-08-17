@@ -2,12 +2,22 @@
 #include "logging.h"
 #include <list>
 
-#include "register_managers.cpp"
-#include "register_nodes.cpp"
-#include "register_objects.cpp"
-#include "register_properties.cpp"
-#include "register_tags.cpp"
-#include "register_tools.cpp"
+#include "managers/manager.h"
+#include "objects/object.h"
+#include "tags/tag.h"
+#include "properties/property.h"
+#include "tools/tool.h"
+#include "nodesystem/node.h"
+
+namespace omm_generated
+{
+void register_managers();
+void register_nodes();
+void register_objects();
+void register_properties();
+void register_tags();
+void register_tools();
+}  // namespace omm_generated
 
 namespace
 {
@@ -22,6 +32,7 @@ namespace omm
 {
 void register_everything()
 {
+  using namespace omm_generated;
   std::list<QString> keys;
   register_managers();
   merge(keys, Manager::keys());

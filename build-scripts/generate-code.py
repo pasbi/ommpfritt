@@ -7,14 +7,13 @@ import generated_file_header
 
 def ensure_list(list_or_string):
     if isinstance(list_or_string, str):
-        return [ list_or_string ]
+        return [list_or_string]
     else:
         return list_or_string
 
 if __name__ == "__main__":
     with open(sys.argv[1], 'r') as f:
         spec = json.load(f)
-
 
     with open(sys.argv[2], 'w') as f:
         f.write(generated_file_header.header())
@@ -24,7 +23,7 @@ if __name__ == "__main__":
                 f.write(inc.format(lc_item=item.lower()) + "\n")
 
         f.write("#include \"logging.h\"\n")
-        f.write("namespace\n")
+        f.write("namespace omm_generated\n")
         f.write("{\n")
 
         # the register_*s function is used for sure, but most code highlighters
@@ -44,6 +43,5 @@ if __name__ == "__main__":
         f.write(f"  LDEBUG << \"registered \" << {clazz}::keys().size() << "\
                 f"\" {category}.\";\n")
         f.write("}\n")
-        f.write("}  // namespace\n")
+        f.write("}  // namespace omm_generated\n")
         f.write("\n")
-

@@ -23,22 +23,14 @@ set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}"
 set(python_major "python${Python3_VERSION_MAJOR}")
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
-include(generate_registers)
-if (BUILD_TRANSLATION)
-  include(generate_translations)
-endif()
-include(generate_resources)
 include(GetGitRevisionDescription)
 git_describe(GIT_DESCRIBE "--tags")
 
-list(APPEND classes tags managers nodes properties tools objects)
-generate_registers("${classes}")
-
-ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
-
-add_executable(ommpfritt "${compiled_resource_file}")
+add_executable(ommpfritt)
 set_target_properties(ommpfritt PROPERTIES WIN32_EXECUTABLE ON)
 add_library(libommpfritt STATIC)
+target_compile_definitions(libommpfritt PUBLIC QT_NO_KEYWORDS)
+target_compile_definitions(ommpfritt PUBLIC QT_NO_KEYWORDS)
 
 macro(set_warning_level target)
   if(MSVC)
@@ -50,49 +42,27 @@ endmacro()
 set_warning_level(ommpfritt)
 set_warning_level(libommpfritt)
 
-if (BUILD_TRANSLATION)
-  set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
-  set(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
-  set(languages de en es)
-  set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
-  set(cfg_files
-    ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-light.cfg
-    ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-dark.cfg
-    ${CMAKE_CURRENT_SOURCE_DIR}/keybindings/default_keybindings.cfg
-  )
-  generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${cfg_files}")
-  list(APPEND qrc_files_cli ${translations_qrc})
-endif()
+set(generated_src "${CMAKE_BINARY_DIR}/generated")
+set(script "${CMAKE_SOURCE_DIR}/build-scripts/generate-code.py")
+file(MAKE_DIRECTORY "${generated_src}")
+foreach(R tags managers nodes properties tools objects)
+    SET(generated_cpp "${generated_src}/register_${R}.cpp")
+    SET(spec_file "${CMAKE_SOURCE_DIR}/lists/${R}.lst")
+    add_custom_command(
+        OUTPUT ${generated_cpp}
+        DEPENDS ${spec_file} ${script}
+        COMMAND Python3::Interpreter ${script} ${spec_file} ${generated_cpp}
+        COMMENT "Generating ${R} register."
+        VERBATIM
+    )
+    target_sources(libommpfritt PRIVATE "${generated_cpp}")
+endforeach()
 
-set(qrc_files "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc" ${translations_qrc})
-
-set(icons_qrc_file "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
-configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
-if (EXISTS ${icons_qrc_file})
-  message(NOTICE "Found icons: ${icons_qrc_file}.")
-  list(APPEND qrc_files ${icons_qrc_file})
-  if (WIN32)
-    configure_file(${CMAKE_SOURCE_DIR}/icons/resource.rc.in ${CMAKE_BINARY_DIR}/resource.rc COPYONLY)
-    target_sources(ommpfritt PRIVATE "${CMAKE_BINARY_DIR}/resource.rc")
-  endif()
-else()
-  message(NOTICE "Did not find icons at ${icons_qrc_file}.")
-  message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
-          to integrate the icons into the application.")
-endif()
-
-set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
-generate_resources(resources ${compiled_resource_file} "${qrc_files}")
-target_sources(ommpfritt PRIVATE "${compiled_resource_file}")
-
-if (BUILD_TRANSLATION)
-  add_dependencies(resources translations_qm)
-endif()
-add_dependencies(libommpfritt registers)
-add_dependencies(ommpfritt libommpfritt resources)
+include(generate_resources)
+generate_resources(ommpfritt)
 
 target_include_directories(libommpfritt PUBLIC
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_SOURCE_DIR}/src"
     "${PROJECT_BINARY_DIR}"
 )
 target_compile_features(libommpfritt PUBLIC cxx_std_17)
