@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       QT_PREFIX: "/opt/qt515"
-      LD_LIBRARY_PATH: "/usr/local/lib/:/usr/local/lib/x86_64-linux-gnu/"
+      LD_LIBRARY_PATH: "/usr/local/lib/:/usr/local/lib/x86_64-linux-gnu/:/opt/qt515/lib/"
     steps:
       - uses: actions/checkout@v2
       - run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -110,17 +110,20 @@ jobs:
                    -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
                    -DBUILD_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=install
-                   -DGENERATE_ICONS=ON
       - run: cmake --build build
                    --target install
                    --config Release
                    -j4
+      - run: build/generate-icons.py
+      - run: cmake -S ${{ github.workspace }}
+                   -B build
+      - run: cmake --build build --target install --config Release -j4
       - run: cmake --build build
                    --target appimage
                    --config Release
       - uses: actions/upload-artifact@v2
         with:
-          name: Ommpfritt-AppImage-Focal
+          name: Ommpfritt-AppImage
           path: build/ommpfritt*.AppImage
   Make-Release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
@@ -129,7 +132,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: Ommpfritt-AppImage-Focal
+          name: Ommpfritt-AppImage
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "ommpfritt-*.AppImage"

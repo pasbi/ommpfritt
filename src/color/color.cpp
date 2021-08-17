@@ -2,7 +2,7 @@
 
 #include "color/namedcolors.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include <QtGlobal>
 #include <algorithm>
 #include <cassert>

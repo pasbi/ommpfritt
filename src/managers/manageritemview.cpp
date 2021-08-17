@@ -9,7 +9,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "managers/stylemanager/stylelistview.h"
 #include "scene/scene.h"

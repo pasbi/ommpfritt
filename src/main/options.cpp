@@ -1,4 +1,4 @@
-#include "mainwindow/options.h"
+#include "main/options.h"
 #include <QRectF>
 
 namespace omm

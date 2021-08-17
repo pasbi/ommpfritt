@@ -1,7 +1,7 @@
 #include "widgets/colorwidget/colorwidget.h"
 #include "color/color.h"
 #include "color/namedcolors.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "namedcolorsdialog.h"
 #include "ui_colorwidget.h"
 #include "widgets/colorwidget/colorcircle.h"

@@ -9,7 +9,7 @@
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
 #include "common.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "managers/objectmanager/objectdelegate.h"
 #include "menuhelper.h"

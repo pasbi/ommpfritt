@@ -16,7 +16,7 @@
 #include "common.h"
 #include "keybindings/commandinterface.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/gpl3.h"
 #include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/iconprovider.h"

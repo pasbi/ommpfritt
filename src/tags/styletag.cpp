@@ -1,6 +1,6 @@
 #include "tags/styletag.h"
 
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/propertymanager/propertymanager.h"
 #include "objects/object.h"
 #include "properties/referenceproperty.h"

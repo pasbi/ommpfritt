@@ -1,6 +1,6 @@
 #include "managers/timeline/timeline.h"
 #include "animation/animator.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/iconprovider.h"
 #include "managers/timeline/slider.h"
 #include "managers/timeline/timelinetitlebar.h"

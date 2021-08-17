@@ -1,6 +1,6 @@
 #include "objects/view.h"
 #include "geometry/point.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
 #include "properties/boolproperty.h"

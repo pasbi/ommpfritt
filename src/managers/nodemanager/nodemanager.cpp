@@ -1,7 +1,7 @@
 #include "managers/nodemanager/nodemanager.h"
 #include "commands/nodecommand.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/nodemanager/nodemanagertitlebar.h"
 #include "managers/nodemanager/nodescene.h"
 #include "nodesystem/node.h"
