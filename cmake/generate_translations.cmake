@@ -1,5 +1,5 @@
 function(generate_translations languages cfg_files dependencies translations_qrc)
-    set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
+    set(ts_dir "${CMAKE_SOURCE_DIR}/ts/")
     set(qm_dir "${CMAKE_BINARY_DIR}/qm")
     file(MAKE_DIRECTORY "${qm_dir}")
     if (WIN32)
@@ -12,8 +12,8 @@ function(generate_translations languages cfg_files dependencies translations_qrc
     file(MAKE_DIRECTORY ${qm_dir})
     list(TRANSFORM languages APPEND ".ts" OUTPUT_VARIABLE ts_files)
     list(TRANSFORM ts_files PREPEND "${ts_dir}/omm_")
-    set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/update-translations_h.py")
-    set(translations_h "${CMAKE_CURRENT_SOURCE_DIR}/src/translations.h")
+    set(script "${CMAKE_SOURCE_DIR}/build-scripts/update-translations_h.py")
+    set(translations_h "${CMAKE_SOURCE_DIR}/src/translations.h")
 
     file(GLOB_RECURSE TS_SOURCES
          CONFIGURE_DEPENDS
@@ -33,7 +33,7 @@ function(generate_translations languages cfg_files dependencies translations_qrc
           --output "${translations_h}"
         COMMAND Qt5::lupdate
           -noobsolete
-          ${CMAKE_CURRENT_SOURCE_DIR}/src
+          ${CMAKE_SOURCE_DIR}/src
           -ts "${ts_files}"
         COMMENT "Update ts files. Check the files with `linguist` manually!"
     )
@@ -43,7 +43,7 @@ function(generate_translations languages cfg_files dependencies translations_qrc
     list(TRANSFORM qm_files PREPEND "${qm_dir}/omm_")
 
 
-    set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-translations_qrc.py")
+    set(script "${CMAKE_SOURCE_DIR}/build-scripts/generate-translations_qrc.py")
     add_custom_command(
         OUTPUT "${translations_qrc}"
         DEPENDS "${qm_files}" "${translations.h}"

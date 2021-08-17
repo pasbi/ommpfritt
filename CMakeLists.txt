@@ -43,7 +43,7 @@ set_warning_level(ommpfritt)
 set_warning_level(libommpfritt)
 
 set(generated_src "${CMAKE_BINARY_DIR}/generated")
-set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-code.py")
+set(script "${CMAKE_SOURCE_DIR}/build-scripts/generate-code.py")
 file(MAKE_DIRECTORY "${generated_src}")
 foreach(R tags managers nodes properties tools objects)
     SET(generated_cpp "${generated_src}/register_${R}.cpp")
@@ -67,14 +67,14 @@ set(rcc_dependencies ${cfg_files} "${CMAKE_SOURCE_DIR}/layouts/default_layout.in
 set(qrc_files "${CMAKE_SOURCE_DIR}/resources.qrc")
 if (BUILD_TRANSLATION)
   include(generate_translations)
-  set(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
+  set(qrc_translations_cpp "${CMAKE_BINARY_DIR}/qrc_translations.cpp")
   set(languages de en es)
-  set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
+  set(translations_qrc "${CMAKE_BINARY_DIR}/qm/translations.qrc")
   generate_translations("${languages}" "${cfg_files}" rcc_dependencies "${translations_qrc}")
   list(APPEND qrc_files "${translations_qrc}")
 endif()
 
-set(icons_qrc_file "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
+set(icons_qrc_file "${CMAKE_BINARY_DIR}/icons/icons.qrc")
 configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
 if (EXISTS ${icons_qrc_file})
   message(NOTICE "Found icons: ${icons_qrc_file}.")
@@ -89,7 +89,7 @@ else()
           to integrate the icons into the application.")
 endif()
 
-set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
+set(compiled_resource_file ${CMAKE_BINARY_DIR}/qrc_resources.cpp)
 add_custom_command(
   OUTPUT "${compiled_resource_file}"
   COMMAND Qt5::rcc -o "${compiled_resource_file}" ${qrc_files}
@@ -100,7 +100,7 @@ add_custom_command(
 target_sources(ommpfritt PRIVATE "${compiled_resource_file}")
 
 target_include_directories(libommpfritt PUBLIC
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_SOURCE_DIR}/src"
     "${PROJECT_BINARY_DIR}"
 )
 target_compile_features(libommpfritt PUBLIC cxx_std_17)
