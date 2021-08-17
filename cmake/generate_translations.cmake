@@ -1,6 +1,13 @@
-function(generate_translations translations_qrc ts_dir languages cfg_files)
-    set(qm_dir "${CMAKE_BINARY_DIR}/qm/")
-    set(qt_translator_prefixes "qt" "qtbase" "qt_help" "qtlocation")
+function(generate_translations languages cfg_files dependencies translations_qrc)
+    set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
+    set(qm_dir "${CMAKE_BINARY_DIR}/qm")
+    file(MAKE_DIRECTORY "${qm_dir}")
+    if (WIN32)
+      set(qt_translator_prefixes)
+    else()
+      set(qt_translator_prefixes "qt" "qtbase" "qt_help" "qtlocation")
+    endif()
+
 
     file(MAKE_DIRECTORY ${qm_dir})
     list(TRANSFORM languages APPEND ".ts" OUTPUT_VARIABLE ts_files)
@@ -30,15 +37,16 @@ function(generate_translations translations_qrc ts_dir languages cfg_files)
           -ts "${ts_files}"
         COMMENT "Update ts files. Check the files with `linguist` manually!"
     )
-    add_custom_target(ts_target DEPENDS "${translations_h}" "${ts_files}")
+    target_sources(libommpfritt PRIVATE "${translations.h}")
     set(qm_files ${languages})
     list(TRANSFORM qm_files APPEND ".qm")
     list(TRANSFORM qm_files PREPEND "${qm_dir}/omm_")
 
+
     set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-translations_qrc.py")
     add_custom_command(
-        OUTPUT "${qm_dir}/translations.qrc"
-        DEPENDS ts_target ${qm_files}
+        OUTPUT "${translations_qrc}"
+        DEPENDS "${qm_files}" "${translations.h}"
         COMMAND_EXPAND_LISTS
         COMMAND Python3::Interpreter "${script}"
           --languages "${languages}"
@@ -46,8 +54,7 @@ function(generate_translations translations_qrc ts_dir languages cfg_files)
           --qrc "${translations_qrc}"
         COMMENT "generate translations.qrc"
     )
-
-    add_custom_target(translations_qm DEPENDS "${translations_qrc}" )
+    list(APPEND "${dependencies}" "${translations_qrc}")
 
     set_source_files_properties("${translations_qrc}" PROPERTIES SKIP_AUTORCC ON)
 
@@ -58,22 +65,30 @@ function(generate_translations translations_qrc ts_dir languages cfg_files)
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     foreach (lang IN LISTS languages)
-        SET(qm "${qm_dir}/omm_${lang}.qm")
-        SET(ts "${ts_dir}/omm_${lang}.ts")
-        set(qt_qm_files "${qt_translator_prefixes}")
-        list(TRANSFORM qt_qm_files APPEND "_${lang}.qm")
-        list(TRANSFORM qt_qm_files PREPEND "${qm_dir}/" OUTPUT_VARIABLE dst_qt_qm_files)
-        list(TRANSFORM qt_qm_files PREPEND "${QT_QM_PATH}/" OUTPUT_VARIABLE src_qt_qm_files)
+        set(omm_qm "${qm_dir}/omm_${lang}.qm")
+        set(omm_ts "${ts_dir}/omm_${lang}.ts")
 
         add_custom_command(
-            OUTPUT "${qm}" ${dst_qt_qm_files}
-            DEPENDS ${ts_files}
-            COMMAND Qt5::lrelease ${ts} -qm ${qm}
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    ${src_qt_qm_files} "${qm_dir}"
+            OUTPUT "${omm_qm}"
+            DEPENDS "${omm_ts}"
+            COMMAND Qt5::lrelease ${omm_ts} -qm ${omm_qm}
             COMMENT "Prepare translation files '${lang}'"
         )
-        add_custom_target("qm_${lang}" DEPENDS ${qm} ${dst_qt_qm_files} )
-        add_dependencies(translations_qm "qm_${lang}")
+        list(APPEND "${dependencies}" "${omm_qm}")
+
+        if (qt_translator_prefixes)
+          set(qt_qm_files "${qt_translator_prefixes}")
+          list(TRANSFORM qt_qm_files APPEND "_${lang}.qm")
+          list(TRANSFORM qt_qm_files PREPEND "${qm_dir}/" OUTPUT_VARIABLE dst_qt_qm_files)
+          list(TRANSFORM qt_qm_files PREPEND "${QT_QM_PATH}/" OUTPUT_VARIABLE src_qt_qm_files)
+          add_custom_command(
+              OUTPUT ${dst_qt_qm_files}
+              COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                      ${src_qt_qm_files} "${qm_dir}"
+              COMMENT "Copy Qt translation files '${lang}'"
+          )
+          list(APPEND "${dependencies}" ${dst_qt_qm_files})
+        endif()
     endforeach()
+    set("${dependencies}" "${${dependencies}}" PARENT_SCOPE)
 endfunction()
