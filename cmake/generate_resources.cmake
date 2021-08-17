@@ -40,4 +40,5 @@ function(generate_resources target)
     COMMENT "Compile ${compiled_resource_file} from ${qrc_files}"
   )
   target_sources(${target} PRIVATE "${compiled_resource_file}")
+  set(compiled_resource_file "${compiled_resource_file}" PARENT_SCOPE)
 endfunction()
