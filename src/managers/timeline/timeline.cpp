@@ -111,9 +111,9 @@ void TimeLine::update_play_pause_button(Animator::PlayDirection direction)
   const bool backward = direction == Animator::PlayDirection::Backward;
   m_title_bar->ui()->pb_play_left->setChecked(backward);
   m_title_bar->ui()->pb_play_right->setChecked(forward);
-  m_title_bar->ui()->pb_play_left->setIcon(IconProvider::pixmap(backward ? "play" : "pause"));
   static constexpr auto flip = IconProvider::Orientation::FlippedHorizontally;
-  m_title_bar->ui()->pb_play_right->setIcon(IconProvider::pixmap(forward ? "play" : "pause", flip));
+  m_title_bar->ui()->pb_play_left->setIcon(IconProvider::pixmap(backward ? "pause" : "play", flip));
+  m_title_bar->ui()->pb_play_right->setIcon(IconProvider::pixmap(forward ? "pause" : "play"));
 }
 
 void TimeLine::jump_to_next_keyframe(Animator::PlayDirection direction)
