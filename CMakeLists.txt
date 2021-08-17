@@ -88,7 +88,11 @@ if (BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
+# For some reason it insists in having that RUNTIME DESTINATION, although it uses cmake 3.16 and
+# the documentation says it's not required.
+# However, having it does not seem to change anything else, so there's no reason not to have it.
 install(TARGETS ommpfritt RUNTIME DESTINATION bin)
+
 include(Packaging)
 
 get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
