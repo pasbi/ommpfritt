@@ -1,4 +1,4 @@
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "gtest/gtest.h"
 #include <QApplication>
 

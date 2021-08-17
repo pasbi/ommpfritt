@@ -1,6 +1,6 @@
 #include "preferences/uicoloredit.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "ui_uicoloredit.h"
 #include <QColorDialog>
 #include <QPainter>

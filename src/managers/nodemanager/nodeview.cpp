@@ -1,6 +1,6 @@
 #include "managers/nodemanager/nodeview.h"
 #include "commands/nodecommand.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/nodemanager/nodeitem.h"
 #include "managers/nodemanager/nodemimedata.h"
 #include "managers/nodemanager/nodescene.h"

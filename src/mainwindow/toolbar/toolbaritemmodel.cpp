@@ -1,7 +1,7 @@
 #include "mainwindow/toolbar/toolbaritemmodel.h"
 #include "common.h"
 #include "keybindings/modeselector.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/toolbar/toolbardialog.h"
 #include <QMimeData>

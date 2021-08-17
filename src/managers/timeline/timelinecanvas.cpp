@@ -3,7 +3,7 @@
 #include "animation/track.h"
 #include "commands/keyframecommand.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "preferences/uicolors.h"
 #include "scene/history/historymodel.h"
 #include "scene/mailbox.h"

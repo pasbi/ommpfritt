@@ -1,6 +1,6 @@
 #include "managers/objectmanager/objectquickaccessdelegate.h"
 #include "commands/propertycommand.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "preferences/uicolors.h"
 #include "properties/boolproperty.h"

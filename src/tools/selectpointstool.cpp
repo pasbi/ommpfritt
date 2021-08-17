@@ -1,5 +1,5 @@
 #include "tools/selectpointstool.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "objects/path.h"
 #include "properties/optionproperty.h"

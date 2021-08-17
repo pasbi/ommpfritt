@@ -1,5 +1,5 @@
 #include "mainwindow/viewport/anchorhud.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "preferences/uicolors.h"
 #include <QMouseEvent>
 #include <QPainter>

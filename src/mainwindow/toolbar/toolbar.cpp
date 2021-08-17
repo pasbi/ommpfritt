@@ -1,5 +1,5 @@
 #include "mainwindow/toolbar/toolbar.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/iconprovider.h"
 #include "mainwindow/toolbar/toolbardialog.h"
 #include "tools/toolbox.h"

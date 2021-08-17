@@ -1,5 +1,5 @@
 #include "preferences/preferencedialog.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "preferences/generalpage.h"
 #include "preferences/keybindingspage.h"
 #include "preferences/preferencepage.h"

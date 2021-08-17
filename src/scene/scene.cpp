@@ -29,7 +29,7 @@
 #include "animation/animator.h"
 #include "color/namedcolors.h"
 #include "keybindings/modeselector.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "nodesystem/node.h"
 #include "scene/history/historymodel.h"
 #include "scene/mailbox.h"

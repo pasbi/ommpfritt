@@ -2,7 +2,7 @@
 #include "animation/animator.h"
 #include "animation/channelproxy.h"
 #include "common.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
 #include "properties/property.h"
 #include "scene/mailbox.h"

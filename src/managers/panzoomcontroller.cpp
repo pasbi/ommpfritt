@@ -1,6 +1,6 @@
 #include "managers/panzoomcontroller.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/nodemanager/nodeview.h"
 #include "preferences/preferences.h"
 #include "preferences/uicolors.h"

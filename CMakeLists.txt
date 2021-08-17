@@ -11,7 +11,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(GENERATE_ICONS "Generate the icons that are used in the application." ON)
 option(BUILD_TRANSLATION "Build translations of the application." ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
@@ -20,13 +19,13 @@ find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
 
+set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
+set(python_major "python${Python3_VERSION_MAJOR}")
+
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
 include(generate_registers)
 if (BUILD_TRANSLATION)
   include(generate_translations)
-endif()
-if (GENERATE_ICONS)
-  include(generate_icons)
 endif()
 include(generate_resources)
 include(GetGitRevisionDescription)
@@ -37,7 +36,19 @@ generate_registers("${classes}")
 
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
-set(qrc_files_cli "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc")
+add_executable(ommpfritt "${compiled_resource_file}")
+set_target_properties(ommpfritt PROPERTIES WIN32_EXECUTABLE ON)
+add_library(libommpfritt STATIC)
+
+macro(set_warning_level target)
+  if(MSVC)
+    target_compile_options(${target} PRIVATE /W4 /WX)
+  else()
+    target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic -Werror)
+  endif()
+endmacro()
+set_warning_level(ommpfritt)
+set_warning_level(libommpfritt)
 
 if (BUILD_TRANSLATION)
   set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
@@ -53,138 +64,32 @@ if (BUILD_TRANSLATION)
   list(APPEND qrc_files_cli ${translations_qrc})
 endif()
 
-set(compiled_resource_file_cli ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources_cli.cpp)
-generate_resources(resources_cli ${compiled_resource_file_cli} "${qrc_files_cli}")
+set(qrc_files "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc" ${translations_qrc})
 
-set(icons_qrc "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
-if (GENERATE_ICONS)
-  set(specs "${classes};extra")
-  list(TRANSFORM specs PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/lists/")
-  list(TRANSFORM specs APPEND ".lst")
-  set(specs "${specs};${CMAKE_CURRENT_SOURCE_DIR}/keybindings/default_keybindings.cfg")
-  generate_icons("${icons_qrc}" "${specs}")
+set(icons_qrc_file "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
+configure_file(${CMAKE_SOURCE_DIR}/cmake/generate-icons.py.in ${CMAKE_BINARY_DIR}/generate-icons.py @ONLY)
+if (EXISTS ${icons_qrc_file})
+  message(NOTICE "Found icons: ${icons_qrc_file}.")
+  list(APPEND qrc_files ${icons_qrc_file})
+  if (WIN32)
+    configure_file(${CMAKE_SOURCE_DIR}/icons/resource.rc.in ${CMAKE_BINARY_DIR}/resource.rc COPYONLY)
+    target_sources(ommpfritt PRIVATE "${CMAKE_BINARY_DIR}/resource.rc")
+  endif()
+else()
+  message(NOTICE "Did not find icons at ${icons_qrc_file}.")
+  message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
+          to integrate the icons into the application.")
 endif()
 
-set(qrc_files "${qrc_files_cli}")
-if (GENERATE_ICONS)
-  list(APPEND qrc_files ${icons_qrc})
-endif()
 set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
 generate_resources(resources ${compiled_resource_file} "${qrc_files}")
-
-macro(set_warning_level target)
-  if(MSVC)
-    target_compile_options(${target} PRIVATE /W4 /WX)
-  else()
-    target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic -Werror)
-  endif()
-endmacro()
-
-add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file_cli}")
-add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
-add_library(libommpfritt STATIC)
-
-set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
-set(python_major "python${Python3_VERSION_MAJOR}")
-if (MINGW)
-  get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
-  FILE (GLOB required_system_dlls 
-        "${MinGWPath}/libbrotlicommon.dll"
-        "${MinGWPath}/libbrotlidec.dll"
-        "${MinGWPath}/libbz2-1.dll"
-        "${MinGWPath}/libcrypto-1_1-x64.dll"
-        "${MinGWPath}/libcurl-4.dll"
-        "${MinGWPath}/libdouble-conversion.dll"
-        "${MinGWPath}/libfreetype-6.dll"
-        "${MinGWPath}/libgcc_s_seh-1.dll"
-        "${MinGWPath}/libglib-2.0-0.dll"
-        "${MinGWPath}/libgraphite2.dll"
-        "${MinGWPath}/libgsl-25.dll"
-        "${MinGWPath}/libgslcblas-0.dll"
-        "${MinGWPath}/libharfbuzz-0.dll"
-        "${MinGWPath}/libiconv-2.dll"
-        "${MinGWPath}/libicudt*.dll"
-        "${MinGWPath}/libicuin*.dll"
-        "${MinGWPath}/libicuuc*.dll"
-        "${MinGWPath}/libidn2-0.dll"
-        "${MinGWPath}/libintl-8.dll"
-        "${MinGWPath}/libjpeg-8.dll"
-        "${MinGWPath}/libKF5ItemModels.dll"
-        "${MinGWPath}/liblcms2-2.dll"
-        "${MinGWPath}/liblzma-5.dll"
-        "${MinGWPath}/libnghttp2-14.dll"
-        "${MinGWPath}/libnspr4.dll"
-        "${MinGWPath}/libopenjp2-7.dll"
-        "${MinGWPath}/libpcre-1.dll"
-        "${MinGWPath}/libpcre2-16-0.dll"
-        "${MinGWPath}/libplc4.dll"
-        "${MinGWPath}/libplds4.dll"
-        "${MinGWPath}/libpng16-16.dll"
-        "${MinGWPath}/libpoppler-*.dll"
-        "${MinGWPath}/libpoppler-qt5-1.dll"
-        "${MinGWPath}/libpsl-5.dll"
-        "${MinGWPath}/lib${python_major_minor}.dll"
-        "${MinGWPath}/libssh2-1.dll"
-        "${MinGWPath}/libssl-1_1-x64.dll"
-        "${MinGWPath}/libstdc++-6.dll"
-        "${MinGWPath}/libtiff-5.dll"
-        "${MinGWPath}/libunistring-2.dll"
-        "${MinGWPath}/libwinpthread-1.dll"
-        "${MinGWPath}/libzstd.dll"
-        "${MinGWPath}/nss3.dll"
-        "${MinGWPath}/nssutil3.dll"
-        "${MinGWPath}/Qt5Core.dll"
-        "${MinGWPath}/Qt5Gui.dll"
-        "${MinGWPath}/Qt5Svg.dll"
-        "${MinGWPath}/Qt5Widgets.dll"
-        "${MinGWPath}/Qt5WinExtras.dll"
-        "${MinGWPath}/Qt5Xml.dll"
-        "${MinGWPath}/smime3.dll"
-        "${MinGWPath}/libdeflate.dll"
-        "${MinGWPath}/libwebp-7.dll"
-        "${MinGWPath}/zlib1.dll"
-  )
-  message(STATUS "mingw path: ${MinGWPath}")
-  message(STATUS "dlls: ${required_system_dlls}")
-  message(STATUS "python name: ${python_major_minor}")
-  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
-  install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
-
-  file(GLOB python_files ${MinGWPath}/../lib/${python_major_minor}/*.py)
-  foreach (fn IN LISTS python_files)
-    install(FILES ${fn} DESTINATION lib/${python_major_minor}/)
-  endforeach()
-
-  install(FILES ${MinGWPath}/../lib/${python_major_minor}/LICENSE.txt DESTINATION lib/)
-  list(APPEND python_dirs collections ctypes encodings json multiprocessing)
-  foreach (dir IN LISTS python_dirs)
-    install(DIRECTORY "${MinGWPath}/../lib/${python_major_minor}/${dir}" DESTINATION lib/${python_major_minor}/)
-  endforeach()
-
-  add_custom_command(TARGET ommpfritt-cli POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/platforms"
-          COMMAND ${CMAKE_COMMAND} -E copy "${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll" "${PROJECT_BINARY_DIR}/platforms/"
-          COMMAND ${CMAKE_COMMAND} -E copy ${required_system_dlls} ${PROJECT_BINARY_DIR}
-          COMMAND_EXPAND_LISTS
-          COMMENT "Copying dependencies into build directory."
-          )
-endif()
-
-set_warning_level(ommpfritt-cli)
-set_warning_level(ommpfritt)
-set_warning_level(libommpfritt)
-
-if (GENERATE_ICONS)
-  add_dependencies(icons_png ommpfritt-cli)
-endif()
+target_sources(ommpfritt PRIVATE "${compiled_resource_file}")
 
 if (BUILD_TRANSLATION)
-  add_dependencies(resources_cli translations_qm)
   add_dependencies(resources translations_qm)
 endif()
 add_dependencies(libommpfritt registers)
 add_dependencies(ommpfritt libommpfritt resources)
-add_dependencies(ommpfritt-cli libommpfritt resources_cli)
 
 target_include_directories(libommpfritt PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -198,7 +103,6 @@ target_link_libraries(libommpfritt -lpthread -lm)
 target_link_libraries(libommpfritt KF5ItemModels)
 target_link_libraries(libommpfritt 2Geom::2geom)
 target_link_libraries(ommpfritt libommpfritt)
-target_link_libraries(ommpfritt-cli libommpfritt)
 
 if (WIN32)
   target_link_libraries(libommpfritt -lopengl32)
@@ -210,28 +114,59 @@ endif()
 add_subdirectory(src)
 
 if (BUILD_TESTING)
-  add_executable(ommpfritt_unit_tests)
-  set_warning_level(ommpfritt_unit_tests)
-  add_dependencies(ommpfritt_unit_tests resources_cli)
-  target_link_libraries(ommpfritt_unit_tests libommpfritt)
-  target_link_libraries(ommpfritt_unit_tests gtest)
-  target_link_libraries(ommpfritt_unit_tests gtest_main)
   include(CTest)
   add_subdirectory(test)
 endif()
 
-install(
-    TARGETS ommpfritt ommpfritt-cli
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static
-)
+# For some reason it insists in having that RUNTIME DESTINATION, although it uses cmake 3.16 and
+# the documentation says it's not required.
+# However, having it does not seem to change anything else, so there's no reason not to have it.
+install(TARGETS ommpfritt RUNTIME DESTINATION bin)
 
-SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
-include(CPack)
-include(InstallRequiredSystemLibraries)
+include(Packaging)
 
 get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
+
+if (WIN32)
+  set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
+  include(InstallRequiredSystemLibraries)
+  execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
+      OUTPUT_VARIABLE qt5_install_prefix
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PLUGINS
+      OUTPUT_VARIABLE qt5_install_plugins
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
+  install(FILES "${qt5_install_plugins}/platforms/qoffscreen.dll"
+          DESTINATION "bin/platforms/")
+
+  get_filename_component(MinGW_bin_path ${CMAKE_CXX_COMPILER} PATH)
+
+  # These two dependencies are strange:
+  # I don't know why this project depdends on them.
+  # On my PC, fixup_bundle finds them and installs and packages them correctly.
+  # On github's CI, however, these files are not installed/packaged, which results in a corrupted
+  # artifact (the installed application will not be executable).
+  install(FILES "${MinGW_bin_path}/libssl-1_1-x64.dll" "${MinGW_bin_path}/libcrypto-1_1-x64.dll"
+          TYPE BIN)
+
+  install(CODE "
+    include(BundleUtilities)
+    execute_process(COMMAND
+        \"${qt5_install_prefix}/bin/windeployqt.exe\"
+        \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
+    )
+    fixup_bundle(
+      \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
+      \"\"
+      \"\"
+    )"
+    COMPONENT Runtime
+  )
+endif()
+
 configure_file(${CMAKE_SOURCE_DIR}/cmake/make-appimage.sh.in ${CMAKE_BINARY_DIR}/make-appimage.sh @ONLY)
 add_custom_target(appimage
                   COMMAND "${CMAKE_BINARY_DIR}/make-appimage.sh"

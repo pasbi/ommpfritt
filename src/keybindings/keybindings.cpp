@@ -2,7 +2,7 @@
 #include "common.h"
 #include "keybindings/commandinterface.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include <QApplication>
 #include <QCoreApplication>
 #include <QKeyEvent>

@@ -1,6 +1,6 @@
 #include "scene/stylelist.h"
 #include "commands/propertycommand.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "mainwindow/iconprovider.h"
 #include "properties/stringproperty.h"
 #include "renderers/style.h"

@@ -4,7 +4,7 @@
 #include <cmath>
 
 #include "mainwindow/iconprovider.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "scene/scene.h"

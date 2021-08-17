@@ -2,7 +2,7 @@
 
 #include "commands/addcommand.h"
 #include "commands/removecommand.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/stylemanager/stylelistview.h"
 #include "renderers/style.h"
 #include "scene/mailbox.h"

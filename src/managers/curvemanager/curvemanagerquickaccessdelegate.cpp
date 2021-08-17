@@ -3,7 +3,7 @@
 #include "geometry/util.h"
 #include "animation/animator.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/curvemanager/curvetree.h"
 #include "scene/scene.h"
 #include <QMouseEvent>

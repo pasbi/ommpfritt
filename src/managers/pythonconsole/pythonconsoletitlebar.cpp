@@ -1,6 +1,6 @@
 #include "managers/pythonconsole/pythonconsoletitlebar.h"
 #include "keybindings/keybindings.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include "managers/pythonconsole/pythonconsole.h"
 #include "menuhelper.h"
 #include <QLabel>

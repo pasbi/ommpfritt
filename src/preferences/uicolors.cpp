@@ -1,12 +1,14 @@
 #include "preferences/uicolors.h"
 #include "color/color.h"
 #include "logging.h"
-#include "mainwindow/application.h"
+#include "main/application.h"
 #include <QApplication>
 #include <QColor>
 #include <QCoreApplication>
 #include <QPalette>
+#include <QProxyStyle>
 #include <QSettings>
+#include <QStyleFactory>
 #include <QWidget>
 #include <iostream>
 
@@ -145,7 +147,16 @@ Color UiColors ::color(QPalette::ColorGroup pgroup, const QString& group, const 
 void UiColors::apply()
 {
   PreferencesTree::apply();
-  QApplication::setPalette(make_palette());
+
+  class Style : public QProxyStyle
+  {
+  public:
+    explicit Style(const UiColors& self) : QProxyStyle(QStyleFactory::create("fusion")), self(self) {}
+    void polish(QPalette& palette) override { palette = self.make_palette(); }
+  private:
+    const UiColors& self;
+  };
+  QApplication::setStyle(new Style(*this));  // ownership is tranferred
 }
 
 QStringList UiColors::skin_names() const
