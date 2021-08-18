@@ -5,7 +5,7 @@ if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
 
-project(ommpfritt VERSION 0.1.2)
+project(ommpfritt VERSION 0.1.4)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
