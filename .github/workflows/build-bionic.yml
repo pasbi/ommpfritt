@@ -136,4 +136,5 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "ommpfritt-*.AppImage"
+          allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
