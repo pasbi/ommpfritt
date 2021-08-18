@@ -1,6 +1,9 @@
 # ommpfritt
 
-[![Build Status](https://travis-ci.org/pasbi/ommpfritt.svg?branch=master)](https://travis-ci.org/pasbi/ommpfritt)
+[![Build-Focal](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal.yml)
+[![Build-Bionic](https://github.com/pasbi/ommpfritt/actions/workflows/build-bionic.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-bionic.yml)
+[![Build-win](https://github.com/pasbi/ommpfritt/actions/workflows/build-win.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-win.yml)
+[![Style Checker](https://github.com/pasbi/ommpfritt/actions/workflows/stylechecker.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/stylechecker.yml)
 [![Gitter](https://badges.gitter.im/ommpfritt/community.svg)](https://gitter.im/ommpfritt/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Telegram](https://img.shields.io/badge/Telegram-Chat-blue)](https://t.me/omm_dev)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/alerts/)
