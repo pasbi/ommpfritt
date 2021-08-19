@@ -287,7 +287,7 @@ bool ObjectTransformation::is_identity() const
 
 QTransform ObjectTransformation::to_qtransform() const
 {
-  return QTransform(to_mat().to_qmatrix());
+  return to_mat().to_qtransform();
 }
 
 bool ObjectTransformation::has_nan() const

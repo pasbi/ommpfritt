@@ -114,9 +114,9 @@ bool Matrix::has_nan() const
   return false;
 }
 
-QMatrix Matrix::to_qmatrix() const
+QTransform Matrix::to_qtransform() const
 {
-  return QMatrix(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
+  return {m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]};
 }
 
 QMatrix3x3 Matrix::to_qmatrix3x3() const
