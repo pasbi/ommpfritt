@@ -9,10 +9,10 @@
 #include "objects/view.h"
 #include "preferences/uicolors.h"
 #include "scene/scene.h"
-#include "stringinterpolation.h"
 #include "ui_exportdialog.h"
 #include "widgets/numericedit.h"
 #include "widgets/referencelineedit.h"
+#include <fmt/format.h>
 #include <QAbstractListModel>
 #include <QFileDialog>
 #include <QFrame>
@@ -60,7 +60,7 @@ public:
   {
     try {
       Exporter::interpolate_filename(input, "", "", 0);
-    } catch (const StringInterpolation::InvalidFormatException& e) {
+    } catch (const fmt::format_error& e) {
       return QValidator::Intermediate;
     }
 
