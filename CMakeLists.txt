@@ -65,7 +65,7 @@ target_include_directories(libommpfritt PUBLIC
     "${CMAKE_SOURCE_DIR}/src"
     "${PROJECT_BINARY_DIR}"
 )
-target_compile_features(libommpfritt PUBLIC cxx_std_17)
+target_compile_features(libommpfritt PUBLIC cxx_std_20)
 target_link_libraries(libommpfritt Python3::Python)
 target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
 target_link_libraries(libommpfritt poppler-qt5)
