@@ -12,7 +12,7 @@
 #include "ui_exportdialog.h"
 #include "widgets/numericedit.h"
 #include "widgets/referencelineedit.h"
-#include "fmt.h"
+#include <fmt/format.h>
 #include <QAbstractListModel>
 #include <QFileDialog>
 #include <QFrame>
