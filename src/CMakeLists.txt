@@ -7,6 +7,7 @@ target_sources(libommpfritt PRIVATE
   common.h
   enumnames.cpp
   enumnames.h
+  fmt.h
   dnf.cpp
   dnf.h
   logging.cpp

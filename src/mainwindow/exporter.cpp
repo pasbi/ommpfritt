@@ -5,7 +5,7 @@
 #include "mainwindow/viewport/viewport.h"
 #include "objects/view.h"
 #include "scene/scene.h"
-#include <fmt/format.h>
+#include "fmt.h"
 #include <QApplication>
 #include <QDir>
 #include <QFileInfo>
