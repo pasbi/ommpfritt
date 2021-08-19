@@ -13,7 +13,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_TRANSLATION "Build translations of the application." ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+find_package(Qt5 5.15 REQUIRED COMPONENTS Widgets Svg LinguistTools)
 find_package(PkgConfig)
 find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(2Geom REQUIRED)
@@ -79,7 +79,7 @@ target_include_directories(libommpfritt PUBLIC
 )
 target_compile_features(libommpfritt PUBLIC cxx_std_20)
 target_link_libraries(libommpfritt Python3::Python)
-target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
+target_link_libraries(libommpfritt Qt::Widgets Qt::Svg)
 target_link_libraries(libommpfritt poppler-qt5)
 target_link_libraries(libommpfritt -lpthread -lm)
 target_link_libraries(libommpfritt KF5ItemModels)
@@ -125,19 +125,21 @@ endif()
 
 include(Packaging)
 
+get_target_property(qt_qmake_location Qt::qmake IMPORTED_LOCATION)
+
 if (WIN32)
   set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
   include(InstallRequiredSystemLibraries)
-  execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
-      OUTPUT_VARIABLE qt5_install_prefix
+  execute_process(COMMAND "${qt_qmake_location}" -query QT_INSTALL_PREFIX
+      OUTPUT_VARIABLE qt_install_prefix
       OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-  execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PLUGINS
-      OUTPUT_VARIABLE qt5_install_plugins
+  execute_process(COMMAND "${qt_qmake_location}" -query QT_INSTALL_PLUGINS
+      OUTPUT_VARIABLE qt_install_plugins
       OUTPUT_STRIP_TRAILING_WHITESPACE
   )
   install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
-  install(FILES "${qt5_install_plugins}/platforms/qoffscreen.dll"
+  install(FILES "${qt_install_plugins}/platforms/qoffscreen.dll"
           DESTINATION "bin/platforms/")
 
   get_filename_component(MinGW_bin_path ${CMAKE_CXX_COMPILER} PATH)
@@ -153,7 +155,7 @@ if (WIN32)
   install(CODE "
     include(BundleUtilities)
     execute_process(COMMAND
-        \"${qt5_install_prefix}/bin/windeployqt.exe\"
+        \"${qt_install_prefix}/bin/windeployqt.exe\"
         \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
     )
     fixup_bundle(
