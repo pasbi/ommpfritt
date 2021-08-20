@@ -1,7 +1,7 @@
 name: Build on Windows 2019
 on: [push]
 jobs:
-  Build-Ommpfritt-Win2019:
+  build:
     runs-on: windows-2019
     defaults:
       run:
@@ -38,27 +38,22 @@ jobs:
             mingw-w64-x86_64-qt5
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-zlib
-      - run: ls /mingw64/bin/libssl-1_1-x64.dll /mingw64/bin/libcrypto-1_1-x64.dll
-      - run: git clone https://gitlab.com/inkscape/lib2geom.git
-      - run: cd lib2geom; git checkout 37876ed4; cd ..
-      - run: cmake -S lib2geom
-                   -B build-lib2geom
-                   -G"MSYS Makefiles"
-                   -D2GEOM_TESTING=OFF
-                   -DCMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
-      - run: cmake --build build-lib2geom
-                   --target install
-                   --config Release
-                   -j4
       - uses: actions/checkout@v2
+      - run: ls /mingw64/bin/libssl-1_1-x64.dll /mingw64/bin/libcrypto-1_1-x64.dll
+      - uses: ./.github/actions/install-from-git
+        with:
+          url: https://gitlab.com/inkscape/lib2geom.git
+          checkout: 37876ed4
+          configure_flags:
+            -G"MSYS Makefiles"
+            -D2GEOM_TESTING=OFF
       - run: cmake -P cmake/patch_getprerequisites_module.cmake
       - run: cmake -S .
                    -B build
                    -G"MSYS Makefiles"
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/lib2geom-install
-                   -DCMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/omm-install
-                   -DBUILD_TESTING=OFF
+                   -DCMAKE_PREFIX_PATH=dependencies
+                   -DCMAKE_INSTALL_PREFIX=omm-install
                    -DPython3_ROOT_DIR=/mingw64/bin
       - run: cmake --build build
                    --target all
@@ -71,6 +66,22 @@ jobs:
       - run: python build/generate-icons.py
       - run: cmake -S .
                    -B build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: |
+            build
+            dependencies
+  package:
+    needs: build
+    runs-on: windows-2019
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
       - run: cmake --build build
                    --target package
                    --config Release
@@ -79,10 +90,10 @@ jobs:
         with:
           name: ommpfritt-installer-win2019
           path: build/ommpfritt-*.exe
-  Make-Release:
+  release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
-    needs: Build-Ommpfritt-Win2019
+    needs: package
     steps:
       - uses: actions/download-artifact@v2
         with:
