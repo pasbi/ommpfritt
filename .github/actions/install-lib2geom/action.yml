@@ -1,0 +1,23 @@
+name: 'install lib2geom'
+description: 'Install lib2geom'
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: uname -a | grep -i MinGW && sudo='' || sudo='sudo'
+    - shell: bash
+      run: git clone https://gitlab.com/inkscape/lib2geom.git
+    - shell: bash
+      run: cd lib2geom; git checkout 37876ed4; cd ..
+    - shell: bash
+      run: cmake -S lib2geom
+                 -B build-lib2geom
+                 -GNinja
+                 -D2GEOM_TESTING=OFF
+                 -DCMAKE_BUILD_TYPE=Release
+                 -DCMAKE_INSTALL_PREFIX=dependencies
+    - shell: bash
+      run: $sudo cmake --build build-lib2geom
+                       --target install
+                       --config Release
+                       -j4

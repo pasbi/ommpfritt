@@ -16,28 +16,17 @@ jobs:
       - uses: actions/checkout@v2
       - run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test
       - run: sudo add-apt-repository ppa:beineri/opt-qt-5.15.2-bionic
-      - run: sudo apt-get update && sudo apt-get install -y
-             build-essential
+      - uses: ./.github/actions/install-common-packages
+        with:
+          additional_packages:
              g++-9
              gcc-9
-             libboost-all-dev
-             libcairo2-dev
-             libdouble-conversion-dev
-             libffi-dev
-             libgl-dev
-             libgsl-dev
              libopenjp2-7-dev
-             libssl-dev
-             imagemagick
-             ninja-build
-             python3-dev
-             python3-numpy
              qt515base
              qt515svg
              qt515tools
              qt515translations
              qt515x11extras
-             zlib1g-dev
 
       - run: sudo update-alternatives
             --install /usr/bin/gcc gcc /usr/bin/gcc-9 60
@@ -64,18 +53,7 @@ jobs:
                         --config Release
                         -j4
 
-      # Build lib2geom
-      - run: git clone https://gitlab.com/inkscape/lib2geom.git
-      - run: cd lib2geom; git checkout 37876ed4; cd ..
-      - run: cmake -S lib2geom
-                   -B build-lib2geom
-                   -GNinja
-                   -D2GEOM_TESTING=OFF
-                   -DCMAKE_BUILD_TYPE=Release
-      - run: sudo cmake --build build-lib2geom
-                        --target install
-                        --config Release
-                        -j4
+      - uses: ./.github/actions/install-lib2geom
 
       # build poppler
       - run: git clone https://gitlab.freedesktop.org/poppler/poppler
@@ -103,11 +81,11 @@ jobs:
       - run: sudo updatedb
 
       # Build omm
-      - run: cmake -S ${{ github.workspace }}
+      - run: cmake -S .
                    -B build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
+                   -DCMAKE_PREFIX_PATH="${QT_PREFIX};dependencies"
                    -DBUILD_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=install
       - run: cmake --build build
@@ -115,7 +93,7 @@ jobs:
                    --config Release
                    -j4
       - run: build/generate-icons.py
-      - run: cmake -S ${{ github.workspace }}
+      - run: cmake -S .
                    -B build
       - run: cmake --build build --target install --config Release -j4
       - run: cmake --build build
