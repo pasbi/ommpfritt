@@ -108,4 +108,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build
+      - run: ls /home/runner/work/ommpfritt/ommpfritt/build/
+      - run: ls /home/runner/work/ommpfritt/ommpfritt/build/test/unit/
+      - run: ls /home/runner/work/ommpfritt/ommpfritt/build/test/unit/color
       - run: ctest --test-dir build --output-on-failure
