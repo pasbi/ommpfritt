@@ -17,6 +17,10 @@ runs:
     - shell: bash
       run: uname -a | grep -i MinGW && sudo='' || sudo='sudo'
     - shell: bash
+      run: a="a"; export b="b"
+    - shell: bash
+      run: echo "a=$a b=$b"
+    - shell: bash
       run: git clone ${{inputs.url}}
     - shell: bash
       run: cd lib2geom; git checkout ${{inputs.checkout}}; cd ..
