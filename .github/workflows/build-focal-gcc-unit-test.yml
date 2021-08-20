@@ -17,7 +17,11 @@ jobs:
             qtchooser
             qttools5-dev-tools
             qttools5-dev
-      - uses: ./.github/actions/install-lib2geom
+      - uses: ./.github/actions/install-from-git
+        with:
+          url: https://gitlab.com/inkscape/lib2geom.git
+          checkout: 37876ed4
+          configure_flags: -D2GEOM_TESTING=OFF
       - run: cmake -S .
                    -B build
                    -GNinja

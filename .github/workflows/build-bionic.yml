@@ -32,35 +32,25 @@ jobs:
             --install /usr/bin/gcc gcc /usr/bin/gcc-9 60
             --slave /usr/bin/g++ g++ /usr/bin/g++-9
 
-      # Build extra cmake modules
-      - run: git clone https://github.com/KDE/extra-cmake-modules
-      - run: cmake -S extra-cmake-modules/
-                   -B build-extra-cmake-modules
-      - run: sudo cmake --build build-extra-cmake-modules
-                        --target install
-                        -j4
-
-      # Build kitemmodels
-      - run: git clone https://invent.kde.org/frameworks/kitemmodels.git
-      - run: cd kitemmodels; git checkout v5.84.0; cd ..
-      - run: cmake -S kitemmodels
-                   -B build-kitemmodels
-                   -GNinja
-                   -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH=${QT_PREFIX}
-      - run: sudo cmake --build build-kitemmodels
-                        --target install
-                        --config Release
-                        -j4
-
-      - uses: ./.github/actions/install-lib2geom
-
-      # build poppler
-      - run: git clone https://gitlab.freedesktop.org/poppler/poppler
-      - run: cd poppler; git checkout poppler-21.07.0; cd ..
-      - run: cmake -S poppler/
-                   -B build-poppler
-                   -GNinja
+      - uses: ./.github/actions/install-from-git
+        with:
+          url: https://gitlab.com/inkscape/lib2geom.git
+          checkout: 37876ed4
+          configure_flags: -D2GEOM_TESTING=OFF
+      - uses: ./.github/actions/install-from-git
+        with:
+          url: https://invent.kde.org/frameworks/kitemmodels.git
+          checkout: v5.84.0
+          configure_flags: -D2GEOM_TESTING=OFF -DCMAKE_PREFIX_PATH=${QT_PREFIX}
+      - uses: ./.github/actions/install-from-git
+        with:
+          url: https://github.com/KDE/extra-cmake-modules
+          checkout: HEAD
+      - uses: ./.github/actions/install-from-git
+        with:
+          url: https://gitlab.freedesktop.org/poppler/poppler
+          checkout: poppler-21.07.0
+          configure_flags:
                    -DCMAKE_PREFIX_PATH=${QT_PREFIX}
                    -DCMAKE_BUILD_TYPE=Release
                    -DBUILD_CPP_TESTS=OFF
@@ -74,10 +64,6 @@ jobs:
                    -DENABLE_LIBCURL=OFF
                    -DENABLE_UNSTABLE_API_ABI_HEADERS=OFF
                    -DENABLE_UTILS=OFF
-      - run: sudo cmake --build build-poppler
-                        --target install
-                        --config Release
-                        -j4
       - run: sudo updatedb
 
       # Build omm

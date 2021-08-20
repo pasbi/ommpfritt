@@ -1,0 +1,35 @@
+name: 'install from git'
+description: 'Install from git'
+inputs:
+  url:
+    description: The url to the repository
+    required: true
+  checkout:
+    description: The checkout to build
+    required: true
+  configure_flags:
+    description: Additional flags passed to the configure command
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: uname -a | grep -i MinGW && sudo='' || sudo='sudo'
+    - shell: bash
+      run: git clone ${{inputs.url}}
+    - shell: bash
+      run: cd lib2geom; git checkout ${{inputs.checkout}}; cd ..
+    - shell: bash
+      run: build_dir=$(mktemp)
+    - shell: bash
+      run: cmake -S lib2geom
+                 -B $build_dir
+                 -DCMAKE_BUILD_TYPE=Release
+                 -DCMAKE_INSTALL_PREFIX=dependencies
+                 ${{inputs.configure_flags}}
+    - shell: bash
+      run: $sudo cmake --build $build_dir
+                       --target install
+                       --config Release
+                       -j4
