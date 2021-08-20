@@ -17,8 +17,9 @@ jobs:
             qtchooser
             qttools5-dev-tools
             qttools5-dev
-      - uses: ./.github/actions/install-from-git
+      - uses: ./.github/actions/install-from-git-bash
         with:
+          name: lib2geom
           url: https://gitlab.com/inkscape/lib2geom.git
           checkout: 37876ed4
           configure_flags: -D2GEOM_TESTING=OFF
@@ -54,18 +55,18 @@ jobs:
             qtchooser
             qttools5-dev-tools
             qttools5-dev
-      - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
           name: configure
       - run: cmake --build build
                    --config Release
                    -j4
+      - run: tar -cvf build.tar build
       - uses: actions/upload-artifact@v2
         with:
           name: build
           path: |
-            build
+            build.tar
             dependencies
   clazy:
     runs-on: ubuntu-20.04
@@ -105,10 +106,21 @@ jobs:
     runs-on: ubuntu-20.04
     needs: build
     steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install-common-packages
+        with:
+          additional_packages:
+            clang
+            libkf5itemmodels-dev
+            libpoppler-qt5-dev
+            libqt5svg5-dev
+            qt5-default
+            qtbase5-dev
+            qtchooser
+            qttools5-dev-tools
+            qttools5-dev
       - uses: actions/download-artifact@v2
         with:
           name: build
-      - run: ls /home/runner/work/ommpfritt/ommpfritt/build/
-      - run: ls /home/runner/work/ommpfritt/ommpfritt/build/test/unit/
-      - run: ls /home/runner/work/ommpfritt/ommpfritt/build/test/unit/color
+      - run: ls; tar -xf build.tar; ls;
       - run: ctest --test-dir build --output-on-failure

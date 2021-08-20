@@ -27,29 +27,34 @@ jobs:
              qt515tools
              qt515translations
              qt515x11extras
-
       - run: sudo update-alternatives
             --install /usr/bin/gcc gcc /usr/bin/gcc-9 60
             --slave /usr/bin/g++ g++ /usr/bin/g++-9
-
-      - uses: ./.github/actions/install-from-git
+      - uses: ./.github/actions/install-from-git-bash
         with:
+          name: lib2geom
           url: https://gitlab.com/inkscape/lib2geom.git
           checkout: 37876ed4
           configure_flags: -D2GEOM_TESTING=OFF
-      - uses: ./.github/actions/install-from-git
+      - uses: ./.github/actions/install-from-git-bash
         with:
-          url: https://invent.kde.org/frameworks/kitemmodels.git
-          checkout: v5.84.0
-          configure_flags: -D2GEOM_TESTING=OFF -DCMAKE_PREFIX_PATH=${QT_PREFIX}
-      - uses: ./.github/actions/install-from-git
-        with:
+          name: extra-cmake-modules
           url: https://github.com/KDE/extra-cmake-modules
           checkout: HEAD
-      - uses: ./.github/actions/install-from-git
+          install_prefix: /usr/local
+      - uses: ./.github/actions/install-from-git-bash
         with:
+          name: kitemmodels
+          url: https://invent.kde.org/frameworks/kitemmodels.git
+          checkout: v5.84.0
+          configure_flags: -D2GEOM_TESTING=OFF -DCMAKE_PREFIX_PATH="${QT_PREFIX};dependencies"
+          install_prefix: /usr/local/
+      - uses: ./.github/actions/install-from-git-bash
+        with:
+          name: poppler
           url: https://gitlab.freedesktop.org/poppler/poppler
           checkout: poppler-21.07.0
+          install_prefix: /usr/local
           configure_flags:
                    -DCMAKE_PREFIX_PATH=${QT_PREFIX}
                    -DCMAKE_BUILD_TYPE=Release

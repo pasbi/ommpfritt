@@ -1,0 +1,36 @@
+name: 'install from git'
+description: 'Install from git'
+inputs:
+  url:
+    description: The url to the repository
+    required: true
+  name:
+    description: The name of the dependency. This name will be used in the build and source path.
+    required: true
+  checkout:
+    description: The checkout to build
+    required: true
+  configure_flags:
+    description: Additional flags passed to the configure command
+    required: false
+    default: ''
+  install_prefix:
+    description: Install prefix
+    required: false
+    default: dependencies
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        git clone "${{inputs.url}}" "${{inputs.name}}"
+        pushd "${{inputs.name}}"; git checkout "${{inputs.checkout}}"; popd
+        cmake -S "${{inputs.name}}" \
+              -B "${{inputs.name}}-build" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_INSTALL_PREFIX="${{inputs.install_prefix}}" \
+              ${{inputs.configure_flags}}
+        sudo cmake --build "${{inputs.name}}-build" \
+                   --target install \
+                   --config Release \
+                   -j4
