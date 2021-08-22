@@ -7,12 +7,14 @@ jobs:
       image: pasbi/ommpfritt-focal
     steps:
       - uses: actions/checkout@v2
-      - run: cmake -S .
-                   -B build
+        with:
+          path: omm
+      - run: cmake -S omm
+                   -B omm-build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
                    -DBUILD_TESTING=ON
-      - run: cmake --build build
+      - run: cmake --build omm-build
                    --config Release
                    -j4
-      - run: ctest --test-dir build --output-on-failure
+      - run: ctest --test-dir omm-build --output-on-failure

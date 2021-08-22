@@ -7,8 +7,10 @@ jobs:
       image: pasbi/ommpfritt-focal
     steps:
       - uses: actions/checkout@v2
-      - run: cmake -S .
-                   -B build
+        with:
+          path: omm
+      - run: cmake -S omm
+                   -B omm-build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
                    -DBUILD_TESTING=ON
@@ -18,7 +20,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: configure
-          path: build
+          path: omm-build
   build:
     needs: configure
     runs-on: ubuntu-latest
@@ -26,21 +28,18 @@ jobs:
       image: pasbi/ommpfritt-focal
     steps:
       - uses: actions/checkout@v2
-      - run: ls
+        with:
+          path: omm
       - uses: actions/download-artifact@v2
         with:
           name: configure
-          path: build
-      - run: ls
-      - run: ls build
-      - run: cmake --build build
-                   --config Release
-                   -j4
-      - run: tar -cvf build.tar build
+          path: omm-build
+      - run: cmake --build omm-build --config Release -j4
+      - run: tar -cvf omm-build.tar omm-build
       - uses: actions/upload-artifact@v2
         with:
           name: build
-          path: build.tar
+          path: omm-build.tar
   clazy:
     runs-on: ubuntu-latest
     container:
@@ -48,16 +47,18 @@ jobs:
     needs: configure
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: omm
       - uses: actions/download-artifact@v2
         with:
           name: configure
-          path: build
+          path: omm-build
       - run: |
-          files="$(build-scripts/files.py --mode changed)"
+          files="$(omm/build-scripts/files.py --mode changed)"
           if [ -z "$files" ]; then
             echo "Skip clazy: No relevant files have changed."
           else
-            clazy --standalone -p build --ignore-included-files $files
+            clazy --standalone -p omm-build --ignore-included-files $files
           fi
   clang-tidy:
     runs-on: ubuntu-latest
@@ -66,16 +67,18 @@ jobs:
     needs: configure
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: omm
       - uses: actions/download-artifact@v2
         with:
           name: configure
-          path: build
+          path: omm-build
       - run: |
-          files="$(build-scripts/files.py --mode changed)"
+          files="$(omm/build-scripts/files.py --mode changed)"
           if [ -z "$files" ]; then
             echo "Skip clang-tidy: No relevant files have changed."
           else
-            clang-tidy -p build $(build-scripts/files.py --mode changed) $files
+            clang-tidy -p omm-build $(omm/build-scripts/files.py --mode changed) $files
           fi
   unit-tests:
     runs-on: ubuntu-latest
@@ -83,9 +86,8 @@ jobs:
       image: pasbi/ommpfritt-focal
     needs: build
     steps:
-      - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
           name: build
-      - run: tar -xf build.tar
-      - run: ctest --test-dir build --output-on-failure
+      - run: tar -xf omm-build.tar
+      - run: ctest --test-dir omm-build --output-on-failure

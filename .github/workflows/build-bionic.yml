@@ -7,22 +7,24 @@ jobs:
       image: pasbi/ommpfritt-bionic
     steps:
       - uses: actions/checkout@v2
-      - run: cmake -S .
-                   -B build
+        with:
+          path: omm
+      - run: cmake -S omm
+                   -B omm-build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
                    -DBUILD_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=install
-      - run: cmake --build build --target install --config Release -j4
-      - run: build/generate-icons.py
-      - run: cmake -S . -B build
-      - run: cmake --build build --target install --config Release -j4
-      - run: cmake --build build --target appimage --config Release
+      - run: cmake --build omm-build --target install --config Release -j4
+      - run: omm-build/generate-icons.py
+      - run: cmake -S omm -B omm-build
+      - run: cmake --build omm-build --target install --config Release -j4
+      - run: cmake --build omm-build --target appimage --config Release
       - uses: actions/upload-artifact@v2
         with:
           name: Ommpfritt-AppImage
-          path: build/ommpfritt*.AppImage
+          path: omm-build/ommpfritt*.AppImage
   Make-Release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
