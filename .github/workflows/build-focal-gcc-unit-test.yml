@@ -2,32 +2,15 @@ name: focal, gcc, unit tests
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/install-common-packages
-        with:
-          additional_packages:
-            gcc
-            libkf5itemmodels-dev
-            libpoppler-qt5-dev
-            libqt5svg5-dev
-            qt5-default
-            qtbase5-dev
-            qtchooser
-            qttools5-dev-tools
-            qttools5-dev
-      - uses: ./.github/actions/install-from-git-bash
-        with:
-          name: lib2geom
-          url: https://gitlab.com/inkscape/lib2geom.git
-          checkout: 37876ed4
-          configure_flags: -D2GEOM_TESTING=OFF
       - run: cmake -S .
                    -B build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH=dependencies
                    -DBUILD_TESTING=ON
       - run: cmake --build build
                    --config Release

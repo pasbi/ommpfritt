@@ -1,95 +1,24 @@
-#  There is already a `cmake` (3.20) installed miraculously
-#  and `dpkg -S cmake` does not find a corresponding package.
-#  We must not install the `libkf5itemmodels-dev` package because
-#  it depends on the bionic Qt5-packages (5.9) which will hide
-#  the beineri-Qt5-packages (5.15).
-
 name: Create AppImage on Bionic
 on: [push]
 jobs:
   Create-AppImage-Bionic:
-    runs-on: ubuntu-18.04
-    env:
-      QT_PREFIX: "/opt/qt515"
-      LD_LIBRARY_PATH: "/usr/local/lib/:/usr/local/lib/x86_64-linux-gnu/:/opt/qt515/lib/"
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-bionic
     steps:
       - uses: actions/checkout@v2
-      - run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-      - run: sudo add-apt-repository ppa:beineri/opt-qt-5.15.2-bionic
-      - uses: ./.github/actions/install-common-packages
-        with:
-          additional_packages:
-             g++-9
-             gcc-9
-             libopenjp2-7-dev
-             qt515base
-             qt515svg
-             qt515tools
-             qt515translations
-             qt515x11extras
-      - run: sudo update-alternatives
-            --install /usr/bin/gcc gcc /usr/bin/gcc-9 60
-            --slave /usr/bin/g++ g++ /usr/bin/g++-9
-      - uses: ./.github/actions/install-from-git-bash
-        with:
-          name: lib2geom
-          url: https://gitlab.com/inkscape/lib2geom.git
-          checkout: 37876ed4
-          configure_flags: -D2GEOM_TESTING=OFF
-      - uses: ./.github/actions/install-from-git-bash
-        with:
-          name: extra-cmake-modules
-          url: https://github.com/KDE/extra-cmake-modules
-          checkout: HEAD
-          install_prefix: /usr/local
-      - uses: ./.github/actions/install-from-git-bash
-        with:
-          name: kitemmodels
-          url: https://invent.kde.org/frameworks/kitemmodels.git
-          checkout: v5.84.0
-          configure_flags: -D2GEOM_TESTING=OFF -DCMAKE_PREFIX_PATH="${QT_PREFIX};dependencies"
-          install_prefix: /usr/local/
-      - uses: ./.github/actions/install-from-git-bash
-        with:
-          name: poppler
-          url: https://gitlab.freedesktop.org/poppler/poppler
-          checkout: poppler-21.07.0
-          install_prefix: /usr/local
-          configure_flags:
-                   -DCMAKE_PREFIX_PATH=${QT_PREFIX}
-                   -DCMAKE_BUILD_TYPE=Release
-                   -DBUILD_CPP_TESTS=OFF
-                   -DBUILD_GTK_TESTS=OFF
-                   -DBUILD_QT5_TESTS=OFF
-                   -DBUILD_QT6_TESTS=OFF
-                   -DBUILD_MANUAL_TESTS=OFF
-                   -DENABLE_BOOST=OFF
-                   -DENABLE_CPP=OFF
-                   -DENABLE_GLIB=OFF
-                   -DENABLE_LIBCURL=OFF
-                   -DENABLE_UNSTABLE_API_ABI_HEADERS=OFF
-                   -DENABLE_UTILS=OFF
-      - run: sudo updatedb
-
-      # Build omm
       - run: cmake -S .
                    -B build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH="${QT_PREFIX};dependencies"
+                   -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
                    -DBUILD_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=install
-      - run: cmake --build build
-                   --target install
-                   --config Release
-                   -j4
-      - run: build/generate-icons.py
-      - run: cmake -S .
-                   -B build
       - run: cmake --build build --target install --config Release -j4
-      - run: cmake --build build
-                   --target appimage
-                   --config Release
+      - run: build/generate-icons.py
+      - run: cmake -S . -B build
+      - run: cmake --build build --target install --config Release -j4
+      - run: cmake --build build --target appimage --config Release
       - uses: actions/upload-artifact@v2
         with:
           name: Ommpfritt-AppImage

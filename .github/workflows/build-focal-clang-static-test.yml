@@ -2,32 +2,15 @@ name: focal, clang, static tests, unit tests
 on: [push]
 jobs:
   configure:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/install-common-packages
-        with:
-          additional_packages:
-            clang
-            libkf5itemmodels-dev
-            libpoppler-qt5-dev
-            libqt5svg5-dev
-            qt5-default
-            qtbase5-dev
-            qtchooser
-            qttools5-dev-tools
-            qttools5-dev
-      - uses: ./.github/actions/install-from-git-bash
-        with:
-          name: lib2geom
-          url: https://gitlab.com/inkscape/lib2geom.git
-          checkout: 37876ed4
-          configure_flags: -D2GEOM_TESTING=OFF
       - run: cmake -S .
                    -B build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH=dependencies
                    -DBUILD_TESTING=ON
                    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
                    -DCMAKE_CXX_COMPILER=clang++
@@ -35,29 +18,21 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: configure
-          path: |
-            build
-            dependencies
+          path: build
   build:
     needs: configure
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/install-common-packages
-        with:
-          additional_packages:
-            clang
-            libkf5itemmodels-dev
-            libpoppler-qt5-dev
-            libqt5svg5-dev
-            qt5-default
-            qtbase5-dev
-            qtchooser
-            qttools5-dev-tools
-            qttools5-dev
+      - run: ls
       - uses: actions/download-artifact@v2
         with:
           name: configure
+          path: build
+      - run: ls
+      - run: ls build
       - run: cmake --build build
                    --config Release
                    -j4
@@ -65,20 +40,18 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: build
-          path: |
-            build.tar
-            dependencies
+          path: build.tar
   clazy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
     needs: configure
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/install-common-packages
-        with:
-          additional_packages: clazy
       - uses: actions/download-artifact@v2
         with:
           name: configure
+          path: build
       - run: |
           files="$(build-scripts/files.py --mode changed)"
           if [ -z "$files" ]; then
@@ -87,14 +60,16 @@ jobs:
             clazy --standalone -p build --ignore-included-files $files
           fi
   clang-tidy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
     needs: configure
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/install-common-packages
       - uses: actions/download-artifact@v2
         with:
           name: configure
+          path: build
       - run: |
           files="$(build-scripts/files.py --mode changed)"
           if [ -z "$files" ]; then
@@ -103,24 +78,14 @@ jobs:
             clang-tidy -p build $(build-scripts/files.py --mode changed) $files
           fi
   unit-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
     needs: build
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/install-common-packages
-        with:
-          additional_packages:
-            clang
-            libkf5itemmodels-dev
-            libpoppler-qt5-dev
-            libqt5svg5-dev
-            qt5-default
-            qtbase5-dev
-            qtchooser
-            qttools5-dev-tools
-            qttools5-dev
       - uses: actions/download-artifact@v2
         with:
           name: build
-      - run: ls; tar -xf build.tar; ls;
+      - run: tar -xf build.tar
       - run: ctest --test-dir build --output-on-failure
