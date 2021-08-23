@@ -39,3 +39,43 @@ jobs:
           artifacts: "ommpfritt-*.AppImage"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
+  Verify-Focal:
+    runs-on: ubuntu-18.04
+    needs: Create-AppImage-Bionic
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: Ommpfritt-AppImage
+      - run: chmod +x ommpfritt-*.AppImage
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version | grep ommpfritt
+  Verify-Bionic:
+    runs-on: ubuntu-20.04
+    needs: Create-AppImage-Bionic
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: Ommpfritt-AppImage
+      - run: chmod +x ommpfritt-*.AppImage
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version | grep ommpfritt
+  Verify-Focal-expect-fail:
+    runs-on: ubuntu-18.04
+    needs: Create-AppImage-Bionic
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: Ommpfritt-AppImage
+      - run: chmod +x ommpfritt-*.AppImage
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version | grep xommpfritt
+  Verify-Bionic-expect-fail:
+    runs-on: ubuntu-20.04
+    needs: Create-AppImage-Bionic
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: Ommpfritt-AppImage
+      - run: chmod +x ommpfritt-*.AppImage
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version | grep xommpfritt
