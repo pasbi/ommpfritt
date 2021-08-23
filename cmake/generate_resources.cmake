@@ -1,4 +1,4 @@
-function(generate_resources target)
+function(generate_resources)
   set(cfg_files
     ${CMAKE_SOURCE_DIR}/uicolors/ui-colors-light.cfg
     ${CMAKE_SOURCE_DIR}/uicolors/ui-colors-dark.cfg
@@ -22,7 +22,7 @@ function(generate_resources target)
     list(APPEND qrc_files ${icons_qrc_file})
     if (WIN32)
       configure_file(${CMAKE_SOURCE_DIR}/icons/resource.rc.in ${CMAKE_BINARY_DIR}/resource.rc COPYONLY)
-      target_sources(${target} PRIVATE "${CMAKE_BINARY_DIR}/resource.rc")
+      target_sources(ommpfritt PRIVATE "${CMAKE_BINARY_DIR}/resource.rc")
     endif()
   else()
     message(NOTICE "Did not find icons at ${icons_qrc_file}.")
@@ -39,6 +39,9 @@ function(generate_resources target)
     DEPENDS ${qrc_files} ${rcc_dependencies}
     COMMENT "Compile ${compiled_resource_file} from ${qrc_files}"
   )
-  target_sources(${target} PRIVATE "${compiled_resource_file}")
+  target_sources(ommpfritt PRIVATE "${compiled_resource_file}")
+  if (TARGET ommpfritt-cli)
+    target_sources(ommpfritt-cli PRIVATE "${compiled_resource_file}")
+  endif()
   set(compiled_resource_file "${compiled_resource_file}" PARENT_SCOPE)
 endfunction()
