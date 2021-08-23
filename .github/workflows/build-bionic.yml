@@ -5,6 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: pasbi/ommpfritt-bionic
+      options: --cap-add SYS_ADMIN --device /dev/fuse --privileged
     steps:
       - uses: actions/checkout@v2
         with:
