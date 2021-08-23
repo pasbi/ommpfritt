@@ -8,6 +8,8 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/prepare-msys
       - run: ls /mingw64/bin/libssl-1_1-x64.dll /mingw64/bin/libcrypto-1_1-x64.dll
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
@@ -45,6 +47,8 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/prepare-msys
       - uses: actions/download-artifact@v2
         with:
