@@ -9,8 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          path: omm
           fetch-depth: 0
-      - uses: ./.github/actions/prepare-msys
+      - uses: ./omm/.github/actions/prepare-msys
       - run: ls /mingw64/bin/libssl-1_1-x64.dll /mingw64/bin/libcrypto-1_1-x64.dll
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
       - run: cd lib2geom; git checkout 37876ed4; cd ..
@@ -21,8 +22,8 @@ jobs:
                    -G"MSYS Makefiles"
                    -D2GEOM_TESTING=OFF
       - run: cmake --build lib2geom-build --target install --config Release -j4
-      - run: cmake -P cmake/patch_getprerequisites_module.cmake
-      - run: cmake -S .
+      - run: cmake -P omm/cmake/patch_getprerequisites_module.cmake
+      - run: cmake -S omm
                    -B build
                    -G"MSYS Makefiles"
                    -DCMAKE_BUILD_TYPE=Release
@@ -32,7 +33,7 @@ jobs:
       - run: cmake --build build --target all --config Release -j4
       - run: cmake --build build --target install --config Release -j4
       - run: python build/generate-icons.py
-      - run: cmake -S .  -B build
+      - run: cmake -S omm  -B build
       - uses: actions/upload-artifact@v2
         with:
           name: build
