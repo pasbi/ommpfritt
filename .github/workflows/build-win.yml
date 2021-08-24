@@ -97,16 +97,3 @@ jobs:
       - run: ./ommpfritt-*-win64.exe /S /D=$(pwd)\install | Out-Null
       - name: Test if application runs
         run: if (-Not (&"$(pwd)\install\bin\ommpfritt-cli.exe" --version | Select-String ommpfritt)) { exit 1 }
-  verify-package-expect-fail:
-    needs: package
-    runs-on: windows-2019
-    defaults:
-      run:
-        shell: pwsh
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: ommpfritt-installer-win2019
-      - run: ./ommpfritt-*-win64.exe /S /D=$(pwd)\install | Out-Null
-      - name: Test if application runs
-        run: if (-Not (&"$(pwd)\install\bin\ommpfritt-cli.exe" --version | Select-String xommpfritt)) { exit 1 }
