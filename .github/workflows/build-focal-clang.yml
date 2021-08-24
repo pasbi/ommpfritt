@@ -1,4 +1,4 @@
-name: focal, clang, static tests, unit tests
+name: build-focal-clang
 on: [push]
 jobs:
   configure:

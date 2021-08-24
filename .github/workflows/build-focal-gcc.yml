@@ -1,4 +1,4 @@
-name: focal, gcc, unit tests
+name: build-focal-gcc
 on: [push]
 jobs:
   build:
