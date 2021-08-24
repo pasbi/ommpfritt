@@ -12,33 +12,32 @@ jobs:
           path: omm
           fetch-depth: 0
       - uses: ./omm/.github/actions/prepare-msys
-      - run: ls /mingw64/bin/libssl-1_1-x64.dll /mingw64/bin/libcrypto-1_1-x64.dll
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
       - run: cd lib2geom; git checkout 37876ed4; cd ..
       - run: cmake -S lib2geom
                    -B lib2geom-build
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_INSTALL_PREFIX=dependencies
+                   -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/dependencies
                    -G"MSYS Makefiles"
                    -D2GEOM_TESTING=OFF
       - run: cmake --build lib2geom-build --target install --config Release -j4
       - run: cmake -P omm/cmake/patch_getprerequisites_module.cmake
       - run: cmake -S omm
-                   -B build
+                   -B $GITHUB_WORKSPACE/omm-build
                    -G"MSYS Makefiles"
                    -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH=dependencies
-                   -DCMAKE_INSTALL_PREFIX=omm-install
+                   -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dependencies
+                   -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/omm-install
                    -DPython3_ROOT_DIR=/mingw64/bin
-      - run: cmake --build build --target all --config Release -j4
-      - run: cmake --build build --target install --config Release -j4
-      - run: python build/generate-icons.py
-      - run: cmake -S omm  -B build
+      - run: cmake --build $GITHUB_WORKSPACE/omm-build --target all --config Release -j4
+      - run: cmake --build $GITHUB_WORKSPACE/omm-build --target install --config Release -j4
+      - run: python $GITHUB_WORKSPACE/omm-build/generate-icons.py
+      - run: cmake -S omm  -B $GITHUB_WORKSPACE/omm-build
       - uses: actions/upload-artifact@v2
         with:
           name: build
           path: |
-            build
+            omm-build
             dependencies
   package:
     needs: build
@@ -49,16 +48,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          path: omm
           fetch-depth: 0
-      - uses: ./.github/actions/prepare-msys
+      - uses: ./omm/.github/actions/prepare-msys
       - uses: actions/download-artifact@v2
         with:
           name: build
-      - run: cmake --build build --target package --config Release -j4
+      - run: cmake --build $GITHUB_WORKSPACE/omm-build --target package --config Release -j4
       - uses: actions/upload-artifact@v2
         with:
           name: ommpfritt-installer-win2019
-          path: build/ommpfritt-*-win64.exe
+          path: omm-build/ommpfritt-*-win64.exe
   unit-test:
     needs: build
     runs-on: windows-2019
@@ -67,11 +67,13 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/prepare-msys
+        with:
+          path: omm
+      - uses: ./omm/.github/actions/prepare-msys
       - uses: actions/download-artifact@v2
         with:
           name: build
-      - run: ctest --test-dir build --output-on-failure
+      - run: ctest --test-dir $GITHUB_WORKSPACE/omm-build --output-on-failure
   release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
