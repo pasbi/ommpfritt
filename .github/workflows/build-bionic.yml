@@ -1,130 +1,32 @@
-#  There is already a `cmake` (3.20) installed miraculously
-#  and `dpkg -S cmake` does not find a corresponding package.
-#  We must not install the `libkf5itemmodels-dev` package because
-#  it depends on the bionic Qt5-packages (5.9) which will hide
-#  the beineri-Qt5-packages (5.15).
-
 name: Create AppImage on Bionic
 on: [push]
 jobs:
   Create-AppImage-Bionic:
-    runs-on: ubuntu-18.04
-    env:
-      QT_PREFIX: "/opt/qt515"
-      LD_LIBRARY_PATH: "/usr/local/lib/:/usr/local/lib/x86_64-linux-gnu/:/opt/qt515/lib/"
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-bionic
+      options: --cap-add SYS_ADMIN --device /dev/fuse --privileged
     steps:
       - uses: actions/checkout@v2
-      - run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-      - run: sudo add-apt-repository ppa:beineri/opt-qt-5.15.2-bionic
-      - run: sudo apt-get update && sudo apt-get install -y
-             build-essential
-             g++-9
-             gcc-9
-             libboost-all-dev
-             libcairo2-dev
-             libdouble-conversion-dev
-             libffi-dev
-             libgl-dev
-             libgsl-dev
-             libopenjp2-7-dev
-             libssl-dev
-             imagemagick
-             ninja-build
-             python3-dev
-             python3-numpy
-             qt515base
-             qt515svg
-             qt515tools
-             qt515translations
-             qt515x11extras
-             zlib1g-dev
-
-      - run: sudo update-alternatives
-            --install /usr/bin/gcc gcc /usr/bin/gcc-9 60
-            --slave /usr/bin/g++ g++ /usr/bin/g++-9
-
-      # Build extra cmake modules
-      - run: git clone https://github.com/KDE/extra-cmake-modules
-      - run: cmake -S extra-cmake-modules/
-                   -B build-extra-cmake-modules
-      - run: sudo cmake --build build-extra-cmake-modules
-                        --target install
-                        -j4
-
-      # Build kitemmodels
-      - run: git clone https://invent.kde.org/frameworks/kitemmodels.git
-      - run: cd kitemmodels; git checkout v5.84.0; cd ..
-      - run: cmake -S kitemmodels
-                   -B build-kitemmodels
-                   -GNinja
-                   -DCMAKE_BUILD_TYPE=Release
-                   -DCMAKE_PREFIX_PATH=${QT_PREFIX}
-      - run: sudo cmake --build build-kitemmodels
-                        --target install
-                        --config Release
-                        -j4
-
-      # Build lib2geom
-      - run: git clone https://gitlab.com/inkscape/lib2geom.git
-      - run: cd lib2geom; git checkout 37876ed4; cd ..
-      - run: cmake -S lib2geom
-                   -B build-lib2geom
-                   -GNinja
-                   -D2GEOM_TESTING=OFF
-                   -DCMAKE_BUILD_TYPE=Release
-      - run: sudo cmake --build build-lib2geom
-                        --target install
-                        --config Release
-                        -j4
-
-      # build poppler
-      - run: git clone https://gitlab.freedesktop.org/poppler/poppler
-      - run: cd poppler; git checkout poppler-21.07.0; cd ..
-      - run: cmake -S poppler/
-                   -B build-poppler
-                   -GNinja
-                   -DCMAKE_PREFIX_PATH=${QT_PREFIX}
-                   -DCMAKE_BUILD_TYPE=Release
-                   -DBUILD_CPP_TESTS=OFF
-                   -DBUILD_GTK_TESTS=OFF
-                   -DBUILD_QT5_TESTS=OFF
-                   -DBUILD_QT6_TESTS=OFF
-                   -DBUILD_MANUAL_TESTS=OFF
-                   -DENABLE_BOOST=OFF
-                   -DENABLE_CPP=OFF
-                   -DENABLE_GLIB=OFF
-                   -DENABLE_LIBCURL=OFF
-                   -DENABLE_UNSTABLE_API_ABI_HEADERS=OFF
-                   -DENABLE_UTILS=OFF
-      - run: sudo cmake --build build-poppler
-                        --target install
-                        --config Release
-                        -j4
-      - run: sudo updatedb
-
-      # Build omm
-      - run: cmake -S ${{ github.workspace }}
-                   -B build
+        with:
+          path: omm
+          fetch-depth: 0
+      - run: cmake -S omm
+                   -B omm-build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
                    -DBUILD_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=install
-      - run: cmake --build build
-                   --target install
-                   --config Release
-                   -j4
-      - run: build/generate-icons.py
-      - run: cmake -S ${{ github.workspace }}
-                   -B build
-      - run: cmake --build build --target install --config Release -j4
-      - run: cmake --build build
-                   --target appimage
-                   --config Release
+      - run: cmake --build omm-build --target install --config Release -j4
+      - run: omm-build/generate-icons.py
+      - run: cmake -S omm -B omm-build
+      - run: cmake --build omm-build --target install --config Release -j4
+      - run: cmake --build omm-build --target appimage --config Release
       - uses: actions/upload-artifact@v2
         with:
           name: Ommpfritt-AppImage
-          path: build/ommpfritt*.AppImage
+          path: omm-build/ommpfritt*.AppImage
   Make-Release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
@@ -138,3 +40,23 @@ jobs:
           artifacts: "ommpfritt-*.AppImage"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
+  Verify-Focal:
+    runs-on: ubuntu-18.04
+    needs: Create-AppImage-Bionic
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: Ommpfritt-AppImage
+      - run: chmod +x ommpfritt-*.AppImage
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version | grep ommpfritt
+  Verify-Bionic:
+    runs-on: ubuntu-20.04
+    needs: Create-AppImage-Bionic
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: Ommpfritt-AppImage
+      - run: chmod +x ommpfritt-*.AppImage
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version
+      - run: ./ommpfritt-*.AppImage -platform offscreen --version | grep ommpfritt

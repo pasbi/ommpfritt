@@ -1,6 +1,7 @@
 # ommpfritt
 
-[![Build-Focal](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal.yml)
+[![Build-Focal-GCC](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal-gcc.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal-gcc.yml)
+[![Build-Focal-Clang](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal-clang.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal-clang.yml)
 [![Build-Bionic](https://github.com/pasbi/ommpfritt/actions/workflows/build-bionic.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-bionic.yml)
 [![Build-win](https://github.com/pasbi/ommpfritt/actions/workflows/build-win.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-win.yml)
 [![Style Checker](https://github.com/pasbi/ommpfritt/actions/workflows/stylechecker.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/stylechecker.yml)

@@ -25,7 +25,7 @@ public:
   // we don't want to assign copy or move
   const Structure<T>& operator=(const Structure<T>&) = delete;
   const Structure<T>& operator=(Structure<T>&&) = delete;
-  Structure<T>(const Structure<T>&) = delete;
+  Structure(const Structure<T>&) = delete;
 };
 
 }  // namespace omm

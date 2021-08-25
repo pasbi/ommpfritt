@@ -1,0 +1,20 @@
+name: build-focal-gcc
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: omm
+      - run: cmake -S omm
+                   -B omm-build
+                   -GNinja
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DBUILD_TESTING=ON
+      - run: cmake --build omm-build
+                   --config Release
+                   -j4
+      - run: ctest --test-dir omm-build --output-on-failure

@@ -6,6 +6,7 @@
 #include "logging.h"
 #include "main/commandlineparser.h"
 #include "main/application.h"
+#include "config.h"
 
 const bool print_long_message = true;
 
@@ -28,6 +29,11 @@ int main(int argc, char* argv[])
 {
   using namespace omm;
   QApplication qt_app(argc, argv);
+
+  QApplication::setOrganizationName("ommpfritt developers");
+  QApplication::setApplicationName("ommpfritt");
+  QApplication::setApplicationVersion(git_describe().data());
+  QApplication::setApplicationDisplayName("ommpfritt");
 
   CommandLineParser args(QApplication::arguments());
 

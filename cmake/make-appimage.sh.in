@@ -37,6 +37,7 @@ find_executables() {
     $appdir/usr/share/applications/*.desktop \
     -appimage \
     -qmake=@qt5_qmake_location@ \
+    -extra-plugins=platforms/libqoffscreen.so \
     $(find_executables)
 
 rm -r "$appdir"

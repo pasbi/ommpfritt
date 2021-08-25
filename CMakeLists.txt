@@ -58,9 +58,6 @@ foreach(R tags managers nodes properties tools objects)
     target_sources(libommpfritt PRIVATE "${generated_cpp}")
 endforeach()
 
-include(generate_resources)
-generate_resources(ommpfritt)
-
 target_include_directories(libommpfritt PUBLIC
     "${CMAKE_SOURCE_DIR}/src"
     "${PROJECT_BINARY_DIR}"
@@ -92,6 +89,17 @@ endif()
 # the documentation says it's not required.
 # However, having it does not seem to change anything else, so there's no reason not to have it.
 install(TARGETS ommpfritt RUNTIME DESTINATION bin)
+
+if (WIN32)
+  add_executable(ommpfritt-cli)
+  target_compile_definitions(ommpfritt-cli PUBLIC QT_NO_KEYWORDS)
+  set_warning_level(ommpfritt-cli)
+  target_link_libraries(ommpfritt-cli libommpfritt)
+  install(TARGETS ommpfritt-cli RUNTIME DESTINATION bin)
+endif()
+
+include(generate_resources)
+generate_resources()
 
 include(Packaging)
 
