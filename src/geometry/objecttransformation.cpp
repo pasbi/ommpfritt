@@ -171,7 +171,7 @@ Vec2f ObjectTransformation::null() const
   return apply_to_position(Vec2f::o());
 }
 
-std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t)
+QDebug& operator <<(QDebug& ostream, const ObjectTransformation& t)
 {
   ostream << "[ t(" << t.translation().x << ", " << t.translation().y;
   ostream << ") s(" << t.scaling().x << ", " << t.scaling().y;

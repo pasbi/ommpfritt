@@ -61,23 +61,8 @@ void setup_logfile(QFile& logfile);
 
 }  // namespace omm
 
-QDebug operator<<(QDebug d, const std::string& string);
-
-// this enables streaming to qDebug and friends for
-// each type which can be streamed into std::ostream.
-// disable this function for enums. It will create ambiguities.
-// Qt-Enums are handled by the default qDebug very well. Other enums will fallback to int.
-template<typename T>
-std::enable_if_t<!std::is_enum_v<T>, QDebug> operator<<(QDebug ostream, const T& t)
-{
-  std::ostringstream oss;
-  oss << t;
-  ostream << QString::fromStdString(oss.str());
-  return ostream;
-}
-
 template<template<typename> typename ContainerT, typename T>
-void stream_container(QDebug& ostream, const ContainerT<T>& vs, const std::string& container_name)
+void stream_container(QDebug& ostream, const ContainerT<T>& vs, const QString& container_name)
 {
   ostream << container_name << "(" << vs.size() << ")[";
   for (auto it = vs.cbegin(); it != vs.cend(); ++it) {

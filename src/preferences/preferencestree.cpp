@@ -94,8 +94,7 @@ bool PreferencesTree::handle_group_line(const QString& group_name,
 {
   const auto tokens = line.split(":");
   if (tokens.size() != 2) {
-    LWARNING << "ignoring line '" << line.toStdString()
-             << "'. Expected format: <name>: <key value>.";
+    LWARNING << "ignoring line '" << line << "'. Expected format: <name>: <key value>.";
     return false;
   }
   const auto name = tokens[0].trimmed();
