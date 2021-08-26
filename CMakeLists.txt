@@ -18,7 +18,7 @@ find_package(PkgConfig)
 find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
-find_package(fmt 5.0.0 REQUIRED)
+find_package(fmt 8.0.0 REQUIRED)
 
 set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
 set(python_major "python${Python3_VERSION_MAJOR}")
