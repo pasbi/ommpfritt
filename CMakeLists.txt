@@ -152,3 +152,6 @@ add_custom_target(appimage
                   COMMAND "${CMAKE_BINARY_DIR}/make-appimage.sh"
                   COMMENT "Packing AppImage"
 )
+add_custom_target(icons
+                  COMMAND Python3::Interpreter "${CMAKE_BINARY_DIR}/generate-icons.py"
+                  COMMENT "Generating icons")

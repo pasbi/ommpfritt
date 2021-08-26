@@ -26,8 +26,9 @@ function(generate_resources)
     endif()
   else()
     message(NOTICE "Did not find icons at ${icons_qrc_file}.")
-    message("Run ${CMAKE_BINARY_DIR}/generate-icons.py to generate the icons, then build the project again
-            to integrate the icons into the application.")
+    message("Run `${CMAKE_BINARY_DIR}/generate-icons.py` or build the target `icons` to generate
+            the icons, then configure and build the project again to integrate the icons into the
+            application.")
   endif()
 
   set(compiled_resource_file ${CMAKE_BINARY_DIR}/qrc_resources.cpp)
