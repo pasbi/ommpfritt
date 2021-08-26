@@ -283,7 +283,7 @@ bool BoundingBoxManager::perform_action(const QString& name)
   return false;
 }
 
-void BoundingBoxManager::enterEvent(QEvent* e)
+void BoundingBoxManager::enterEvent(QEnterEvent* e)
 {
   reset_transformation();
   Manager::enterEvent(e);

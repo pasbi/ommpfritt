@@ -13,7 +13,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_TRANSLATION "Build translations of the application." ON)
 
-find_package(Qt5 5.15 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Svg LinguistTools OpenGL)
 find_package(PkgConfig)
 find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(2Geom REQUIRED)
@@ -79,7 +79,7 @@ target_include_directories(libommpfritt PUBLIC
 )
 target_compile_features(libommpfritt PUBLIC cxx_std_20)
 target_link_libraries(libommpfritt Python3::Python)
-target_link_libraries(libommpfritt Qt::Widgets Qt::Svg)
+target_link_libraries(libommpfritt Qt::Widgets Qt::Svg Qt::OpenGL)
 target_link_libraries(libommpfritt poppler-qt5)
 target_link_libraries(libommpfritt -lpthread -lm)
 target_link_libraries(libommpfritt KF5ItemModels)

@@ -43,7 +43,7 @@ private:
   bool perform_action(const QString& name) override;
 
 protected:
-  void enterEvent(QEvent* e) override;
+  void enterEvent(QEnterEvent* e) override;
   bool eventFilter(QObject* o, QEvent* e) override;
 
 private:
