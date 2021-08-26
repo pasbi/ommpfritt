@@ -5,7 +5,7 @@
 #include "mainwindow/viewport/viewport.h"
 #include "objects/view.h"
 #include "scene/scene.h"
-#include "stringinterpolation.h"
+#include <fmt/format.h>
 #include <QApplication>
 #include <QDir>
 #include <QFileInfo>
@@ -75,8 +75,11 @@ QString Exporter::interpolate_filename(const QString& pattern,
                                        const QString& scene_name,
                                        int frame)
 {
-  return omm::StringInterpolation(pattern,
-                                  {{"path", scene_path}, {"name", scene_name}, {"frame", frame}});
+  const auto args = fmt::make_format_args(fmt::arg("path", scene_path.toStdString()),
+                                          fmt::arg("name", scene_name.toStdString()),
+                                          fmt::arg("frame", frame));
+  const auto pattern_s = pattern.toStdString();
+  return QString::fromStdString(fmt::vformat(pattern_s, args));
 }
 
 void Exporter::render(int frame, bool allow_overwrite)
@@ -117,7 +120,7 @@ void Exporter::render(int frame, bool allow_overwrite)
       LERROR << "Failed to write '" << filename << "'.";
       Q_EMIT post_status(tr("The filename '%1' cannot be written.").arg(filename));
     }
-  } catch (StringInterpolation::InvalidFormatException& e) {
+  } catch (const fmt::format_error& e) {
     Q_EMIT post_status(tr("The filename pattern is invalid."));
   }
 }

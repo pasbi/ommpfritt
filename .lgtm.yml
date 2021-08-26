@@ -25,7 +25,6 @@ extraction:
         - zlib1g-dev
     configure:
       command:
-        - cmake --version
         - git clone https://gitlab.com/inkscape/lib2geom.git
         - cd lib2geom; git checkout 37876ed4; cd ..
         - cmake
@@ -35,12 +34,21 @@ extraction:
             -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
             -D2GEOM_TESTING=OFF
         - cmake --build build-lib2geom --target install
+        - git clone https://github.com/fmtlib/fmt.git
+        - cd fmt; git checkout 8.0.1; cd ..
+        - cmake
+            -S fmt
+            -B build-fmt
+            -GNinja
+            -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
+        - cmake --build build-fmt --target install
         - cmake
             -S .
             -B build
             -DBUILD_TRANSLATION=OFF
             -DCMAKE_BUILD_TYPE=Release
             -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
+            -DCMAKE_PREFIX_PATH=$LGTM_WORKSPACE/install
     index:
       build_command:
         - cd build

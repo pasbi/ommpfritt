@@ -20,8 +20,6 @@ target_sources(libommpfritt PRIVATE
   proxychain.h
   splinetype.cpp
   splinetype.h
-  stringinterpolation.cpp
-  stringinterpolation.h
   abstractfactory.h
   registers.cpp
   registers.h
