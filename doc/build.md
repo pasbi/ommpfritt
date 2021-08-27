@@ -52,11 +52,11 @@ Then, you use this installation to generate the icons and eventually you add the
 
 That may sound complicated, but a CMake target exists for every step, which simplifies and speeds up the processes a lot:
 
-1.   Configure the build: `cmake -S SOURCE_DIRECTORY -B BUILD_DIRECTORY ADDITIONAL_OPTIONS`
-2.   Build and install: `cmake --build BUILD_DIRECTORY --target install`
-3.   Generate the icons: `cmake --build BUILD_DIRECTORY --target icons`
-4.   Configure again to make the build system aware: `cmake -S SOURCE_DIRECTORY -B BUILD_DIRECTORY`
-5.   Build with icons (and optionally install) `cmake --build BUILD_DIRECTORY`
+1.  Configure the build: `cmake -S SOURCE_DIRECTORY -B BUILD_DIRECTORY ADDITIONAL_OPTIONS`
+2.  Build and install: `cmake --build BUILD_DIRECTORY --target install`
+3.  Generate the icons: `cmake --build BUILD_DIRECTORY --target icons`
+4.  Configure again to make the build system aware: `cmake -S SOURCE_DIRECTORY -B BUILD_DIRECTORY`
+5.  Build with icons (and optionally install) `cmake --build BUILD_DIRECTORY`
 
 Step *3.* may take some time and CMake won't display the output until it's done, so it looks like the process froze.
 If you want more direct feedback, you can generate the icons manually by calling `BUILD_DIRECTORY/generate-icons.py` (without any parameters).
@@ -72,7 +72,7 @@ You only need to read this if you want to update a translation file.
 Some files required for the build are generated during the build using non-standard methods to avoid redundancy.
 That means, that you need to configure the build and to invoke `lupdate` via a CMake target, if you want to have a complete set of translatable strings.
 
-1.   Configure the build: `cmake -S SOURCE_DIRECTORY -B BUILD_DIRECTORY`
-2.   Update the `*.ts` files: `cmake --build BUILD_DIRECTORY --target update-ts`
-3.   Run the `linguist`: `linguist SOURCE_DIRECTORY/ts/omm_de.ts`
-4.   Build normally to see the result.
+1.  Configure the build: `cmake -S SOURCE_DIRECTORY -B BUILD_DIRECTORY`
+2.  Update the `*.ts` files: `cmake --build BUILD_DIRECTORY --target update-ts`
+3.  Run the `linguist`: `linguist SOURCE_DIRECTORY/ts/omm_de.ts`
+4.  Build normally to see the result.

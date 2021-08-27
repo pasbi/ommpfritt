@@ -21,9 +21,7 @@ There is no manual yet, the screen cast must be updated and improved.
 ## Testing
 There are many bugs yet to be discovered.
 
-## What if ...
-
-### ... I want to add a new item?
+## How to Add a New Item
 
 If you want to add a new e.g., `Tag`, you create the `*.cpp` and `*.h` files,
 add them to `src/tags/CMakeLists.txt` and `list/tags.lst`.
@@ -48,19 +46,19 @@ However, only the `XProperty` needs to be added to the
 [`properties.lst`](../lists/properties.lst).
 Unlike the other registered classes, the `TYPE`-member is a function.
 
-### ... I want to add a new command?
+## How to Add a New Command
 
 Add it to [`default_keybindings.cfg`](../keybindings/default_keybindings.cfg).
 If you want your command to show up in some menu, you can edit the
 [`MainWindow::main_menu_entries()`](../src/mainwindow/mainwindow.cpp)
 -method.
 
-### ... I want to translate the application into a new language?
+## How to Translate the Application into a New Language
 
 Add the file to the list of translation files in `cmake/generate_resources.cmake`.
 Follow the instructions to update the languaes (i.e., build the `update-ts`-target).
 
-### ... I want to update translations in an existing language?
+## How to Update the Translation of an Existing Language
 
 Build the `update-ts`-target.
 See [`build.md`](build.md) for details.
