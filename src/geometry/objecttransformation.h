@@ -83,7 +83,7 @@ private:
                                                 const Geom::Affine& affine);
 };
 
-std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t);
+QDebug& operator<<(QDebug& ostream, const ObjectTransformation& t);
 bool operator<(const ObjectTransformation& lhs, const ObjectTransformation& rhs);
 bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs);
 bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs);

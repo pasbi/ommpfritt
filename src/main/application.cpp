@@ -38,7 +38,7 @@ constexpr auto FILE_ENDING = ".omm";
 auto load_translator(const QString& prefix, const QLocale& locale)
 {
   auto translator = std::make_unique<QTranslator>();
-  const auto locale_name = locale.name().toStdString();
+  const auto locale_name = locale.name();
   if (translator->load(prefix + "_" + locale.name(), ":/qm", "_", ".qm")) {
     LINFO << "Installing translator '" << prefix << "' for " << locale_name << ".";
     return translator;
