@@ -95,6 +95,12 @@ else()
   target_link_libraries(libommpfritt -lGL)
 endif()
 
+get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
+execute_process(COMMAND ${qt5_qmake_location} -query QT_INSTALL_TRANSLATIONS
+                OUTPUT_VARIABLE qt_qm_path
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 add_subdirectory(src)
 
 if (BUILD_TESTING)
@@ -119,8 +125,6 @@ include(generate_resources)
 generate_resources()
 
 include(Packaging)
-
-get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
 
 if (WIN32)
   set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)

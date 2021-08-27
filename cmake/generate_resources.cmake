@@ -17,20 +17,7 @@ function(generate_resources)
                            OPTIONS -no-obsolete
     )
     target_sources(libommpfritt PRIVATE ${QM_FILES})
-    unset(QM_FILES_N)
-    foreach (QM_FILE ${QM_FILES})
-      get_filename_component(qm_filename ${QM_FILE} NAME)
-      set(QM_FILES_N "${QM_FILES_N}<file>${qm_filename}</file>\n")
-    endforeach()
-    file(WRITE
-         "${CMAKE_BINARY_DIR}/translations.qrc"
-         "<RCC version=\"1.0\">\n"
-         "    <qresource prefix=\"/qm\">\n"
-         "${QM_FILES_N}"
-         "    </qresource>\n"
-         "</RCC>\n"
-    )
-    list(APPEND qrc_files "${CMAKE_BINARY_DIR}/translations.qrc")
+    install(FILES ${QM_FILES} DESTINATION "${CMAKE_INSTALL_PREFIX}/qm")
     add_custom_target(update-ts DEPENDS ${ts_files})
   endif()
 
