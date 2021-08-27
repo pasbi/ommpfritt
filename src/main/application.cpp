@@ -29,31 +29,10 @@
 #include "tags/tag.h"
 #include "tools/toolbox.h"
 #include "widgets/pointdialog.h"
-#include <QTranslator>
 
 namespace
 {
 constexpr auto FILE_ENDING = ".omm";
-
-auto load_translator(const QString& prefix, const QLocale& locale)
-{
-  auto translator = std::make_unique<QTranslator>();
-  const auto locale_name = locale.name();
-  if (translator->load(prefix + "_" + locale.name(), ":/qm", "_", ".qm")) {
-    LINFO << "Installing translator '" << prefix << "' for " << locale_name << ".";
-    return translator;
-  } else {
-    LWARNING << "No translator '" << prefix << "' found for " << locale_name
-             << ". Using fallback-translator.";
-    if (translator->load(prefix + "_", ":/qm", "_", ".qm")) {
-      LINFO << "Installing fallback-translator.";
-      return translator;
-    } else {
-      LERROR << "failed to load fallback-translator.";
-      return std::unique_ptr<QTranslator>(nullptr);
-    }
-  }
-}
 
 int img_mean(const QImage& image)
 {
@@ -141,8 +120,13 @@ const std::set<int> Application::keyboard_modifiers{Qt::Key_Shift,
 Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
-    : first_member((init(this), nullptr)), mode_selectors(init_mode_selectors()),
-      scene(python_engine), m_app(app), m_options(std::move(options)), m_locale(load_locale())
+    : first_member((init(this), nullptr))
+    , mode_selectors(init_mode_selectors())
+    , scene(python_engine)
+    , m_app(app)
+    , m_options(std::move(options))
+    , m_locale(load_locale())
+    , m_translator(m_locale)
 {
   static constexpr int RESET_KEYSEQUENCE_INTERVAL_MS = 1000;
   scene.set_selection({});
@@ -155,7 +139,6 @@ Application::Application(QCoreApplication& app, std::unique_ptr<Options> options
     });
   }
 
-  install_translators();
   scene.polish();
 }
 
@@ -618,15 +601,4 @@ const Preferences& preferences()
   return Application::instance().preferences;
 }
 
-void Application::install_translators()
-{
-  static constexpr std::array qms{"qtbase", "omm"};
-  for (const auto& qm : qms) {
-    auto translator = load_translator(qm, m_locale);
-    if (translator) {
-      QCoreApplication::installTranslator(translator.get());
-      m_translators.insert(std::move(translator));
-    };
-  }
-}
 }  // namespace omm
