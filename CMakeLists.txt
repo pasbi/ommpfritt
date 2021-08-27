@@ -59,6 +59,21 @@ foreach(R tags managers nodes properties tools objects)
     target_sources(libommpfritt PRIVATE "${generated_cpp}")
 endforeach()
 
+set(cfg_files
+  ${CMAKE_SOURCE_DIR}/uicolors/ui-colors-light.cfg
+  ${CMAKE_SOURCE_DIR}/uicolors/ui-colors-dark.cfg
+  ${CMAKE_SOURCE_DIR}/keybindings/default_keybindings.cfg
+)
+add_custom_command(
+    OUTPUT "${CMAKE_BINARY_DIR}/translations.h"
+    DEPENDS ${cfg_files}
+    COMMAND_EXPAND_LISTS
+    COMMAND Python3::Interpreter "${CMAKE_SOURCE_DIR}/build-scripts/update-translations_h.py"
+      --input "${cfg_files}"
+      --output "${CMAKE_BINARY_DIR}/translations.h"
+)
+target_sources(libommpfritt PRIVATE "${CMAKE_BINARY_DIR}/translations.h")
+
 target_include_directories(libommpfritt PUBLIC
     "${CMAKE_SOURCE_DIR}/src"
     "${PROJECT_BINARY_DIR}"

@@ -7,12 +7,31 @@ function(generate_resources)
   set(rcc_dependencies ${cfg_files} "${CMAKE_SOURCE_DIR}/layouts/default_layout.ini")
   set(qrc_files "${CMAKE_SOURCE_DIR}/resources.qrc")
   if (BUILD_TRANSLATION)
-    include(generate_translations)
-    set(qrc_translations_cpp "${CMAKE_BINARY_DIR}/qrc_translations.cpp")
-    set(languages de en es)
-    set(translations_qrc "${CMAKE_BINARY_DIR}/qm/translations.qrc")
-    generate_translations("${languages}" "${cfg_files}" rcc_dependencies "${translations_qrc}")
-    list(APPEND qrc_files "${translations_qrc}")
+    set(ts_files ${CMAKE_SOURCE_DIR}/ts/omm_de.ts
+                 ${CMAKE_SOURCE_DIR}/ts/omm_en.ts
+                 ${CMAKE_SOURCE_DIR}/ts/omm_es.ts
+    )
+    qt5_create_translation(QM_FILES
+                           ${CMAKE_SOURCE_DIR}/src "${CMAKE_BINARY_DIR}/translations.h"
+                           ${ts_files}
+                           OPTIONS -no-obsolete
+    )
+    target_sources(libommpfritt PRIVATE ${QM_FILES})
+    unset(QM_FILES_N)
+    foreach (QM_FILE ${QM_FILES})
+      get_filename_component(qm_filename ${QM_FILE} NAME)
+      set(QM_FILES_N "${QM_FILES_N}<file>${qm_filename}</file>\n")
+    endforeach()
+    file(WRITE
+         "${CMAKE_BINARY_DIR}/translations.qrc"
+         "<RCC version=\"1.0\">\n"
+         "    <qresource prefix=\"/qm\">\n"
+         "${QM_FILES_N}"
+         "    </qresource>\n"
+         "</RCC>\n"
+    )
+    list(APPEND qrc_files "${CMAKE_BINARY_DIR}/translations.qrc")
+    add_custom_target(update-ts DEPENDS ${ts_files})
   endif()
 
   set(icons_qrc_file "${CMAKE_BINARY_DIR}/icons/icons.qrc")
