@@ -2,7 +2,7 @@
 #include "logging.h"
 #include <QPainter>
 #include <QSvgRenderer>
-#include <poppler/qt5/poppler-qt5.h>
+#include <poppler/qt6/poppler-qt6.h>
 
 namespace omm
 {
@@ -15,22 +15,20 @@ QPicture ImageCache::retrieve(const std::pair<QString, int>& key) const
     QSvgRenderer renderer(filename);
     renderer.render(&painter);
   } else if (filename.endsWith(".pdf", Qt::CaseInsensitive)) {
-    auto* doc = Poppler::Document::load(filename);
+    auto doc = Poppler::Document::load(filename);
     if (doc != nullptr) {
-      doc->setRenderBackend(Poppler::Document::ArthurBackend);
+      doc->setRenderBackend(Poppler::Document::QPainterBackend);
       int page_num = key.second;
       page_num = std::clamp(page_num, 0, doc->numPages() - 1);
-      auto* const page = doc->page(page_num);
+      auto const page = doc->page(page_num);
       if (page != nullptr) {
         const auto success = page->renderToPainter(&painter);
         if (!success) {
           LERROR << "Failed to render pdf.";
         }
-        delete page;  // NOLINT(cppcoreguidelines-owning-memory)
       } else {
         LERROR << "Failed to load page";
       }
-      delete doc;  // NOLINT(cppcoreguidelines-owning-memory)
     } else {
       LERROR << "Failed to load doc";
     }

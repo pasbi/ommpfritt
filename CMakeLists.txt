@@ -80,7 +80,7 @@ target_include_directories(libommpfritt PUBLIC
 target_compile_features(libommpfritt PUBLIC cxx_std_20)
 target_link_libraries(libommpfritt Python3::Python)
 target_link_libraries(libommpfritt Qt::Widgets Qt::Svg Qt::OpenGL)
-target_link_libraries(libommpfritt poppler-qt5)
+target_link_libraries(libommpfritt poppler-qt6)
 target_link_libraries(libommpfritt -lpthread -lm)
 target_link_libraries(libommpfritt KF5ItemModels)
 target_link_libraries(libommpfritt 2Geom::2geom)
