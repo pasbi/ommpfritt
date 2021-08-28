@@ -142,7 +142,6 @@ private:
   QKeySequence m_pending_key_sequence;
   std::set<Manager*> m_managers;
 
-  const QLocale m_locale;
   Translator m_translator;
   static void init(omm::Application* instance);
 };
