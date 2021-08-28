@@ -13,7 +13,6 @@ void FontProperties::make_properties(const QString& category) const
   static constexpr double DEFAULT_FONT_SIZE = 12.0;
   static constexpr double MIN_FONT_SIZE = 0.1;
   static constexpr double MAX_FONT_SIZE = 100.0;
-  static constexpr int MAX_FONT_WEIGHT = 99;
   static constexpr double MAX_WORD_SPACING = 100.0;
   create_property<StringProperty>(FONT_PROPERTY_KEY, "Arial")
       .set_mode(StringProperty::Mode::Font)
@@ -23,8 +22,16 @@ void FontProperties::make_properties(const QString& category) const
       .set_range(MIN_FONT_SIZE, MAX_FONT_SIZE)
       .set_label(QObject::tr("Size"))
       .set_category(category);
-  create_property<IntegerProperty>(WEIGHT_PROPERTY_KEY)
-      .set_range(0, MAX_FONT_WEIGHT)
+  create_property<OptionProperty>(WEIGHT_PROPERTY_KEY)
+      .set_options({QObject::tr("Thin"),
+                    QObject::tr("ExtraLight"),
+                    QObject::tr("Light"),
+                    QObject::tr("Normal"),
+                    QObject::tr("Medium"),
+                    QObject::tr("DemiBold"),
+                    QObject::tr("Bold"),
+                    QObject::tr("ExtraBold"),
+                    QObject::tr("Black") })
       .set_label(QObject::tr("Weight"))
       .set_category(category);
   create_property<BoolProperty>(ITALIC_PROPERTY_KEY)
@@ -68,11 +75,31 @@ void FontProperties::make_properties(const QString& category) const
 
 QFont FontProperties::get_font() const
 {
+  static constexpr auto to_weight = [](std::size_t index) {
+    static constexpr auto weights = std::array{
+        QFont::Thin,
+        QFont::ExtraLight,
+        QFont::Light,
+        QFont::Normal,
+        QFont::Medium,
+        QFont::DemiBold,
+        QFont::Bold,
+        QFont::ExtraBold,
+        QFont::Black
+    };
+    if (index < weights.size()) {
+      return weights.at(index);
+    } else {
+      qWarning() << "Unexpected weight index: " << index;
+      return QFont::Normal;
+    }
+  };
+
   QFont font;
   font.setFamily(property_value<QString>(FONT_PROPERTY_KEY));
   font.setStrikeOut(property_value<bool>(STRIKEOUT_PROPERTY_KEY));
   font.setUnderline(property_value<bool>(UNDERLINE_PROPERTY_KEY));
-  font.setWeight(property_value<int>(WEIGHT_PROPERTY_KEY));
+  font.setWeight(to_weight(property_value<std::size_t>(WEIGHT_PROPERTY_KEY)));
   font.setItalic(property_value<bool>(ITALIC_PROPERTY_KEY));
   font.setPointSizeF(property_value<double>(SIZE_PROPERTY_KEY));
   font.setCapitalization(property_value<QFont::Capitalization>(CAPITALIZATION_PROPERTY_KEY));
