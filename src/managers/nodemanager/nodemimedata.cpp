@@ -9,7 +9,7 @@ const std::map<AbstractNodeCompiler::Language, QString> NodeMimeData::MIME_TYPES
     = {{AbstractNodeCompiler::Language::Python, "application/pythonnodes"},
        {AbstractNodeCompiler::Language::GLSL, "application/glslnodes"}};
 
-QVariant NodeMimeData::retrieveData(const QString&, QVariant::Type) const
+QVariant NodeMimeData::retrieveData(const QString&, QMetaType) const
 {
   LFATAL("This function shall not be called.");
   abort();

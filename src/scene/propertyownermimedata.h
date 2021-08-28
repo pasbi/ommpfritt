@@ -19,7 +19,7 @@ public:
   PropertyOwnerMimeData(const std::vector<AbstractPropertyOwner*>& items);
   [[nodiscard]] bool hasFormat(const QString& mimeType) const override;
   [[nodiscard]] QStringList formats() const override;
-  [[nodiscard]] QVariant retrieveData(const QString& mimeType, QVariant::Type type) const override;
+  [[nodiscard]] QVariant retrieveData(const QString& mimeType, QMetaType type) const override;
 
   [[nodiscard]] std::vector<Object*> objects() const;
   [[nodiscard]] std::vector<Tag*> tags() const;

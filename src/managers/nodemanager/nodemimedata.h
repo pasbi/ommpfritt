@@ -22,7 +22,7 @@ public:
   {
     return {MIME_TYPES.at(m_language)};
   }
-  [[noreturn]] QVariant retrieveData(const QString&, QVariant::Type) const override;
+  [[noreturn]] QVariant retrieveData(const QString&, QMetaType) const override;
   [[nodiscard]] std::set<Node*> nodes() const
   {
     return m_nodes;

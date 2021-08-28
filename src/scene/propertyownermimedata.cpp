@@ -43,7 +43,7 @@ QStringList PropertyOwnerMimeData::formats() const
   return {MIME_TYPE};
 }
 
-QVariant PropertyOwnerMimeData::retrieveData(const QString& mimeType, QVariant::Type type) const
+QVariant PropertyOwnerMimeData::retrieveData(const QString& mimeType, QMetaType type) const
 {
   Q_UNUSED(mimeType)
   Q_UNUSED(type)
