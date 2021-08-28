@@ -2,6 +2,7 @@
 
 #include <QCoreApplication>
 #include <QDebug>
+#include <QLocale>
 
 namespace
 {

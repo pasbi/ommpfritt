@@ -103,8 +103,7 @@ Application::Application(QCoreApplication& app, std::unique_ptr<Options> options
     , scene(python_engine)
     , m_app(app)
     , m_options(std::move(options))
-    , m_locale(load_locale())
-    , m_translator(m_locale)
+    , m_translator(load_locale())
 {
   static constexpr int RESET_KEYSEQUENCE_INTERVAL_MS = 1000;
   scene.set_selection({});
