@@ -81,7 +81,7 @@ void handle_log(QFile& logfile,
   }
 
   logfile.write(long_message.toUtf8().constData());
-  if (printlevels.at(type) >= loglevels.at(LogLevel::CRITICAL)) {
+  if (loglevels.at(printlevels.at(type)) >= loglevels.at(LogLevel::CRITICAL)) {
     logfile.flush();
   }
 }
