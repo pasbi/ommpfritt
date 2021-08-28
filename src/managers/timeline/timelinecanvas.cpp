@@ -266,7 +266,7 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
     zoom(d);
     update();
   } else if (m_dragging_knots && !m_move_aborted) {
-    m_shift = static_cast<int>(std::round(frame_range.pixel_to_unit(event.x())
+    m_shift = static_cast<int>(std::round(frame_range.pixel_to_unit(event.position().x())
                                           - frame_range.pixel_to_unit(m_mouse_down_pos.x())));
     update();
   } else if (m_rubber_band_visible && !m_move_aborted) {

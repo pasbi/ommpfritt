@@ -87,7 +87,7 @@ void CurveManagerWidget::paintEvent(QPaintEvent* event)
   draw_interpolation(painter);
   draw_knots(painter);
   if (m_rubberband_rect_visible) {
-    const QRect rect(m_mouse_down_pos, m_last_mouse_pos);
+    const QRectF rect{m_mouse_down_pos, m_last_mouse_pos};
     draw_rubberband(painter, *this, rect.normalized());
   }
 
@@ -108,7 +108,9 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
 {
   const Range& value_range = range.v_range;
   const Range& frame_range = range.h_range;
-  const QPointF d = m_last_mouse_pos - event->pos();
+  const QPointF d = m_last_mouse_pos - event->position();
+  double old_y = value_range.pixel_to_unit(m_last_mouse_pos.y());
+  double new_y = value_range.pixel_to_unit(event->position().y());
   if (m_pan_active) {
     range.pan(QPointF(d.x() / width(), d.y() / height()));
   } else if (m_zoom_active) {
@@ -118,8 +120,6 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     static constexpr double UPPER_V = 10000.0;
     range.zoom(m_mouse_down_pos, d, {LOWER_H, LOWER_V}, {UPPER_H, UPPER_V});
   } else if (m_dragged_tangent.key != nullptr) {
-    double old_y = value_range.pixel_to_unit(m_last_mouse_pos.y());
-    double new_y = value_range.pixel_to_unit(event->y());
     const double diff = new_y - old_y;
     const KeyFrameHandleKey& key = *m_dragged_tangent.key;
     std::unique_ptr<Track::Knot> new_knot = key.track.knot(key.frame).clone();
@@ -128,14 +128,13 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     set_channel_value(vv, key.channel, new_offset);
     m_scene.submit<ChangeKeyFrameCommand>(key.frame, key.track.property(), std::move(new_knot));
   } else if (m_key_being_dragged) {
-    m_frame_shift = static_cast<int>(std::round(frame_range.pixel_to_unit(event->x())
+    m_frame_shift = static_cast<int>(std::round(frame_range.pixel_to_unit(event->position().x())
                                                 - frame_range.pixel_to_unit(m_mouse_down_pos.x())));
-    m_value_shift
-        = value_range.pixel_to_unit(event->y()) - value_range.pixel_to_unit(m_mouse_down_pos.y());
+    m_value_shift = new_y - value_range.pixel_to_unit(m_mouse_down_pos.y());
   } else if (m_rubberband_rect_visible) {
-    const QRectF rect
-        = QRectF(range.pixel_to_unit(m_mouse_down_pos), range.pixel_to_unit(m_last_mouse_pos))
-              .normalized();
+    const auto top_left = range.pixel_to_unit(m_mouse_down_pos);
+    const auto bottom_right = range.pixel_to_unit(m_last_mouse_pos);
+    const auto rect = QRectF{top_left, bottom_right}.normalized();
     for (auto&& [key, data] : m_keyframe_handles) {
       const QPointF p(key.frame, key.value());
       data.inside_rubberband = rect.contains(p);
@@ -147,8 +146,8 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
 
 void CurveManagerWidget::mousePressEvent(QMouseEvent* event)
 {
-  m_mouse_down_pos = event->pos();
-  m_last_mouse_pos = event->pos();
+  m_mouse_down_pos = event->position();
+  m_last_mouse_pos = event->position();
   m_pan_active = false;
   m_zoom_active = false;
   m_frame_shift = 0;

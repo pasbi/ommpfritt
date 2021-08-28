@@ -96,9 +96,10 @@ std::set<AbstractPropertyOwner*> ObjectTreeView::selected_tags() const
 
 void ObjectTreeView::handle_drag_event(QDragMoveEvent* e)
 {
-  m_model.current_tag_predecessor = m_tags_item_delegate->tag_before(e->pos());
-  m_model.current_tag = m_tags_item_delegate->tag_at(e->pos());
-  setDropIndicatorShown(indexAt(e->pos()).column() != ObjectTree::TAGS_COLUMN);
+  const auto pos = e->position().toPoint();
+  m_model.current_tag_predecessor = m_tags_item_delegate->tag_before(pos);
+  m_model.current_tag = m_tags_item_delegate->tag_at(pos);
+  setDropIndicatorShown(indexAt(pos).column() != ObjectTree::TAGS_COLUMN);
 }
 
 QRect ObjectTreeView::rubber_band() const

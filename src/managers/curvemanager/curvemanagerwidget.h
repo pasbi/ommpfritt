@@ -30,8 +30,8 @@ private:
   const CurveTreeView& m_curve_tree;
   bool m_selection_locked = false;
   std::set<Track*> m_tracks;
-  QPoint m_mouse_down_pos;
-  QPoint m_last_mouse_pos;
+  QPointF m_mouse_down_pos;
+  QPointF m_last_mouse_pos;
   bool m_pan_active = false;
   bool m_zoom_active = false;
   bool m_key_being_dragged = false;

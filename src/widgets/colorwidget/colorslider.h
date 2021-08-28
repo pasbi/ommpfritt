@@ -17,7 +17,7 @@ protected:
   void mouseMoveEvent(QMouseEvent* e) override;
 
 private:
-  void set_value(int x);
+  void set_value(double x);
 };
 
 }  // namespace omm

@@ -393,7 +393,7 @@ void NodeView::dragMoveEvent(QDragMoveEvent* event)
 void NodeView::dropEvent(QDropEvent* event)
 {
   if (auto* model = this->model(); model != nullptr && can_drop(*event)) {
-    QPointF pos = mapToScene(event->pos());
+    QPointF pos = mapToScene(event->position().toPoint());
     auto nodes = ::transform<std::unique_ptr<Node>>(::items(*event), [&pos, model](auto* apo) {
       auto reference_node = std::make_unique<ReferenceNode>(*model);
       reference_node->property(ReferenceNode::REFERENCE_PROPERTY_KEY)->set(apo);
@@ -482,7 +482,7 @@ void NodeView::mouseReleaseEvent(QMouseEvent* event)
 
 bool NodeView::can_drop(const QDropEvent& event)
 {
-  if (itemAt(event.pos()) != nullptr) {
+  if (itemAt(event.position().toPoint()) != nullptr) {
     return false;  // drop on items is handled elsewhere
   } else {
     return !::items(event).empty();

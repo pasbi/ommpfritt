@@ -51,17 +51,17 @@ void ColorSlider::paintEvent(QPaintEvent* e)
 
 void ColorSlider::mousePressEvent(QMouseEvent* e)
 {
-  set_value(e->x());
+  set_value(e->position().x());
 }
 
 void ColorSlider::mouseMoveEvent(QMouseEvent* e)
 {
-  set_value(e->x());
+  set_value(e->position().x());
 }
 
-void ColorSlider::set_value(int x)
+void ColorSlider::set_value(double x)
 {
-  const double d = static_cast<double>(x) / static_cast<double>(width());
+  const double d = x / static_cast<double>(width());
   Color color = this->color();
   color.set(role(), std::clamp(d, 0.0, 1.0));
   set_color(color);

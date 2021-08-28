@@ -246,7 +246,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
     if (event->button() == Qt::RightButton) {
       auto menu = m_scene.tool_box().active_tool().make_context_menu(this);
       if (menu) {
-        menu->exec(event->globalPos());
+        menu->exec(event->globalPosition().toPoint());
       }
     }
     QWidget::mouseReleaseEvent(event);
