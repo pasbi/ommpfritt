@@ -78,7 +78,6 @@ public:
   Object& insert_object(const QString& key, InsertionMode mode);
 
   static const std::set<int> keyboard_modifiers;
-  void register_auto_invert_icon_button(QAbstractButton& button);
 
   Manager& spawn_manager(const QString& type);
   ToolBar& spawn_toolbar() const;

@@ -23,6 +23,8 @@ target_sources(libommpfritt PRIVATE
   registers.h
   translator.cpp
   translator.h
+  syncpalettedecorator.cpp
+  syncpalettedecorator.h
 )
 
 add_subdirectory(animation)

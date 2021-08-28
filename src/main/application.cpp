@@ -34,28 +34,6 @@ namespace
 {
 constexpr auto FILE_ENDING = ".omm";
 
-int img_mean(const QImage& image)
-{
-  static constexpr double NUM_CHANNELS = 3.0;
-  double w = 0.0;
-  double sum = 0.0;
-  for (int y = 0; y < image.height(); ++y) {
-    assert(image.format() == QImage::Format_ARGB32_Premultiplied);
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-    const QRgb* rgba_line = reinterpret_cast<const QRgb*>(image.scanLine(y));
-    for (int x = 0; x < image.width(); ++x) {
-      // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-      const auto& rgba = rgba_line[x];
-      const double alpha = qAlpha(rgba) / 255.0;
-      sum += qRed(rgba) * alpha;
-      sum += qGreen(rgba) * alpha;
-      sum += qBlue(rgba) * alpha;
-      w += NUM_CHANNELS * alpha;
-    }
-  }
-  return static_cast<int>(sum / w);
-}
-
 QKeySequence push_back(const QKeySequence& s, int t)
 {
   switch (s.count()) {
@@ -524,26 +502,6 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
 
   ref.post_create_hook();
   return ref;
-}
-void Application::register_auto_invert_icon_button(QAbstractButton& button)
-{
-  const auto update_button_icon = [&button]() {
-    const QColor text_color = QApplication::palette().color(QPalette::Active, QPalette::ButtonText);
-    static constexpr int ICON_SIZE = 1024;
-    static constexpr int ICON_THRESHOLD = 100;
-    QImage img = button.icon().pixmap(QSize(ICON_SIZE, ICON_SIZE)).toImage();
-    if (std::abs(img_mean(img) - text_color.value()) > ICON_THRESHOLD) {
-      img.invertPixels(QImage::InvertRgb);
-      QSignalBlocker blocker(&button);
-      button.setIcon(QIcon(QPixmap::fromImage(img)));
-    }
-  };
-
-  const auto connection = connect(dynamic_cast<QApplication*>(QCoreApplication::instance()),
-                                  &QApplication::paletteChanged,
-                                  update_button_icon);
-  connect(&button, &QObject::destroyed, this, [connection]() { disconnect(connection); });
-  update_button_icon();
 }
 
 Manager& Application::spawn_manager(const QString& type)
