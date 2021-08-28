@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QPalette>
+#include <QRegularExpression>
 #include <QSettings>
 
 namespace omm
@@ -184,7 +185,7 @@ bool PreferencesTree::load_from_file(const QString& filename)
                                                    [this]() { endResetModel(); })
                     : std::unique_ptr<ResetModel>(nullptr);
 
-  static const QRegExp context_regexp(R"(\[\w+\])");
+  static const QRegularExpression context_regexp(QRegularExpression::anchoredPattern(R"(\[\w+\])"));
   QString group_name = "";
 
   QTextStream stream(&file);
@@ -194,7 +195,7 @@ bool PreferencesTree::load_from_file(const QString& filename)
       continue;  // line is a comment
     }
 
-    if (context_regexp.exactMatch(line)) {
+    if (context_regexp.match(line).hasMatch()) {
       group_name = line.mid(1, line.size() - 2);
     } else if (!group_name.isEmpty()) {
       if (!handle_group_line(group_name, line, insert_mode)) {
