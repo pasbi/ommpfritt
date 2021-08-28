@@ -28,10 +28,10 @@ runs:
           mingw-w64-x86_64-ninja
           mingw-w64-x86_64-nsis
           mingw-w64-x86_64-openssl
-          mingw-w64-x86_64-poppler
+          mingw-w64-x86_64-poppler-qt6
           mingw-w64-x86_64-python
           mingw-w64-x86_64-python-numpy
           mingw-w64-x86_64-python-pytest
-          mingw-w64-x86_64-qt5
+          mingw-w64-x86_64-qt6
           mingw-w64-x86_64-toolchain
           mingw-w64-x86_64-zlib
