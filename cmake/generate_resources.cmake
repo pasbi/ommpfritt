@@ -18,7 +18,7 @@ function(create_omm_qm_files languages)
   set(ts_files ${languages})
   list(TRANSFORM ts_files APPEND ".ts")
   list(TRANSFORM ts_files PREPEND "${CMAKE_SOURCE_DIR}/ts/omm_")
-  qt5_create_translation(omm_qm_files
+  qt6_create_translation(omm_qm_files
                          ${CMAKE_SOURCE_DIR}/src "${CMAKE_BINARY_DIR}/translations.h"
                          ${ts_files}
                          OPTIONS -no-obsolete
