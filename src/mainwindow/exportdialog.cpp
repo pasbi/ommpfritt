@@ -12,6 +12,7 @@
 #include "ui_exportdialog.h"
 #include "widgets/numericedit.h"
 #include "widgets/referencelineedit.h"
+#include "syncpalettedecorator.h"
 #include <fmt/format.h>
 #include <QAbstractListModel>
 #include <QFileDialog>
@@ -237,7 +238,7 @@ For numeric values, placeholder and length options may be specified after a colo
 
   for (auto&& pb : {m_ui->pb_reset_end, m_ui->pb_reset_start}) {
     pb->setIcon(IconProvider::pixmap("revert"));
-    Application::instance().register_auto_invert_icon_button(*pb);
+    SyncPaletteButtonDecorator::decorate(*pb);
   }
 
   m_ui->cb_variable->setModel(m_variable_list_model.get());
