@@ -96,7 +96,7 @@ bool decode_hex(const QString& code, std::array<double, 4>& rgb)
       bool ok = false;
       static constexpr int BASE_HEX = 16;
       static constexpr double MAX_8_BIT = 255.0;
-      v = code.midRef(offset, 2).toInt(&ok, BASE_HEX) / MAX_8_BIT;
+      v = code.mid(offset, 2).toInt(&ok, BASE_HEX) / MAX_8_BIT;
       return ok;
     } else {
       return false;
