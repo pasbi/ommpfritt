@@ -23,6 +23,8 @@ target_sources(libommpfritt PRIVATE
   abstractfactory.h
   registers.cpp
   registers.h
+  translator.cpp
+  translator.h
 )
 
 add_subdirectory(animation)

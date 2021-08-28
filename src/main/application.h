@@ -8,6 +8,7 @@
 #include "preferences/uicolors.h"
 #include "python/pythonengine.h"
 #include "scene/scene.h"
+#include "translator.h"
 #include <QKeySequence>
 #include <QObject>
 #include <QTimer>
@@ -142,9 +143,8 @@ private:
   QKeySequence m_pending_key_sequence;
   std::set<Manager*> m_managers;
 
-  void install_translators();
-  std::set<std::unique_ptr<QTranslator>> m_translators;
   const QLocale m_locale;
+  Translator m_translator;
   static void init(omm::Application* instance);
 };
 

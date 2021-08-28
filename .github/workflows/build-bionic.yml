@@ -19,7 +19,7 @@ jobs:
                    -DBUILD_TESTING=OFF
                    -DCMAKE_INSTALL_PREFIX=install
       - run: cmake --build omm-build --target install --config Release -j4
-      - run: omm-build/generate-icons.py
+      - run: cmake --build omm-build --target icons --config Release -j4
       - run: cmake -S omm -B omm-build
       - run: cmake --build omm-build --target install --config Release -j4
       - run: cmake --build omm-build --target appimage --config Release
