@@ -135,7 +135,7 @@ QString omm::CommandLineParser::scene_filename() const
     LINFO << "Single positional argument given: " << args.front();
     return args.front();
   default:
-    LFATAL("Multiple (%d) positional arguments given, which is not supported currently.", args.size());
+    LFATAL("Multiple (%lld) positional arguments given, which is not supported currently.", args.size());
     Q_UNREACHABLE();
   }
 }

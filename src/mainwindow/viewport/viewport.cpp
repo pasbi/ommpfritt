@@ -335,7 +335,7 @@ void Viewport::update_cursor()
   }();
 
   static constexpr QSize ICON_SIZE{32, 32};
-  setCursor(icon.scaled(ICON_SIZE, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+  setCursor(QCursor{icon.scaled(ICON_SIZE, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)});
 }
 
 }  // namespace omm
