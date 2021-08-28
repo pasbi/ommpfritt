@@ -118,7 +118,7 @@ public:
    * @return true if the action was accepted by the docked Manager under the mouse or the
    *  Application.
    */
-  bool dispatch_key(int key, Qt::KeyboardModifiers modifiers);
+  bool dispatch_key(const QKeyCombination& kc);
 
   /**
    * @brief dispatch_key same as @code dispatch_key, but the event is delivered to given
@@ -129,7 +129,7 @@ public:
    * @param ci
    * @return true if the action was accepted by @code ci or Application.
    */
-  bool dispatch_key(int key, Qt::KeyboardModifiers modifiers, CommandInterface& ci);
+  bool dispatch_key(const QKeyCombination& kc, CommandInterface& ci);
 
   void register_manager(Manager& manager);
   void unregister_manager(Manager& manager);

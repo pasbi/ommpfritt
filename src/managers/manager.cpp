@@ -63,7 +63,7 @@ void Manager::keyPressEvent(QKeyEvent* e)
 {
   if (!::contains(Application::keyboard_modifiers, e->key()) && isFloating()) {
     // MainWindow is not a parent, hence the manager must handle the key event itself.
-    if (Application::instance().dispatch_key(e->key(), e->modifiers(), *this)) {
+    if (Application::instance().dispatch_key(e->keyCombination(), *this)) {
       QDockWidget::keyPressEvent(e);
     } else {
       raise();

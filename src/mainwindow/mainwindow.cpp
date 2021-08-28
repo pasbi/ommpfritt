@@ -288,7 +288,7 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
 {
   const bool is_modifier = ::contains(Application::keyboard_modifiers, e->key());
   const bool is_dispatched
-      = !is_modifier && !Application::instance().dispatch_key(e->key(), e->modifiers());
+      = !is_modifier && !Application::instance().dispatch_key(e->keyCombination());
   if (is_modifier || is_dispatched) {
     QMainWindow::keyPressEvent(e);
   }

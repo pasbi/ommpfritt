@@ -56,7 +56,7 @@ int img_mean(const QImage& image)
   return static_cast<int>(sum / w);
 }
 
-QKeySequence push_back(const QKeySequence& s, int t)
+QKeySequence push_back(const QKeySequence& s, const QKeyCombination& t)
 {
   switch (s.count()) {
   case 0:
@@ -396,7 +396,7 @@ bool Application::perform_action(const QString& action_name)
   return true;
 }
 
-bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, CommandInterface& ci)
+bool Application::dispatch_key(const QKeyCombination& kc, CommandInterface& ci)
 {
   const auto dispatch_sequence = [this](CommandInterface& ci) {
     const auto action_name = key_bindings.find_action(ci.type(), m_pending_key_sequence);
@@ -409,7 +409,7 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, Command
     }
   };
 
-  m_pending_key_sequence = push_back(m_pending_key_sequence, key | static_cast<int>(modifiers));
+  m_pending_key_sequence = push_back(m_pending_key_sequence, kc);
   m_reset_keysequence_timer.start();
 
   if (dispatch_sequence(ci)) {
@@ -424,19 +424,19 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, Command
   }
 }
 
-bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
+bool Application::dispatch_key(const QKeyCombination& kc)
 {
   const QPoint mouse_position = QCursor::pos();
   for (Manager* manager : m_managers) {
     const QRect manager_rect(manager->mapToGlobal(manager->rect().topLeft()),
                              manager->mapToGlobal(manager->rect().bottomRight()));
     if (manager_rect.contains(mouse_position)) {
-      return dispatch_key(key, modifiers, *manager);
+      return dispatch_key(kc, *manager);
     }
   }
 
   // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
-  return dispatch_key(key, modifiers, Application::instance());
+  return dispatch_key(kc, Application::instance());
 }
 
 QString Application::type() const

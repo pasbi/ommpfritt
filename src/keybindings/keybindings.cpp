@@ -108,7 +108,7 @@ QString KeyBindings::find_action(const QString& context, const QKeySequence& seq
       if (vit != group->values.end()) {
         return vit->get()->name;
       } else {
-        candidate = QKeySequence(candidate[1], candidate[2], candidate[3], 0);
+        candidate = QKeySequence(candidate[1], candidate[2], candidate[3], QKeyCombination{});
       }
     }
     return "";
