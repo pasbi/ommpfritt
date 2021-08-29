@@ -5,6 +5,8 @@ target_sources(libommpfritt PRIVATE
   curvemanagerwidget.h
   curvemanagertitlebar.cpp
   curvemanagertitlebar.h
+  curvemanagerproxymodel.cpp
+  curvemanagerproxymodel.h
   curvemanagerquickaccessdelegate.cpp
   curvemanagerquickaccessdelegate.h
   curvetree.cpp

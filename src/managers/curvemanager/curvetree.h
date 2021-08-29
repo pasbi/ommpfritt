@@ -41,8 +41,8 @@ public:
   void set_visible(const ChannelProxy& channel, bool visible);
   void hide_everything();
 
-  QModelIndex map_to_source(const QModelIndex& view_index) const;
-  QModelIndex map_from_source(const QModelIndex& animator_index) const;
+  QModelIndex map_to_animator(const QModelIndex& view_index) const;
+  QModelIndex map_from_animator(const QModelIndex& animator_index) const;
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
@@ -59,8 +59,7 @@ private:
   std::unique_ptr<QuickAccessDelegate> m_quick_access_delegate;
   QModelIndex m_mouse_down_index;
   void notify_second_column_changed(const QModelIndex& sindex);
-  std::unique_ptr<QSortFilterProxyModel> m_sort_filter_proxy;
-  std::unique_ptr<QAbstractProxyModel> m_add_column_proxy;
+  std::unique_ptr<QSortFilterProxyModel> m_proxy_model;
 
   TreeExpandMemory m_expand_memory;
 

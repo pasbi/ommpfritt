@@ -5,6 +5,8 @@ target_sources(libommpfritt PRIVATE
   dopesheetview.h
   dopesheetheader.cpp
   dopesheetheader.h
+  dopesheetproxymodel.cpp
+  dopesheetproxymodel.h
   trackviewdelegate.cpp
   trackviewdelegate.h
 )

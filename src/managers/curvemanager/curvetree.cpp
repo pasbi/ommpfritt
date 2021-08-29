@@ -1,91 +1,32 @@
 #include "managers/curvemanager/curvetree.h"
-#include "animation/animator.h"
 #include "animation/channelproxy.h"
 #include "common.h"
 #include "main/application.h"
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
-#include "properties/property.h"
 #include "scene/mailbox.h"
-#include "scene/scene.h"
-#include <KF5/KItemModels/kextracolumnsproxymodel.h>
 #include <QHeaderView>
 #include <QMouseEvent>
 #include <QSortFilterProxyModel>
-
-namespace
-{
-class FilterSelectedProxyModel : public QSortFilterProxyModel
-{
-public:
-  explicit FilterSelectedProxyModel(omm::Animator& animator) : m_animator(animator)
-  {
-  }
-
-  [[nodiscard]] bool filterAcceptsRow(int source_row,
-                                      const QModelIndex& source_parent) const override
-  {
-    using namespace omm;
-    assert(!source_parent.isValid() || &m_animator == source_parent.model());
-    const QModelIndex source_index = m_animator.index(source_row, 0, source_parent);
-    switch (Animator::index_type(source_parent)) {
-    case Animator::IndexType::None:
-      assert(Animator::index_type(source_index) == Animator::IndexType::Owner);
-      return ::contains(m_animator.scene.selection(), Animator::owner(source_index));
-    case Animator::IndexType::Owner:
-      assert(Animator::index_type(source_index) == Animator::IndexType::Property);
-      return n_channels(Animator::property(source_index)->variant_value()) > 0;
-    case Animator::IndexType::Property:
-      assert(Animator::index_type(source_index) == Animator::IndexType::Channel);
-      return sourceModel()->rowCount(source_parent) > 1;
-    case Animator::IndexType::Channel:
-      [[fallthrough]];
-    default:
-      Q_UNREACHABLE();
-      return false;
-    }
-  }
-
-private:
-  omm::Animator& m_animator;
-};
-
-class AddColumnProxy : public KExtraColumnsProxyModel
-{
-public:
-  AddColumnProxy(QObject* parent = nullptr) : KExtraColumnsProxyModel(parent)
-  {
-    appendColumn();
-  }
-
-  [[nodiscard]] QVariant extraColumnData([[maybe_unused]] const QModelIndex& parent,
-                                         [[maybe_unused]] int row,
-                                         [[maybe_unused]] int extraColumn,
-                                         [[maybe_unused]] int role) const override
-  {
-    return QVariant();
-  }
-};
-
-}  // namespace
+#include "managers/curvemanager/curvemanagerproxymodel.h"
+#include "animation/animator.h"
 
 namespace omm
 {
+
 CurveTree::CurveTree(Scene& scene)
     : m_scene(scene),
       m_quick_access_delegate(
           std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this)),
-      m_sort_filter_proxy(std::make_unique<FilterSelectedProxyModel>(scene.animator())),
-      m_add_column_proxy(std::make_unique<AddColumnProxy>()),
-      m_expand_memory(*this, [this](const QModelIndex& index) { return map_to_source(index); })
+      m_proxy_model(std::make_unique<CurveManagerProxyModel>(scene.animator())),
+      m_expand_memory(*this, [this](const QModelIndex& index) { return map_to_animator(index); })
 {
   connect(&scene.mail_box(),
           &MailBox::selection_changed,
-          m_sort_filter_proxy.get(),
+          m_proxy_model.get(),
           &QSortFilterProxyModel::invalidate);
 
-  m_sort_filter_proxy->setSourceModel(&scene.animator());
-  m_add_column_proxy->setSourceModel(m_sort_filter_proxy.get());
-  setModel(m_add_column_proxy.get());
+  m_proxy_model->setSourceModel(&scene.animator());
+  setModel(m_proxy_model.get());
 
   setItemDelegateForColumn(m_quick_access_delegate_column, m_quick_access_delegate.get());
   header()->setSectionResizeMode(QHeaderView::Fixed);
@@ -212,8 +153,18 @@ void CurveTree::hide_everything()
   for (auto&& [k, v] : m_channel_visible) {
     v = false;
   }
-  Q_EMIT m_add_column_proxy->dataChanged(QModelIndex(), QModelIndex());
+  Q_EMIT m_proxy_model->dataChanged(QModelIndex(), QModelIndex());
   Q_EMIT visibility_changed();
+}
+
+QModelIndex CurveTree::map_to_animator(const QModelIndex& view_index) const
+{
+  return m_proxy_model->mapToSource(view_index);
+}
+
+QModelIndex CurveTree::map_from_animator(const QModelIndex& animator_index) const
+{
+  return m_proxy_model->mapFromSource(animator_index);
 }
 
 void CurveTree::set_visible(const std::pair<Property*, std::size_t>& channel, bool visible)
@@ -258,22 +209,12 @@ void CurveTree::mouseReleaseEvent(QMouseEvent* event)
 
 void CurveTree::notify_second_column_changed(const QModelIndex& sindex)
 {
-  QModelIndex index = map_from_source(sindex).siblingAtColumn(m_quick_access_delegate_column);
+  QModelIndex index = map_from_animator(sindex).siblingAtColumn(m_quick_access_delegate_column);
   while (index.isValid()) {
-    Q_EMIT m_add_column_proxy->dataChanged(index, index);
+    Q_EMIT m_proxy_model->dataChanged(index, index);
     index = index.parent().siblingAtColumn(m_quick_access_delegate_column);
   }
   Q_EMIT visibility_changed();
-}
-
-QModelIndex CurveTree::map_to_source(const QModelIndex& view_index) const
-{
-  return m_sort_filter_proxy->mapToSource(m_add_column_proxy->mapToSource(view_index));
-}
-
-QModelIndex CurveTree::map_from_source(const QModelIndex& animator_index) const
-{
-  return m_add_column_proxy->mapFromSource(m_sort_filter_proxy->mapFromSource(animator_index));
 }
 
 }  // namespace omm

@@ -50,7 +50,7 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRe
     return;
   }
 
-  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_animator(index.siblingAtColumn(0));
   assert(!sindex.isValid() || sindex.model() == &m_animator);
 
   const auto visibility = m_animator.visit_item(sindex, [this](auto&& item) {
@@ -81,7 +81,7 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRe
 void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
 {
   is_active = true;
-  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_animator(index.siblingAtColumn(0));
   if (sindex.isValid()) {
     if ((event.modifiers() & Qt::ControlModifier) != 0u) {
       is_active = false;
@@ -96,7 +96,7 @@ void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
 
 void VisibilityArea::perform(const QModelIndex& index, [[maybe_unused]] QMouseEvent& event)
 {
-  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_animator(index.siblingAtColumn(0));
   if (sindex.isValid()) {
     m_animator.visit_item(sindex, [this](auto&& item) { m_view.set_visible(item, m_visibility); });
   }

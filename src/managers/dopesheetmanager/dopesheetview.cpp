@@ -5,77 +5,20 @@
 #include "logging.h"
 #include "managers/dopesheetmanager/dopesheetheader.h"
 #include "managers/dopesheetmanager/trackviewdelegate.h"
+#include "managers/dopesheetmanager/dopesheetproxymodel.h"
 #include "properties/property.h"
 #include "proxychain.h"
-#include <KF5/KItemModels/KExtraColumnsProxyModel>
 #include <QHeaderView>
 #include <QMouseEvent>
 #include <QPainter>
 #include <memory>
 
-namespace
-{
-class ChopProxyModel : public QIdentityProxyModel
-{
-public:
-  [[nodiscard]] int rowCount(const QModelIndex& index) const override
-  {
-    using namespace omm;
-    const auto* const animator = this->animator();
-    if (animator == nullptr
-        || Animator::index_type(mapToSource(index)) == Animator::IndexType::Property) {
-      return 0;
-    } else {
-      return QIdentityProxyModel::rowCount(index);
-    }
-  }
-
-  [[nodiscard]] bool hasChildren(const QModelIndex& index) const override
-  {
-    using namespace omm;
-    const auto* const animator = this->animator();
-    if (animator == nullptr
-        || Animator::index_type(mapToSource(index)) == Animator::IndexType::Property) {
-      return false;
-    } else {
-      return QIdentityProxyModel::hasChildren(index);
-    }
-  }
-
-private:
-  [[nodiscard]] omm::Animator* animator() const
-  {
-    return dynamic_cast<omm::Animator*>(sourceModel());
-  }
-};
-
-class AddColumnProxy : public KExtraColumnsProxyModel
-{
-public:
-  explicit AddColumnProxy()
-  {
-    appendColumn();
-  }
-
-  [[nodiscard]] QVariant extraColumnData([[maybe_unused]] const QModelIndex& parent,
-                                         [[maybe_unused]] int row,
-                                         [[maybe_unused]] int extraColumn,
-                                         [[maybe_unused]] int role) const override
-  {
-    // the extra column displays a delegate which does not rely on data.
-    return QVariant();
-  }
-};
-
-}  // namespace
 
 namespace omm
 {
 DopeSheetView::DopeSheetView(Animator& animator)
     : ItemProxyView<QTreeView>(
-        std::make_unique<ProxyChain>(ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(
-            std::make_unique<ChopProxyModel>(),
-            std::make_unique<AddColumnProxy>()))),
+        std::make_unique<ProxyModel>()),
       m_animator(animator), m_canvas(m_animator, *this)
 {
   setModel(&animator);
