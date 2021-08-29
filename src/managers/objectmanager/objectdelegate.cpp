@@ -10,11 +10,9 @@ namespace omm
 {
 
 ObjectDelegate::ObjectDelegate(ObjectTreeView& object_tree_view,
-                               ObjectTreeSelectionModel& selection_model,
-                               ObjectTree& proxy_chain)
+                               ObjectTreeSelectionModel& selection_model)
     : m_object_tree_view(object_tree_view)
     , m_selection_model(selection_model)
-    , m_proxy_chain(proxy_chain)
 {
 }
 

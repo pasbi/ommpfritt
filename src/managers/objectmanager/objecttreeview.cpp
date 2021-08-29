@@ -74,7 +74,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
 
   update_tag_column_size();
 
-  auto object_delegate = std::make_unique<ObjectDelegate>(*this, *m_selection_model, model);
+  auto object_delegate = std::make_unique<ObjectDelegate>(*this, *m_selection_model);
   m_object_delegate = object_delegate.get();
   setItemDelegateForColumn(0, object_delegate.release());
 }
