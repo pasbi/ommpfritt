@@ -8,6 +8,7 @@ namespace omm
 
 CurveManagerProxyModel::CurveManagerProxyModel(Animator& animator) : m_animator(animator)
 {
+  setSourceModel(&animator);
 }
 
 bool CurveManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
@@ -33,15 +34,9 @@ bool CurveManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex&
   }
 }
 
-int CurveManagerProxyModel::columnCount(const QModelIndex &parent) const
+int CurveManagerProxyModel::columnCount(const QModelIndex&) const
 {
-  const auto* const source = sourceModel();
-  if (source == nullptr) {
-    return 0;
-  } else {
-    assert(source->columnCount(parent) == Animator::COLUMN_COUNT);
-    return Animator::COLUMN_COUNT + 1;
-  }
+  return Animator::COLUMN_COUNT + 1;
 }
 
 QVariant CurveManagerProxyModel::data(const QModelIndex &proxyIndex, int role) const

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "managers/timeline/timelinecanvas.h"
-#include "widgets/itemproxyview.h"
 #include <QTreeView>
 #include <set>
 
@@ -10,12 +9,14 @@ namespace omm
 class Animator;
 class Track;
 class TrackViewDelegate;
+class DopeSheetProxyModel;
 
-class DopeSheetView : public ItemProxyView<QTreeView>
+class DopeSheetView : public QTreeView
 {
   Q_OBJECT
 public:
   explicit DopeSheetView(Animator& animator);
+  ~DopeSheetView() override;
 
 public:
   void update_second_column(omm::Track& track);
@@ -47,7 +48,10 @@ private:
     DopeSheetView& m_self;
   };
 
+  friend class TimelineCanvasC;
+
   mutable TimelineCanvasC m_canvas;
+  std::unique_ptr<DopeSheetProxyModel> m_proxy_model;
 };
 
 }  // namespace omm

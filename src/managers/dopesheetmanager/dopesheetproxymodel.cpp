@@ -1,4 +1,5 @@
 #include "managers/dopesheetmanager/dopesheetproxymodel.h"
+#include "animation/animator.h"
 
 namespace
 {
@@ -13,31 +14,23 @@ bool is_property_item(const QModelIndex& index)
 namespace omm
 {
 
-ProxyModel::ProxyModel()
-  : ProxyChain(ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(
-            std::make_unique<DopeSheetProxyModel>()))
+DopeSheetProxyModel::DopeSheetProxyModel(Animator& animator) : m_animator(animator)
 {
+  setSourceModel(&animator);
 }
 
 int DopeSheetProxyModel::rowCount(const QModelIndex& index) const
 {
-  const auto* const animator = this->animator();
-  if (animator == nullptr || is_property_item(mapToSource(index))) {
+  if (is_property_item(mapToSource(index))) {
     return 0;
   } else {
     return QIdentityProxyModel::rowCount(index);
   }
 }
 
-int DopeSheetProxyModel::columnCount(const QModelIndex &parent) const
+int DopeSheetProxyModel::columnCount(const QModelIndex&) const
 {
-  const auto* const source = sourceModel();
-  if (source == nullptr) {
-    return 0;
-  } else {
-    assert(source->columnCount(parent) == Animator::COLUMN_COUNT);
-    return Animator::COLUMN_COUNT + 1;
-  }
+  return Animator::COLUMN_COUNT + 1;
 }
 
 QVariant DopeSheetProxyModel::data(const QModelIndex &proxyIndex, int role) const
@@ -51,17 +44,16 @@ QVariant DopeSheetProxyModel::data(const QModelIndex &proxyIndex, int role) cons
 
 bool DopeSheetProxyModel::hasChildren(const QModelIndex& index) const
 {
-  const auto* const animator = this->animator();
-  if (animator == nullptr || is_property_item(mapToSource(index))) {
+  if (is_property_item(mapToSource(index))) {
     return false;
   } else {
     return QIdentityProxyModel::hasChildren(index);
   }
 }
 
-Animator* DopeSheetProxyModel::animator() const
+Animator& DopeSheetProxyModel::animator() const
 {
-  return dynamic_cast<omm::Animator*>(sourceModel());
+  return m_animator;
 }
 
 }  // namespace omm

@@ -25,7 +25,6 @@ CurveTree::CurveTree(Scene& scene)
           m_proxy_model.get(),
           &QSortFilterProxyModel::invalidate);
 
-  m_proxy_model->setSourceModel(&scene.animator());
   setModel(m_proxy_model.get());
 
   setItemDelegateForColumn(m_quick_access_delegate_column, m_quick_access_delegate.get());

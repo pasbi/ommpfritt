@@ -17,11 +17,11 @@
 namespace omm
 {
 DopeSheetView::DopeSheetView(Animator& animator)
-    : ItemProxyView<QTreeView>(
-        std::make_unique<ProxyModel>()),
-      m_animator(animator), m_canvas(m_animator, *this)
+  : m_animator(animator)
+  , m_canvas(m_animator, *this)
+  , m_proxy_model(std::make_unique<DopeSheetProxyModel>(animator))
 {
-  setModel(&animator);
+  setModel(m_proxy_model.get());
   setHeader(std::make_unique<DopeSheetHeader>(m_canvas).release());
   auto track_view_delegate = std::make_unique<TrackViewDelegate>(*this, m_canvas);
   m_track_view_delegate = track_view_delegate.get();
@@ -45,6 +45,8 @@ DopeSheetView::DopeSheetView(Animator& animator)
   connect(&m_canvas, &TimelineCanvasC::current_frame_changed, &m_animator, &Animator::set_current);
   setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 }
+
+DopeSheetView::~DopeSheetView() = default;
 
 void DopeSheetView::update_second_column(Track& track)
 {
@@ -126,13 +128,13 @@ void DopeSheetView::TimelineCanvasC::disable_context_menu()
 QRect DopeSheetView::TimelineCanvasC::track_rect(Track& track)
 {
   const QModelIndex index
-      = m_self.model()->mapFromSource(m_self.m_animator.index(track.property()));
+      = m_self.m_proxy_model->mapFromSource(m_self.m_animator.index(track.property()));
   return m_self.visualRect(index.siblingAtColumn(1));
 }
 
 QRect DopeSheetView::TimelineCanvasC::owner_rect(AbstractPropertyOwner& owner)
 {
-  const QModelIndex index = m_self.model()->mapFromSource(m_self.m_animator.index(owner));
+  const QModelIndex index = m_self.m_proxy_model->mapFromSource(m_self.m_animator.index(owner));
   return m_self.visualRect(index.siblingAtColumn(1));
 }
 
