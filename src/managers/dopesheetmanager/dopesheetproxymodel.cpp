@@ -16,7 +16,7 @@ namespace omm
 
 DopeSheetProxyModel::DopeSheetProxyModel(Animator& animator) : m_animator(animator)
 {
-  setSourceModel(&animator);
+  QIdentityProxyModel::setSourceModel(&animator);
 }
 
 int DopeSheetProxyModel::rowCount(const QModelIndex& index) const

@@ -10,15 +10,24 @@
 #include "managers/curvemanager/curvemanagerproxymodel.h"
 #include "animation/animator.h"
 
+namespace
+{
+
+constexpr int QUICK_ACCESS_DELEGATE_COLUMN = 1;
+constexpr int QUICK_ACCESS_DELEGATE_WIDTH = 20;
+
+}  // namespace
+
+
 namespace omm
 {
 
 CurveTree::CurveTree(Scene& scene)
-    : m_scene(scene),
-      m_quick_access_delegate(
-          std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this)),
-      m_proxy_model(std::make_unique<CurveManagerProxyModel>(scene.animator())),
-      m_expand_memory(*this, [this](const QModelIndex& index) { return map_to_animator(index); })
+    : m_scene(scene)
+    , m_quick_access_delegate(
+          std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this))
+    , m_proxy_model(std::make_unique<CurveManagerProxyModel>(scene.animator()))
+    , m_expand_memory(*this, [this](const QModelIndex& index) { return map_to_animator(index); })
 {
   connect(&scene.mail_box(),
           &MailBox::selection_changed,
@@ -27,7 +36,7 @@ CurveTree::CurveTree(Scene& scene)
 
   setModel(m_proxy_model.get());
 
-  setItemDelegateForColumn(m_quick_access_delegate_column, m_quick_access_delegate.get());
+  setItemDelegateForColumn(QUICK_ACCESS_DELEGATE_COLUMN, m_quick_access_delegate.get());
   header()->setSectionResizeMode(QHeaderView::Fixed);
   header()->hide();
 
@@ -176,15 +185,15 @@ void CurveTree::resizeEvent(QResizeEvent* event)
 {
   const int width = viewport()->width();
   static constexpr int gap = 6;
-  header()->resizeSection(0, width - quick_access_delegate_width - gap);
-  header()->resizeSection(1, quick_access_delegate_width);
+  header()->resizeSection(0, width - QUICK_ACCESS_DELEGATE_WIDTH - gap);
+  header()->resizeSection(1, QUICK_ACCESS_DELEGATE_WIDTH);
   QTreeView::resizeEvent(event);
 }
 
 void CurveTree::mousePressEvent(QMouseEvent* event)
 {
   m_mouse_down_index = indexAt(event->pos());
-  if (m_mouse_down_index.column() == m_quick_access_delegate_column) {
+  if (m_mouse_down_index.column() == QUICK_ACCESS_DELEGATE_COLUMN) {
     m_quick_access_delegate->on_mouse_button_press(*event);
   } else {
     QTreeView::mousePressEvent(event);
@@ -193,7 +202,7 @@ void CurveTree::mousePressEvent(QMouseEvent* event)
 
 void CurveTree::mouseMoveEvent(QMouseEvent* event)
 {
-  if (m_mouse_down_index.column() == m_quick_access_delegate_column) {
+  if (m_mouse_down_index.column() == QUICK_ACCESS_DELEGATE_COLUMN) {
     m_quick_access_delegate->on_mouse_move(*event);
   } else {
     QTreeView::mouseMoveEvent(event);
@@ -208,10 +217,10 @@ void CurveTree::mouseReleaseEvent(QMouseEvent* event)
 
 void CurveTree::notify_second_column_changed(const QModelIndex& sindex)
 {
-  QModelIndex index = map_from_animator(sindex).siblingAtColumn(m_quick_access_delegate_column);
+  QModelIndex index = map_from_animator(sindex).siblingAtColumn(QUICK_ACCESS_DELEGATE_COLUMN);
   while (index.isValid()) {
     Q_EMIT m_proxy_model->dataChanged(index, index);
-    index = index.parent().siblingAtColumn(m_quick_access_delegate_column);
+    index = index.parent().siblingAtColumn(QUICK_ACCESS_DELEGATE_COLUMN);
   }
   Q_EMIT visibility_changed();
 }

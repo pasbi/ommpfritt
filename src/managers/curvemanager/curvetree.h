@@ -27,7 +27,6 @@ public:
   CurveTree(const CurveTree&) = delete;
   CurveTree& operator=(CurveTree&&) = delete;
   CurveTree& operator=(const CurveTree&) = delete;
-  static constexpr int quick_access_delegate_width = 20;
   enum class Visibility { Undetermined, Visible, Hidden };
 
   Visibility is_visible(AbstractPropertyOwner& apo) const;
@@ -55,7 +54,6 @@ private:
   std::map<Property*, bool> m_property_expanded;
   std::map<std::pair<Property*, std::size_t>, bool> m_channel_visible;
   Scene& m_scene;
-  static constexpr int m_quick_access_delegate_column = 1;
   std::unique_ptr<QuickAccessDelegate> m_quick_access_delegate;
   QModelIndex m_mouse_down_index;
   void notify_second_column_changed(const QModelIndex& sindex);

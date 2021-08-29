@@ -8,7 +8,7 @@ namespace omm
 
 CurveManagerProxyModel::CurveManagerProxyModel(Animator& animator) : m_animator(animator)
 {
-  setSourceModel(&animator);
+  QSortFilterProxyModel::setSourceModel(&animator);
 }
 
 bool CurveManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
@@ -42,10 +42,50 @@ int CurveManagerProxyModel::columnCount(const QModelIndex&) const
 QVariant CurveManagerProxyModel::data(const QModelIndex &proxyIndex, int role) const
 {
   if (proxyIndex.column() == Animator::COLUMN_COUNT) {
-    return QVariant();
+    return {};
   } else {
     return QSortFilterProxyModel::data(proxyIndex, role);
   }
 }
+
+QModelIndex CurveManagerProxyModel::parent(const QModelIndex& child) const
+{
+  if (child.column() >= Animator::COLUMN_COUNT) {
+    const auto proxy_sibling = createIndex(child.row(), 0, child.internalPointer());
+    return QSortFilterProxyModel::parent(proxy_sibling);
+  } else {
+    return QSortFilterProxyModel::parent(child);
+  }
+}
+
+QModelIndex CurveManagerProxyModel::index(int row, int column, const QModelIndex &parent) const
+{
+  if (column < Animator::COLUMN_COUNT) {
+    return QSortFilterProxyModel::index(row, column, parent);
+  } else {
+    const auto sibling = QSortFilterProxyModel::index(row, 0,  parent);
+    return createIndex(row, column, sibling.internalPointer());
+  }
+}
+
+QModelIndex CurveManagerProxyModel::sibling(int row, int column, const QModelIndex& idx) const
+{
+  if (row == idx.row() && column == idx.column()) {
+    return idx;
+  } else {
+    return index(row, column, parent(idx));
+  }
+}
+
+QModelIndex CurveManagerProxyModel::mapToSource(const QModelIndex& index) const
+{
+  if (index.column() >= Animator::COLUMN_COUNT) {
+    return QSortFilterProxyModel::mapToSource(index.siblingAtColumn(0));
+  } else {
+    return QSortFilterProxyModel::mapToSource(index);
+  }
+}
+
+
 
 }  // namespace omm
