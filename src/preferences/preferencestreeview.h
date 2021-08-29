@@ -1,6 +1,5 @@
 #pragma once
 
-#include "widgets/itemproxyview.h"
 #include <QItemDelegate>
 #include <QKeySequenceEdit>
 #include <QTreeView>

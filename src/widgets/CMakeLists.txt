@@ -9,7 +9,6 @@ target_sources(libommpfritt PRIVATE
   coordinateedit.h
   filepathedit.cpp
   filepathedit.h
-  itemproxyview.cpp
   multitabbar.cpp
   multitabbar.h
   numericedit.cpp

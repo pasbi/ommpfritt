@@ -7,7 +7,6 @@
 #include "managers/dopesheetmanager/trackviewdelegate.h"
 #include "managers/dopesheetmanager/dopesheetproxymodel.h"
 #include "properties/property.h"
-#include "proxychain.h"
 #include <QHeaderView>
 #include <QMouseEvent>
 #include <QPainter>
