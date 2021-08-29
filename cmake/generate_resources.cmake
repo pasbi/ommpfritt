@@ -78,7 +78,7 @@ function(generate_resources)
   message("qrc files: ${qrc_files}")
   add_custom_command(
     OUTPUT "${compiled_resource_file}"
-    COMMAND Qt5::rcc -o "${compiled_resource_file}" ${qrc_files}
+    COMMAND Qt::rcc -o "${compiled_resource_file}" ${qrc_files}
     COMMAND_EXPAND_LISTS
     DEPENDS ${qrc_files} ${rcc_dependencies}
     COMMENT "Compile ${compiled_resource_file} from ${qrc_files}"
