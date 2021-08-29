@@ -9,6 +9,6 @@ target_sources(libommpfritt PRIVATE
   curvemanagerproxymodel.h
   curvemanagerquickaccessdelegate.cpp
   curvemanagerquickaccessdelegate.h
-  curvetree.cpp
-  curvetree.h
+  curvetreeview.cpp
+  curvetreeview.h
 )

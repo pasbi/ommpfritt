@@ -8,13 +8,13 @@
 namespace omm
 {
 class Manager;
-class CurveTree;
+class CurveTreeView;
 
 class CurveManagerWidget : public QWidget
 {
   Q_OBJECT
 public:
-  explicit CurveManagerWidget(Scene& scene, const CurveTree& curve_tree);
+  explicit CurveManagerWidget(Scene& scene, const CurveTreeView& curve_tree);
   void set_selection_locked(bool locked);
 
 protected:
@@ -27,7 +27,7 @@ protected:
 private:
   WidgetRange2D range;
   Scene& m_scene;
-  const CurveTree& m_curve_tree;
+  const CurveTreeView& m_curve_tree;
   bool m_selection_locked = false;
   std::set<Track*> m_tracks;
   QPoint m_mouse_down_pos;

@@ -2,7 +2,7 @@
 #include "animation/animator.h"
 #include "commands/keyframecommand.h"
 #include "main/application.h"
-#include "managers/curvemanager/curvetree.h"
+#include "managers/curvemanager/curvetreeview.h"
 #include "managers/manager.h"
 #include "managers/panzoomcontroller.h"
 #include "properties/numericproperty.h"
@@ -45,7 +45,7 @@ constexpr int DEFAULT_MAX_V = 10;
 
 namespace omm
 {
-CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree)
+CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTreeView& curve_tree)
     : range({DEFAULT_MIN_H, DEFAULT_MIN_V},
             {DEFAULT_MAX_H, DEFAULT_MAX_V},
             *this,
@@ -62,7 +62,7 @@ CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree
   connect(&scene.animator(), &Animator::knot_moved, this, &CurveManagerWidget::move_knot);
   setFocusPolicy(Qt::StrongFocus);
   connect(&curve_tree,
-          &CurveTree::visibility_changed,
+          &CurveTreeView::visibility_changed,
           this,
           qOverload<>(&CurveManagerWidget::update));
   connect(&scene.animator(),
@@ -275,7 +275,7 @@ bool CurveManagerWidget::is_visible(const CurveManagerWidget::KeyFrameHandleKey&
 
 bool CurveManagerWidget::is_visible(const Track& track, std::size_t channel) const
 {
-  return m_curve_tree.is_visible({&track.property(), channel}) == CurveTree::Visibility::Visible;
+  return m_curve_tree.is_visible({&track.property(), channel}) == CurveTreeView::Visibility::Visible;
 }
 
 const CurveManagerWidget::KeyFrameHandleKey*

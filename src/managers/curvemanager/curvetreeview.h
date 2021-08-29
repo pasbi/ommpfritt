@@ -17,16 +17,16 @@ class AbstractPropertyOwner;
 class Property;
 class ChannelProxy;
 
-class CurveTree : public QTreeView
+class CurveTreeView : public QTreeView
 {
   Q_OBJECT
 public:
-  explicit CurveTree(Scene& scene);
-  ~CurveTree() override;
-  CurveTree(CurveTree&&) = delete;
-  CurveTree(const CurveTree&) = delete;
-  CurveTree& operator=(CurveTree&&) = delete;
-  CurveTree& operator=(const CurveTree&) = delete;
+  explicit CurveTreeView(Scene& scene);
+  ~CurveTreeView() override;
+  CurveTreeView(CurveTreeView&&) = delete;
+  CurveTreeView(const CurveTreeView&) = delete;
+  CurveTreeView& operator=(CurveTreeView&&) = delete;
+  CurveTreeView& operator=(const CurveTreeView&) = delete;
   enum class Visibility { Undetermined, Visible, Hidden };
 
   Visibility is_visible(AbstractPropertyOwner& apo) const;

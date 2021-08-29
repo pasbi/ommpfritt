@@ -2,7 +2,7 @@
 #include "animation/animator.h"
 #include "managers/curvemanager/curvemanagertitlebar.h"
 #include "managers/curvemanager/curvemanagerwidget.h"
-#include "managers/curvemanager/curvetree.h"
+#include "managers/curvemanager/curvetreeview.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <QEvent>
@@ -12,13 +12,14 @@
 
 namespace omm
 {
+
 CurveManager::CurveManager(Scene& scene) : Manager(tr("Curves"), scene)
 {
   auto title_bar = std::make_unique<CurveManagerTitleBar>(*this);
   m_title_bar = title_bar.get();
   setTitleBarWidget(title_bar.release());
 
-  auto tree_widget = std::make_unique<CurveTree>(scene);
+  auto tree_widget = std::make_unique<CurveTreeView>(scene);
   auto curve_manager_widget = std::make_unique<CurveManagerWidget>(scene, *tree_widget);
   m_widget = curve_manager_widget.get();
 
