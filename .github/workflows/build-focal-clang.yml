@@ -90,4 +90,5 @@ jobs:
         with:
           name: build
       - run: tar -xf omm-build.tar
-      - run: ctest --test-dir omm-build --output-on-failure
+      - run: find .
+      - run: ctest --test-dir omm-build --output-on-failure --no-tests=error
