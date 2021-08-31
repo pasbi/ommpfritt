@@ -3,17 +3,16 @@
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "preferences/uicolors.h"
-#include "proxychain.h"
 #include <QIdentityProxyModel>
 #include <QPainter>
 
 namespace omm
 {
+
 ObjectDelegate::ObjectDelegate(ObjectTreeView& object_tree_view,
-                               ObjectTreeSelectionModel& selection_model,
-                               ProxyChain& proxy_chain)
-    : m_object_tree_view(object_tree_view), m_selection_model(selection_model),
-      m_proxy_chain(proxy_chain)
+                               ObjectTreeSelectionModel& selection_model)
+    : m_object_tree_view(object_tree_view)
+    , m_selection_model(selection_model)
 {
 }
 
@@ -31,7 +30,7 @@ void ObjectDelegate::paint(QPainter* painter,
 
   {  // background
     const bool is_selected = [this, index]() {
-      const bool is_selected = m_selection_model.isSelected(m_proxy_chain.mapToChainSource(index));
+      const bool is_selected = m_selection_model.isSelected(index);
       const bool is_tmp_selected = ::contains(tmp_selection, index);
       switch (selection_flag) {
       case QItemSelectionModel::Select:

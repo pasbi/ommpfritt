@@ -17,17 +17,16 @@ class AbstractPropertyOwner;
 class Property;
 class ChannelProxy;
 
-class CurveTree : public QTreeView
+class CurveTreeView : public QTreeView
 {
   Q_OBJECT
 public:
-  explicit CurveTree(Scene& scene);
-  ~CurveTree() override;
-  CurveTree(CurveTree&&) = delete;
-  CurveTree(const CurveTree&) = delete;
-  CurveTree& operator=(CurveTree&&) = delete;
-  CurveTree& operator=(const CurveTree&) = delete;
-  static constexpr int quick_access_delegate_width = 20;
+  explicit CurveTreeView(Scene& scene);
+  ~CurveTreeView() override;
+  CurveTreeView(CurveTreeView&&) = delete;
+  CurveTreeView(const CurveTreeView&) = delete;
+  CurveTreeView& operator=(CurveTreeView&&) = delete;
+  CurveTreeView& operator=(const CurveTreeView&) = delete;
   enum class Visibility { Undetermined, Visible, Hidden };
 
   Visibility is_visible(AbstractPropertyOwner& apo) const;
@@ -41,8 +40,8 @@ public:
   void set_visible(const ChannelProxy& channel, bool visible);
   void hide_everything();
 
-  QModelIndex map_to_source(const QModelIndex& view_index) const;
-  QModelIndex map_from_source(const QModelIndex& animator_index) const;
+  QModelIndex map_to_animator(const QModelIndex& view_index) const;
+  QModelIndex map_from_animator(const QModelIndex& animator_index) const;
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
@@ -55,12 +54,10 @@ private:
   std::map<Property*, bool> m_property_expanded;
   std::map<std::pair<Property*, std::size_t>, bool> m_channel_visible;
   Scene& m_scene;
-  static constexpr int m_quick_access_delegate_column = 1;
   std::unique_ptr<QuickAccessDelegate> m_quick_access_delegate;
   QModelIndex m_mouse_down_index;
   void notify_second_column_changed(const QModelIndex& sindex);
-  std::unique_ptr<QSortFilterProxyModel> m_sort_filter_proxy;
-  std::unique_ptr<QAbstractProxyModel> m_add_column_proxy;
+  std::unique_ptr<QSortFilterProxyModel> m_proxy_model;
 
   TreeExpandMemory m_expand_memory;
 

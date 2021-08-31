@@ -253,7 +253,7 @@ int Animator::rowCount(const QModelIndex& parent) const
 
 int Animator::columnCount(const QModelIndex&) const
 {
-  return 1;
+  return COLUMN_COUNT;
 }
 
 QVariant Animator::data(const QModelIndex& index, int role) const

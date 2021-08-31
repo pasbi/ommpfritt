@@ -1,7 +1,6 @@
 #include "managers/historymanager/historymanager.h"
 #include "scene/history/historymodel.h"
 #include "scene/scene.h"
-#include "widgets/itemproxyview.h"
 #include <QListView>
 
 namespace omm

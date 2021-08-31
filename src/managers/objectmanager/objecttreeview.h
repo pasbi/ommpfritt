@@ -6,7 +6,6 @@
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "managers/objectmanager/tagsitemdelegate.h"
 #include "scene/objecttree.h"
-#include "widgets/itemproxyview.h"
 #include <QTreeView>
 
 namespace omm
@@ -14,7 +13,7 @@ namespace omm
 class ObjectDelegate;
 class Object;
 
-class ObjectTreeView : public ManagerItemView<ItemProxyView<QTreeView>, ObjectTree>
+class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTree>
 {
   Q_OBJECT
 public:

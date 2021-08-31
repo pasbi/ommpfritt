@@ -4,7 +4,7 @@
 #include "animation/animator.h"
 #include "logging.h"
 #include "main/application.h"
-#include "managers/curvemanager/curvetree.h"
+#include "managers/curvemanager/curvetreeview.h"
 #include "scene/scene.h"
 #include <QMouseEvent>
 #include <QPainter>
@@ -14,14 +14,14 @@ namespace
 class VisibilityArea : public omm::QuickAccessDelegate::Area
 {
 public:
-  VisibilityArea(omm::CurveTree& view, omm::Animator& animator, const QRectF& area);
+  VisibilityArea(omm::CurveTreeView& view, omm::Animator& animator, const QRectF& area);
   void draw(QPainter& painter, const QModelIndex& index, const QRectF& rect) override;
   void begin(const QModelIndex& index, QMouseEvent& event) override;
   void perform(const QModelIndex& index, QMouseEvent& event) override;
   void end() override;
 
 private:
-  omm::CurveTree& m_view;
+  omm::CurveTreeView& m_view;
   omm::Animator& m_animator;
   bool m_visibility = false;
 };
@@ -31,7 +31,7 @@ private:
 namespace omm
 {
 CurveManagerQuickAccessDelegate::CurveManagerQuickAccessDelegate(Animator& animator,
-                                                                 CurveTree& view)
+                                                                 CurveTreeView& view)
     : QuickAccessDelegate(view)
 {
   add_area(std::make_unique<VisibilityArea>(view, animator, QRectF(0.0, 0.0, 1.0, 1.0)));
@@ -39,7 +39,7 @@ CurveManagerQuickAccessDelegate::CurveManagerQuickAccessDelegate(Animator& anima
 
 }  // namespace omm
 
-VisibilityArea::VisibilityArea(omm::CurveTree& view, omm::Animator& animator, const QRectF& area)
+VisibilityArea::VisibilityArea(omm::CurveTreeView& view, omm::Animator& animator, const QRectF& area)
     : omm::QuickAccessDelegate::Area(area), m_view(view), m_animator(animator)
 {
 }
@@ -50,7 +50,7 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRe
     return;
   }
 
-  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_animator(index.siblingAtColumn(0));
   assert(!sindex.isValid() || sindex.model() == &m_animator);
 
   const auto visibility = m_animator.visit_item(sindex, [this](auto&& item) {
@@ -61,11 +61,11 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRe
 
   auto icon = [visibility]() {
     switch (visibility) {
-    case CurveTree::Visibility::Visible:
+    case CurveTreeView::Visibility::Visible:
       return IconProvider::pixmap("visible");
-    case CurveTree::Visibility::Hidden:
+    case CurveTreeView::Visibility::Hidden:
       return IconProvider::pixmap("invisible");
-    case CurveTree::Visibility::Undetermined:
+    case CurveTreeView::Visibility::Undetermined:
       return IconProvider::pixmap("partly-visible");
     default:
       Q_UNREACHABLE();
@@ -81,14 +81,14 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRe
 void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
 {
   is_active = true;
-  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_animator(index.siblingAtColumn(0));
   if (sindex.isValid()) {
     if ((event.modifiers() & Qt::ControlModifier) != 0u) {
       is_active = false;
       m_view.hide_everything();
     }
     m_animator.visit_item(sindex, [this](auto&& item) {
-      m_visibility = omm::CurveTree::Visibility::Visible != m_view.is_visible(item);
+      m_visibility = omm::CurveTreeView::Visibility::Visible != m_view.is_visible(item);
       m_view.set_visible(item, m_visibility);
     });
   }
@@ -96,7 +96,7 @@ void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
 
 void VisibilityArea::perform(const QModelIndex& index, [[maybe_unused]] QMouseEvent& event)
 {
-  const QModelIndex sindex = m_view.map_to_source(index.siblingAtColumn(0));
+  const QModelIndex sindex = m_view.map_to_animator(index.siblingAtColumn(0));
   if (sindex.isValid()) {
     m_animator.visit_item(sindex, [this](auto&& item) { m_view.set_visible(item, m_visibility); });
   }

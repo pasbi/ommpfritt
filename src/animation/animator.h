@@ -59,6 +59,7 @@ public:
   static constexpr auto START_FRAME_POINTER = "start-frame";
   static constexpr auto END_FRAME_POINTER = "end-frame";
   static constexpr auto CURRENT_FRAME_POINTER = "current-frame";
+  static constexpr auto COLUMN_COUNT = 1;
 
   Scene& scene;
 

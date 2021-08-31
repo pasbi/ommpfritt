@@ -16,7 +16,6 @@ option(BUILD_TRANSLATION "Build translations of the application." ON)
 find_package(Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
 find_package(PkgConfig)
 find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
-find_package(KF5ItemModels REQUIRED)
 find_package(2Geom REQUIRED)
 find_package(fmt 8.0.0 REQUIRED)
 

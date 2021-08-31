@@ -5,12 +5,12 @@
 namespace omm
 {
 class Animator;
-class CurveTree;
+class CurveTreeView;
 
 class CurveManagerQuickAccessDelegate : public QuickAccessDelegate
 {
 public:
-  explicit CurveManagerQuickAccessDelegate(Animator& animator, CurveTree& view);
+  explicit CurveManagerQuickAccessDelegate(Animator& animator, CurveTreeView& view);
 };
 
 }  // namespace omm

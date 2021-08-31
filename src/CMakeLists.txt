@@ -16,8 +16,6 @@ target_sources(libommpfritt PRIVATE
   orderedmap.h
   variant.cpp
   variant.h
-  proxychain.cpp
-  proxychain.h
   splinetype.cpp
   splinetype.h
   abstractfactory.h

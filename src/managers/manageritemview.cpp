@@ -30,7 +30,7 @@ ManagerItemView<ItemViewT, ItemModelT>::ManagerItemView(ItemModelT& model)
 template<typename ItemViewT, typename ItemModelT>
 ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 {
-  return static_cast<ItemModelT*>(ItemViewT::model()->chainSourceModel());
+  return static_cast<ItemModelT*>(ItemViewT::model());
 }
 
 template<typename ItemViewT, typename ItemModelT>
@@ -103,7 +103,7 @@ std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selecte
   return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);
 }
 
-template class ManagerItemView<ItemProxyView<QListView>, StyleList>;
-template class ManagerItemView<ItemProxyView<QTreeView>, ObjectTree>;
+template class ManagerItemView<QListView, StyleList>;
+template class ManagerItemView<QTreeView, ObjectTree>;
 
 }  // namespace omm

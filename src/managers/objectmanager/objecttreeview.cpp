@@ -74,8 +74,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
 
   update_tag_column_size();
 
-  auto& ipv_model = *ItemProxyView::model();  // clazy:exclude=skipped-base-method
-  auto object_delegate = std::make_unique<ObjectDelegate>(*this, *m_selection_model, ipv_model);
+  auto object_delegate = std::make_unique<ObjectDelegate>(*this, *m_selection_model);
   m_object_delegate = object_delegate.get();
   setItemDelegateForColumn(0, object_delegate.release());
 }
