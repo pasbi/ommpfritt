@@ -19,4 +19,4 @@ jobs:
                    -j4
       - run: find  omm-build
       - run: ctest --version
-      - run: ctest --test-dir omm-build --output-on-failure --no-tests=error; echo "rc $?"
+      - run: ctest --test-dir omm-build --output-on-failure --no-tests=error
