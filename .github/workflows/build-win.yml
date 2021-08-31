@@ -25,6 +25,7 @@ jobs:
       - run: cmake -S omm
                    -B $GITHUB_WORKSPACE/omm-build
                    -G"MSYS Makefiles"
+                   -DBUILD_TESTING=TRUE
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dependencies
                    -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/omm-install
