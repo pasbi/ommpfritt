@@ -103,11 +103,6 @@ execute_process(COMMAND ${qt5_qmake_location} -query QT_INSTALL_TRANSLATIONS
 
 add_subdirectory(src)
 
-if (BUILD_TESTING)
-  include(CTest)
-  add_subdirectory(test)
-endif()
-
 # For some reason it insists in having that RUNTIME DESTINATION, although it uses cmake 3.16 and
 # the documentation says it's not required.
 # However, having it does not seem to change anything else, so there's no reason not to have it.
@@ -123,6 +118,11 @@ endif()
 
 include(generate_resources)
 generate_resources()
+
+if (BUILD_TESTING)
+  include(CTest)
+  add_subdirectory(test)
+endif()
 
 include(Packaging)
 

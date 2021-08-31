@@ -17,4 +17,6 @@ jobs:
       - run: cmake --build omm-build
                    --config Release
                    -j4
-      - run: ctest --test-dir omm-build --output-on-failure
+      - run: find  omm-build
+      - run: ctest --version
+      - run: ctest --test-dir omm-build --output-on-failure --no-tests=error
