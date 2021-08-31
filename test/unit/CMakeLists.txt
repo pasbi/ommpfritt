@@ -30,14 +30,7 @@ macro(package_add_test SOURCE_FILE)
       target_compile_definitions(${TESTNAME} PRIVATE "GTEST_LINKED_AS_SHARED_LIBRARY=1")
     endif()
 
-    if (WIN32)
-        add_dependencies(${TESTNAME} copy_dlls)
-    endif()
-
-    gtest_discover_tests(${TESTNAME}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    )
+    gtest_discover_tests(${TESTNAME})
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 endmacro()
 
