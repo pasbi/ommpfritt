@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.13)
+cmake_minimum_required (VERSION 3.20)
 
 # Suppresses a warning in cmake 3.x concerning a currently unused feature (setting VERSION in project() command)
 if (POLICY CMP0048)
