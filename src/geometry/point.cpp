@@ -2,7 +2,6 @@
 #include "logging.h"
 #include "serializers/abstractserializer.h"
 #include <cmath>
-#include <ostream>
 
 namespace omm
 {
@@ -23,6 +22,7 @@ Point::Point(const Vec2f& position, const double rotation, const double tangent_
 Point::Point(const Vec2f& position) : Point(position, 0.0, 0.0)
 {
 }
+
 Point::Point() : Point(Vec2f::o())
 {
 }
@@ -108,32 +108,16 @@ Point Point::flattened(const double t) const
   return copy;
 }
 
-std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc)
-{
-  ostream << "[phi=" << pc.argument << ", r=" << pc.magnitude << "]";
-  return ostream;
-}
-
-std::ostream& operator<<(std::ostream& ostream, const Point& pc)
+QString Point::to_string() const
 {
   static constexpr bool verbose = false;
   if constexpr (verbose) {
-    ostream << "Point[[" << pc.position.x << ", " << pc.position.y << "], " << pc.left_tangent
-            << ", " << pc.right_tangent << "]";
+    return QString{"Point[%1, %2, %3]"}.arg(position.to_string(),
+                                            left_tangent.to_string(),
+                                            right_tangent.to_string());
   } else {
-    ostream << "[" << pc.position.x << ", " << pc.position.y << "]";
+    return QString{"[%1]"}.arg(position.to_string());
   }
-  return ostream;
-}
-
-std::ostream& operator<<(std::ostream& ostream, const Point* pc)
-{
-  if (pc == nullptr) {
-    ostream << "Point[nullptr]";
-  } else {
-    ostream << *pc;
-  }
-  return ostream;
 }
 
 bool Point::operator==(const Point& point) const

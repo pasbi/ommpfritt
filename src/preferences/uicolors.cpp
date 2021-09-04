@@ -10,7 +10,6 @@
 #include <QSettings>
 #include <QStyleFactory>
 #include <QWidget>
-#include <iostream>
 
 namespace
 {

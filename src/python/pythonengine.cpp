@@ -6,7 +6,6 @@
 #include "scene/scene.h"
 #include "tags/scripttag.h"
 #include <functional>
-#include <iostream>
 
 namespace py = pybind11;
 

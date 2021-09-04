@@ -60,34 +60,3 @@ void handle_log(QFile& logfile,
 void setup_logfile(QFile& logfile);
 
 }  // namespace omm
-
-template<template<typename> typename ContainerT, typename T>
-void stream_container(QDebug& ostream, const ContainerT<T>& vs, const QString& container_name)
-{
-  ostream << container_name << "(" << vs.size() << ")[";
-  for (auto it = vs.cbegin(); it != vs.cend(); ++it) {
-    if (it != vs.cbegin()) {
-      ostream << ", ";
-    }
-    ostream << *it;
-  }
-  ostream << "]";
-}
-
-template<typename T> QDebug operator<<(QDebug ostream, const std::vector<T>& vs)
-{
-  stream_container<std::vector, T>(ostream, vs, "vector");
-  return ostream;
-}
-
-template<typename T> QDebug operator<<(QDebug ostream, const std::set<T>& vs)
-{
-  stream_container<std::set, T>(ostream, vs, "set");
-  return ostream;
-}
-
-template<typename... T> QDebug operator<<(QDebug ostream, const std::unique_ptr<T...>& uptr)
-{
-  ostream << *uptr;
-  return ostream;
-}

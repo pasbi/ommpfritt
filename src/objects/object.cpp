@@ -233,20 +233,9 @@ void Object::set_virtual_parent(const Object* parent)
   m_virtual_parent = parent;
 }
 
-std::ostream& operator<<(std::ostream& ostream, const Object& object)
+QString Object::to_string() const
 {
-  ostream << object.type() << "[" << object.name() << "]";
-  return ostream;
-}
-
-std::ostream& operator<<(std::ostream& ostream, const Object* object)
-{
-  if (object != nullptr) {
-    ostream << *object;
-  } else {
-    ostream << "null-Object";
-  }
-  return ostream;
+  return QString("%1[%2]").arg(type(), name());
 }
 
 void Object::serialize(AbstractSerializer& serializer, const Pointer& root) const

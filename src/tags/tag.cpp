@@ -23,10 +23,9 @@ Tag::~Tag()
   assert(!::contains(owner->scene()->selection(), this));
 }
 
-std::ostream& operator<<(std::ostream& ostream, const Tag& tag)
+QString Tag::to_string() const
 {
-  ostream << tag.type() << "[" << tag.name() << "]";
-  return ostream;
+  return QString{"%1[%2]"}.arg(type(), name());
 }
 
 Flag Tag::flags() const

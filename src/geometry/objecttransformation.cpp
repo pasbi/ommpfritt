@@ -2,7 +2,6 @@
 #include <QTransform>
 #include <cassert>
 #include <cmath>
-#include <ostream>
 
 #include "geometry/objecttransformation.h"
 
@@ -171,14 +170,12 @@ Vec2f ObjectTransformation::null() const
   return apply_to_position(Vec2f::o());
 }
 
-QDebug& operator <<(QDebug& ostream, const ObjectTransformation& t)
+QString ObjectTransformation::to_string() const
 {
-  ostream << "[ t(" << t.translation().x << ", " << t.translation().y;
-  ostream << ") s(" << t.scaling().x << ", " << t.scaling().y;
-  ostream << ") sh(" << t.shearing();
-  static constexpr double degree_radians_factor = M_180_PI;
-  ostream << ") r(" << t.rotation() * degree_radians_factor << ") ]";
-  return ostream;
+  return QString{"[t=%1, s=%2, sh=%3, r=%4°]"}.arg(translation().to_string())
+                                              .arg(scaling().to_string())
+                                              .arg(shearing())
+                                              .arg(M_180_PI * rotation());
 }
 
 bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs)

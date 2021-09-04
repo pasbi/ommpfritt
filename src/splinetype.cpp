@@ -67,6 +67,12 @@ const std::map<SpInit, omm::SplineType::knot_map_type> predefined{
 
 namespace omm
 {
+
+QString SplineType::to_string() const
+{
+  return {};
+}
+
 SplineType::ControlPoint SplineType::begin()
 {
   return ControlPoint(knots, knots.begin(), Knot::Side::Middle);

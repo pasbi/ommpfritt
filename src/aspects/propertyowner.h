@@ -13,8 +13,6 @@ public:
   static constexpr Kind KIND = kind_;
 };
 
-std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo);
-
 template<typename T, typename S> T kind_cast(S s)
 {
   if (s != nullptr && s->kind == std::remove_pointer_t<T>::KIND) {

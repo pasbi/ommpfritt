@@ -433,23 +433,22 @@ bool operator<(const Color& a, const Color& b)
   }
 }
 
-std::ostream& operator<<(std::ostream& ostream, const Color& color)
+QString Color::to_string() const
 {
-  const QString id = [color]() {
-    if (color.model() == Color::Model::Named) {
-      return color.name();
+  const QString id = [this]() {
+    if (model() == Color::Model::Named) {
+      return name();
     } else {
       QStringList cs;
-      const auto components = color.components(color.model());
+      const auto components = this->components(model());
       for (std::size_t i = 0; i < components.size(); ++i) {
-        const auto component_name = Color::component_name(color.model(), i);
+        const auto component_name = Color::component_name(model(), i);
         cs.append(QString("%1: %2").arg(component_name, components.at(i)));
       }
       return cs.join(", ");
     }
   }();
-  ostream << QString("Color[%1]").arg(id).toStdString();
-  return ostream;
+  return QString("Color[%1]").arg(id);
 }
 
 }  // namespace omm

@@ -272,23 +272,6 @@ constexpr decltype(auto) conditional(T1&& t1, T2&& t2) noexcept
   }
 }
 
-template<std::size_t i = 0, typename variant_type>
-void print_variant_value(std::ostream& ostream, const variant_type& variant)
-{
-  if (i == variant.index()) {
-    if constexpr (std::is_same_v<std::variant_alternative_t<i, variant_type>, QString>) {
-      ostream << std::get<i>(variant).toStdString();
-    } else {
-      ostream << std::get<i>(variant);
-    }
-    return;
-  }
-
-  if constexpr (i + 1 < std::variant_size_v<variant_type>) {
-    print_variant_value<i + 1, variant_type>(ostream, variant);
-  }
-}
-
 template<typename T, typename S> decltype(auto) type_cast(S&& s)
 {
   if constexpr (std::is_pointer_v<std::decay_t<T>>) {
@@ -322,29 +305,15 @@ Container<T> type_casts(const Container<S>& apos)
   return ::filter_if(casted, ::is_not_null);
 }
 
-template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::vector<T>& vs)
+template<typename S, typename T, typename... Ts> constexpr bool typelist_contains() noexcept
 {
-  ostream << "[ ";
-  if (vs.size() > 0) {
-    ostream << vs[0];
-    for (std::size_t i = 1; i < vs.size(); ++i) {
-      ostream << ", " << vs[i];
-    }
+  if constexpr (std::is_same_v<S, T>) {
+    return true;
+  } else if constexpr (sizeof... (Ts) == 0) {
+    return false;
+  } else {
+    return typelist_contains<S, Ts...>();
   }
-  ostream << " ]";
-  return ostream;
-}
-
-template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::list<T>& vs)
-{
-  ostream << std::vector(vs.begin(), vs.end());
-  return ostream;
-}
-
-template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::set<T>& vs)
-{
-  ostream << std::vector(vs.begin(), vs.end());
-  return ostream;
 }
 
 template<typename K, typename V> std::set<K> get_keys(const std::map<K, V>& map)
@@ -482,6 +451,24 @@ enum class Space { Viewport, Scene };
 
 constexpr double M_180_PI = 180.0 * M_1_PI;
 constexpr double M_PI_180 = M_PI / 180.0;
+
+template<typename Cs>
+QString join(const Cs& ts, const std::function<QString(const typename Cs::value_type&)>& to_string)
+{
+  if (ts.empty()) {
+    return {};
+  } else {
+    QString s{"["};
+    auto it = begin(ts);
+    s += to_string(*it);
+    std::advance(it, 1);
+    for (; it != end(ts); std::advance(it, 1)) {
+      s += ", " + to_string(*it);
+    }
+    s += "]";
+    return s;
+  }
+}
 
 }  // namespace omm
 

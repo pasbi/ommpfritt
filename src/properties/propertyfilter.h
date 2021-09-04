@@ -24,8 +24,7 @@ struct PropertyFilter : public Serializable {
   bool operator<(const PropertyFilter& other) const;
 
   static PropertyFilter accept_anything();
+  QString to_string() const;
 };
-
-std::ostream& operator<<(std::ostream& ostream, const PropertyFilter& filter);
 
 }  // namespace omm

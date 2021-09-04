@@ -5,15 +5,8 @@
 #include <QFile>
 #include <QStandardPaths>
 #include <ctime>
-#include <iomanip>
 #include <iostream>
 #include "config.h"
-
-QDebug operator<<(QDebug d, const std::string& string)
-{
-  d << QString::fromStdString(string);
-  return d;
-}
 
 namespace omm
 {

@@ -1,9 +1,9 @@
 #pragma once
 #include <QPointF>
+#include <QString>
 #include <algorithm>
 #include <array>
 #include <cmath>
-#include <ostream>
 #include <stdexcept>
 #include <vector>
 
@@ -192,6 +192,11 @@ public:
   {
     return std::isinf(x) || std::isinf(y);
   }
+
+  QString to_string() const
+  {
+    return QString{"[%1, %2]"}.arg(x).arg(y);
+  }
 };
 
 template<typename ValueT> Vec2<ValueT> operator-(const Vec2<ValueT>& d)
@@ -269,12 +274,6 @@ template<typename ValueT> bool operator<(const Vec2<ValueT>& d1, const Vec2<Valu
 
 using Vec2f = Vec2<double>;
 using Vec2i = Vec2<int>;
-
-template<typename T> std::ostream& operator<<(std::ostream& ostream, const Vec2<T>& vec)
-{
-  ostream << "[" << vec.x << ", " << vec.y << "]";
-  return ostream;
-}
 
 template<typename T> bool fuzzy_eq(const Vec2<T>& a, const Vec2<T>& b)
 {

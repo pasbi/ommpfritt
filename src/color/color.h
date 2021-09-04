@@ -49,6 +49,8 @@ public:
     return m_current_model;
   }
 
+  QString to_string() const;
+
 private:
   Model m_current_model;
   QString m_name = "";
@@ -81,6 +83,5 @@ static const Color CERULEAN(Color::Model::RGBA, {0.1, 0.52, 0.82, 1.0});
 bool operator==(const Color& a, const Color& b);
 bool operator!=(const Color& a, const Color& b);
 bool operator<(const Color& a, const Color& b);
-std::ostream& operator<<(std::ostream& ostream, const Color& color);
 
 }  // namespace omm

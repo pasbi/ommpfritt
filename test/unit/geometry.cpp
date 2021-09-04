@@ -58,8 +58,8 @@ bool check_transform_to_mat_to_transform_invariant(SetParameterF<Arg> f, const A
     // LOG(INFO) << "pass " << typeid(f).name() << " [" << arg << "]";
     return true;
   } else {
-    LINFO << "expected: \n" << reference;
-    LINFO << "but got: \n" << other;
+    LINFO << "expected: \n" << reference.to_string();
+    LINFO << "but got: \n" << other.to_string();
     // LOG(WARNING) << "fail " << typeid(f).name() << " [" << arg << "]";
     return false;
   }

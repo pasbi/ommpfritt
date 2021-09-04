@@ -150,17 +150,6 @@ std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const QString&
   return property;
 }
 
-std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo)
-{
-  if (apo == nullptr) {
-    ostream << "AbstractPropertyOwner[nullptr]";
-  } else {
-    const auto kind = static_cast<std::underlying_type_t<decltype(apo->kind)>>(apo->kind);
-    ostream << "AbstractPropertyOwner[" << kind << "]";
-  }
-  return ostream;
-}
-
 void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target,
                                             CopiedProperties flags) const
 {
@@ -206,6 +195,11 @@ void AbstractPropertyOwner::new_id() const
   static std::mt19937 gen(rd());  // Standard mersenne_twister_engine seeded with rd()
   static std::uniform_int_distribution<std::size_t> dis(1, std::numeric_limits<std::size_t>::max());
   m_id = dis(gen);
+}
+
+QString AbstractPropertyOwner::to_string() const
+{
+  return QString{"%1[]"}.arg(type());
 }
 
 bool AbstractPropertyOwner::pmatch(const Property* property, const std::set<QString>& keys) const

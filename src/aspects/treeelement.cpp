@@ -143,22 +143,6 @@ template<typename T> std::vector<T*> TreeElement<T>::sort(const std::set<T*>& it
   return vs;
 }
 
-std::ostream& operator<<(std::ostream& ostream, const TreeTestItem* item)
-{
-  if (item == nullptr) {
-    ostream << "Item[nullptr]";
-  } else {
-    ostream << "Item[" << item->name << "]";
-  }
-  return ostream;
-}
-
-std::ostream& operator<<(std::ostream& ostream, const TreeTestItem& item)
-{
-  ostream << &item;
-  return ostream;
-}
-
 template class TreeElement<Object>;
 template class TreeElement<TreeTestItem>;
 

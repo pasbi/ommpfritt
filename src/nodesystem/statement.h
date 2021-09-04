@@ -24,6 +24,7 @@ public:
   [[nodiscard]] virtual bool is_connection() const = 0;
   [[nodiscard]] virtual std::set<const AbstractPort*> defines() const = 0;
   [[nodiscard]] virtual std::set<const AbstractPort*> uses() const = 0;
+  QString to_string() const;
 };
 
 class NodeStatement : public Statement

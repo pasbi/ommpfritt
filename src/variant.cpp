@@ -1,5 +1,6 @@
 #include "variant.h"
 #include "common.h"
+#include "aspects/abstractpropertyowner.h"
 
 namespace omm
 {
@@ -24,16 +25,27 @@ void set_channel_value(variant_type& variant, std::size_t channel, const double 
       variant);
 }
 
-std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType&)
+QString to_string(const variant_type& var)
 {
-  ostream << "[TriggerPropertyDummyValueType]";
-  return ostream;
-}
+  const auto value_string = std::visit([](const auto& v) {
+    using T = std::decay_t<decltype(v)>;
+    if constexpr (typelist_contains<T, bool, int, double, QString, std::size_t>()) {
+      return QString{"%1"}.arg(v);
+    } else if constexpr (typelist_contains<T, Color, AbstractPropertyOwner*, SplineType, Vec2i, Vec2f>()) {
+      if constexpr (std::is_pointer_v<T>) {
+        return v->to_string();
+      } else {
+        return v.to_string();
+      }
+    } else {
+      return QString{};
+    }
+  }, var);
 
-std::ostream& operator<<(std::ostream& ostream, const variant_type& v)
-{
-  print_variant_value(ostream, v);
-  return ostream;
+  const auto type_string = std::visit([](const auto& var) {
+    return variant_type_name<std::decay_t<decltype(var)>>();
+  }, var);
+  return QObject::tr("%1[%2]").arg(type_string.data(), value_string);
 }
 
 template<> bool null_value<bool>()

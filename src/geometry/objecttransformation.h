@@ -71,6 +71,8 @@ public:
   [[nodiscard]] std::unique_ptr<Geom::Curve> apply(const Geom::Curve& curve) const;
   operator Geom::Affine() const;
 
+  QString to_string() const;
+
 private:
   Vec2f m_translation = {0.0, 0.0};
   Vec2f m_scaling = {1.0, 1.0};
@@ -83,7 +85,6 @@ private:
                                                 const Geom::Affine& affine);
 };
 
-QDebug& operator<<(QDebug& ostream, const ObjectTransformation& t);
 bool operator<(const ObjectTransformation& lhs, const ObjectTransformation& rhs);
 bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs);
 bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs);
