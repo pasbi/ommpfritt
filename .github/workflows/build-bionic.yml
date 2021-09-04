@@ -48,8 +48,8 @@ jobs:
         with:
           name: Ommpfritt-AppImage
       - run: chmod +x ommpfritt-*.AppImage
-      - run: ./ommpfritt-*.AppImage -platform offscreen --version
-      - run: ./ommpfritt-*.AppImage -platform offscreen --version | grep ommpfritt
+      - run: ./ommpfritt-*.AppImage -platform offscreen --no-opengl --version
+      - run: ./ommpfritt-*.AppImage -platform offscreen --no-opengl --version | grep ommpfritt
   Verify-Bionic:
     runs-on: ubuntu-20.04
     needs: Create-AppImage-Bionic
@@ -58,5 +58,5 @@ jobs:
         with:
           name: Ommpfritt-AppImage
       - run: chmod +x ommpfritt-*.AppImage
-      - run: ./ommpfritt-*.AppImage -platform offscreen --version
-      - run: ./ommpfritt-*.AppImage -platform offscreen --version | grep ommpfritt
+      - run: ./ommpfritt-*.AppImage -platform offscreen --no-opengl --version
+      - run: ./ommpfritt-*.AppImage -platform offscreen --no-opengl --version | grep ommpfritt
