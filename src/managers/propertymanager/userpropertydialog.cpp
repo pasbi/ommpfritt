@@ -5,8 +5,6 @@
 #include "propertywidgets/propertyconfigwidget.h"
 #include "scene/history/historymodel.h"
 #include "scene/scene.h"
-#include <iomanip>
-#include <ostream>
 
 namespace omm
 {

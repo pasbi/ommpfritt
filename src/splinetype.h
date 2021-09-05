@@ -29,6 +29,8 @@ public:
   using knot_map_type = std::multimap<double, Knot>;
   knot_map_type knots;
 
+  QString to_string() const;
+
 private:
   template<typename Knots, typename Iterator> struct ControlPoint_ {
     using Side = Knot::Side;

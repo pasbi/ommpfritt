@@ -26,9 +26,9 @@ public:
   BoundingBox& operator|=(const Vec2f& point);
 
   static BoundingBox around_selected_objects(const Scene& scene);
+  QString to_string() const;
 };
 
-std::ostream& operator<<(std::ostream& ostream, const BoundingBox& bb);
 BoundingBox operator|(const BoundingBox& a, const BoundingBox& b);
 BoundingBox operator|(const BoundingBox& a, const Vec2f& b);
 

@@ -104,23 +104,23 @@ template<typename T> bool tree_gt(const T* a, const T* b)
 }
 
 template<typename T>
-std::ostream& print_tree(std::ostream& ostream, const T* item, int indentation = 0)
+void print_tree(QString& buffer, const T* item, int indentation = 0)
 {
-  ostream << QString(" ").repeated(indentation).toStdString() << item << "\n";
+  const auto sitem = item == nullptr ? QString{"[null]"} : item->to_string();
+  buffer += QString(" ").repeated(indentation).toStdString() + sitem + "\n";
   if (item != nullptr) {
     const auto children = item->tree_children();
     const auto is_pre_leaf = std::none_of(children.begin(), children.end(), [](auto* c) {
       return c->tree_children().size() > 0;
     });
     if (is_pre_leaf) {
-      ::operator<<(ostream, children);
+      buffer += children;
     } else {
       for (auto&& child : item->tree_children()) {
-        print_tree(ostream, child, indentation + 2);
+        print_tree(buffer, child, indentation + 2);
       }
     }
   }
-  return ostream;
 }
 
 /**
@@ -134,8 +134,5 @@ class TreeTestItem : public TreeElement<TreeTestItem>
 public:
   QString name;
 };
-
-std::ostream& operator<<(std::ostream& ostream, const TreeTestItem* item);
-std::ostream& operator<<(std::ostream& ostream, const TreeTestItem& item);
 
 }  // namespace omm

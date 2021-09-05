@@ -2,7 +2,6 @@
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
 #include <QPainter>
-#include <iostream>
 #include <memory>
 
 namespace

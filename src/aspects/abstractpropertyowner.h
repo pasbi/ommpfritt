@@ -98,6 +98,8 @@ public:
   const Kind kind;
   void new_id() const;
 
+  virtual QString to_string() const;
+
 protected:
   virtual void on_property_value_changed(omm::Property* property)
   {

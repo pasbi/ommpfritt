@@ -82,10 +82,9 @@ bool BoundingBox::contains(const BoundingBox& other) const
   }
 }
 
-std::ostream& operator<<(std::ostream& ostream, const BoundingBox& bb)
+QString BoundingBox::to_string() const
 {
-  ostream << "BoundingBox[" << bb.top_left() << ", " << bb.width() << "x" << bb.height() << "]";
-  return ostream;
+  return QString{"BoundingBox[%1, %2]"}.arg(top_left().to_string()).arg(bottom_right().to_string());
 }
 
 BoundingBox& BoundingBox::operator|=(const BoundingBox& other)

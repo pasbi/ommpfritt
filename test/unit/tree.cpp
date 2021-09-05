@@ -92,8 +92,9 @@ TEST(tree, remove_children)
           auto candidates = get_items(items, candidate_names);
           omm::TreeTestItem::remove_internal_children(candidates);
           const auto gt_items = get_items(items, gt_names);
-          std::cout << "Expected: " << gt_items << std::endl;
-          std::cout << "Actual:   " << candidates << std::endl;
+          static constexpr auto to_string = [](const auto* i) { return i->name; };
+          std::cout << "Expected: " << join(gt_items, to_string).toStdString() << std::endl;
+          std::cout << "Actual:   " << join(candidates, to_string).toStdString() << std::endl;
           EXPECT_EQ(candidates, gt_items);
         };
 

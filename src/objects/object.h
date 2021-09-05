@@ -176,6 +176,8 @@ public:
   void set_position_on_path(const Object& path, bool align, const Geom::PathVectorTime& t);
   void set_oriented_position(const Point& op, bool align);
 
+  QString to_string() const override;
+
 private:
   ObjectTree* m_object_tree = nullptr;
   const Object* m_virtual_parent = nullptr;
@@ -197,8 +199,5 @@ protected:
     return paths;
   }
 };
-
-std::ostream& operator<<(std::ostream& ostream, const Object& object);
-std::ostream& operator<<(std::ostream& ostream, const Object* object);
 
 }  // namespace omm

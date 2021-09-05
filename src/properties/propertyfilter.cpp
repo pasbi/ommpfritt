@@ -57,9 +57,8 @@ PropertyFilter PropertyFilter::accept_anything()
   return PropertyFilter(Disjunction<Kind>(Kind::All, Kind::None), {{}});
 }
 
-std::ostream& operator<<(std::ostream& ostream, const PropertyFilter& filter)
+QString PropertyFilter::to_string() const
 {
-  ostream << "Filter(Flag(" << filter.flag << "), Kind(" << filter.kind << "))";
-  return ostream;
+  return QString{"Filter[Flag=%1, Kind=%2]"}.arg(flag.to_string()).arg(kind.to_string());
 }
 }  // namespace omm

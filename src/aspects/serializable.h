@@ -35,9 +35,7 @@ public:
   template<typename PointerT> static QString make_pointer(const PointerT& pointer)
   {
     constexpr char SEPARATOR = '/';
-    std::ostringstream ostream;
-    ostream << pointer;
-    auto str = QString::fromStdString(ostream.str());
+    auto str = QString{"%1"}.arg(pointer);
     assert(str.size() > 0);
     if (str.at(0) == SEPARATOR) {
       return str;

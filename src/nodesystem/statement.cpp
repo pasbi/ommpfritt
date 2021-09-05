@@ -74,16 +74,14 @@ bool Statement::operator<(const Statement& other) const
   }
 }
 
-std::ostream& operator<<(std::ostream& ostream, const Statement& statement)
+QString Statement::to_string() const
 {
   const auto format = [](const auto& set) -> QStringList {
     return ::transform<QString, QList>(set, [](const auto* port) { return port->uuid(); });
   };
-  ostream << QString("%1[%2 <= %3]")
-                 .arg(statement.is_connection() ? "connection" : "node",
-                      format(statement.defines()).join(", "),
-                      format(statement.uses()).join(", "))
-                 .toStdString();
-  return ostream;
+  return QString("%1[%2 <= %3]")
+                 .arg(is_connection() ? "connection" : "node",
+                      format(defines()).join(", "),
+                      format(uses()).join(", "));
 }
 }  // namespace omm

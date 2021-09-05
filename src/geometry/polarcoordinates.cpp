@@ -67,4 +67,9 @@ double PolarCoordinates::normalize_angle(double rad)
   return fmod(fmod(rad + M_PI, pi2) + pi2, pi2) - M_PI;
 }
 
+QString PolarCoordinates::to_string() const
+{
+  return QString{"[%1°, %2]"}.arg(argument * 180.0 / M_PI).arg(magnitude);
+}
+
 }  // namespace omm

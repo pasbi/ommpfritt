@@ -104,6 +104,22 @@ public:
     return static_cast<E>(1 << i);
   }
 
+  QString to_string() const
+  {
+    QString s;
+    if (!value) {
+      s += "¬";
+    }
+    if constexpr (std::is_enum_v<E>) {
+      s += QString("%1").arg(static_cast<std::underlying_type_t<E>>(i));
+    } else {
+      s += QString("%1").arg(value);
+    }
+
+    return s;
+  }
+
+
   std::size_t i = -1;
   bool value = false;
 };
@@ -171,6 +187,22 @@ public:
                                         other.terms.end());
   }
 
+  QString to_string() const
+  {
+    QString s;
+    s += "( ";
+    auto it = terms.begin();
+    while (it != terms.end()) {
+      if (it != terms.begin()) {
+        s += QString{" %1 "}.arg(Junction::operator_symbol);
+      }
+      s += it->to_string();
+      it++;
+    }
+    s += ") ";
+    return s;
+  }
+
   std::set<T> terms;
 };
 
@@ -181,35 +213,5 @@ using Conjunction = DNF_detail::Term<E, T, DNF_detail::ConjunctionImpl<T>>;
 template<typename E, typename T = Literal<E>>
 using Disjunction = DNF_detail::Term<E, T, DNF_detail::DisjunctionImpl<T>>;
 template<typename E> using DNF = Disjunction<E, Conjunction<E>>;
-
-template<typename E, typename T, typename Junction>
-std::ostream& operator<<(std::ostream& ostream, const DNF_detail::Term<E, T, Junction>& dnf)
-{
-  ostream << "( ";
-  auto it = dnf.terms.begin();
-  while (it != dnf.terms.end()) {
-    if (it != dnf.terms.begin()) {
-      ostream << " " << Junction::operator_symbol << " ";
-    }
-    ostream << *it;
-    it++;
-  }
-  ostream << ") ";
-  return ostream;
-}
-
-template<typename E> std::ostream& operator<<(std::ostream& ostream, const Literal<E>& literal)
-{
-  if (!literal.value) {
-    ostream << "¬";
-  }
-  if constexpr (std::is_enum_v<E>) {
-    ostream << static_cast<std::underlying_type_t<E>>(literal.i);
-  } else {
-    ostream << static_cast<E>(literal);
-  }
-
-  return ostream;
-}
 
 }  // namespace omm

@@ -36,8 +36,7 @@ public:
     evaluate();
   }
   Flag flags() const override;
+  QString to_string() const override;
 };
-
-std::ostream& operator<<(std::ostream& ostream, const Tag& tag);
 
 }  // namespace omm

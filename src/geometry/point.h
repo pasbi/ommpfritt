@@ -75,14 +75,11 @@ private:
 
 public:
   static std::vector<Point> offset(double t, const std::vector<Point>& points, bool is_closed);
+  QString to_string() const;
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);
 constexpr Vec2f to_cartesian(const PolarCoordinates& polar);
-
-std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc);
-std::ostream& operator<<(std::ostream& ostream, const Point& pc);
-std::ostream& operator<<(std::ostream& ostream, const Point* pc);
 
 bool fuzzy_eq(const Point& a, const Point& b);
 

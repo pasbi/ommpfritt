@@ -70,7 +70,8 @@ public:
   {
     std::ostringstream ostream;
     const auto* apo = &this->wrapped;
-    ostream << enum_name(apo->kind, true) << "[" << static_cast<const void*>(apo) << "]";
+    ostream << enum_name(apo->kind, true).toStdString()
+            << "[" << static_cast<const void*>(apo) << "]";
     return ostream.str();
   }
 

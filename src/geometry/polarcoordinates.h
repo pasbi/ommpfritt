@@ -30,6 +30,8 @@ struct PolarCoordinates {
    * @return an number between [-pi, pi)
    */
   static double normalize_angle(double rad);
+
+  QString to_string() const;
 };
 
 }  // namespace omm

@@ -160,7 +160,4 @@ double get_channel_value(const variant_type& variant, std::size_t channel);
  */
 void set_channel_value(variant_type& variant, std::size_t channel, double value);
 
-std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType& v);
-std::ostream& operator<<(std::ostream& ostream, const variant_type& v);
-
 }  // namespace omm

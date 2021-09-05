@@ -40,8 +40,9 @@ int main(int argc, char* argv[])
   level = args.get<QString>(CommandLineParser::VERBOSITY_KEY);
   if (!::contains(omm::LogLevel::loglevels, level)) {
     const auto levels = ::transform<QString, QList>(::get_keys(omm::LogLevel::loglevels));
-    std::cerr << "Unknown log level '" << level << "'. Use " << levels.join("|") << ".\n";
-    std::cerr << std::flush;
+    std::cerr << "Unknown log level '" << level.toStdString()
+              << "'. Use " << levels.join("|").toStdString() << ".\n"
+              << std::flush;
     exit(EXIT_FAILURE);
   }
 
@@ -65,7 +66,7 @@ int main(int argc, char* argv[])
   } else if (mode == CommandLineParser::RENDER_MODE_NAME) {
     return omm::render_main(args, app);
   } else {
-    std::cerr << "Unexpected mode: " << mode << "." << std::endl;
+    std::cerr << "Unexpected mode: " << mode.toStdString() << "." << std::endl;
     return EXIT_FAILURE;
   }
 }

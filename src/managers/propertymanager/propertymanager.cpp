@@ -84,18 +84,6 @@ QString get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Property*
   return tab_label;
 }
 
-QString join(const std::list<QString>& strings, const QString& separator)
-{
-  if (strings.empty()) {
-    return "";
-  }
-  QString joined = strings.front();
-  for (auto it = std::next(strings.begin()); it != strings.end(); ++it) {
-    joined += separator + *it;
-  }
-  return joined;
-}
-
 }  // namespace
 
 namespace omm
@@ -189,8 +177,9 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
           = ::transform<QString, std::list>(selection, [](AbstractPropertyOwner* owner) {
               return owner->name();
             });
-      tokens.push_back("[" + join(names, ", ") + "]");
-      m_selection_label->setText(join(tokens, " "));
+      static constexpr auto s2s = [](const QString& s) { return s; };
+      tokens.push_back("[" + join(names, s2s) + "]");
+      m_selection_label->setText(join(tokens, s2s));
 
       // text in m_selection_label can get huge but is not very important. Don't mess up the layout.
       m_selection_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
