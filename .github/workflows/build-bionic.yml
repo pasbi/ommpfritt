@@ -60,6 +60,9 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: Ommpfritt-AppImage
+      - run: ls /usr/lib/x86_64-linux-gnu/
+      - run: ls /usr/lib/x86_64-linux-gnu/libOpenGL.so.0
       - run: chmod +x ommpfritt-*.AppImage
+      - run: LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/ ./ommpfritt-*.AppImage -platform offscreen --no-opengl --version
       - run: ./ommpfritt-*.AppImage -platform offscreen --no-opengl --version
       - run: ./ommpfritt-*.AppImage -platform offscreen --no-opengl --version | grep ommpfritt
