@@ -18,10 +18,10 @@ function(create_omm_qm_files languages)
   set(ts_files ${languages})
   list(TRANSFORM ts_files APPEND ".ts")
   list(TRANSFORM ts_files PREPEND "${CMAKE_SOURCE_DIR}/ts/omm_")
-  qt5_create_translation(omm_qm_files
-                         ${CMAKE_SOURCE_DIR}/src "${CMAKE_BINARY_DIR}/translations.h"
-                         ${ts_files}
-                         OPTIONS -no-obsolete
+  qt_create_translation(omm_qm_files
+                        ${CMAKE_SOURCE_DIR}/src "${CMAKE_BINARY_DIR}/translations.h"
+                        ${ts_files}
+                        OPTIONS -no-obsolete
   )
   list(APPEND qm_files ${omm_qm_files})
   set(qm_files ${qm_files} PARENT_SCOPE)
@@ -78,7 +78,7 @@ function(generate_resources)
   message("qrc files: ${qrc_files}")
   add_custom_command(
     OUTPUT "${compiled_resource_file}"
-    COMMAND Qt5::rcc -o "${compiled_resource_file}" ${qrc_files}
+    COMMAND Qt::rcc -o "${compiled_resource_file}" ${qrc_files}
     COMMAND_EXPAND_LISTS
     DEPENDS ${qrc_files} ${rcc_dependencies}
     COMMENT "Compile ${compiled_resource_file} from ${qrc_files}"

@@ -36,7 +36,7 @@ find_executables() {
 ./linuxdeployqt-continuous-x86_64.AppImage \
     $appdir/usr/share/applications/*.desktop \
     -appimage \
-    -qmake=@qt5_qmake_location@ \
+    -qmake=@qt_qmake_location@ \
     -extra-plugins=platforms/libqoffscreen.so \
     $(find_executables)
 
