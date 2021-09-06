@@ -13,6 +13,7 @@ jobs:
                    -B omm-build
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
                    -DBUILD_TESTING=ON
       - run: cmake --build omm-build
                    --config Release
