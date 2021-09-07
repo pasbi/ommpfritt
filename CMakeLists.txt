@@ -12,8 +12,25 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_TRANSLATION "Build translations of the application." ON)
+option(USE_QT_5_12 "Allow to use Qt 5.12. Set this option to true for static analyzing only.
+                    Builds with this configuration are not supposed to be run."
+                    OFF
+)
 
-find_package(Qt5 5.15 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+if (USE_QT_5_12)
+  find_package(Qt5 5.12 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+  if (Qt5Widgets_VERSION VERSION_GREATER_EQUAL "5.13")
+    # Version range would be the right tool for that job, but it doesn't seem to work.
+    message(FATAL_ERROR "Qt version was expected to be 5.12.X, but is ${Qt5Widgets_VERSION_MINOR}.")
+  endif()
+  add_library(Qt::Widgets ALIAS Qt5::Widgets)
+  add_library(Qt::Svg ALIAS Qt5::Svg)
+  add_executable(Qt::qmake ALIAS Qt5::qmake)
+  add_executable(Qt::rcc ALIAS Qt5::rcc)
+else()
+  find_package(Qt5 5.15 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+endif()
+
 find_package(PkgConfig)
 find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(2Geom REQUIRED)
@@ -123,8 +140,6 @@ if (BUILD_TESTING)
 endif()
 
 include(Packaging)
-
-get_target_property(qt_qmake_location Qt::qmake IMPORTED_LOCATION)
 
 if (WIN32)
   set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
