@@ -7,7 +7,6 @@ extraction:
     prepare:
       packages:
         - build-essential
-        - cmake
         - gcc
         - libffi-dev
         - libgl-dev
@@ -22,9 +21,13 @@ extraction:
         - qtbase5-dev
         - qtbase5-dev-tools
         - qttools5-dev
+        - software-properties-common
         - zlib1g-dev
     configure:
       command:
+        - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - > /usr/share/keyrings/kitware-archive-keyring.gpg \
+        - echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ bionic main' > /etc/apt/sources.list.d/kitware.list \
+        - apt-get update && apt-get install -y cmake
         - git clone https://gitlab.com/inkscape/lib2geom.git
         - cd lib2geom; git checkout 37876ed4; cd ..
         - cmake
