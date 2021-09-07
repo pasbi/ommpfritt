@@ -9,7 +9,8 @@ function(copy_qt_qm_files name languages)
   list(TRANSFORM target_files APPEND ".qm")
   list(TRANSFORM target_files PREPEND "${target_dir}/${name}_")
   file(MAKE_DIRECTORY ${target_dir})
-  execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${source_files} ${target_dir})
+  execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${source_files} ${target_dir}
+                  COMMAND_ERROR_IS_FATAL ANY)
   list(APPEND qm_files ${target_files})
   set(qm_files ${qm_files} PARENT_SCOPE)
 endfunction()
@@ -18,10 +19,10 @@ function(create_omm_qm_files languages)
   set(ts_files ${languages})
   list(TRANSFORM ts_files APPEND ".ts")
   list(TRANSFORM ts_files PREPEND "${CMAKE_SOURCE_DIR}/ts/omm_")
-  qt5_create_translation(omm_qm_files
-                         ${CMAKE_SOURCE_DIR}/src "${CMAKE_BINARY_DIR}/translations.h"
-                         ${ts_files}
-                         OPTIONS -no-obsolete
+  qt_create_translation(omm_qm_files
+                        ${CMAKE_SOURCE_DIR}/src "${CMAKE_BINARY_DIR}/translations.h"
+                        ${ts_files}
+                        OPTIONS -no-obsolete
   )
   list(APPEND qm_files ${omm_qm_files})
   set(qm_files ${qm_files} PARENT_SCOPE)

@@ -3,7 +3,7 @@
 #include "geometry/vec2.h"
 
 #include <QGenericMatrix>
-#include <QMatrix>
+#include <QTransform>
 
 namespace omm
 {
@@ -23,8 +23,7 @@ public:
   static Matrix zeros();
   [[nodiscard]] bool has_nan() const;
 
-  // QMatrix is deprecate, however it is by far the most convenient way to initialize QTransform.
-  [[nodiscard]] QMatrix to_qmatrix() const;
+  [[nodiscard]] QTransform to_qtransform() const;
   [[nodiscard]] QMatrix3x3 to_qmatrix3x3() const;
 
 private:

@@ -12,8 +12,17 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_TRANSLATION "Build translations of the application." ON)
+option(USE_QT_5_12 "Allow to use Qt 5.12. Set this option to true for static analyzing only.
+                    Builds with this configuration are not supposed to be run."
+                    OFF
+)
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+if (USE_QT_5_12)
+  find_package(Qt5 5.12 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+else()
+  find_package(Qt5 5.15 REQUIRED COMPONENTS Widgets Svg LinguistTools)
+endif()
+
 find_package(PkgConfig)
 find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(2Geom REQUIRED)
@@ -82,7 +91,6 @@ target_link_libraries(libommpfritt Python3::Python)
 target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
 target_link_libraries(libommpfritt poppler-qt5)
 target_link_libraries(libommpfritt -lpthread -lm)
-target_link_libraries(libommpfritt KF5ItemModels)
 target_link_libraries(libommpfritt 2Geom::2geom)
 target_link_libraries(libommpfritt fmt::fmt)
 target_link_libraries(ommpfritt libommpfritt)
@@ -94,8 +102,8 @@ else()
   target_link_libraries(libommpfritt -lGL)
 endif()
 
-get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
-execute_process(COMMAND ${qt5_qmake_location} -query QT_INSTALL_TRANSLATIONS
+get_target_property(qt_qmake_location Qt5::qmake IMPORTED_LOCATION)
+execute_process(COMMAND ${qt_qmake_location} -query QT_INSTALL_TRANSLATIONS
                 OUTPUT_VARIABLE qt_qm_path
                 OUTPUT_STRIP_TRAILING_WHITESPACE
 )
@@ -128,16 +136,16 @@ include(Packaging)
 if (WIN32)
   set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
   include(InstallRequiredSystemLibraries)
-  execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PREFIX
-      OUTPUT_VARIABLE qt5_install_prefix
+  execute_process(COMMAND "${qt_qmake_location}" -query QT_INSTALL_PREFIX
+      OUTPUT_VARIABLE qt_install_prefix
       OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-  execute_process(COMMAND "${qt5_qmake_location}" -query QT_INSTALL_PLUGINS
-      OUTPUT_VARIABLE qt5_install_plugins
+  execute_process(COMMAND "${qt_qmake_location}" -query QT_INSTALL_PLUGINS
+      OUTPUT_VARIABLE qt_install_plugins
       OUTPUT_STRIP_TRAILING_WHITESPACE
   )
   install(DIRECTORY ${Python3_STDLIB} TYPE LIB)
-  install(FILES "${qt5_install_plugins}/platforms/qoffscreen.dll"
+  install(FILES "${qt_install_plugins}/platforms/qoffscreen.dll"
           DESTINATION "bin/platforms/")
 
   get_filename_component(MinGW_bin_path ${CMAKE_CXX_COMPILER} PATH)
@@ -153,7 +161,7 @@ if (WIN32)
   install(CODE "
     include(BundleUtilities)
     execute_process(COMMAND
-        \"${qt5_install_prefix}/bin/windeployqt.exe\"
+        \"${qt_install_prefix}/bin/windeployqt.exe\"
         \"\${CMAKE_INSTALL_PREFIX}/bin/ommpfritt.exe\"
     )
     fixup_bundle(

@@ -6,7 +6,7 @@
 #include "preferences/uicolorspage.h"
 #include "preferences/viewportpage.h"
 #include "ui_preferencedialog.h"
-#include <QApplication>
+#include "syncpalettedecorator.h"
 
 namespace omm
 {
@@ -59,13 +59,7 @@ QTreeWidgetItem* PreferenceDialog::register_preference_page(QTreeWidgetItem* par
     parent->addChild(item.release());
   }
 
-  connect(dynamic_cast<QApplication*>(QCoreApplication::instance()),
-          &QGuiApplication::paletteChanged,
-          m_ui->treeWidget,
-          [&ref](const QPalette& p) {
-            ref.setForeground(0, p.color(QPalette::Active, QPalette::WindowText));
-          });
-  ref.setForeground(0, QApplication::palette().color(QPalette::Active, QPalette::WindowText));
+  SyncPaletteTreeWidgetItemDecorator::decorate(ref);
 
   connect(m_ui->treeWidget, &QTreeWidget::itemClicked, this, [this](QTreeWidgetItem* item) {
     m_ui->stackedWidget->setCurrentWidget(m_page_map.at(item));

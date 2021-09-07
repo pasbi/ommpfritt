@@ -1,7 +1,8 @@
 #include "preferences/uicoloredit.h"
 #include "logging.h"
-#include "main/application.h"
+#include "syncpalettedecorator.h"
 #include "ui_uicoloredit.h"
+#include "uicolors.h"
 #include <QColorDialog>
 #include <QPainter>
 #include <QStyle>
@@ -18,7 +19,7 @@ UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColo
     set_color(m_default_color);
     close();
   });
-  Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset);
+  SyncPaletteButtonDecorator::decorate(*m_ui->pb_reset);
 }
 
 UiColorEdit::~UiColorEdit() = default;

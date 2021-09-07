@@ -1,6 +1,6 @@
 #include "preferences/keysequenceedit.h"
-#include "main/application.h"
 #include "mainwindow/iconprovider.h"
+#include "syncpalettedecorator.h"
 #include <QFocusEvent>
 #include <QHBoxLayout>
 #include <QKeySequenceEdit>
@@ -25,8 +25,8 @@ KeySequenceEdit::KeySequenceEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui
     m_ui->key_sequence_edit->setKeySequence(QKeySequence());
   });
 
-  Application::instance().register_auto_invert_icon_button(*m_ui->pb_clear);
-  Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset);
+  SyncPaletteButtonDecorator::decorate(*m_ui->pb_clear);
+  SyncPaletteButtonDecorator::decorate(*m_ui->pb_reset);
 }
 
 void KeySequenceEdit::set_key_sequence(const QKeySequence& key_sequence)

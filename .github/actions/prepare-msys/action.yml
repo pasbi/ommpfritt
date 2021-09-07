@@ -20,7 +20,6 @@ runs:
           mingw-w64-x86_64-gtkmm3
           mingw-w64-x86_64-icu
           mingw-w64-x86_64-imagemagick
-          mingw-w64-x86_64-kitemmodels-qt5
           mingw-w64-x86_64-libffi
           mingw-w64-x86_64-libdeflate
           mingw-w64-x86_64-libwebp
