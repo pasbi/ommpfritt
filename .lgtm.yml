@@ -49,6 +49,7 @@ extraction:
             -S .
             -B build
             -DBUILD_TRANSLATION=OFF
+            -DUSE_QT_5_12=ON
             -DCMAKE_BUILD_TYPE=Release
             -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
             -DCMAKE_PREFIX_PATH=$LGTM_WORKSPACE/install

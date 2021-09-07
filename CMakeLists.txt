@@ -19,14 +19,6 @@ option(USE_QT_5_12 "Allow to use Qt 5.12. Set this option to true for static ana
 
 if (USE_QT_5_12)
   find_package(Qt5 5.12 REQUIRED COMPONENTS Widgets Svg LinguistTools)
-  if (Qt5Widgets_VERSION VERSION_GREATER_EQUAL "5.13")
-    # Version range would be the right tool for that job, but it doesn't seem to work.
-    message(FATAL_ERROR "Qt version was expected to be 5.12.X, but is ${Qt5Widgets_VERSION_MINOR}.")
-  endif()
-  add_library(Qt::Widgets ALIAS Qt5::Widgets)
-  add_library(Qt::Svg ALIAS Qt5::Svg)
-  add_executable(Qt::qmake ALIAS Qt5::qmake)
-  add_executable(Qt::rcc ALIAS Qt5::rcc)
 else()
   find_package(Qt5 5.15 REQUIRED COMPONENTS Widgets Svg LinguistTools)
 endif()
@@ -96,7 +88,7 @@ target_include_directories(libommpfritt PUBLIC
 )
 target_compile_features(libommpfritt PUBLIC cxx_std_20)
 target_link_libraries(libommpfritt Python3::Python)
-target_link_libraries(libommpfritt Qt::Widgets Qt::Svg)
+target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
 target_link_libraries(libommpfritt poppler-qt5)
 target_link_libraries(libommpfritt -lpthread -lm)
 target_link_libraries(libommpfritt 2Geom::2geom)
@@ -110,7 +102,7 @@ else()
   target_link_libraries(libommpfritt -lGL)
 endif()
 
-get_target_property(qt_qmake_location Qt::qmake IMPORTED_LOCATION)
+get_target_property(qt_qmake_location Qt5::qmake IMPORTED_LOCATION)
 execute_process(COMMAND ${qt_qmake_location} -query QT_INSTALL_TRANSLATIONS
                 OUTPUT_VARIABLE qt_qm_path
                 OUTPUT_STRIP_TRAILING_WHITESPACE
