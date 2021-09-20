@@ -16,6 +16,7 @@ option(USE_QT_5_12 "Allow to use Qt 5.12. Set this option to true for static ana
                     Builds with this configuration are not supposed to be run."
                     OFF
 )
+option(WERROR "Error on compiler warnings. Not available for MSVC." ON)
 
 if (USE_QT_5_12)
   find_package(Qt5 5.12 REQUIRED COMPONENTS Widgets Svg LinguistTools)
@@ -45,7 +46,10 @@ macro(set_warning_level target)
   if(MSVC)
     target_compile_options(${target} PRIVATE /W4 /WX)
   else()
-    target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic)
+    if (WERROR)
+      target_compile_options(${target} PRIVATE -Werror)
+    endif()
   endif()
 endmacro()
 set_warning_level(ommpfritt)
