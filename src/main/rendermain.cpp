@@ -111,15 +111,15 @@ int render_main(const CommandLineParser& args, Application& app)
 {
   if (const auto fn = args.scene_filename(); fn.isEmpty()) {
     LFATAL("No scene filename given.");
-  } else if (!app.scene.load_from(fn)) {
+  } else if (!app.scene->load_from(fn)) {
     LFATAL("Failed to open %s.", fn.toUtf8().data());
   }
 
   const auto fn_template = args.get<QString>(CommandLineParser::OUTPUT_KEY);
-  prepare_scene(app.scene, args);
+  prepare_scene(*app.scene, args);
   const int start_frame = args.get<int>(CommandLineParser::START_FRAME_KEY);
   const int n_frames = args.get<int>(CommandLineParser::SEQUENCE_LENGTH_KEY);
-  auto& view = find<View>(app.scene, args.get<QString>(CommandLineParser::VIEW_NAME_KEY));
+  auto& view = find<View>(*app.scene, args.get<QString>(CommandLineParser::VIEW_NAME_KEY));
   const bool force = args.is_set(CommandLineParser::ALLOW_OVERWRITE_KEY);
   const auto resolution = calculate_resolution(args.get<int>(CommandLineParser::WIDTH_KEY), view);
 
@@ -140,7 +140,7 @@ int render_main(const CommandLineParser& args, Application& app)
     }
   };
 
-  auto& animator = app.scene.animator();
+  auto& animator = app.scene->animator();
   animator.set_current(start_frame);
   render(animator);
   for (int i = 0; i < n_frames; ++i) {

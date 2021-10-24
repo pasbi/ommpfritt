@@ -8,6 +8,7 @@
 #include "nodesystem/port.h"
 #include "nodesystem/propertyport.h"
 #include "properties/triggerproperty.h"
+#include "objects/object.h"
 
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"

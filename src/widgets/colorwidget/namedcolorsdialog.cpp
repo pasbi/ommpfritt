@@ -5,6 +5,7 @@
 #include "main/application.h"
 #include "properties/colorproperty.h"
 #include "scene/history/historymodel.h"
+#include "scene/scene.h"
 #include "widgets/colorwidget/ui_namedcolorsdialog.h"
 #include <QLineEdit>
 #include <QMessageBox>
@@ -14,7 +15,7 @@ namespace
 {
 omm::Scene& scene()
 {
-  return omm::Application::instance().scene;
+  return *omm::Application::instance().scene;
 }
 
 class NamedColorNameEditorDelegate : public QStyledItemDelegate
@@ -46,7 +47,7 @@ public:
       LWARNING << "Failed to rename '" << old_name << "' to '" << new_name
                << "' to prevent name clash.";
     } else {
-      const auto cprops = omm::Application::instance().scene.find_named_color_holders(old_name);
+      const auto cprops = scene().find_named_color_holders(old_name);
       const auto props = ::transform<omm::Property*>(cprops);
 
       auto cmd = std::make_unique<omm::ChangeNamedColorNameCommand>(old_name, new_name);
@@ -148,7 +149,7 @@ void NamedColorsDialog::setCurrent(const QModelIndex& index)
 
 NamedColors& NamedColorsDialog::model()
 {
-  return Application::instance().scene.named_colors();
+  return scene().named_colors();
 }
 
 }  // namespace omm

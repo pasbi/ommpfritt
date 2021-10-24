@@ -1,14 +1,16 @@
 #include "managers/curvemanager/curvetreeview.h"
+
+#include "animation/animator.h"
 #include "animation/channelproxy.h"
 #include "common.h"
 #include "main/application.h"
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
+#include "managers/curvemanager/curvemanagerproxymodel.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 #include <QHeaderView>
 #include <QMouseEvent>
 #include <QSortFilterProxyModel>
-#include "managers/curvemanager/curvemanagerproxymodel.h"
-#include "animation/animator.h"
 
 namespace
 {
@@ -56,7 +58,7 @@ CurveTreeView::Visibility CurveTreeView::is_visible(AbstractPropertyOwner& apo) 
 {
   bool visible = false;
   bool invisible = false;
-  Animator& animator = Application::instance().scene.animator();
+  Animator& animator = Application::instance().scene->animator();
   for (Property* property : animator.accelerator().properties(apo)) {
     if (n_channels(property->variant_value()) > 0) {
       switch (is_visible(*property)) {

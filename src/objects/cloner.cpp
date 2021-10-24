@@ -14,6 +14,7 @@
 #include "python/objectwrapper.h"
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
+#include "scene/scene.h"
 #include "scene/mailbox.h"
 #include <random>
 

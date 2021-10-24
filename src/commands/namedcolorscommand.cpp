@@ -1,6 +1,7 @@
 #include "commands/namedcolorscommand.h"
 #include "color/namedcolors.h"
 #include "main/application.h"
+#include "scene/scene.h"
 #include <QObject>
 
 namespace omm
@@ -15,12 +16,12 @@ NamedColorAddRemoveCommand ::NamedColorAddRemoveCommand(const QString& label,
 
 void NamedColorAddRemoveCommand::add()
 {
-  Application::instance().scene.named_colors().add(m_color_name, m_value);
+  Application::instance().scene->named_colors().add(m_color_name, m_value);
 }
 
 void NamedColorAddRemoveCommand::remove()
 {
-  auto& model = Application::instance().scene.named_colors();
+  auto& model = Application::instance().scene->named_colors();
   LINFO << m_color_name;
   const Color color = model.color(m_color_name);
   assert(m_value == color);
@@ -36,13 +37,13 @@ ChangeNamedColorNameCommand::ChangeNamedColorNameCommand(const QString& old_name
 
 void ChangeNamedColorNameCommand::undo()
 {
-  auto& model = Application::instance().scene.named_colors();
+  auto& model = Application::instance().scene->named_colors();
   model.rename(m_old_name, m_new_name);
 }
 
 void ChangeNamedColorNameCommand::redo()
 {
-  auto& model = Application::instance().scene.named_colors();
+  auto& model = Application::instance().scene->named_colors();
   model.rename(m_old_name, m_new_name);
 }
 
@@ -55,13 +56,13 @@ ChangeNamedColorColorCommand::ChangeNamedColorColorCommand(const QString& name, 
 
 void ChangeNamedColorColorCommand::undo()
 {
-  auto& model = Application::instance().scene.named_colors();
+  auto& model = Application::instance().scene->named_colors();
   model.change(m_name, m_old_color);
 }
 
 void ChangeNamedColorColorCommand::redo()
 {
-  auto& model = Application::instance().scene.named_colors();
+  auto& model = Application::instance().scene->named_colors();
   model.change(m_name, m_new_color);
 }
 
@@ -73,7 +74,7 @@ bool ChangeNamedColorColorCommand::mergeWith(const QUndoCommand* other)
 RemoveNamedColorCommand::RemoveNamedColorCommand(const QString& color_name)
     : NamedColorAddRemoveCommand(QObject::tr("Remove Named Color"),
                                  color_name,
-                                 Application::instance().scene.named_colors().color(color_name))
+                                 Application::instance().scene->named_colors().color(color_name))
 {
 }
 

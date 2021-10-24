@@ -3,6 +3,7 @@
 #include "color/namedcolors.h"
 #include "logging.h"
 #include "main/application.h"
+#include "scene/scene.h"
 #include <QtGlobal>
 #include <algorithm>
 #include <cassert>
@@ -344,7 +345,7 @@ QColor Color::to_qcolor() const
 void Color::to_ordinary_color()
 {
   if (model() == Model::Named) {
-    if (!Application::instance().scene.named_colors().resolve(m_name, *this)) {
+    if (!Application::instance().scene->named_colors().resolve(m_name, *this)) {
       m_components = {0, 0, 0, 1};
       m_current_model = Model::RGBA;
       LWARNING << "Failed to resolve color '" << m_name << "'.";

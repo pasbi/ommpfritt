@@ -2,6 +2,7 @@
 #include "main/application.h"
 #include "tags/tag.h"
 #include "objects/object.h"
+#include "scene/scene.h"
 
 namespace
 {
@@ -30,10 +31,10 @@ int tree_main(const CommandLineParser& args, Application& app)
   if (fn.isEmpty()) {
     LFATAL("No scene file name given.");
   }
-  if (!app.scene.load_from(fn)) {
+  if (!app.scene->load_from(fn)) {
     LFATAL("Failed to load %s.", fn.toUtf8().data());
   }
-  ::print_tree(app.scene.object_tree().root());
+  ::print_tree(app.scene->object_tree().root());
 
   return EXIT_SUCCESS;
 }

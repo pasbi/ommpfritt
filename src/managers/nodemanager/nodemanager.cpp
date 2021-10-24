@@ -11,6 +11,7 @@
 #include "nodesystem/nodes/fragmentnode.h"
 #include "nodesystem/nodesowner.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 #include "ui_nodemanager.h"
 #include <QClipboard>
 #include <QContextMenuEvent>

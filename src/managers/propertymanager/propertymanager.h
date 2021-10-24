@@ -8,7 +8,6 @@
 #include "aspects/propertyowner.h"
 #include "managers/manager.h"
 #include "managers/propertymanager/userpropertydialog.h"
-#include "scene/scene.h"
 #include "widgets/multitabbar.h"
 
 class QTabWidget;

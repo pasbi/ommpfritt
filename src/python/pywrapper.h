@@ -4,7 +4,6 @@
 #include "external/pybind11/stl.h"
 
 #include "aspects/propertyowner.h"
-#include "scene/scene.h"
 #include "splinetype.h"
 #include "tags/scripttag.h"
 
@@ -12,6 +11,8 @@ namespace py = pybind11;
 
 namespace omm
 {
+class Style;
+
 py::object variant_to_python(const variant_type& variant);
 variant_type python_to_variant(const py::object& object, const QString& type);
 

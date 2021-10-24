@@ -15,6 +15,7 @@
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/propertyownermimedata.h"
+#include "scene/scene.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QGraphicsItem>

@@ -7,8 +7,8 @@
 #include "preferences/preferences.h"
 #include "preferences/uicolors.h"
 #include "python/pythonengine.h"
-#include "scene/scene.h"
 #include "translator.h"
+#include <QCoreApplication>
 #include <QKeySequence>
 #include <QObject>
 #include <QTimer>
@@ -24,8 +24,10 @@ namespace omm
 {
 class MainWindow;
 class Manager;
+class MailBox;
 class ToolBar;
 class Options;
+class Object;
 class ModeSelector;
 
 class Application
@@ -70,7 +72,7 @@ public:
   const std::map<QString, std::unique_ptr<ModeSelector>> mode_selectors;
 
   PythonEngine python_engine;
-  Scene scene;
+  std::unique_ptr<Scene> scene;
   MailBox& mail_box() const;
   MainWindow* main_window() const;
 

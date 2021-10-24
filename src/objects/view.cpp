@@ -7,6 +7,7 @@
 #include "properties/floatvectorproperty.h"
 #include "properties/triggerproperty.h"
 #include "renderers/style.h"
+#include "scene/scene.h"
 #include <QObject>
 
 namespace omm

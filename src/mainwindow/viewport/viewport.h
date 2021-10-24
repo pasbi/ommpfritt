@@ -8,7 +8,6 @@
 #include "mainwindow/viewport/mousepancontroller.h"
 #include "preferences/preferences.h"
 #include "renderers/painter.h"
-#include "scene/scene.h"
 #include <QWidget>
 
 namespace omm

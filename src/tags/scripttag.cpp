@@ -1,17 +1,18 @@
 #include "tags/scripttag.h"
 #include "external/pybind11/embed.h"
-#include <QApplication>  // TODO only for icon testing
-#include <QStyle>  // TODO only for icon testing
 
+#include "common.h"
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "properties/stringproperty.h"
 #include "properties/triggerproperty.h"
-
-#include "common.h"
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
 #include "python/tagwrapper.h"
+#include "scene/scene.h"
+
+#include <QApplication>  // TODO only for icon testing
+#include <QStyle>  // TODO only for icon testing
 
 constexpr auto default_script = R"(scale = this.owner().get("scale")[0]
 scale = scale + 0.05

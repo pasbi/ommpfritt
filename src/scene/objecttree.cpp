@@ -8,6 +8,7 @@
 #include "propertyownermimedata.h"
 #include "scene/history/historymodel.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 #include "tags/styletag.h"
 
 namespace

@@ -2,6 +2,7 @@
 #include "python/objectwrapper.h"
 #include "python/stylewrapper.h"
 #include "python/tagwrapper.h"
+#include "scene/scene.h"
 
 namespace omm
 {

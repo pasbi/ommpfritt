@@ -5,6 +5,7 @@
 #include "mainwindow/iconprovider.h"
 #include "tools/toolbox.h"
 #include "tools/selectobjectstool.h"
+#include "scene/scene.h"
 
 namespace omm
 {
@@ -18,10 +19,10 @@ int gui_main(const CommandLineParser& args, Application& app)
   window->show();
 
   if (const auto fn = args.scene_filename(); !fn.isEmpty()) {
-    app.scene.load_from(fn);
+    app.scene->load_from(fn);
   }
 
-  app.scene.tool_box().set_active_tool(SelectObjectsTool::TYPE);
+  app.scene->tool_box().set_active_tool(SelectObjectsTool::TYPE);
 
   return QApplication::exec();
 }

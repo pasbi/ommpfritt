@@ -3,6 +3,7 @@
 #include "color/namedcolors.h"
 #include "main/application.h"
 #include "namedcolorsdialog.h"
+#include "scene/scene.h"
 #include "ui_colorwidget.h"
 #include "widgets/colorwidget/colorcircle.h"
 
@@ -36,7 +37,7 @@ ColorWidget::ColorWidget(QWidget* parent) : ColorPicker(parent), m_ui(new Ui::Co
           this,
           &ColorWidget::show_named_colors_dialog);
 
-  NamedColors& model = Application::instance().scene.named_colors();
+  NamedColors& model = Application::instance().scene->named_colors();
   using ComboBoxNCHPM = NamedColorsHighlighProxyModel<QComboBox>;
   auto cb_proxy = std::make_unique<ComboBoxNCHPM>(model, *m_ui->cb_named_colors->view());
   m_ui->cb_named_colors->set_model(*cb_proxy);
@@ -112,7 +113,7 @@ void ColorWidget::show_named_colors_dialog()
   NamedColorsDialog().exec();
   update();
   if (color.model() == Color::Model::Named) {
-    NamedColors& model = Application::instance().scene.named_colors();
+    NamedColors& model = Application::instance().scene->named_colors();
     if (!model.has_color(color.name())) {
       set_color(current_ordinary);
     }

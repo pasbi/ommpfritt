@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QColor>
 #include <QCoreApplication>
+#include <QPainter>
 #include <QPalette>
 #include <QProxyStyle>
 #include <QSettings>

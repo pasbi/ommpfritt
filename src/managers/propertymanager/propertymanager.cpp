@@ -16,6 +16,7 @@
 #include "properties/optionproperty.h"
 #include "propertywidgets/propertywidget.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 
 namespace
 {
