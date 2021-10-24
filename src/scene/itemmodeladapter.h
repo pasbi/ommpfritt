@@ -42,8 +42,6 @@ public:
   virtual QModelIndex index_of(ItemT& item) const = 0;
   Scene& scene;
   StructureT& structure;
-
-private:
 };
 
 }  // namespace omm

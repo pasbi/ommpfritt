@@ -2,7 +2,6 @@
 
 #include "commands/command.h"
 #include "managers/quickaccessdelegate.h"
-#include "objects/object.h"
 #include "scene/history/macro.h"
 #include <QAbstractItemDelegate>
 #include <memory>
