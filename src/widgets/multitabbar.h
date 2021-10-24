@@ -8,8 +8,6 @@
 #include <set>
 #include <vector>
 
-class QAbstractButton;
-
 namespace omm
 {
 class MultiTabBar : public QWidget
