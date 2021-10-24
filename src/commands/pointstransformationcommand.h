@@ -4,7 +4,7 @@
 #include "common.h"
 #include "geometry/objecttransformation.h"
 #include "geometry/point.h"
-#include "objects/path.h"
+#include "objects/pathiterator.h"
 
 namespace omm
 {
@@ -13,7 +13,7 @@ class Path;
 class PointsTransformationCommand : public Command
 {
 public:
-  using Map = std::map<Path::iterator, Point>;
+  using Map = std::map<PathIterator, Point>;
   PointsTransformationCommand(const Map& new_points);
   void undo() override;
   void redo() override;
@@ -25,7 +25,7 @@ private:
   Map m_old_points;
   Map m_new_points;
   static void apply(const Map& map);
-  [[nodiscard]] std::set<Path::iterator> affected_points() const;
+  [[nodiscard]] std::set<PathIterator> affected_points() const;
 };
 
 }  // namespace omm

@@ -17,7 +17,7 @@ constexpr auto THRESHOLD_PROPERTY_KEY = "threshold";
 constexpr auto APPLY_PROPERTY_KEY = "apply";
 enum class Mode { Normal, X, Y, Distance };
 enum class MatchStrategy { Any, All };
-using It = omm::Path::iterator;
+using It = omm::PathIterator;
 
 double normal_distance(const It& a, const It& b)
 {
@@ -133,9 +133,9 @@ void SelectSimilarTool::update_base_selection()
   }
 }
 
-bool SelectSimilarTool::is_similar(const Path::iterator& a, const Path::iterator& b) const
+bool SelectSimilarTool::is_similar(const PathIterator& a, const PathIterator& b) const
 {
-  using It = Path::iterator;
+  using It = PathIterator;
   const auto alignment = property(ALIGNMENT_PROPERTY_KEY)->value<Alignment>();
   LINFO << (int)alignment << " " << (int)Alignment::Global << " " << (int)Alignment::Local;
   const std::map<Mode, std::function<double(const It&, const It)>> mode_map{

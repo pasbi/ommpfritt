@@ -11,6 +11,7 @@
 #include "mainwindow/mainwindow.h"
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
+#include "objects/path.h"
 #include "scene/history/historymodel.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
@@ -44,16 +45,16 @@ template<typename F> void foreach_segment(Application& app, F&& f)
 void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
 {
   using namespace omm;
-  std::map<Path::iterator, omm::Point> map;
+  std::map<PathIterator, omm::Point> map;
   const auto paths = app.scene.item_selection<Path>();
   for (omm::Path* path : paths) {
     const bool is_closed = path->is_closed();
     for (std::size_t s = 0; s < path->segments.size(); ++s) {
-      const Path::Segment& segment = path->segments[s];
+      const Segment& segment = path->segments[s];
       const std::size_t n = segment.size();
       for (std::size_t i = 0; i < n; ++i) {
         if (segment[i].is_selected) {
-          const Path::iterator it{*path, s, i};
+          const PathIterator it{*path, s, i};
           switch (mode) {
           case InterpolationMode::Bezier:
             break;  // do nothing.
@@ -81,7 +82,7 @@ void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
   }
 }
 
-std::set<std::size_t> neighbors_of_selected(const Path::Segment& segment)
+std::set<std::size_t> neighbors_of_selected(const Segment& segment)
 {
   std::set<std::size_t> selection;
   for (std::size_t i = 1; i < segment.size() - 1; ++i) {
@@ -163,7 +164,7 @@ void remove_selected_points(Application& app)
   for (auto* path : app.scene.item_selection<Path>()) {
     std::vector<RemovePointsCommand::Range> removed_points;
     auto last = path->end();
-    const auto is_contiguos = [&last](const Path::iterator& it) {
+    const auto is_contiguos = [&last](const PathIterator& it) {
       if (it.path != last.path || it.segment != last.segment) {
         return false;
       } else {

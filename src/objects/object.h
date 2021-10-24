@@ -11,6 +11,7 @@
 #include "geometry/point.h"
 #include "renderers/painter.h"
 #include "scene/taglist.h"
+#include "objects/segment.h"
 #include <memory>
 #include <vector>
 
@@ -112,8 +113,6 @@ public:
   } geom_paths;
 
   friend struct CachedQPainterPathGetter;
-
-  using Segment = std::vector<Point>;
 
   static Segment path_to_segment(const Geom::Path& path, bool is_closed);
   static Geom::Path segment_to_path(Segment segment,

@@ -3,7 +3,7 @@
 
 namespace
 {
-auto get_old_points(const std::set<omm::Path::iterator>& keys)
+auto get_old_points(const std::set<omm::PathIterator>& keys)
 {
   omm::PointsTransformationCommand::Map map;
   for (auto&& it : keys) {
@@ -72,7 +72,7 @@ void PointsTransformationCommand::apply(const PointsTransformationCommand::Map& 
   }
 }
 
-std::set<Path::iterator> PointsTransformationCommand::affected_points() const
+std::set<PathIterator> PointsTransformationCommand::affected_points() const
 {
   auto keys = ::get_keys(m_old_points);
   assert(keys == ::get_keys(m_new_points));

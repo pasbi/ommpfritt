@@ -1,5 +1,6 @@
 #include "python/pathwrapper.h"
 #include "python/pointwrapper.h"
+#include "objects/path.h"
 
 namespace omm
 {

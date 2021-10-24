@@ -118,7 +118,7 @@ bool ObjectSelectHandle::is_selected() const
   return ::contains(m_scene.item_selection<Object>(), &m_object);
 }
 
-PointSelectHandle::PointSelectHandle(Tool& tool, const Path::iterator& iterator)
+PointSelectHandle::PointSelectHandle(Tool& tool, const PathIterator& iterator)
     : AbstractSelectHandle(tool), m_iterator(iterator),
       m_left_tangent_handle(
           std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left)),
@@ -224,7 +224,7 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
     }
   }
 
-  std::map<Path::iterator, Point> map;
+  std::map<PathIterator, Point> map;
   map[m_iterator] = new_point;
   tool.scene()->submit<ModifyPointsCommand>(map);
 }

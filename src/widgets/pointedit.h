@@ -1,7 +1,5 @@
 #pragma once
 
-#include "geometry/point.h"
-#include "objects/path.h"
 #include <QWidget>
 
 class QPushButton;
@@ -9,7 +7,9 @@ class QPushButton;
 namespace omm
 {
 class CoordinateEdit;
+class Path;
 class Point;
+class PolarCoordinates;
 enum class DisplayMode;
 
 class PointEdit : public QWidget

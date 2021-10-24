@@ -2,6 +2,7 @@
 #include "commands/addcommand.h"
 #include "commands/modifypointscommand.h"
 #include "main/application.h"
+#include "objects/path.h"
 #include "scene/scene.h"
 #include "tools/selecttool.h"
 #include <QMouseEvent>
@@ -50,7 +51,7 @@ QString PathTool::type() const
   return TYPE;
 }
 
-Path::iterator PathTool::add_point(const Vec2f& pos)
+PathIterator PathTool::add_point(const Vec2f& pos)
 {
   Q_UNUSED(pos)
   if (m_path == nullptr) {
@@ -72,7 +73,7 @@ Path::iterator PathTool::add_point(const Vec2f& pos)
         if (first_selected.point == 0) {
           return first_selected;
         } else if (first_selected.point + 1 == m_path->segments[first_selected.segment].size()) {
-          return Path::iterator{*m_path, first_selected.segment, first_selected.point + 1};
+          return PathIterator{*m_path, first_selected.segment, first_selected.point + 1};
         }
       }
     }

@@ -1,10 +1,12 @@
 #pragma once
 
-#include "objects/path.h"
 #include "python/objectwrapper.h"
 
 namespace omm
 {
+
+class Path;
+
 class PathWrapper : public ObjectWrapper
 {
 public:

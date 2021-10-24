@@ -1,6 +1,7 @@
 #include "widgets/pointedit.h"
 #include "commands/modifypointscommand.h"
 #include "scene/scene.h"
+#include "objects/path.h"
 #include "widgets/coordinateedit.h"
 #include <QHBoxLayout>
 #include <QPushButton>

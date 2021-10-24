@@ -1,5 +1,7 @@
 #pragma once
-#include "objects/path.h"
+
+#include <QString>
+#include <set>
 
 namespace omm
 {

@@ -717,10 +717,10 @@ void Object::listen_to_children_changes()
   connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
 }
 
-Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
+Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
 {
   const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
-  Path::Segment segment;
+  Segment segment;
   segment.reserve(path.size_default() + 1);
   const auto n = path.size();
   for (std::size_t i = 0; i < n; ++i) {

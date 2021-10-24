@@ -29,6 +29,7 @@
 #include "tags/tag.h"
 #include "tools/toolbox.h"
 #include "widgets/pointdialog.h"
+#include "objects/path.h"
 
 namespace
 {

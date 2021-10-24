@@ -191,7 +191,7 @@ void TransformPointsHelper::update()
 {
   m_initial_points.clear();
   for (Path* path : m_paths) {
-    for (Path::iterator it = path->begin(); it != path->end(); ++it) {
+    for (PathIterator it = path->begin(); it != path->end(); ++it) {
       if (it->is_selected) {
         m_paths.insert(path);
         m_initial_points.insert({it, *it});

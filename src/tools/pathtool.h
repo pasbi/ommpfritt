@@ -1,12 +1,14 @@
 #pragma once
 
-#include "objects/path.h"
 #include "tools/selectpointstool.h"
 #include "tools/selecttool.h"
 #include <memory>
 
 namespace omm
 {
+
+class Path;
+
 class PathTool : public SelectPointsBaseTool
 {
 public:
@@ -20,9 +22,9 @@ public:
   void reset() override;
 
 private:
-  Path::iterator add_point(const Vec2f& pos);
+  PathIterator add_point(const Vec2f& pos);
   Path* m_path = nullptr;
-  std::optional<Path::iterator> m_current_point;
+  std::optional<PathIterator> m_current_point;
 };
 
 }  // namespace omm
