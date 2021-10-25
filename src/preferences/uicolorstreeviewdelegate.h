@@ -1,6 +1,5 @@
 #pragma once
 
-#include "preferences/preferencestreeview.h"
 #include "preferences/preferencestreeviewdelegate.h"
 #include "preferences/uicoloredit.h"
 

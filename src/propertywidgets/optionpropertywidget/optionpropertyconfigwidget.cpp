@@ -1,4 +1,5 @@
 #include "propertywidgets/optionpropertywidget/optionpropertyconfigwidget.h"
+#include "properties/optionproperty.h"
 #include "logging.h"
 #include <QEvent>
 #include <QLayout>

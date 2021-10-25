@@ -1,11 +1,5 @@
 #include "objects/object.h"
 
-#include <QObject>
-#include <algorithm>
-#include <cassert>
-#include <functional>
-#include <map>
-
 #include "common.h"
 #include "logging.h"
 #include "objects/path.h"
@@ -18,6 +12,8 @@
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
 #include "renderers/style.h"
+#include "renderers/painter.h"
+#include "renderers/painteroptions.h"
 #include "scene/contextes.h"
 #include "scene/mailbox.h"
 #include "scene/objecttree.h"
@@ -25,6 +21,15 @@
 #include "serializers/jsonserializer.h"
 #include "tags/styletag.h"
 #include "tags/tag.h"
+
+#include <QObject>
+#include <QPen>
+#include <QPainter>
+#include <algorithm>
+#include <cassert>
+#include <functional>
+#include <map>
+
 
 namespace
 {
@@ -302,7 +307,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   this->tags.set(std::move(tags));
 }
 
-void Object::draw_recursive(Painter& renderer, Painter::Options options) const
+void Object::draw_recursive(Painter& renderer, PainterOptions options) const
 {
   renderer.push_transformation(transformation());
   const bool is_enabled = !!(renderer.category_filter & Painter::Category::Objects);
@@ -635,7 +640,7 @@ QString Object::tree_path() const
 
 void Object::draw_object(Painter& renderer,
                          const Style& style,
-                         const Painter::Options& options) const
+                         const PainterOptions& options) const
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     if (const auto painter_path = this->painter_path(); !painter_path.isEmpty()) {

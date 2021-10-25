@@ -1,10 +1,10 @@
 #pragma once
 
 #include "common.h"
-#include "renderers/painter.h"
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
 #include <QMouseEvent>
+#include <QPainter>
 
 namespace omm
 {

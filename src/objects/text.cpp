@@ -3,6 +3,7 @@
 #include "objects/path.h"
 #include "properties/floatproperty.h"
 #include "properties/stringproperty.h"
+#include "renderers/painter.h"
 #include <QFont>
 #include <QObject>
 
@@ -62,7 +63,7 @@ Flag Text::flags() const
   // Flag::IsPathLike   // Maybe this becomes feasible once the convert-trait is implemented.
 }
 
-void Text::draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const
+void Text::draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const
 {
   Q_UNUSED(options)
   if (is_active()) {

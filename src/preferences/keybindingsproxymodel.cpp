@@ -1,5 +1,6 @@
 #include "preferences/keybindingsproxymodel.h"
 #include "keybindings/keybindings.h"
+#include "preferences/preferencestreeitem.h"
 #include <QKeySequence>
 
 namespace omm

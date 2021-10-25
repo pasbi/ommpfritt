@@ -5,6 +5,7 @@
 #include "mainwindow/toolbar/toolbaritemmodel.h"
 #include "preferences/keybindingsproxymodel.h"
 #include "preferences/preferencestree.h"
+#include "preferences/preferencestreeitem.h"
 #include "keybindings/keybindings.h"
 #include "ui_toolbardialog.h"
 #include <QIdentityProxyModel>

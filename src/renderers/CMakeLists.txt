@@ -3,6 +3,8 @@ target_sources(libommpfritt PRIVATE
   imagecache.h
   painter.cpp
   painter.h
+  painteroptions.cpp
+  painteroptions.h
   offscreenrenderer.cpp
   offscreenrenderer.h
   styleiconengine.cpp

@@ -4,6 +4,7 @@
 
 namespace omm
 {
+
 class KnifeTool : public SelectPointsBaseTool
 {
 public:
@@ -26,7 +27,6 @@ private:
   bool m_is_cutting = false;
   Vec2f m_mouse_press_pos;
   Vec2f m_mouse_move_pos;
-  static const Style m_line_style;
   std::list<Point> m_points;
 };
 

@@ -1,10 +1,11 @@
 #pragma once
 
-#include "properties/colorproperty.h"
 #include "propertywidgets/propertywidget.h"
+#include "properties/colorproperty.h"
 
 namespace omm
 {
+
 class ColorEdit;
 
 class ColorPropertyWidget : public PropertyWidget<ColorProperty>

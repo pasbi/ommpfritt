@@ -6,6 +6,8 @@
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
+#include "renderers/painter.h"
+#include "renderers/painteroptions.h"
 #include "scene/scene.h"
 #include <QObject>
 
@@ -87,7 +89,7 @@ void Mirror::polish()
 
 void Mirror::draw_object(Painter& renderer,
                          const Style& style,
-                         const Painter::Options& options) const
+                         const PainterOptions& options) const
 {
   assert(&renderer.scene == scene());
   if (is_active()) {

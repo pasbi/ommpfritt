@@ -1,6 +1,5 @@
 #pragma once
 
-#include "keybindings/commandinterface.h"
 #include "managers/itemmanager.h"
 #include "managers/stylemanager/stylelistview.h"
 

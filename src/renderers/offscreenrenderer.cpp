@@ -4,6 +4,8 @@
 #include "main/options.h"
 #include "nodesystem/nodecompilerglsl.h"
 #include "objects/object.h"
+#include "renderers/texture.h"
+#include "renderers/painteroptions.h"
 #include <QApplication>
 #include <QImage>
 #include <QOffscreenSurface>
@@ -277,7 +279,7 @@ std::unique_ptr<OffscreenRenderer> OffscreenRenderer::make()
 Texture OffscreenRenderer::render(const Object& object,
                                   const QSize& size,
                                   const QRectF& roi,
-                                  const Painter::Options& options)
+                                  const PainterOptions& options)
 {
   const QSize adjusted_size = QSize(static_cast<int>(size.width() * roi.width() / 2.0),
                                     static_cast<int>(size.height() * roi.height() / 2.0));

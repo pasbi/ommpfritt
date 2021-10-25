@@ -7,6 +7,7 @@ class QLineEdit;
 
 namespace omm
 {
+
 class CheckBox;
 
 class BoolPropertyWidget : public PropertyWidget<BoolProperty>

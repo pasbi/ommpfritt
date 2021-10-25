@@ -3,7 +3,6 @@
 #include "managers/manager.h"
 
 class QItemSelection;
-class QItemSelection;
 
 namespace omm
 {

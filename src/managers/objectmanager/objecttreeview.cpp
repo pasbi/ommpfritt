@@ -1,10 +1,5 @@
 #include "managers/objectmanager/objecttreeview.h"
 
-#include <QApplication>
-#include <QDrag>
-#include <QMouseEvent>
-#include <memory>
-
 #include "commands/addcommand.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
@@ -12,6 +7,8 @@
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "managers/objectmanager/objectdelegate.h"
+#include "managers/objectmanager/objectquickaccessdelegate.h"
+#include "managers/objectmanager/tagsitemdelegate.h"
 #include "menuhelper.h"
 #include "properties/referenceproperty.h"
 #include "renderers/style.h"
@@ -20,9 +17,15 @@
 #include "scene/propertyownermimedata.h"
 #include "scene/scene.h"
 #include "tags/tag.h"
+
+#include <QApplication>
+#include <QDrag>
 #include <QHeaderView>
+#include <QMouseEvent>
+#include <QPainter>
 #include <QStyledItemDelegate>
 #include <QTimer>
+#include <memory>
 
 namespace
 {
@@ -78,6 +81,8 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
   m_object_delegate = object_delegate.get();
   setItemDelegateForColumn(0, object_delegate.release());
 }
+
+ObjectTreeView::~ObjectTreeView() = default;
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
 {

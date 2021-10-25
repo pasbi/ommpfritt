@@ -1,12 +1,15 @@
 #pragma once
 
-#include "color/color.h"
 #include "common.h"
 #include "preferences/preferencestree.h"
 #include <QPalette>
 
 namespace omm
 {
+
+class Color;
+class PreferencesTreeValueItem;
+
 class UiColors : public PreferencesTree
 {
   Q_OBJECT

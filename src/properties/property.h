@@ -7,13 +7,9 @@
 #include <variant>
 
 #include "abstractfactory.h"
-#include "animation/track.h"
 #include "aspects/serializable.h"
-#include "color/color.h"
 #include "common.h"
-#include "dnf.h"
 #include "external/json.hpp"
-#include "geometry/vec2.h"
 #include "logging.h"
 #include "propertyconfiguration.h"
 #include "variant.h"
@@ -33,9 +29,9 @@ class Property
   Q_OBJECT
 
 public:
-  Property() = default;
+  explicit Property();
   explicit Property(const Property& other);
-  ~Property() override = default;
+  ~Property() override;
   Property(Property&&) = delete;
   Property& operator=(Property&&) = delete;
   Property& operator=(const Property&) = delete;

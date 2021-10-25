@@ -1,10 +1,10 @@
 #pragma once
 
-#include "properties/boolproperty.h"
 #include "propertywidgets/propertyconfigwidget.h"
 
 namespace omm
 {
+class BoolProperty;
 class BoolPropertyConfigWidget : public PropertyConfigWidget<BoolProperty>
 {
 public:
@@ -12,6 +12,7 @@ public:
   void init(const PropertyConfiguration&) override
   {
   }
+
   void update(PropertyConfiguration&) const override
   {
   }

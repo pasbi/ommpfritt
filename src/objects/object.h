@@ -9,17 +9,19 @@
 #include "external/json_fwd.hpp"
 #include "geometry/objecttransformation.h"
 #include "geometry/point.h"
-#include "renderers/painter.h"
 #include "scene/taglist.h"
 #include "objects/segment.h"
 #include <memory>
 #include <vector>
+#include <QPainterPath>
 
 namespace omm
 {
 class ObjectTree;
 class Scene;
 class Property;
+class PainterOptions;
+class Painter;
 
 class Object
     : public PropertyOwner<Kind::Object>
@@ -55,8 +57,8 @@ public:
   virtual void draw_handles(Painter& renderer) const;
 
   virtual void
-  draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const;
-  void draw_recursive(Painter& renderer, Painter::Options options) const;
+  draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const;
+  void draw_recursive(Painter& renderer, PainterOptions options) const;
 
   /**
    * @brief bounding_box returns the bounding box in world coordinates

@@ -1,12 +1,13 @@
 #pragma once
 
-#include "properties/property.h"
+#include "properties/propertyconfiguration.h"
 #include <QAbstractListModel>
 #include <memory>
 
 namespace omm
 {
 class AbstractPropertyOwner;
+class Property;
 
 class UserPropertyListItem
 {

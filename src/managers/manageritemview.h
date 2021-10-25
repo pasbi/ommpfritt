@@ -1,18 +1,16 @@
 #pragma once
 
-#include "aspects/propertyowner.h"
+#include <set>
 
-class QMenu;
-class QModelIndex;
-class QContextMenuEvent;
 class QMouseEvent;
-class QWidget;
-class QItemSelectionModel;
 class QKeyEvent;
 class QFocusEvent;
 
 namespace omm
 {
+
+class AbstractPropertyOwner;
+
 template<typename ItemViewT, typename ItemModelT> class ManagerItemView : public ItemViewT
 {
 public:

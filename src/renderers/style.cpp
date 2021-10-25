@@ -137,7 +137,7 @@ Flag Style::flags() const
 Texture Style::render_texture(const Object& object,
                               const QSize& size,
                               const QRectF& roi,
-                              const Painter::Options& options) const
+                              const PainterOptions& options) const
 {
   update_uniform_values();
   return m_offscreen_renderer->render(object, size, roi, options);

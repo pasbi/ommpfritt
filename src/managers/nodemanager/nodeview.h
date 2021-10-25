@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aspects/abstractpropertyowner.h"
 #include "cachedgetter.h"
 #include "managers/panzoomcontroller.h"
 #include "managers/range.h"

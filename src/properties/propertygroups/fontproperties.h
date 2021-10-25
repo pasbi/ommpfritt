@@ -1,6 +1,6 @@
 #pragma once
 
-#include "propertygroup.h"
+#include "properties/propertygroups/propertygroup.h"
 #include <QFont>
 #include <string>
 

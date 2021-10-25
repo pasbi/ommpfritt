@@ -3,13 +3,14 @@
 #include "animation/knot.h"
 #include "logging.h"
 #include "managers/range.h"
-#include "managers/timeline/timelinecanvas.h"
 #include <QWidget>
+#include <set>
 
 namespace omm
 {
 class Manager;
 class CurveTreeView;
+class Track;
 
 class CurveManagerWidget : public QWidget
 {

@@ -2,9 +2,9 @@
 
 #include "cachedgetter.h"
 #include "objects/object.h"
+#include "objects/pathiterator.h"
 #include <list>
 #include <type_traits>
-#include "objects/pathiterator.h"
 
 namespace omm
 {

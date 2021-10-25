@@ -1,8 +1,8 @@
 #pragma once
 
-#include "aspects/abstractpropertyowner.h"
 #include "nodesystem/port.h"
 #include "properties/property.h"
+#include <QObject>
 
 namespace omm
 {

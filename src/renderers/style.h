@@ -14,6 +14,7 @@ namespace omm
 class Scene;
 class OffscreenRenderer;
 class NodeModel;
+class PainterOptions;
 
 class Style
     : public PropertyOwner<Kind::Style>
@@ -34,7 +35,7 @@ public:
   Texture render_texture(const Object& object,
                          const QSize& size,
                          const QRectF& roi,
-                         const Painter::Options& options) const;
+                         const PainterOptions& options) const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

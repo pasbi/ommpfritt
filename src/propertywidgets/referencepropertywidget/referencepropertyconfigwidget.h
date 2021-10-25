@@ -1,7 +1,5 @@
 #pragma once
 
-#include "aspects/propertyowner.h"
-#include "properties/referenceproperty.h"
 #include "propertywidgets/propertyconfigwidget.h"
 #include <map>
 
@@ -9,6 +7,9 @@ class QCheckBox;
 
 namespace omm
 {
+
+class ReferenceProperty;
+
 class ReferencePropertyConfigWidget : public PropertyConfigWidget<ReferenceProperty>
 {
   Q_OBJECT

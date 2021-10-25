@@ -1,4 +1,5 @@
 #include "tools/transformpointshelper.h"
+#include "cache.h"
 #include "cachedgetter.h"
 #include "geometry/objecttransformation.h"
 #include "objects/path.h"

@@ -1,9 +1,6 @@
 #pragma once
 
-#include "aspects/abstractpropertyowner.h"
 #include "logging.h"
-#include "renderers/painter.h"
-#include "renderers/texture.h"
 #include "variant.h"
 #include <QOffscreenSurface>
 #include <QOpenGLBuffer>
@@ -18,6 +15,11 @@ class QOpenGLTexture;
 
 namespace omm
 {
+
+class Object;
+class PainterOptions;
+class Texture;
+
 class OffscreenRenderer
 {
 public:
@@ -31,7 +33,7 @@ public:
   Texture render(const Object& object,
                  const QSize& size,
                  const QRectF& roi,
-                 const Painter::Options& options);
+                 const PainterOptions& options);
   bool set_fragment_shader(const QString& fragment_code);
   QOpenGLContext& context()
   {

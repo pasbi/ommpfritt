@@ -1,6 +1,5 @@
 #pragma once
 
-#include "commands/userpropertyconfigcommand.h"
 #include "managers/propertymanager/userpropertylistmodel.h"
 #include "ui_userpropertydialog.h"
 #include <QDialog>

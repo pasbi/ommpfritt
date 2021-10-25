@@ -3,6 +3,7 @@
 #include "properties/floatproperty.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
+#include "renderers/painter.h"
 #include "tools/selectpointstool.h"
 #include <QMouseEvent>
 #include <list>

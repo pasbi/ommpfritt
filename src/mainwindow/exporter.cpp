@@ -4,13 +4,17 @@
 #include "logging.h"
 #include "mainwindow/viewport/viewport.h"
 #include "objects/view.h"
+#include "renderers/painter.h"
+#include "renderers/painteroptions.h"
 #include "scene/scene.h"
 #include <fmt/format.h>
 #include <QApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QImage>
+#include <QPainter>
 #include <QPaintDevice>
+#include <QPicture>
 #include <QSvgGenerator>
 #include <QThread>
 
@@ -201,7 +205,7 @@ void Exporter::render(QPaintDevice& device, double scale)
     m_scene.object_tree().root().set_transformation(transformation);
     m_scene.evaluate_tags();
 
-    Painter::Options options(device);
+    PainterOptions options(device);
     renderer.render(options);
   }
 

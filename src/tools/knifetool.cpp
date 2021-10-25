@@ -3,6 +3,7 @@
 #include "commands/modifypointscommand.h"
 #include "common.h"
 #include "objects/path.h"
+#include "renderers/painter.h"
 #include "scene/history/historymodel.h"
 #include "scene/scene.h"
 #include <2geom/line.h>

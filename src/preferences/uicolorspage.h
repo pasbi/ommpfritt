@@ -1,8 +1,6 @@
 #pragma once
 
-#include "color/color.h"
 #include "preferences/preferencepage.h"
-#include "preferences/uicolors.h"
 #include <memory>
 
 namespace Ui

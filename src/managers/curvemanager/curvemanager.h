@@ -1,7 +1,6 @@
 #pragma once
 
 #include "managers/manager.h"
-#include "managers/timeline/timelinecanvas.h"
 
 class QSortFilterProxyModel;
 

@@ -5,6 +5,7 @@
 #include "main/application.h"
 #include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/toolbar/toolbardialog.h"
+#include "preferences/preferencestreeitem.h"
 #include "logging.h"
 #include <QMimeData>
 #include <QToolButton>

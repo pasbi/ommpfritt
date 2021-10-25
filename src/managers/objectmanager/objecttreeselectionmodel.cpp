@@ -1,6 +1,7 @@
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "scene/scene.h"
 #include "tags/tag.h"
+#include <stack>
 
 namespace omm
 {

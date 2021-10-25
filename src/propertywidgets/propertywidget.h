@@ -1,4 +1,5 @@
 #pragma once
+
 #include "commands/propertycommand.h"
 #include "common.h"
 #include "properties/typedproperty.h"
