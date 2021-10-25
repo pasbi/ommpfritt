@@ -1,8 +1,6 @@
 #pragma once
 
-#include "geometry/boundingbox.h"
 #include "geometry/rectangle.h"
-#include "geometry/vec2.h"
 #include <set>
 
 class QRectF;

@@ -1,4 +1,5 @@
 #include "tools/selectpointstool.h"
+#include "keybindings/keybindings.h"
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "objects/path.h"
@@ -6,11 +7,13 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/handles/boundingboxhandle.h"
+#include "tools/transformpointshelper.h"
 
 namespace omm
 {
 SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
-    : AbstractSelectTool(scene), m_transform_points_helper(scene, Space::Viewport)
+    : AbstractSelectTool(scene)
+    , m_transform_points_helper(std::make_unique<TransformPointsHelper>(scene, Space::Viewport))
 {
   const auto category = QObject::tr("tool");
   create_property<OptionProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
@@ -27,6 +30,8 @@ SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
       .set_animatable(false);
 }
 
+SelectPointsBaseTool::~SelectPointsBaseTool() = default;
+
 PointSelectHandle::TangentMode SelectPointsBaseTool::tangent_mode() const
 {
   const auto i = property(TANGENT_MODE_PROPERTY_KEY)->value<std::size_t>();
@@ -37,7 +42,7 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
 {
   Q_UNUSED(parent)
   auto& app = Application::instance();
-  auto menus = app.key_bindings.make_menus(app, MainWindow::path_menu_entries());
+  auto menus = app.key_bindings->make_menus(app, MainWindow::path_menu_entries());
   if (menus.size() > 1) {
     LWARNING << "cannot combine entries from multiple menus";
     // TODO replace top-level-menu with custom key (i.e. 'path' in this case).
@@ -51,7 +56,7 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
 
 void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 {
-  scene()->submit(m_transform_points_helper.make_command(t));
+  scene()->submit(m_transform_points_helper->make_command(t));
 }
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
@@ -63,7 +68,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 {
   const auto paths = type_casts<Path*>(scene()->template item_selection<Object>());
   if (AbstractSelectTool::mouse_press(pos, event)) {
-    m_transform_points_helper.update(paths);
+    m_transform_points_helper->update(paths);
     return true;
   } else if (allow_clear && event.buttons() == Qt::LeftButton) {
     for (auto* path : paths) {
@@ -125,80 +130,6 @@ void SelectPointsTool::reset()
   handles.clear();
   make_handles(*this, false);
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectPointsTool>>(*this));
-}
-
-TransformPointsHelper::TransformPointsHelper(Scene& scene, Space space)
-    : m_scene(scene), m_space(space)
-{
-  update();
-  connect(&m_scene.mail_box(),
-          &MailBox::point_selection_changed,
-          this,
-          qOverload<>(&TransformPointsHelper::update));
-}
-
-std::unique_ptr<PointsTransformationCommand>
-TransformPointsHelper::make_command(const ObjectTransformation& t) const
-{
-  class TransformationCache : public Cache<Path*, ObjectTransformation>
-  {
-  public:
-    TransformationCache(const Matrix& mat, Space space) : m_mat(mat), m_space(space)
-    {
-    }
-    ObjectTransformation retrieve(Path* const& path) const override
-    {
-      const Matrix gt = path->global_transformation(m_space).to_mat();
-      return ObjectTransformation(gt.inverted() * m_mat * gt);
-    }
-
-  private:
-    const Matrix m_mat;
-    const Space m_space;
-  };
-
-  assert(!t.has_nan());
-  assert(!t.to_mat().has_nan());
-  TransformationCache cache(t.to_mat(), m_space);
-
-  PointsTransformationCommand::Map map;
-
-  bool is_noop = true;
-  for (auto&& [key, point] : m_initial_points) {
-    const ObjectTransformation premul = cache.get(key.path);
-    auto p = premul.apply(point);
-    if (p.is_selected != point.is_selected) {
-      p.is_selected = point.is_selected;
-      is_noop = false;
-    }
-    map.insert(std::pair(key, p));
-  }
-
-  if (!is_noop) {
-    return std::make_unique<PointsTransformationCommand>(map);
-  } else {
-    return nullptr;
-  }
-}
-
-void TransformPointsHelper::update(const std::set<Path*>& paths)
-{
-  m_paths = paths;
-  update();
-}
-
-void TransformPointsHelper::update()
-{
-  m_initial_points.clear();
-  for (Path* path : m_paths) {
-    for (PathIterator it = path->begin(); it != path->end(); ++it) {
-      if (it->is_selected) {
-        m_paths.insert(path);
-        m_initial_points.insert({it, *it});
-      }
-    }
-  }
-  Q_EMIT initial_transformations_changed();
 }
 
 }  // namespace omm

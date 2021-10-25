@@ -3,6 +3,7 @@
 #include "preferences/generalpage.h"
 #include "preferences/keybindingspage.h"
 #include "preferences/preferencepage.h"
+#include "preferences/preferences.h"
 #include "preferences/uicolorspage.h"
 #include "preferences/viewportpage.h"
 #include "ui_preferencedialog.h"
@@ -18,14 +19,14 @@ PreferenceDialog::PreferenceDialog() : m_ui(new Ui::PreferenceDialog)
   connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &PreferenceDialog::accept);
   connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &PreferenceDialog::reject);
 
-  register_preference_page(nullptr, tr("General"), std::make_unique<GeneralPage>(app.preferences));
+  register_preference_page(nullptr, tr("General"), std::make_unique<GeneralPage>(*app.preferences));
   register_preference_page(nullptr,
                            tr("Viewport"),
-                           std::make_unique<ViewportPage>(app.preferences));
-  register_preference_page(nullptr, tr("Ui Colors"), std::make_unique<UiColorsPage>(app.ui_colors));
+                           std::make_unique<ViewportPage>(*app.preferences));
+  register_preference_page(nullptr, tr("Ui Colors"), std::make_unique<UiColorsPage>(*app.ui_colors));
   register_preference_page(nullptr,
                            tr("Keyindings"),
-                           std::make_unique<KeyBindingsPage>(app.key_bindings));
+                           std::make_unique<KeyBindingsPage>(*app.key_bindings));
 }
 
 PreferenceDialog::~PreferenceDialog() = default;

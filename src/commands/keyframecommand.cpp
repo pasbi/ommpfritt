@@ -1,45 +1,46 @@
 #include "commands/keyframecommand.h"
 
 #include "animation/animator.h"
+#include "animation/knot.h"
 #include "animation/track.h"
 #include "properties/property.h"
 #include <utility>
 
 namespace
 {
-std::map<omm::Property*, omm::Track::Knot*>
+std::map<omm::Property*, omm::Knot*>
 collect_knots(const std::set<omm::Property*>& properties, int frame)
 {
-  std::map<omm::Property*, omm::Track::Knot*> map;
+  std::map<omm::Property*, omm::Knot*> map;
   for (auto&& property : properties) {
     if (property->track() != nullptr) {
       // don't add keyframes to non-existing tracks.
       // You must make sure that the track exists beforehand.
-      omm::Track::Knot& knot = property->track()->knot(frame);
+      omm::Knot& knot = property->track()->knot(frame);
       map.emplace(property, &knot);
     }
   }
   return map;
 }
 
-std::map<omm::Property*, std::unique_ptr<omm::Track::Knot>>
+std::map<omm::Property*, std::unique_ptr<omm::Knot>>
 create_knots(const std::set<omm::Property*>& properties, int frame)
 {
-  std::map<omm::Property*, std::unique_ptr<omm::Track::Knot>> map;
+  std::map<omm::Property*, std::unique_ptr<omm::Knot>> map;
   for (auto&& property : properties) {
     if (property->track() != nullptr) {
       Q_UNUSED(frame)
-      auto knot = std::make_unique<omm::Track::Knot>(property->variant_value());
+      auto knot = std::make_unique<omm::Knot>(property->variant_value());
       map.emplace(property, std::move(knot));
     }
   }
   return map;
 }
 
-std::map<omm::Property*, omm::Track::Knot*>
-collect_refs(const std::map<omm::Property*, std::unique_ptr<omm::Track::Knot>>& owns)
+std::map<omm::Property*, omm::Knot*>
+collect_refs(const std::map<omm::Property*, std::unique_ptr<omm::Knot>>& owns)
 {
-  std::map<omm::Property*, omm::Track::Knot*> refs;
+  std::map<omm::Property*, omm::Knot*> refs;
   for (auto&& [property, own] : owns) {
     refs.emplace(property, own.get());
   }
@@ -53,8 +54,8 @@ namespace omm
 KeyFrameCommand::KeyFrameCommand(Animator& animator,
                                  const QString& label,
                                  int frame,
-                                 const std::map<Property*, Track::Knot*>& refs,
-                                 std::map<Property*, std::unique_ptr<Track::Knot>>&& owns)
+                                 const std::map<Property*, Knot*>& refs,
+                                 std::map<Property*, std::unique_ptr<Knot>>&& owns)
     : Command(label), m_animator(animator), m_frame(frame), m_refs(refs)
 {
   for (auto&& [property, knot] : owns) {
@@ -65,7 +66,7 @@ KeyFrameCommand::KeyFrameCommand(Animator& animator,
 KeyFrameCommand::KeyFrameCommand(Animator& animator,
                                  const QString& label,
                                  int frame,
-                                 std::map<Property*, std::unique_ptr<Track::Knot>>&& owns)
+                                 std::map<Property*, std::unique_ptr<Knot> >&& owns)
     : KeyFrameCommand(animator, label, frame, collect_refs(owns))
 {
   for (auto&& [property, knot] : owns) {
@@ -110,7 +111,7 @@ RemoveKeyFrameCommand::RemoveKeyFrameCommand(Animator& animator,
                       QObject::tr("Remove Keyframe"),
                       frame,
                       collect_knots(values, frame),
-                      std::map<Property*, std::unique_ptr<Track::Knot>>())
+                      std::map<Property*, std::unique_ptr<Knot>>())
 {
 }
 
@@ -200,7 +201,7 @@ void MoveKeyFrameCommand::shift_keyframes(bool invert)
 
 ChangeKeyFrameCommand ::ChangeKeyFrameCommand(int frame,
                                               Property& property,
-                                              std::unique_ptr<Track::Knot> new_value)
+                                              std::unique_ptr<Knot> new_value)
     : Command(QObject::tr("Change Keyframes")), m_frame(frame), m_property(property),
       m_other_value(std::move(new_value))
 {

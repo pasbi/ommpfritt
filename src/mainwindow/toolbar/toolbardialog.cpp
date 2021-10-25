@@ -4,6 +4,8 @@
 #include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/toolbar/toolbaritemmodel.h"
 #include "preferences/keybindingsproxymodel.h"
+#include "preferences/preferencestree.h"
+#include "keybindings/keybindings.h"
 #include "ui_toolbardialog.h"
 #include <QIdentityProxyModel>
 #include <QMimeData>
@@ -68,7 +70,7 @@ public:
 namespace omm
 {
 ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
-    : QDialog(parent), m_key_bindings(Application::instance().key_bindings),
+    : QDialog(parent), m_key_bindings(*Application::instance().key_bindings),
       m_ui(std::make_unique<Ui::ToolBarDialog>()),
       m_proxy(std::make_unique<DragDropProxy>(m_key_bindings)), m_model(model)
 {

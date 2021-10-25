@@ -1,11 +1,9 @@
 #pragma once
 
-#include "aspects/propertyowner.h"
 #include "geometry/boundingbox.h"
 #include "managers/manager.h"
-#include "tools/selectobjectstool.h"
-#include "tools/selectpointstool.h"
-#include "widgets/numericedit.h"
+#include "tools/transformpointshelper.h"
+#include "tools/transformobjectshelper.h"
 
 namespace Ui
 {
@@ -14,8 +12,8 @@ class BoundingBoxManager;
 
 namespace omm
 {
-class AbstractPropertyOwner;
 
+class Property;
 class BoundingBoxManager : public Manager
 {
   Q_OBJECT

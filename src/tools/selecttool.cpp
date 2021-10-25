@@ -6,6 +6,7 @@
 #include "mainwindow/mainwindow.h"
 #include "menuhelper.h"
 #include "objects/path.h"
+#include "preferences/uicolors.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"

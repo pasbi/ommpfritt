@@ -13,6 +13,10 @@ target_sources(libommpfritt PRIVATE
   selecttool.h
   selectsimilartool.cpp
   selectsimilartool.h
+  transformobjectshelper.cpp
+  transformobjectshelper.h
+  transformpointshelper.cpp
+  transformpointshelper.h
   toolbox.cpp
   toolbox.h
   tool.cpp

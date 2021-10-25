@@ -1,6 +1,7 @@
 #include "offscreenrenderer.h"
 #include "geometry/objecttransformation.h"
 #include "main/application.h"
+#include "main/options.h"
 #include "nodesystem/nodecompilerglsl.h"
 #include "objects/object.h"
 #include <QApplication>

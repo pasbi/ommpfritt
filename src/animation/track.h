@@ -1,6 +1,5 @@
 #pragma once
 
-#include "abstractfactory.h"
 #include "aspects/serializable.h"
 #include "common.h"
 #include "serializers/abstractserializer.h"
@@ -11,6 +10,7 @@
 namespace omm
 {
 class Property;
+class Knot;
 
 /**
  * @brief The AbstractTrack class is the base class for all track.
@@ -23,38 +23,6 @@ class Track : public Serializable
 {
   Q_DECLARE_TR_FUNCTIONS(Track)
 public:
-  struct Knot : public ReferencePolisher {
-    Knot(AbstractDeserializer& deserializer, const Pointer& pointer, const QString& type);
-    Knot(const variant_type& value);
-    Knot(Knot&&) = delete;
-    Knot& operator=(Knot&&) = delete;
-    Knot& operator=(const Knot&) = delete;
-    ~Knot() override = default;
-    void swap(Knot& other);
-    [[nodiscard]] std::unique_ptr<Knot> clone() const;
-
-    enum class Side { Left, Right };
-
-    bool operator==(const Knot& other) const;
-    bool operator!=(const Knot& other) const;
-
-    variant_type value;
-    variant_type& offset(Side side);
-    variant_type left_offset;
-    variant_type right_offset;
-
-  private:
-    // copying the Knot is dangerous because the Deserializaer
-    // may hold a pointer to this (as ReferencePolisher).
-    // Use Knot::clone explicitely, if you know what you do.
-    Knot(const Knot& other) = default;
-    void polish();
-
-    // only required for deserialization.
-    void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
-    std::size_t m_reference_id = 0;
-  };
-
   enum class Interpolation { Step, Linear, Bezier };
   static QString interpolation_label(Interpolation interpolation);
 

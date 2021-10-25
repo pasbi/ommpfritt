@@ -2,6 +2,7 @@
 
 #include "animation/animator.h"
 #include "animation/track.h"
+#include "animation/knot.h"
 #include "aspects/propertyowner.h"
 #include "commands/keyframecommand.h"
 #include "commands/setinterpolationcommand.h"

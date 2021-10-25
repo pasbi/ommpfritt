@@ -51,7 +51,6 @@ Q_SIGNALS:
 
 private:
   Scene& m_scene;
-  std::unique_ptr<QTimer> m_timer;
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
   Painter m_renderer;

@@ -3,6 +3,7 @@
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
+#include "preferences/uicolors.h"
 #include "properties/boolproperty.h"
 #include "properties/floatvectorproperty.h"
 #include "properties/triggerproperty.h"

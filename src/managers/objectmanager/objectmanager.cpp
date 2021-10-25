@@ -1,6 +1,7 @@
 #include "managers/objectmanager/objectmanager.h"
 #include "commands/addcommand.h"
 #include "commands/movecommand.h"
+#include "keybindings/keybindings.h"
 #include "main/application.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "objects/empty.h"
@@ -39,7 +40,7 @@ bool ObjectManager::perform_action(const QString& name)
 void ObjectManager::contextMenuEvent(QContextMenuEvent* event)
 {
   Application& app = Application::instance();
-  KeyBindings& kb = app.key_bindings;
+  KeyBindings& kb = *app.key_bindings;
   const bool object_selected = !item_view().selected_objects().empty();
 
   const auto e_os = [object_selected](QAction* action) {

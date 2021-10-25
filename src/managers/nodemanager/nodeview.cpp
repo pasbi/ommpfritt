@@ -10,6 +10,7 @@
 #include "nodesystem/nodes/fragmentnode.h"
 #include "nodesystem/nodes/referencenode.h"
 #include "preferences/preferences.h"
+#include "preferences/uicolors.h"
 #include "properties/referenceproperty.h"
 #include "propertywidgets/propertywidget.h"
 #include "scene/history/historymodel.h"

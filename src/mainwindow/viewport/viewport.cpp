@@ -12,6 +12,7 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/toolbox.h"
+#include "preferences/uicolors.h"
 
 namespace
 {
@@ -53,9 +54,9 @@ template<typename... VecTs> auto max(const VecTs&... vecs)
 namespace omm
 {
 Viewport::Viewport(Scene& scene)
-    : m_scene(scene), m_timer(std::make_unique<QTimer>()),
-      m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); }),
-      m_renderer(scene, Painter::Category::Handles | Painter::Category::Objects)
+    : m_scene(scene)
+    , m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); })
+    , m_renderer(scene, Painter::Category::Handles | Painter::Category::Objects)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setFocusPolicy(Qt::StrongFocus);
@@ -64,7 +65,7 @@ Viewport::Viewport(Scene& scene)
   connect(&scene.mail_box(), &MailBox::selection_changed, this, &Viewport::update);
 
   connect(&scene.mail_box(), &MailBox::scene_appearance_changed, this, &Viewport::update);
-  connect(&m_fps_limiter, &QTimer::timeout, [this]() {
+  connect(&m_fps_limiter, &QTimer::timeout, this, [this]() {
     m_fps_limiter.stop();
     if (m_update_later) {
       m_update_later = false;

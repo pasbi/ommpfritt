@@ -1,5 +1,6 @@
 #pragma once
 
+#include "animation/knot.h"
 #include "logging.h"
 #include "managers/range.h"
 #include "managers/timeline/timelinecanvas.h"
@@ -50,7 +51,7 @@ private:
     const int frame;
     const std::size_t channel;
     [[nodiscard]] double value() const;
-    [[nodiscard]] double value(Track::Knot::Side side) const;
+    [[nodiscard]] double value(Knot::Side side) const;
     bool operator<(const KeyFrameHandleKey& other) const;
   };
 
@@ -63,7 +64,7 @@ private:
   [[nodiscard]] bool is_visible(const KeyFrameHandleKey& key) const;
   [[nodiscard]] bool is_visible(const Track& track, std::size_t channel) const;
   [[nodiscard]] const KeyFrameHandleKey* neighbor(const KeyFrameHandleKey& key,
-                                                  Track::Knot::Side side) const;
+                                                  Knot::Side side) const;
 
   [[nodiscard]] std::set<const KeyFrameHandleKey*> keyframe_handles_at(const QPointF& point) const;
 
@@ -74,12 +75,12 @@ private:
 
   struct TangentHandle {
     TangentHandle() = default;
-    TangentHandle(const KeyFrameHandleKey* key, Track::Knot::Side side) : key(key), side(side)
+    TangentHandle(const KeyFrameHandleKey* key, Knot::Side side) : key(key), side(side)
     {
     }
 
     const KeyFrameHandleKey* key{nullptr};
-    Track::Knot::Side side = Track::Knot::Side::Left;
+    Knot::Side side = Knot::Side::Left;
     [[nodiscard]] variant_type& offset() const;
   };
 

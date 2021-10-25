@@ -1,6 +1,7 @@
 #include "nodesystem/nodemodel.h"
 #include "common.h"
 #include "main/application.h"
+#include "main/options.h"
 #include "nodesystem/node.h"
 #include "nodesystem/nodecompilerglsl.h"
 #include "nodesystem/nodecompilerpython.h"

@@ -14,7 +14,9 @@
 #include <functional>
 
 #include "common.h"
+#include "config.h"
 #include "keybindings/commandinterface.h"
+#include "keybindings/keybindings.h"
 #include "logging.h"
 #include "main/application.h"
 #include "mainwindow/gpl3.h"
@@ -30,7 +32,6 @@
 #include "tools/tool.h"
 #include "ui_aboutdialog.h"
 #include "widgets/colorwidget/colorwidget.h"
-#include "config.h"
 
 namespace
 {
@@ -199,7 +200,7 @@ MainWindow::MainWindow(Application& app) : m_app(app)
   }
 
   setMenuBar(std::make_unique<QMenuBar>().release());
-  for (auto&& menu : m_app.key_bindings.make_menus(m_app, main_menu_entries())) {
+  for (auto&& menu : m_app.key_bindings->make_menus(m_app, main_menu_entries())) {
     menuBar()->addMenu(menu.release());
   }
   menuBar()->addMenu(make_about_menu().release());

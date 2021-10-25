@@ -1,5 +1,6 @@
 #include "managers/boundingboxmanager/boundingboxmanager.h"
 #include "main/application.h"
+#include "main/options.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
 #include "objects/path.h"

@@ -13,7 +13,9 @@
 #include "commands/addcommand.h"
 #include "commands/movecommand.h"
 #include "keybindings/modeselector.h"
+#include "keybindings/keybindings.h"
 #include "logging.h"
+#include "main/options.h"
 #include "mainwindow/exportdialog.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/pathactions.h"
@@ -22,6 +24,8 @@
 #include "managers/manager.h"
 #include "objects/object.h"
 #include "preferences/preferencedialog.h"
+#include "preferences/uicolors.h"
+#include "python/pythonengine.h"
 #include "registers.h"
 #include "scene/history/historymodel.h"
 #include "scene/scene.h"
@@ -100,8 +104,12 @@ Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
     : first_member((init(this), nullptr))
+    , key_bindings(std::make_unique<KeyBindings>())
+    , ui_colors(std::make_unique<UiColors>())
+    , preferences(std::make_unique<Preferences>())
     , mode_selectors(init_mode_selectors())
-    , scene(std::make_unique<Scene>(python_engine))
+    , python_engine(std::make_unique<PythonEngine>())
+    , scene(std::make_unique<Scene>(*python_engine))
     , m_app(app)
     , m_options(std::move(options))
     , m_translator(load_locale())
@@ -109,7 +117,7 @@ Application::Application(QCoreApplication& app, std::unique_ptr<Options> options
   static constexpr int RESET_KEYSEQUENCE_INTERVAL_MS = 1000;
   scene->set_selection({});
   if (!this->options().is_cli) {
-    ui_colors.apply();
+    ui_colors->apply();
     m_reset_keysequence_timer.setSingleShot(true);
     m_reset_keysequence_timer.setInterval(RESET_KEYSEQUENCE_INTERVAL_MS);
     connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
@@ -282,7 +290,7 @@ bool Application::perform_action(const QString& action_name)
 {
 #ifndef NDEBUG
   for (auto&& action_name : path_actions::available_actions()) {
-    assert(key_bindings.find_action(Application::TYPE, action_name) != nullptr);
+    assert(key_bindings->find_action(Application::TYPE, action_name) != nullptr);
   }
 #endif
 
@@ -377,7 +385,7 @@ bool Application::perform_action(const QString& action_name)
 bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, CommandInterface& ci)
 {
   const auto dispatch_sequence = [this](CommandInterface& ci) {
-    const auto action_name = key_bindings.find_action(ci.type(), m_pending_key_sequence);
+    const auto action_name = key_bindings->find_action(ci.type(), m_pending_key_sequence);
     LINFO << "Dispatching " << m_pending_key_sequence << " to " << &ci;
     if (!action_name.isEmpty() && ci.perform_action(action_name)) {
       m_pending_key_sequence = QKeySequence();
@@ -556,7 +564,7 @@ std::set<Manager*> Application::managers(const QString& type) const
 
 const Preferences& preferences()
 {
-  return Application::instance().preferences;
+  return *Application::instance().preferences;
 }
 
 }  // namespace omm

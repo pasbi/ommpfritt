@@ -7,37 +7,18 @@
 #include "tools/handles/scaleaxishandle.h"
 #include "tools/handles/scalebandhandle.h"
 #include "tools/selecttool.h"
+#include <memory>
 
 namespace omm
 {
-class TransformPointsHelper : public QObject
-{
-  Q_OBJECT
-public:
-  explicit TransformPointsHelper(Scene& scene, Space space);
-  [[nodiscard]] std::unique_ptr<PointsTransformationCommand>
-  make_command(const ObjectTransformation& t) const;
-  void update(const std::set<Path*>& paths);
-  void update();
-  [[nodiscard]] bool is_empty() const
-  {
-    return m_initial_points.empty();
-  }
 
-Q_SIGNALS:
-  void initial_transformations_changed();
-
-private:
-  PointsTransformationCommand::Map m_initial_points;
-  std::set<Path*> m_paths;
-  Scene& m_scene;
-  const Space m_space;
-};
+class TransformPointsHelper;
 
 class SelectPointsBaseTool : public AbstractSelectTool
 {
 public:
   explicit SelectPointsBaseTool(Scene& scene);
+  ~SelectPointsBaseTool() override;
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   static constexpr auto BOUNDING_BOX_MODE_PROPERTY_KEY = "bounding_box_mode";
   enum class BoundingBoxMode { IncludeTangents, ExcludeTangents, None };
@@ -86,7 +67,7 @@ protected:
   Vec2f selection_center() const override;
 
 private:
-  TransformPointsHelper m_transform_points_helper;
+  std::unique_ptr<TransformPointsHelper> m_transform_points_helper;
 };
 
 class SelectPointsTool : public SelectPointsBaseTool
