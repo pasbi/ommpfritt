@@ -6,6 +6,7 @@
 #include "properties/optionproperty.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
+#include "scene/pointselection.h"
 #include "tools/handles/boundingboxhandle.h"
 #include "tools/transformpointshelper.h"
 
@@ -96,10 +97,10 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   static const auto remove_tangents = [](const Point& point) { return point.nibbed(); };
   switch (property(BOUNDING_BOX_MODE_PROPERTY_KEY)->value<BoundingBoxMode>()) {
   case BoundingBoxMode::IncludeTangents:
-    return BoundingBox(::transform<Point>(scene()->point_selection.points(Space::Viewport)));
+    return BoundingBox(::transform<Point>(scene()->point_selection->points(Space::Viewport)));
   case BoundingBoxMode::ExcludeTangents:
     return BoundingBox(
-        ::transform<Point>(scene()->point_selection.points(Space::Viewport), remove_tangents));
+        ::transform<Point>(scene()->point_selection->points(Space::Viewport), remove_tangents));
   case BoundingBoxMode::None:
     [[fallthrough]];
   default:
@@ -117,7 +118,7 @@ void SelectPointsBaseTool::on_property_value_changed(Property* property)
 
 Vec2f SelectPointsBaseTool::selection_center() const
 {
-  return scene()->point_selection.center(Space::Viewport);
+  return scene()->point_selection->center(Space::Viewport);
 }
 
 QString SelectPointsTool::type() const

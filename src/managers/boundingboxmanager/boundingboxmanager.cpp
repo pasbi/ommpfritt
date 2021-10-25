@@ -5,8 +5,10 @@
 #include "mainwindow/viewport/viewport.h"
 #include "objects/path.h"
 #include "scene/mailbox.h"
+#include "scene/pointselection.h"
 #include "scene/scene.h"
 #include "tools/toolbox.h"
+#include "tools/tool.h"
 #include "ui_boundingboxmanager.h"
 #include <QComboBox>
 #include <QLabel>
@@ -168,7 +170,7 @@ BoundingBox BoundingBoxManager::update_manager()
   const BoundingBox bb = [this]() {
     switch (m_current_mode) {
     case Mode::Points:
-      return BoundingBox(::transform<Point>(scene().point_selection.points(Space::Scene)));
+      return BoundingBox(::transform<Point>(scene().point_selection->points(Space::Scene)));
     case Mode::Objects:
       return BoundingBox(
           ::transform<BoundingBox>(scene().item_selection<Object>(), [](const Object* o) {

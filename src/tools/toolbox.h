@@ -1,11 +1,17 @@
 #pragma once
 
-#include "tools/tool.h"
+#include "common.h"
 #include <list>
+#include <map>
+#include <memory>
+#include <QObject>
+#include <QString>
 
 namespace omm
 {
+
 class Scene;
+class Tool;
 
 class ToolBox : public QObject
 {

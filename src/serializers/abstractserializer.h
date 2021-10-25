@@ -6,18 +6,19 @@
 
 #include "abstractfactory.h"
 #include "aspects/serializable.h"
-#include "color/color.h"
 #include "common.h"
-#include "geometry/polarcoordinates.h"
 #include "geometry/vec2.h"
 #include "variant.h"
 
 namespace omm
 {
-class ObjectTransformation;
-class Scene;
-class ReferenceProperty;
+
 class AbstractPropertyOwner;
+class Color;
+class ObjectTransformation;
+class PolarCoordinates;
+class ReferenceProperty;
+class Scene;
 
 class AbstractSerializer : public QObject
 {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common.h"
-#include "geometry/objecttransformation.h"
+#include "geometry/vec2.h"
 #include <QPalette>
 #include <Qt>
 

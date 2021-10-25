@@ -1,16 +1,19 @@
 #pragma once
 
-#include "aspects/propertyowner.h"
+#include"common.h"
 #include <QObject>
 #include <set>
 
 namespace omm
 {
-class Object;
-class Tag;
-class Style;
-class Tool;
+
+class AbstractPropertyOwner;
 class Node;
+class Object;
+class Property;
+class Style;
+class Tag;
+class Tool;
 
 class MailBox : public QObject
 {

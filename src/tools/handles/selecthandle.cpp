@@ -9,12 +9,14 @@
 #include "scene/scene.h"
 #include "tools/selectpointstool.h"
 #include "tools/selecttool.h"
+#include "tools/tool.h"
 #include <QGuiApplication>
 #include <QMouseEvent>
 
 namespace omm
 {
-AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool)
+AbstractSelectHandle::AbstractSelectHandle(Tool& tool)
+  : Handle(tool)
 {
 }
 
@@ -119,10 +121,11 @@ bool ObjectSelectHandle::is_selected() const
 }
 
 PointSelectHandle::PointSelectHandle(Tool& tool, const PathIterator& iterator)
-    : AbstractSelectHandle(tool), m_iterator(iterator),
-      m_left_tangent_handle(
-          std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left)),
-      m_right_tangent_handle(
+    : AbstractSelectHandle(tool)
+    , m_iterator(iterator)
+    , m_left_tangent_handle(
+          std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left))
+    , m_right_tangent_handle(
           std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Right))
 {
 }

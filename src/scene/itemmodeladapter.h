@@ -1,8 +1,6 @@
 #pragma once
 
 #include "objects/object.h"
-#include "scene/list.h"
-#include "scene/structure.h"
 #include <QAbstractItemModel>
 
 namespace omm

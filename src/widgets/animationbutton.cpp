@@ -10,6 +10,7 @@
 #include "logging.h"
 #include "preferences/uicolors.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/scene.h"
 #include <QMenu>
 #include <QPainter>

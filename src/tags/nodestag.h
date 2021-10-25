@@ -1,7 +1,5 @@
 #pragma once
 
-#include "nodesystem/nodecompilerpython.h"
-#include "nodesystem/nodemodel.h"
 #include "nodesystem/nodesowner.h"
 #include "tags/tag.h"
 #include <Qt>

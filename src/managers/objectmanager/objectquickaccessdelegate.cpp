@@ -6,6 +6,7 @@
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/scene.h"
 #include <QEvent>
 #include <QMouseEvent>

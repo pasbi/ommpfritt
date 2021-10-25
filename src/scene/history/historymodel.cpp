@@ -1,4 +1,6 @@
 #include "scene/history/historymodel.h"
+#include "commands/command.h"
+#include "scene/history/macro.h"
 #include "logging.h"
 #include <QColor>
 
@@ -6,7 +8,7 @@ namespace omm
 {
 HistoryModel::HistoryModel()
 {
-  connect(&m_undo_stack, &QUndoStack::indexChanged, [this](int index) {
+  connect(&m_undo_stack, &QUndoStack::indexChanged, this, [this](int index) {
     const auto before = this->index(std::max(0, index), 0);
     const auto after = this->index(std::min(m_undo_stack.count() - 1, index + 1), 0);
     Q_EMIT dataChanged(before, after);

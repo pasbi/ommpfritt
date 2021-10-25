@@ -3,6 +3,7 @@
 #include "renderers/style.h"
 #include "scene/scene.h"
 #include "renderers/painteroptions.h"
+#include "renderers/texture.h"
 #include <QWidget>
 
 namespace

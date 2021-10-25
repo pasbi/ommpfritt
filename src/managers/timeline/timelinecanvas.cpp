@@ -8,6 +8,7 @@
 #include "preferences/uicolors.h"
 #include "preferences/preferences.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <QCursor>

@@ -13,6 +13,7 @@
 #include "properties/referenceproperty.h"
 #include "objects/path.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/toolbox.h"

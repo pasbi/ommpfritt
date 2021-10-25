@@ -11,6 +11,7 @@
 #include "scene/history/historymodel.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
+#include "scene/history/macro.h"
 #include "preferences/preferences.h"
 #include <QEvent>
 #include <QMouseEvent>

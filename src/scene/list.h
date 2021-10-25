@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aspects/propertyowner.h"
 #include "scene/contextes_fwd.h"
 #include "scene/structure.h"
 #include <memory>

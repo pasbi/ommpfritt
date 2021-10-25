@@ -11,6 +11,7 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/toolbox.h"
+#include "tools/tool.h"
 
 #include <QMouseEvent>
 #include <QPainter>

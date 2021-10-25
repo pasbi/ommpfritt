@@ -1,13 +1,9 @@
 #pragma once
 
 #include "aspects/propertyowner.h"
-#include "color/color.h"
-#include "nodesystem/nodecompilerglsl.h"
-#include "nodesystem/nodemodel.h"
 #include "nodesystem/nodesowner.h"
-#include "properties/propertygroups/markerproperties.h"
-#include "renderers/texture.h"
 #include <QIcon>
+#include <memory>
 
 namespace omm
 {
@@ -15,6 +11,8 @@ class Scene;
 class OffscreenRenderer;
 class NodeModel;
 class PainterOptions;
+class Texture;
+class MarkerProperties;
 
 class Style
     : public PropertyOwner<Kind::Style>
@@ -56,8 +54,8 @@ public:
 
   static constexpr auto NODES_POINTER = "nodes";
 
-  const MarkerProperties start_marker;
-  const MarkerProperties end_marker;
+  const std::unique_ptr<MarkerProperties> start_marker;
+  const std::unique_ptr<MarkerProperties> end_marker;
   void on_property_value_changed(Property* property) override;
 
 private:

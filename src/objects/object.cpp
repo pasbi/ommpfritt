@@ -8,6 +8,7 @@
 #include "properties/floatvectorproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/integervectorproperty.h"
+#include "properties/propertygroups/markerproperties.h"
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
@@ -658,8 +659,8 @@ void Object::draw_object(Painter& renderer,
           const auto tt = compute_path_vector_time(path_index, t);
           return this->pos(tt).rotated(M_PI_2);
         };
-        style.start_marker.draw_marker(renderer, pos(0.0), marker_color, width);
-        style.end_marker.draw_marker(renderer, pos(1.0), marker_color, width);
+        style.start_marker->draw_marker(renderer, pos(0.0), marker_color, width);
+        style.end_marker->draw_marker(renderer, pos(1.0), marker_color, width);
       }
     }
   }

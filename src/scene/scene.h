@@ -13,22 +13,23 @@
 #include "scene/contextes.h"
 #include "scene/cycleguard.h"
 #include "scene/list.h"
-#include "scene/pointselection.h"
 
 namespace omm
 {
+
+class Animator;
+class ColorProperty;
 class Command;
+class HistoryModel;
+class MailBox;
+class NamedColors;
+class Node;
+class ObjectTree;
+class PointSelection;
 class Project;
 class PythonEngine;
 class StyleList;
-class ObjectTree;
 class ToolBox;
-class MailBox;
-class HistoryModel;
-class Animator;
-class NamedColors;
-class ColorProperty;
-class Node;
 struct ExportOptions;
 
 template<typename> struct SceneStructure;
@@ -115,7 +116,7 @@ public:
                   std::set<Property*>& properties) const;
   bool remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection);
   bool contains(const AbstractPropertyOwner* apo) const;
-  PointSelection point_selection;
+  std::unique_ptr<PointSelection> point_selection;
 
 private:
   std::map<Kind, std::set<AbstractPropertyOwner*>> m_item_selection;

@@ -5,6 +5,7 @@
 #include "nodesystem/nodemodel.h"
 #include "nodesystem/nodes/fragmentnode.h"
 #include "nodesystem/propertyport.h"
+#include "nodesystem/nodecompilerglsl.h"
 #include "objects/tip.h"
 #include "properties/boolproperty.h"
 #include "properties/colorproperty.h"
@@ -12,8 +13,10 @@
 #include "properties/optionproperty.h"
 #include "properties/stringproperty.h"
 #include "properties/triggerproperty.h"
+#include "properties/propertygroups/markerproperties.h"
 #include "renderers/offscreenrenderer.h"
 #include "renderers/styleiconengine.h"
+#include "renderers/texture.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <QApplication>
@@ -33,8 +36,8 @@ namespace omm
 {
 Style::Style(Scene* scene)
     : PropertyOwner(scene), NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene),
-      start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size),
-      end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size),
+      start_marker(std::make_unique<MarkerProperties>(start_marker_prefix, *this, default_marker_shape, default_marker_size)),
+      end_marker(std::make_unique<MarkerProperties>(end_marker_prefix, *this, default_marker_shape, default_marker_size)),
       m_offscreen_renderer(OffscreenRenderer::make())
 {
   static constexpr double DEFAULT_PEN_WIDTH = 5.0;
@@ -91,18 +94,18 @@ Style::Style(Scene* scene)
       .set_label(QObject::tr("Edit ..."))
       .set_category(brush_category);
 
-  start_marker.make_properties(decoration_category);
-  end_marker.make_properties(decoration_category);
+  start_marker->make_properties(decoration_category);
+  end_marker->make_properties(decoration_category);
   polish();
 }
 
 Style::~Style() = default;
 
 Style::Style(const Style& other)
-    : PropertyOwner(other), NodesOwner(other),
-      start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size),
-      end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size),
-      m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
+    : PropertyOwner(other), NodesOwner(other)
+    , start_marker(std::make_unique<MarkerProperties>(start_marker_prefix, *this, default_marker_shape, default_marker_size))
+    , end_marker(std::make_unique<MarkerProperties>(end_marker_prefix, *this, default_marker_shape, default_marker_size))
+    , m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
 {
   other.copy_properties(*this, CopiedProperties::Compatible);
   polish();

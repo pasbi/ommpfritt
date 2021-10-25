@@ -1,13 +1,14 @@
 #pragma once
 
 #include "geometry/vec2.h"
+#include "objects/pathiterator.h"
 #include "tools/handles/handle.h"
 #include "tools/handles/particlehandle.h"
 #include "tools/handles/tangenthandle.h"
-#include "objects/pathiterator.h"
 
 namespace omm
 {
+
 class Scene;
 class Path;
 

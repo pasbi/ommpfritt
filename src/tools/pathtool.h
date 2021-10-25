@@ -1,7 +1,6 @@
 #pragma once
 
 #include "tools/selectpointstool.h"
-#include "tools/selecttool.h"
 #include <memory>
 
 namespace omm

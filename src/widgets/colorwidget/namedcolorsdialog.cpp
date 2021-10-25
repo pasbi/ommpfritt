@@ -5,6 +5,7 @@
 #include "main/application.h"
 #include "properties/colorproperty.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/scene.h"
 #include "widgets/colorwidget/ui_namedcolorsdialog.h"
 #include <QLineEdit>
