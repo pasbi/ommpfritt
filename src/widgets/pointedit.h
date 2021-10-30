@@ -9,7 +9,7 @@ namespace omm
 class CoordinateEdit;
 class Path;
 class Point;
-class PolarCoordinates;
+struct PolarCoordinates;
 enum class DisplayMode;
 
 class PointEdit : public QWidget
