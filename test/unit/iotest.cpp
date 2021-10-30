@@ -2,6 +2,8 @@
 #include "gtest/gtest.h"
 #include "testconfig.h"
 #include "main/application.h"
+#include "main/options.h"
+#include "scene/scene.h"
 #include <QApplication>
 
 namespace
@@ -42,5 +44,5 @@ TEST(IOTest, load_icons)
   using namespace std::string_literals;
   auto app = get_application(kill_after_msec);
   static const auto fn = QString::fromStdString(ommtest::SOURCE_DIRECTORY + "/icons/icons.omm"s);
-  EXPECT_TRUE(app->scene.load_from(fn));
+  EXPECT_TRUE(app->scene->load_from(fn));
 }
