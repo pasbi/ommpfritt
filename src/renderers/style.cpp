@@ -25,20 +25,29 @@
 
 namespace
 {
+
 constexpr auto start_marker_prefix = "start";
 constexpr auto end_marker_prefix = "end";
-constexpr double default_marker_size = 2.0;
-constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
+
+auto make_default_marker_properties(const QString& prefix, omm::Style& style)
+{
+  constexpr double default_marker_size = 2.0;
+  constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
+  return std::make_unique<omm::MarkerProperties>(prefix,
+                                                 style,
+                                                 default_marker_shape,
+                                                 default_marker_size);
+}
 
 }  // namespace
 
 namespace omm
 {
 Style::Style(Scene* scene)
-    : PropertyOwner(scene), NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene),
-      start_marker(std::make_unique<MarkerProperties>(start_marker_prefix, *this, default_marker_shape, default_marker_size)),
-      end_marker(std::make_unique<MarkerProperties>(end_marker_prefix, *this, default_marker_shape, default_marker_size)),
-      m_offscreen_renderer(OffscreenRenderer::make())
+    : PropertyOwner(scene), NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene)
+    , start_marker(make_default_marker_properties(start_marker_prefix,*this))
+    , end_marker(make_default_marker_properties(end_marker_prefix, *this))
+    , m_offscreen_renderer(OffscreenRenderer::make())
 {
   static constexpr double DEFAULT_PEN_WIDTH = 5.0;
   static constexpr double PEN_WIDTH_STEP = 0.1;
@@ -103,8 +112,8 @@ Style::~Style() = default;
 
 Style::Style(const Style& other)
     : PropertyOwner(other), NodesOwner(other)
-    , start_marker(std::make_unique<MarkerProperties>(start_marker_prefix, *this, default_marker_shape, default_marker_size))
-    , end_marker(std::make_unique<MarkerProperties>(end_marker_prefix, *this, default_marker_shape, default_marker_size))
+    , start_marker(make_default_marker(start_marker_prefix, *this))
+    , end_marker(make_default_marker(end_marker_prefix, *this))
     , m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
 {
   other.copy_properties(*this, CopiedProperties::Compatible);
