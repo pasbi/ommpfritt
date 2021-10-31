@@ -22,6 +22,7 @@ target_sources(libommpfritt PRIVATE
   proceduralpath.h
   rectangleobject.cpp
   rectangleobject.h
+  segment.cpp
   segment.h
   text.cpp
   text.h

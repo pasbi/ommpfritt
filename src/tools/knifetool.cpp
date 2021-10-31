@@ -98,7 +98,7 @@ void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
           if (!macro) {
             macro = scene()->history().start_macro(QObject::tr("Cut Path"));
           }
-          scene()->submit<CutPathCommand>(*path, cut_points);
+//          scene()->submit<CutPathCommand>(*path, cut_points);
         }
       }
     }

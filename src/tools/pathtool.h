@@ -7,6 +7,7 @@ namespace omm
 {
 
 class Path;
+class Segment;
 
 class PathTool : public SelectPointsBaseTool
 {
@@ -21,9 +22,11 @@ public:
   void reset() override;
 
 private:
-  PathIterator add_point(const Vec2f& pos);
-  Path* m_path = nullptr;
-  std::optional<PathIterator> m_current_point;
+  Path* m_current_path = nullptr;
+  Point* m_last_point = nullptr;
+  Point* m_current_point = nullptr;
+  Segment* m_current_segment = nullptr;
+  void find_tie();
 };
 
 }  // namespace omm

@@ -74,6 +74,16 @@ Point Point::nibbed() const
   return copy;
 }
 
+bool Point::is_selected() const
+{
+  return m_is_selected;
+}
+
+void Point::set_selected(bool selected)
+{
+  m_is_selected = selected;
+}
+
 void Point::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
 {
   serializer.set_value(position, make_pointer(root, POSITION_POINTER));

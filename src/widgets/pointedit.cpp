@@ -37,7 +37,7 @@ namespace omm
 {
 PointEdit::PointEdit(Point& point, QWidget* parent) : QWidget(parent), m_point(point)
 {
-  if (m_point.is_selected) {
+  if (m_point.is_selected()) {
     QPalette palette = this->palette();
     palette.setColor(QPalette::Window, palette.color(QPalette::AlternateBase));
     setPalette(palette);
@@ -142,11 +142,11 @@ void PointEdit::update_point()
     m_point.position = m_position_edit->to_cartesian();
     m_point.right_tangent = m_right_tangent_edit->to_polar();
   } else {
-    ModifyPointsCommand::map_type map;
-    m_point = Point(m_position_edit->to_cartesian(),
-                    m_left_tangent_edit->to_polar(),
-                    m_right_tangent_edit->to_polar());
-    m_path->scene()->submit<ModifyPointsCommand>(map);
+//    ModifyPointsCommand::map_type map;
+//    m_point = Point(m_position_edit->to_cartesian(),
+//                    m_left_tangent_edit->to_polar(),
+//                    m_right_tangent_edit->to_polar());
+//    m_path->scene()->submit<ModifyPointsCommand>(map);
   }
 }
 

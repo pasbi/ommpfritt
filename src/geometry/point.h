@@ -21,7 +21,6 @@ public:
   [[nodiscard]] Vec2f right_position() const;
   [[nodiscard]] double rotation() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
-  bool is_selected = false;
   void swap(Point& other);
   [[nodiscard]] bool has_nan() const;
   [[nodiscard]] bool has_inf() const;
@@ -31,6 +30,9 @@ public:
 
   [[nodiscard]] Point rotated(double rad) const;
   [[nodiscard]] Point nibbed() const;
+
+  bool is_selected() const;
+  void set_selected(bool selected);
 
   static constexpr auto POSITION_POINTER = "position";
   static constexpr auto LEFT_TANGENT_POINTER = "left";
@@ -76,6 +78,9 @@ private:
 public:
   static std::vector<Point> offset(double t, const std::vector<Point>& points, bool is_closed);
   QString to_string() const;
+
+private:
+  bool m_is_selected = false;
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);

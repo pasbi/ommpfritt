@@ -48,25 +48,26 @@ void Ellipse::on_property_value_changed(Property* property)
 
 Geom::PathVector Ellipse::paths() const
 {
-  const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
-  const auto n = static_cast<std::size_t>(std::max(3, n_raw));
-  const auto r = property(RADIUS_PROPERTY_KEY)->value<Vec2f>();
-  const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
-  std::vector<Point> points;
-  points.reserve(n);
-  for (std::size_t i = 0; i < n; ++i) {
-    const double theta = i * 2.0 / n * M_PI;
-    const double x = std::cos(theta) * r.x;
-    const double y = std::sin(theta) * r.y;
-    if (smooth) {
-      const Vec2f d(std::sin(theta) * r.x, -std::cos(theta) * r.y);
-      points.emplace_back(Vec2f(x, y), d.arg(), 2.0 * d.euclidean_norm() / n);
-    } else {
-      points.emplace_back(Vec2f(x, y));
-    }
-  }
-  const auto path = segment_to_path(points, true);
-  return Geom::PathVector(path);
+  return Geom::PathVector{};
+//  const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
+//  const auto n = static_cast<std::size_t>(std::max(3, n_raw));
+//  const auto r = property(RADIUS_PROPERTY_KEY)->value<Vec2f>();
+//  const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
+//  std::vector<Point> points;
+//  points.reserve(n);
+//  for (std::size_t i = 0; i < n; ++i) {
+//    const double theta = i * 2.0 / n * M_PI;
+//    const double x = std::cos(theta) * r.x;
+//    const double y = std::sin(theta) * r.y;
+//    if (smooth) {
+//      const Vec2f d(std::sin(theta) * r.x, -std::cos(theta) * r.y);
+//      points.emplace_back(Vec2f(x, y), d.arg(), 2.0 * d.euclidean_norm() / n);
+//    } else {
+//      points.emplace_back(Vec2f(x, y));
+//    }
+//  }
+//  const auto path = segment_to_path(points, true);
+//  return Geom::PathVector(path);
 }
 
 }  // namespace omm

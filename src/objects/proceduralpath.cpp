@@ -81,7 +81,8 @@ void ProceduralPath::update()
 
 Geom::PathVector ProceduralPath::paths() const
 {
-  return segments_to_path_vector({m_points}, is_closed());
+  return Geom::PathVector{};
+//  return segments_to_path_vector({m_points}, is_closed());
 }
 
 bool ProceduralPath::is_closed() const

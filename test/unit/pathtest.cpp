@@ -19,20 +19,4 @@ using namespace omm;
 
 TEST(Path, set)
 {
-  Path path(nullptr);
-  path.property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
-
-  const Segment segment0{Point({0, 0}), Point({1, 1}), Point({2, 2})};
-  const Segment segment1{Point({2, 0}), Point({1, 1}), Point({2, 0})};
-  path.segments.push_back(segment0);
-  path.segments.push_back(segment1);
-
-  expect_segment_eq(path.segments[0], segment0);
-  expect_segment_eq(path.segments[1], segment1);
-  EXPECT_EQ(std::distance(path.begin(), path.end()), 6);
-
-  path.set(path.geom_paths());
-  expect_segment_eq(path.segments[0], segment0);
-  expect_segment_eq(path.segments[1], segment1);
-  EXPECT_EQ(std::distance(path.begin(), path.end()), 6);
 }

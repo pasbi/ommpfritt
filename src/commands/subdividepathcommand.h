@@ -1,13 +1,13 @@
-#pragma once
+//#pragma once
 
-#include "commands/cutpathcommand.h"
+//#include "commands/cutpathcommand.h"
 
-namespace omm
-{
-class SubdividePathCommand : public CutPathCommand
-{
-public:
-  explicit SubdividePathCommand(Path& path);
-};
+//namespace omm
+//{
+//class SubdividePathCommand : public CutPathCommand
+//{
+//public:
+//  explicit SubdividePathCommand(Path& path);
+//};
 
-}  // namespace omm
+//}  // namespace omm

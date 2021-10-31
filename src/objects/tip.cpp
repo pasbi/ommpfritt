@@ -38,8 +38,9 @@ void Tip::on_property_value_changed(Property* property)
 
 Geom::PathVector Tip::paths() const
 {
-  const auto path = segment_to_path(m_marker_properties.shape(1.0), is_closed());
-  return Geom::PathVector(path);
+  return Geom::PathVector{};
+//  const auto path = segment_to_path(m_marker_properties.shape(1.0), is_closed());
+//  return Geom::PathVector(path);
 }
 
 }  // namespace omm

@@ -3,22 +3,30 @@
 #include "cachedgetter.h"
 #include "objects/object.h"
 #include "objects/pathiterator.h"
+#include <deque>
 #include <list>
 #include <type_traits>
 
 namespace omm
 {
+
 class Scene;
+class Segment;
 
 class Path : public Object
 {
 public:
   explicit Path(Scene* scene);
+  Path(const Path& other);
+  Path(Path&&) = delete;
+  Path& operator=(Path&&) = delete;
+  Path& operator=(const Path&) = delete;
+  ~Path();
   QString type() const override;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
-  static constexpr auto SUBPATH_POINTER = "paths";
+  static constexpr auto SEGMENTS_POINTER = "paths";
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
@@ -28,25 +36,20 @@ public:
   bool is_closed() const override;
   void set(const Geom::PathVector& paths);
 
-  std::vector<Segment> segments;
-  std::size_t count() const;
 
-  PathIterator begin();
-  PathIterator end();
   void on_property_value_changed(Property* property) override;
   Geom::PathVector paths() const override;
-  static Point smoothen_point(const Segment& segment, bool is_closed, std::size_t i);
   Flag flags() const override;
+
+  std::size_t point_count() const;
+  std::deque<Segment*> segments() const;
+  Segment* find_segment(const Point& point) const;
+  Segment& add_segment(std::unique_ptr<Segment>&& segment);
+  std::deque<Point*> points() const;
+  std::deque<Point*> selected_points() const;
+
+private:
+  std::deque<std::unique_ptr<Segment>> m_segments;
 };
-
-template<typename PathRef> auto begin(PathRef p)
-{
-  return PathIteratorBase<PathRef>{p, 0, 0};
-}
-
-template<typename PathRef> auto end(PathRef p)
-{
-  return PathIteratorBase<PathRef>{p, p.segments.size(), 0};
-}
 
 }  // namespace omm

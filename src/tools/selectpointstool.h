@@ -22,7 +22,7 @@ public:
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   static constexpr auto BOUNDING_BOX_MODE_PROPERTY_KEY = "bounding_box_mode";
   enum class BoundingBoxMode { IncludeTangents, ExcludeTangents, None };
-  PointSelectHandle::TangentMode tangent_mode() const;
+//  PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void transform_objects(ObjectTransformation t) override;
 
@@ -46,12 +46,12 @@ public:
     tool.handles.push_back(std::make_unique<MoveParticleHandle<ToolT>>(tool));
 
     for (auto* path : tool.scene()->template item_selection<Path>()) {
-      tool.handles.reserve(tool.handles.size() + path->count());
-      for (auto it = path->begin(); it != path->end(); ++it) {
-        auto handle = std::make_unique<PointSelectHandle>(tool, it);
-        handle->force_draw_subhandles = force_subhandles;
-        tool.handles.push_back(std::move(handle));
-      }
+      tool.handles.reserve(tool.handles.size() + path->point_count());
+//      for (auto it = path->begin(); it != path->end(); ++it) {
+//        auto handle = std::make_unique<PointSelectHandle>(tool, it);
+//        handle->force_draw_subhandles = force_subhandles;
+//        tool.handles.push_back(std::move(handle));
+//      }
     }
   }
 

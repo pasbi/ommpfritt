@@ -36,13 +36,14 @@ Flag LineObject::flags() const
 
 Geom::PathVector LineObject::paths() const
 {
-  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
-  const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
-  const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
-  const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
-  const PolarCoordinates b(angle, centered ? length / 2.0 : length);
-  std::vector<Point> segment = {Point(a.to_cartesian()), Point(b.to_cartesian())};
-  return segments_to_path_vector({segment}, false);
+  return Geom::PathVector{};
+//  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
+//  const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
+//  const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
+//  const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
+//  const PolarCoordinates b(angle, centered ? length / 2.0 : length);
+//  std::vector<Point> segment = {Point(a.to_cartesian()), Point(b.to_cartesian())};
+//  return segments_to_path_vector({segment}, false);
 }
 
 void LineObject::on_property_value_changed(Property* property)
