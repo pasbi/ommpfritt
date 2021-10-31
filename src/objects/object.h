@@ -17,11 +17,12 @@
 
 namespace omm
 {
+
 class ObjectTree;
-class Scene;
-class Property;
-class PainterOptions;
 class Painter;
+class Property;
+class Scene;
+struct PainterOptions;
 
 class Object
     : public PropertyOwner<Kind::Object>

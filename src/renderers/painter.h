@@ -16,12 +16,13 @@ class QTextOption;
 
 namespace omm
 {
-class Style;
-class Scene;
+
 class Object;
 class Rectangle;
+class Scene;
+class Style;
 class Viewport;
-class PainterOptions;
+struct PainterOptions;
 
 class Painter
 {

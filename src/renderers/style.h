@@ -7,12 +7,13 @@
 
 namespace omm
 {
-class Scene;
-class OffscreenRenderer;
-class NodeModel;
-class PainterOptions;
-class Texture;
+
 class MarkerProperties;
+class NodeModel;
+class OffscreenRenderer;
+class Scene;
+struct PainterOptions;
+struct Texture;
 
 class Style
     : public PropertyOwner<Kind::Style>

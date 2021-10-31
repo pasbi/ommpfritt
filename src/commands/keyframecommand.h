@@ -7,9 +7,11 @@
 
 namespace omm
 {
+
 class Animator;
 class Property;
-class Knot;
+struct Knot;
+
 class KeyFrameCommand : public Command
 {
 protected:
