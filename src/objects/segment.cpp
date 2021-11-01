@@ -144,7 +144,6 @@ Geom::Path Segment::to_geom_path(InterpolationMode interpolation, bool is_closed
     }
   }
 
-  std::cout << "Geom path: " << std::distance(bzs.begin(), bzs.end());
   return Geom::Path(bzs.begin(), bzs.end(), is_closed);
 }
 
@@ -212,7 +211,12 @@ void Segment::serialize(AbstractSerializer& serializer, const Pointer& root) con
 
 void Segment::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
-
+  const auto points_ptr = make_pointer(root, "points");
+  const auto size = deserializer.array_size(points_ptr);
+  for (std::size_t i = 0; i < size; ++i) {
+    Point& point = *m_points.emplace_back(std::make_unique<Point>());
+    point.deserialize(deserializer, make_pointer(points_ptr, i));
+  }
 }
 
 }  // namespace omm
