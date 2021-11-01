@@ -84,7 +84,7 @@ void AbstractPointsCommand::remove()
 }
 
 AddPointsCommand::AddPointsCommand(Path& path, std::deque<OwnedLocatedSegment>&& added_points)
-    : AbstractPointsCommand(QObject::tr("AddPointsCommand"), path, std::move(added_points))
+    : AbstractPointsCommand(static_label(), path, std::move(added_points))
 {
 }
 
@@ -96,6 +96,11 @@ void AddPointsCommand::redo()
 void AddPointsCommand::undo()
 {
   remove();
+}
+
+QString AddPointsCommand::static_label()
+{
+  return QObject::tr("AddPointsCommand");
 }
 
 RemovePointsCommand::RemovePointsCommand(Path& path, const std::deque<LocatedSegmentView>& removed_points)

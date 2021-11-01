@@ -75,6 +75,7 @@ public:
   AddPointsCommand(Path& path, std::deque<OwnedLocatedSegment>&& added_points);
   void redo() override;
   void undo() override;
+  static QString static_label();
 };
 
 class RemovePointsCommand : public AbstractPointsCommand

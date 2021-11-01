@@ -5,6 +5,7 @@
 #include "objects/path.h"
 #include "objects/segment.h"
 #include "scene/scene.h"
+#include "scene/history/historymodel.h"
 #include "tools/selecttool.h"
 #include <QMouseEvent>
 
@@ -36,16 +37,19 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
     return true;
   } else {
     find_tie();
-    if (m_current_path == nullptr) {
-      auto new_path = std::make_unique<Path>(scene());
-      m_current_path = new_path.get();
-      scene()->object_tree().root().adopt(std::move(new_path));
-      scene()->set_selection({m_current_path});
-    }
     if (event.button() == Qt::LeftButton) {
+      std::unique_ptr<Macro> macro;
+      if (m_current_path == nullptr) {
+        macro = scene()->history().start_macro(AddPointsCommand::static_label());
+        static constexpr auto insert_mode = Application::InsertionMode::Default;
+        m_current_path = dynamic_cast<Path*>(&Application::instance().insert_object(Path::TYPE, insert_mode));
+        m_current_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
+        scene()->set_selection({m_current_path});
+      }
       const auto transformation = m_current_path->global_transformation(Space::Viewport).inverted();
-      std::deque<std::unique_ptr<Point>> points;
       const auto gpos = transformation.apply_to_position(pos);
+
+      std::deque<std::unique_ptr<Point>> points;
       m_current_point = points.emplace_back(std::make_unique<Point>(gpos)).get();
       std::deque<AddPointsCommand::OwnedLocatedSegment> located_segments;
       if (m_current_segment == nullptr) {
