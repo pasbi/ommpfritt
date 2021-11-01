@@ -13,6 +13,17 @@ namespace omm
 {
 
 class Point;
+class Segment;
+
+struct SegmentView
+{
+public:
+  explicit SegmentView(Segment& segment, std::size_t index, std::size_t size);
+  Segment& segment;
+  std::size_t index;
+  std::size_t size;
+};
+
 
 class Segment : public Serializable
 {

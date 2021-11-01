@@ -10,6 +10,7 @@ namespace omm
 class Path;
 class Point;
 class Segment;
+struct SegmentView;
 
 class ModifyPointsCommand : public Command
 {
@@ -29,13 +30,12 @@ private:
 class AbstractPointsCommand : public Command
 {
 public:
-  class LocatedSegmentView;
   class OwnedLocatedSegment
   {
   public:
     explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point>>&& points);
     explicit OwnedLocatedSegment(std::unique_ptr<Segment> segment);
-    LocatedSegmentView insert_into(Path& path);
+    SegmentView insert_into(Path& path);
 
   private:
     Segment* m_segment = nullptr;
@@ -44,20 +44,9 @@ public:
     std::deque<std::unique_ptr<Point>> m_points;
   };
 
-  class LocatedSegmentView
-  {
-  public:
-    explicit LocatedSegmentView(Segment& segment, std::size_t index, std::size_t size);
-    OwnedLocatedSegment extract_from(Path& path) const;
-  private:
-    Segment& m_segment;
-    std::size_t m_index;
-    std::size_t m_size;
-  };
-
 protected:
   explicit AbstractPointsCommand(const QString& label, Path& path, std::deque<OwnedLocatedSegment>&& points_to_add);
-  explicit AbstractPointsCommand(const QString& label, Path& path, const std::deque<LocatedSegmentView>& points_to_remove);
+  explicit AbstractPointsCommand(const QString& label, Path& path, const std::deque<SegmentView>& points_to_remove);
   void add();
   void remove();
 
@@ -66,7 +55,7 @@ protected:
 private:
   Path& m_path;
   std::deque<OwnedLocatedSegment> m_points_to_add;
-  std::deque<LocatedSegmentView> m_points_to_remove;
+  std::deque<SegmentView> m_points_to_remove;
 };
 
 class AddPointsCommand : public AbstractPointsCommand
@@ -81,7 +70,7 @@ public:
 class RemovePointsCommand : public AbstractPointsCommand
 {
 public:
-  RemovePointsCommand(Path& path, const std::deque<LocatedSegmentView>& removed_points);
+  RemovePointsCommand(Path& path, const std::deque<SegmentView>& removed_points);
   void redo() override;
   void undo() override;
 };

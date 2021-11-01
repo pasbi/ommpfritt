@@ -219,4 +219,9 @@ void Segment::deserialize(AbstractDeserializer& deserializer, const Pointer& roo
   }
 }
 
+SegmentView::SegmentView(Segment& segment, std::size_t index, std::size_t size)
+  : segment(segment), index(index), size(size)
+{
+}
+
 }  // namespace omm
