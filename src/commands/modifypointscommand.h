@@ -11,20 +11,20 @@ class Path;
 class Point;
 class Segment;
 
-//class ModifyPointsCommand : public Command
-//{
-//public:
-//  using map_type = std::map<PathIterator, Point>;
-//  ModifyPointsCommand(const map_type& points);
-//  void redo() override;
-//  void undo() override;
-//  [[nodiscard]] int id() const override;
-//  bool mergeWith(const QUndoCommand* command) override;
+class ModifyPointsCommand : public Command
+{
+public:
+  using Map = std::map<Path*, std::map<Point*, Point>>;
+  ModifyPointsCommand(const Map& points);
+  void redo() override;
+  void undo() override;
+  [[nodiscard]] int id() const override;
+  bool mergeWith(const QUndoCommand* command) override;
 
-//private:
-//  std::map<PathIterator, Point> m_data;
-//  void swap();
-//};
+private:
+  Map m_data;
+  void exchange();
+};
 
 class AbstractPointsCommand : public Command
 {

@@ -109,10 +109,10 @@ public:
     return std::min(x, y);
   }
 
-  void swap(Vec2& other)
+  friend void swap(Vec2& a, Vec2& b)
   {
-    std::swap(x, other.x);
-    std::swap(y, other.y);
+    std::swap(a.x, b.x);
+    std::swap(a.y, b.y);
   }
 
   static Vec2<element_type> o()

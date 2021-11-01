@@ -33,11 +33,11 @@ SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
 
 SelectPointsBaseTool::~SelectPointsBaseTool() = default;
 
-//PointSelectHandle::TangentMode SelectPointsBaseTool::tangent_mode() const
-//{
-//  const auto i = property(TANGENT_MODE_PROPERTY_KEY)->value<std::size_t>();
-//  return static_cast<PointSelectHandle::TangentMode>(i);
-//}
+PointSelectHandle::TangentMode SelectPointsBaseTool::tangent_mode() const
+{
+  const auto i = property(TANGENT_MODE_PROPERTY_KEY)->value<std::size_t>();
+  return static_cast<PointSelectHandle::TangentMode>(i);
+}
 
 std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
 {
@@ -57,7 +57,7 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
 
 void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 {
-//  scene()->submit(m_transform_points_helper->make_command(t));
+  scene()->submit(m_transform_points_helper->make_command(t));
 }
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
@@ -73,9 +73,9 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
     return true;
   } else if (allow_clear && event.buttons() == Qt::LeftButton) {
     for (auto* path : paths) {
-//      for (auto&& point : *path) {
-//        point.is_selected = false;
-//      }
+      for (auto* point : path->points()) {
+        point->set_selected(false);
+      }
     }
     Q_EMIT scene()->mail_box().point_selection_changed();
     return false;
@@ -87,10 +87,11 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 bool SelectPointsBaseTool::has_transformation() const
 {
   return false;
-//  const auto paths = type_casts<Path*>(scene()->template item_selection<Object>());
-//  return std::any_of(paths.begin(), paths.end(), [](auto&& path) {
-//    return std::any_of(path->begin(), path->end(), [](auto&& point) { return point.is_selected; });
-//  });
+  const auto paths = type_casts<Path*>(scene()->template item_selection<Object>());
+  return std::any_of(paths.begin(), paths.end(), [](const auto* path) {
+    const auto points = path->points();
+    return std::any_of(points.begin(), points.end(), std::mem_fn(&Point::is_selected));
+  });
 }
 
 BoundingBox SelectPointsBaseTool::bounding_box() const

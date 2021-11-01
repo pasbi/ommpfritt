@@ -21,7 +21,7 @@ public:
   [[nodiscard]] Vec2f right_position() const;
   [[nodiscard]] double rotation() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
-  void swap(Point& other);
+  friend void swap(Point& a, Point& b);
   [[nodiscard]] bool has_nan() const;
   [[nodiscard]] bool has_inf() const;
 

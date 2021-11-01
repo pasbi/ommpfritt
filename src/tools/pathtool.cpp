@@ -6,6 +6,7 @@
 #include "objects/segment.h"
 #include "scene/scene.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "tools/selecttool.h"
 #include <QMouseEvent>
 

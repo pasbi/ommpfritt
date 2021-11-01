@@ -3,6 +3,7 @@
 
 namespace omm
 {
+
 ParticleHandle::ParticleHandle(Tool& tool) : Handle(tool)
 {
 }

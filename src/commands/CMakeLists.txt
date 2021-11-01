@@ -26,8 +26,6 @@ target_sources(libommpfritt PRIVATE
   objectselectioncommand.h
   objectstransformationcommand.cpp
   objectstransformationcommand.h
-  pointstransformationcommand.cpp
-  pointstransformationcommand.h
   propertycommand.cpp
   propertycommand.h
   removecommand.cpp

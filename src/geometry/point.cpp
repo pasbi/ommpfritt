@@ -36,11 +36,11 @@ Vec2f Point::right_position() const
   return position + right_tangent.to_cartesian();
 }
 
-void Point::swap(Point& other)
+void swap(Point& a, Point& b)
 {
-  other.position.swap(position);
-  other.left_tangent.swap(left_tangent);
-  other.right_tangent.swap(right_tangent);
+  swap(a.position, b.position);
+  swap(a.left_tangent, b.left_tangent);
+  swap(a.right_tangent, b.right_tangent);
 }
 
 bool Point::has_nan() const

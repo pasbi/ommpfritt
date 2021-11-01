@@ -21,10 +21,10 @@ Vec2f PolarCoordinates::to_cartesian() const
   return Vec2f{magnitude * std::cos(argument), magnitude * std::sin(argument)};
 }
 
-void PolarCoordinates::swap(PolarCoordinates& other)
+void swap(PolarCoordinates& a, PolarCoordinates& b)
 {
-  std::swap(other.argument, argument);
-  std::swap(other.magnitude, magnitude);
+  std::swap(a.argument, b.argument);
+  std::swap(a.magnitude, b.magnitude);
 }
 
 bool PolarCoordinates::operator==(const PolarCoordinates& point) const

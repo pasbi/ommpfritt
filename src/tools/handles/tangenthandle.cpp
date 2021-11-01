@@ -30,14 +30,13 @@ bool TangentHandle::contains_global(const Vec2f& point) const
 
 bool TangentHandle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
-  return false;
-//  Handle::mouse_move(delta, pos, e);
-//  if (status() == HandleStatus::Active) {
-//    m_master_handle.transform_tangent(delta, m_tangent);
-//    return true;
-//  } else {
-//    return false;
-//  }
+  Handle::mouse_move(delta, pos, e);
+  if (status() == HandleStatus::Active) {
+    m_master_handle.transform_tangent(delta, m_tangent);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 }  // namespace omm

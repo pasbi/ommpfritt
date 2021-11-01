@@ -7,43 +7,46 @@
 namespace omm
 {
 
-//ModifyPointsCommand ::ModifyPointsCommand(const std::map<PathIterator, Point>& points)
-//    : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
-//{
-//  assert(!points.empty());
-//}
+ModifyPointsCommand ::ModifyPointsCommand(const Map& points)
+    : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
+{
+  assert(!points.empty());
+}
 
-//void ModifyPointsCommand::undo()
-//{
-//  swap();
-//}
-//void ModifyPointsCommand::redo()
-//{
-//  swap();
-//}
-//int ModifyPointsCommand::id() const
-//{
-//  return Command::MODIFY_TANGENTS_COMMAND_ID;
-//}
+void ModifyPointsCommand::undo()
+{
+  exchange();
+}
 
-//void ModifyPointsCommand::swap()
-//{
-//  std::set<Path*> paths;
-//  for (auto& [it, point] : m_data) {
-//    it->swap(point);
-//    paths.insert(it.path);
-//  }
-//  for (Path* path : paths) {
-//    path->update();
-//  }
-//}
+void ModifyPointsCommand::redo()
+{
+  exchange();
+}
 
-//bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
-//{
-//  // merging happens automatically!
-//  const auto& mtc = dynamic_cast<const ModifyPointsCommand&>(*command);
-//  return ::get_keys(m_data) == ::get_keys(mtc.m_data);
-//}
+int ModifyPointsCommand::id() const
+{
+  return Command::MODIFY_TANGENTS_COMMAND_ID;
+}
+
+void ModifyPointsCommand::exchange()
+{
+  std::set<Path*> paths;
+  for (auto& [path, points] : m_data) {
+    for (auto& [ptr, point] : points) {
+      swap(*ptr, point);
+    }
+  }
+  for (auto& [path, _] : m_data) {
+    path->update();
+  }
+}
+
+bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
+{
+  // merging happens automatically!
+  const auto& mtc = dynamic_cast<const ModifyPointsCommand&>(*command);
+  return ::get_keys(m_data) == ::get_keys(mtc.m_data);
+}
 
 AbstractPointsCommand::AbstractPointsCommand(const QString& label, Path& path, std::deque<OwnedLocatedSegment>&& points_to_add)
   : Command(label)

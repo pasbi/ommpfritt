@@ -24,6 +24,7 @@ public:
   MoveParticleHandle(ToolT& tool) : ParticleHandle(tool)
   {
   }
+
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);

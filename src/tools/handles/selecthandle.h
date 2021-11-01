@@ -48,33 +48,34 @@ private:
   Object& m_object;
 };
 
-//class PointSelectHandle : public AbstractSelectHandle
-//{
-//public:
-//  enum class TangentMode { Mirror, Individual };
-//  explicit PointSelectHandle(Tool& tool, const PathIterator& iterator);
-//  [[nodiscard]] bool contains_global(const Vec2f& point) const override;
-//  void draw(QPainter& painter) const override;
-//  bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
-//  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
-//  void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
+class PointSelectHandle : public AbstractSelectHandle
+{
+public:
+  enum class TangentMode { Mirror, Individual };
+  explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override;
+  void draw(QPainter& painter) const override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
+  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
+  void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
 
-//  void transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent);
-//  bool force_draw_subhandles = false;
+  void transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent);
+  bool force_draw_subhandles = false;
 
-//protected:
-//  [[nodiscard]] ObjectTransformation transformation() const;
-//  void set_selected(bool selected) override;
-//  void clear() override;
-//  [[nodiscard]] bool is_selected() const override;
+protected:
+  [[nodiscard]] ObjectTransformation transformation() const;
+  void set_selected(bool selected) override;
+  void clear() override;
+  [[nodiscard]] bool is_selected() const override;
 
-//private:
-//  PathIterator m_iterator;
-//  std::unique_ptr<TangentHandle> m_left_tangent_handle;
-//  std::unique_ptr<TangentHandle> m_right_tangent_handle;
-//  [[nodiscard]] bool tangents_active() const;
+private:
+  Path& m_path;
+  Point& m_point;
+  std::unique_ptr<TangentHandle> m_left_tangent_handle;
+  std::unique_ptr<TangentHandle> m_right_tangent_handle;
+  [[nodiscard]] bool tangents_active() const;
 
-//  void transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent tangent);
-//};
+  void transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent tangent);
+};
 
 }  // namespace omm

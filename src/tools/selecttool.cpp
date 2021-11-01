@@ -1,6 +1,5 @@
 #include "tools/selecttool.h"
 #include "commands/objectstransformationcommand.h"
-#include "commands/pointstransformationcommand.h"
 #include "logging.h"
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"

@@ -53,6 +53,7 @@ HandleStatus Handle::status() const
 {
   return m_status;
 }
+
 void Handle::deactivate()
 {
   m_status = HandleStatus::Inactive;
