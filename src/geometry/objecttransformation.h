@@ -3,7 +3,6 @@
 #include "external/json_fwd.hpp"
 #include "geometry/boundingbox.h"
 #include "geometry/matrix.h"
-#include "geometry/point.h"
 #include "geometry/vec2.h"
 #include <2geom/pathvector.h>
 #include <QTransform>
@@ -11,6 +10,10 @@
 
 namespace omm
 {
+
+class Point;
+struct PolarCoordinates;
+
 class ObjectTransformation
 {
 public:

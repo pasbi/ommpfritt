@@ -2,6 +2,7 @@
 #include "commands/cutpathcommand.h"
 #include "commands/modifypointscommand.h"
 #include "common.h"
+#include "geometry/point.h"
 #include "objects/path.h"
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
@@ -44,9 +45,12 @@ compute_cut_points(const Geom::PathVector& path_vector, Vec2f start, Vec2f& end)
 
 namespace omm
 {
+
 KnifeTool::KnifeTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
 }
+
+KnifeTool::~KnifeTool() = default;
 
 bool KnifeTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {

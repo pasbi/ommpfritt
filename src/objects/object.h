@@ -7,7 +7,6 @@
 #include "common.h"
 #include "external/json_fwd.hpp"
 #include "geometry/objecttransformation.h"
-#include "geometry/point.h"
 #include "scene/taglist.h"
 #include <memory>
 #include <vector>
@@ -19,6 +18,7 @@ namespace omm
 
 class ObjectTree;
 class Painter;
+class Point;
 class Property;
 class Scene;
 struct PainterOptions;

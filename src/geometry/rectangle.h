@@ -1,11 +1,12 @@
 #pragma once
 
-#include "geometry/point.h"
 #include "geometry/vec2.h"
+#include "geometry/point.h"
 #include <QRectF>
 
 namespace omm
 {
+
 class Rectangle
 {
 public:
