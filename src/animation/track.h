@@ -9,8 +9,9 @@
 
 namespace omm
 {
+
 class Property;
-class Knot;
+struct Knot;
 
 /**
  * @brief The AbstractTrack class is the base class for all track.

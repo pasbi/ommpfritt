@@ -16,9 +16,9 @@ namespace omm
 class AbstractPropertyOwner;
 class Color;
 class ObjectTransformation;
-class PolarCoordinates;
 class ReferenceProperty;
 class Scene;
+struct PolarCoordinates;
 
 class AbstractSerializer : public QObject
 {

@@ -17,8 +17,8 @@ namespace omm
 {
 
 class Object;
-class PainterOptions;
-class Texture;
+struct PainterOptions;
+struct Texture;
 
 class OffscreenRenderer
 {

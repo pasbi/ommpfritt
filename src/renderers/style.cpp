@@ -112,8 +112,8 @@ Style::~Style() = default;
 
 Style::Style(const Style& other)
     : PropertyOwner(other), NodesOwner(other)
-    , start_marker(make_default_marker(start_marker_prefix, *this))
-    , end_marker(make_default_marker(end_marker_prefix, *this))
+    , start_marker(make_default_marker_properties(start_marker_prefix, *this))
+    , end_marker(make_default_marker_properties(end_marker_prefix, *this))
     , m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
 {
   other.copy_properties(*this, CopiedProperties::Compatible);
