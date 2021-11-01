@@ -45,6 +45,7 @@ public:
   std::deque<Segment*> segments() const;
   Segment* find_segment(const Point& point) const;
   Segment& add_segment(std::unique_ptr<Segment>&& segment);
+  std::unique_ptr<Segment> remove_segment(const Segment& segment);
   std::deque<Point*> points() const;
   std::deque<Point*> selected_points() const;
 

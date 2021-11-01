@@ -29,26 +29,33 @@ class Segment;
 class AbstractPointsCommand : public Command
 {
 public:
-  struct OwnedLocatedSegment
+  class LocatedSegmentView;
+  class OwnedLocatedSegment
   {
-    Segment* segment;
-    std::size_t index;
-    std::deque<std::unique_ptr<Point>> points;
+  public:
+    explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point>>&& points);
+    explicit OwnedLocatedSegment(std::unique_ptr<Segment> segment);
+    LocatedSegmentView insert_into(Path& path);
+
+  private:
+    Segment* m_segment = nullptr;
+    std::unique_ptr<Segment> m_owned_segment{};
+    std::size_t m_index;
+    std::deque<std::unique_ptr<Point>> m_points;
   };
 
-
-  struct LocatedSegmentView
+  class LocatedSegmentView
   {
-    Segment& segment;
-    std::size_t index;
-    std::size_t size;
+  public:
+    explicit LocatedSegmentView(Segment& segment, std::size_t index, std::size_t size);
+    OwnedLocatedSegment extract_from(Path& path) const;
+  private:
+    Segment& m_segment;
+    std::size_t m_index;
+    std::size_t m_size;
   };
 
 protected:
-//  AbstractPointsCommand(const QString& label,
-//                        Path& path,
-//                        const std::vector<LocatedSegment>& added_points);
-//  AbstractPointsCommand(const QString& label, Path& path, const std::vector<Range>& removed_points);
   explicit AbstractPointsCommand(const QString& label, Path& path, std::deque<OwnedLocatedSegment>&& points_to_add);
   explicit AbstractPointsCommand(const QString& label, Path& path, const std::deque<LocatedSegmentView>& points_to_remove);
   void add();

@@ -183,8 +183,21 @@ std::deque<Point*> Segment::points() const
 
 void Segment::insert_points(std::size_t i, std::deque<std::unique_ptr<Point>> points)
 {
-  m_points.insert(m_points.begin() + i, std::make_move_iterator(points.begin()),
-                                        std::make_move_iterator(points.end()));
+  m_points.insert(m_points.begin() + i,
+                  std::make_move_iterator(points.begin()),
+                  std::make_move_iterator(points.end()));
+}
+
+std::deque<std::unique_ptr<Point>> Segment::extract(std::size_t start, std::size_t size)
+{
+  std::deque<std::unique_ptr<Point>> points(size);
+  for (std::size_t i = 0; i <= size; ++i) {
+    std::swap(points[i], m_points[i + start]);
+  }
+  const auto begin = m_points.begin() + start;
+  const auto end = begin + size;
+  m_points.erase(begin, end);
+  return points;
 }
 
 void Segment::serialize(AbstractSerializer& serializer, const Pointer& root) const

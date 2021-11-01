@@ -35,6 +35,7 @@ public:
   void smoothen_point(std::size_t i, bool is_closed);
   std::deque<Point*> points() const;
   void insert_points(std::size_t i, std::deque<std::unique_ptr<Point>> points);
+  std::deque<std::unique_ptr<Point>> extract(std::size_t i, std::size_t n);
 
 private:
   std::deque<std::unique_ptr<Point>> m_points;

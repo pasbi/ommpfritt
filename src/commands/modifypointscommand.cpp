@@ -63,14 +63,8 @@ void AbstractPointsCommand::add()
 {
   assert(m_points_to_remove.empty());
   for (auto& located_segment : m_points_to_add) {
-    const auto n = located_segment.points.size();
-    if (located_segment.segment == nullptr) {
-      auto& segment = m_path.add_segment(std::make_unique<Segment>(std::move(located_segment.points)));
-      m_points_to_remove.emplace_back(segment, 0, n);
-    } else {
-      located_segment.segment->insert_points(located_segment.index, std::move(located_segment.points));
-      m_points_to_remove.emplace_back(*located_segment.segment, located_segment.index, n);
-    }
+    auto located_segment_view = located_segment.insert_into(m_path);
+    m_points_to_remove.push_front(located_segment_view);
   }
   m_points_to_add.clear();
   m_path.update();
@@ -79,27 +73,14 @@ void AbstractPointsCommand::add()
 
 void AbstractPointsCommand::remove()
 {
-//  std::list<LocatedSegment> points_to_add;
-//  for (auto&& range : m_points_to_remove) {
-//    assert(range.length > 0);
-//    auto& segment = m_path.segments[range.begin.segment];
-//    if (range.length == segment.size()) {
-//      assert(range.begin.point == 0);
-//      points_to_add.push_front(LocatedSegment{range.begin, m_path.segments[range.begin.segment]});
-//      m_path.segments.erase(m_path.segments.begin() + range.begin.segment);
-//    } else {
-//      auto begin = segment.begin() + range.begin.point;
-//      auto end = begin + range.length;
-//      Segment extracted_segment;
-//      extracted_segment.reserve(range.length);
-//      std::copy(begin, end, std::back_inserter(extracted_segment));
-//      segment.erase(begin, end);
-//      points_to_add.push_front(LocatedSegment{range.begin, extracted_segment});
-//    }
-//  }
-//  m_points_to_add = std::vector(points_to_add.begin(), points_to_add.end());
-//  m_path.update();
-//  m_path.scene()->update_tool();
+  assert(m_points_to_add.empty());
+  for (const auto& segment_view : m_points_to_remove) {
+    auto located_segment = segment_view.extract_from(m_path);
+    m_points_to_add.push_back(std::move(located_segment));
+  }
+  m_points_to_remove.clear();
+  m_path.update();
+  m_path.scene()->update_tool();
 }
 
 AddPointsCommand::AddPointsCommand(Path& path, std::deque<OwnedLocatedSegment>&& added_points)
@@ -130,6 +111,49 @@ void RemovePointsCommand::redo()
 void RemovePointsCommand::undo()
 {
   add();
+}
+
+AbstractPointsCommand::LocatedSegmentView::LocatedSegmentView(Segment& segment, std::size_t index, std::size_t size)
+  : m_segment(segment), m_index(index), m_size(size)
+{
+}
+
+AbstractPointsCommand::OwnedLocatedSegment AbstractPointsCommand::LocatedSegmentView::extract_from(Path& path) const
+{
+  const auto remove_segment = m_size == m_segment.size();
+  if (remove_segment) {
+    auto owned_segment = path.remove_segment(m_segment);
+    return OwnedLocatedSegment{std::move(owned_segment)};
+  } else {
+    auto points = m_segment.extract(m_index, m_size);
+    return OwnedLocatedSegment{&m_segment, m_index, std::move(points)};
+  }
+}
+
+AbstractPointsCommand::OwnedLocatedSegment::OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point> >&& points)
+  : m_segment(segment), m_index(index), m_points(std::move(points))
+{
+  assert(m_segment != nullptr);
+  assert(index <= segment->size());
+  assert(!m_points.empty());
+}
+
+AbstractPointsCommand::OwnedLocatedSegment::OwnedLocatedSegment(std::unique_ptr<Segment> segment)
+  : m_owned_segment(std::move(segment)), m_index(0)
+{
+  assert(m_owned_segment != nullptr);
+}
+
+AbstractPointsCommand::LocatedSegmentView AbstractPointsCommand::OwnedLocatedSegment::insert_into(Path& path)
+{
+  if (m_segment == nullptr) {
+    auto& segment = path.add_segment(std::move(m_owned_segment));
+    return LocatedSegmentView{segment, 0, segment.size()};
+  } else {
+    const auto n_points = m_points.size();
+    m_segment->insert_points(m_index, std::move(m_points));
+    return LocatedSegmentView{*m_segment, m_index, n_points};
+  }
 }
 
 }  // namespace omm

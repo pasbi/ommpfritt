@@ -158,6 +158,17 @@ Segment& Path::add_segment(std::unique_ptr<Segment>&& segment)
   return *m_segments.emplace_back(std::move(segment));
 }
 
+std::unique_ptr<Segment> Path::remove_segment(const Segment& segment)
+{
+  const auto it = std::find_if(m_segments.begin(), m_segments.end(), [&segment](const auto& s_ptr) {
+    return &segment == s_ptr.get();
+  });
+  std::unique_ptr<Segment> extracted_segment;
+  std::swap(extracted_segment, *it);
+  m_segments.erase(it);
+  return extracted_segment;
+}
+
 std::deque<Point*> Path::points() const
 {
   std::deque<Point*> points;
