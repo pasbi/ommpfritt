@@ -1,6 +1,8 @@
 #include "commands/modifysegmentscommand.h"
 #include "scene/scene.h"
+#include "objects/path.h"
 #include "tools/toolbox.h"
+#include "tools/tool.h"
 
 namespace
 {

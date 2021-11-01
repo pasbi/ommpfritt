@@ -2,7 +2,6 @@
 
 #include <QDragEnterEvent>
 #include <QLineEdit>
-#include <QMimeData>
 #include <QTimer>
 
 #include "objects/object.h"
@@ -12,12 +11,14 @@
 #include "scene/propertyownermimedata.h"
 #include "scene/scene.h"
 #include "scene/stylelist.h"
+#include "tags/tag.h"
 
 namespace omm
 {
 ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
-    : QComboBox(parent), m_filter(PropertyFilter::accept_anything()),
-      m_null_label(QObject::tr("< none >", "ReferenceLineEdit"))
+    : QComboBox(parent)
+    , m_filter(PropertyFilter::accept_anything())
+    , m_null_label(QObject::tr("< none >", "ReferenceLineEdit"))
 {
   setEditable(true);
   setAcceptDrops(true);

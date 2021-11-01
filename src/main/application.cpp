@@ -1,11 +1,11 @@
 #include "application.h"
 
+#include <cassert>
 #include <QAbstractButton>
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
-#include <cassert>
 
 #include "tags/nodestag.h"
 #include "tags/scripttag.h"
@@ -13,7 +13,9 @@
 #include "commands/addcommand.h"
 #include "commands/movecommand.h"
 #include "keybindings/modeselector.h"
+#include "keybindings/keybindings.h"
 #include "logging.h"
+#include "main/options.h"
 #include "mainwindow/exportdialog.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/pathactions.h"
@@ -22,13 +24,18 @@
 #include "managers/manager.h"
 #include "objects/object.h"
 #include "preferences/preferencedialog.h"
+#include "preferences/uicolors.h"
+#include "python/pythonengine.h"
 #include "registers.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/scene.h"
 #include "scene/stylelist.h"
 #include "tags/tag.h"
+#include "tools/tool.h"
 #include "tools/toolbox.h"
 #include "widgets/pointdialog.h"
+#include "objects/path.h"
 
 namespace
 {
@@ -99,16 +106,20 @@ Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
     : first_member((init(this), nullptr))
+    , key_bindings(std::make_unique<KeyBindings>())
+    , ui_colors(std::make_unique<UiColors>())
+    , preferences(std::make_unique<Preferences>())
     , mode_selectors(init_mode_selectors())
-    , scene(python_engine)
+    , python_engine(std::make_unique<PythonEngine>())
+    , scene(std::make_unique<Scene>(*python_engine))
     , m_app(app)
     , m_options(std::move(options))
     , m_translator(load_locale())
 {
   static constexpr int RESET_KEYSEQUENCE_INTERVAL_MS = 1000;
-  scene.set_selection({});
+  scene->set_selection({});
   if (!this->options().is_cli) {
-    ui_colors.apply();
+    ui_colors->apply();
     m_reset_keysequence_timer.setSingleShot(true);
     m_reset_keysequence_timer.setInterval(RESET_KEYSEQUENCE_INTERVAL_MS);
     connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
@@ -116,7 +127,7 @@ Application::Application(QCoreApplication& app, std::unique_ptr<Options> options
     });
   }
 
-  scene.polish();
+  scene->polish();
 }
 
 void Application::init(omm::Application* instance)
@@ -141,7 +152,7 @@ Application& Application::instance()
 
 SceneMode Application::scene_mode() const
 {
-  return scene.current_mode();
+  return scene->current_mode();
 }
 
 void Application::set_main_window(MainWindow& main_window)
@@ -151,7 +162,7 @@ void Application::set_main_window(MainWindow& main_window)
 
 void Application::evaluate() const
 {
-  for (Tag* tag : scene.tags()) {
+  for (Tag* tag : scene->tags()) {
     tag->evaluate();
   }
 }
@@ -172,7 +183,7 @@ void Application::update_undo_redo_enabled()
 
 bool Application::can_close()
 {
-  if (scene.has_pending_changes()) {
+  if (scene->has_pending_changes()) {
     const auto decision
         = QMessageBox::question(m_main_window,
                                 tr("Question."),
@@ -197,7 +208,7 @@ bool Application::can_close()
 
 bool Application::save(const QString& filename)
 {
-  if (!scene.save_as(filename)) {
+  if (!scene->save_as(filename)) {
     LWARNING << "Error saving scene as '" << filename << "'.";
     QMessageBox::critical(m_main_window,
                           tr("Error."),
@@ -212,7 +223,7 @@ bool Application::save(const QString& filename)
 
 bool Application::save()
 {
-  const QString filename = scene.filename();
+  const QString filename = scene->filename();
   if (filename.isEmpty()) {
     return save_as();
   } else {
@@ -224,12 +235,12 @@ bool Application::save_as()
 {
   QFileDialog dialog(m_main_window);
   dialog.setWindowTitle(tr("Save scene as ..."));
-  dialog.setDirectoryUrl(scene_directory_hint(scene.filename()));
+  dialog.setDirectoryUrl(scene_directory_hint(scene->filename()));
   dialog.setDefaultSuffix(FILE_ENDING);
   if (dialog.exec() == QDialog::Accepted) {
     const auto files = dialog.selectedFiles();
     assert(files.size() == 1);
-    return scene.save_as(files.front());
+    return scene->save_as(files.front());
   } else {
     return false;
   }
@@ -243,9 +254,9 @@ void Application::reset()
   }
 
   LINFO << "reset scene.";
-  scene.set_selection({});
+  scene->set_selection({});
   // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
-  QTimer::singleShot(0, &scene, &Scene::reset);
+  QTimer::singleShot(0, scene.get(), &Scene::reset);
 }
 
 void Application::open(const QString& filename, bool force)
@@ -253,7 +264,7 @@ void Application::open(const QString& filename, bool force)
   // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (force || can_close()) {
     QTimer::singleShot(0, this, [this, filename]() {
-      if (!scene.load_from(filename)) {
+      if (!scene->load_from(filename)) {
         QMessageBox::critical(m_main_window,
                               tr("Error."),
                               tr("Opening scene from '%1' failed.").arg(filename),
@@ -268,7 +279,7 @@ void Application::open()
   if (can_close()) {
     const QString filename = QFileDialog::getOpenFileName(m_main_window,
                                                           tr("Open scene ..."),
-                                                          scene_directory_hint(scene.filename()));
+                                                          scene_directory_hint(scene->filename()));
     if (filename.isEmpty()) {
       return;
     }
@@ -281,14 +292,14 @@ bool Application::perform_action(const QString& action_name)
 {
 #ifndef NDEBUG
   for (auto&& action_name : path_actions::available_actions()) {
-    assert(key_bindings.find_action(Application::TYPE, action_name) != nullptr);
+    assert(key_bindings->find_action(Application::TYPE, action_name) != nullptr);
   }
 #endif
 
   if (action_name == "undo") {
-    scene.history().undo();
+    scene->history().undo();
   } else if (action_name == "redo") {
-    scene.history().redo();
+    scene->history().redo();
   } else if (action_name == "new") {
     // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     reset();
@@ -299,7 +310,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "open ...") {
     open();
   } else if (action_name == "export ...") {
-    ExportDialog(scene, main_window()).exec();
+    ExportDialog(*scene, main_window()).exec();
   } else if (action_name == "evaluate") {
     evaluate();
   } else if (action_name == "restore default layout") {
@@ -311,16 +322,16 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "new toolbar") {
     spawn_toolbar();
   } else if (action_name == "previous tool") {
-    scene.tool_box().set_previous_tool();
+    scene->tool_box().set_previous_tool();
   } else if (action_name == "new style") {
     using command_type = AddCommand<List<Style>>;
-    auto style = scene.default_style().clone();
-    assert(style->scene() == &scene);
-    scene.submit<command_type>(scene.styles(), std::move(style));
+    auto style = scene->default_style().clone();
+    assert(style->scene() == scene.get());
+    scene->submit<command_type>(scene->styles(), std::move(style));
   } else if (action_name == "reset viewport") {
     main_window()->viewport().reset();
   } else if (action_name == "show point dialog") {
-    if (const auto paths = scene.item_selection<Path>(); !paths.empty()) {
+    if (const auto paths = scene->item_selection<Path>(); !paths.empty()) {
       PointDialog(paths, main_window()).exec();
     }
   } else if (action_name == "preferences") {
@@ -351,18 +362,18 @@ bool Application::perform_action(const QString& action_name)
     }
     for (const auto& key : Tool::keys()) {
       if (key == action_name) {
-        scene.tool_box().set_active_tool(key);
+        scene->tool_box().set_active_tool(key);
         return true;
       }
     }
     for (const auto& key : Tag::keys()) {
       if (key == action_name) {
-        const auto object_selection = scene.item_selection<Object>();
+        const auto object_selection = scene->item_selection<Object>();
         if (!object_selection.empty()) {
-          [[maybe_unused]] auto macro = scene.history().start_macro(tr("Add Tag"));
+          [[maybe_unused]] auto macro = scene->history().start_macro(tr("Add Tag"));
           for (auto&& object : object_selection) {
             using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
-            scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
+            scene->submit<AddTagCommand>(object->tags, Tag::make(key, *object));
           }
         }
         return true;
@@ -376,7 +387,7 @@ bool Application::perform_action(const QString& action_name)
 bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, CommandInterface& ci)
 {
   const auto dispatch_sequence = [this](CommandInterface& ci) {
-    const auto action_name = key_bindings.find_action(ci.type(), m_pending_key_sequence);
+    const auto action_name = key_bindings->find_action(ci.type(), m_pending_key_sequence);
     LINFO << "Dispatching " << m_pending_key_sequence << " to " << &ci;
     if (!action_name.isEmpty() && ci.perform_action(action_name)) {
       m_pending_key_sequence = QKeySequence();
@@ -433,7 +444,7 @@ bool Application::handle_mode(const QString& action_name)
 
 MailBox& Application::mail_box() const
 {
-  return scene.mail_box();
+  return scene->mail_box();
 }
 
 MainWindow* Application::main_window() const
@@ -444,10 +455,10 @@ MainWindow* Application::main_window() const
 Object& Application::insert_object(const QString& key, InsertionMode mode)
 {
   const auto translated_key = QApplication::translate("any-context", key.toUtf8().constData());
-  auto macro = scene.history().start_macro(tr("Create %1").arg(translated_key));
+  auto macro = scene->history().start_macro(tr("Create %1").arg(translated_key));
   using add_command_type = AddCommand<ObjectTree>;
-  auto object = Object::make(key, &scene);
-  object->set_object_tree(scene.object_tree());
+  auto object = Object::make(key, scene.get());
+  object->set_object_tree(scene->object_tree());
   auto& ref = *object;
 
   Object* parent = nullptr;
@@ -455,15 +466,15 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
   std::vector<Object*> children;
   switch (mode) {
   case InsertionMode::AsChild:
-    if (const auto selection = scene.item_selection<Object>(); selection.size() == 1) {
+    if (const auto selection = scene->item_selection<Object>(); selection.size() == 1) {
       parent = *selection.begin();
     }
     break;
   case InsertionMode::AsParent: {
-    auto selection = scene.item_selection<Object>();
+    auto selection = scene->item_selection<Object>();
     Object::remove_internal_children(selection);
     children = Object::sort(selection);
-    parent = children.empty() ? &scene.object_tree().root() : &children.back()->tree_parent();
+    parent = children.empty() ? &scene->object_tree().root() : &children.back()->tree_parent();
     if (!children.empty()) {
       if (std::size_t pos = children.back()->position(); pos > 0) {
         predecessor = parent->tree_children()[pos - 1];
@@ -475,7 +486,7 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
     break;
   }
 
-  scene.submit<add_command_type>(scene.object_tree(), std::move(object));
+  scene->submit<add_command_type>(scene->object_tree(), std::move(object));
   ref.set_global_transformation(ObjectTransformation(), Space::Scene);
   using move_command_t = MoveCommand<ObjectTree>;
   using move_context_t = move_command_t::context_type;
@@ -488,15 +499,15 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
     const auto move_contextes = ::transform<move_context_t>(children, [&ref](auto* c) {
       return move_context_t(*c, ref, nullptr);
     });
-    scene.submit<move_command_t>(scene.object_tree(), move_contextes);
+    scene->submit<move_command_t>(scene->object_tree(), move_contextes);
     move_context_t move_context(ref, *parent, predecessor);
-    if (move_context.is_strictly_valid(scene.object_tree())) {
+    if (move_context.is_strictly_valid(scene->object_tree())) {
       // the move will fail if the object is already at the correct position.
-      scene.submit<move_command_t>(scene.object_tree(), std::vector{move_context});
+      scene->submit<move_command_t>(scene->object_tree(), std::vector{move_context});
     }
   } else if (parent != nullptr) {
     const move_context_t move_context(ref, *parent, nullptr);
-    scene.submit<move_command_t>(scene.object_tree(), std::vector{move_context});
+    scene->submit<move_command_t>(scene->object_tree(), std::vector{move_context});
   }
 
   ref.post_create_hook();
@@ -505,7 +516,7 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
 
 Manager& Application::spawn_manager(const QString& type)
 {
-  auto manager = Manager::make(type, scene);
+  auto manager = Manager::make(type, *scene);
   main_window()->assign_unique_objectname(*manager);
   auto& ref = *manager;
   main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
@@ -555,7 +566,7 @@ std::set<Manager*> Application::managers(const QString& type) const
 
 const Preferences& preferences()
 {
-  return Application::instance().preferences;
+  return *Application::instance().preferences;
 }
 
 }  // namespace omm

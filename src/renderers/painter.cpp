@@ -2,13 +2,15 @@
 #include "geometry/util.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
+#include "renderers/painteroptions.h"
+#include "renderers/texture.h"
 #include <QWidget>
 
 namespace
 {
 QRectF get_roi(const omm::ObjectTransformation& viewport_transform,
                const QRectF bounding_box,
-               const omm::Painter::Options& options)
+               const omm::PainterOptions& options)
 {
   static const auto get_relative_roi = [](const QRectF& rect, const QRectF& absolute_roi) {
     const double x = rect.center().x();
@@ -50,10 +52,11 @@ omm::Painter::Painter(const omm::Scene& scene, omm::Painter::Category filter)
 {
 }
 
-void Painter::render(Options options)
+void Painter::render(const PainterOptions& options)
 {
-  options.default_style = &scene.default_style();
-  scene.object_tree().root().draw_recursive(*this, options);
+  PainterOptions copy = options;
+  copy.default_style = &scene.default_style();
+  scene.object_tree().root().draw_recursive(*this, copy);
   assert(m_transformation_stack.empty());
 }
 
@@ -125,7 +128,7 @@ QPainterPath Painter::path(const std::vector<Point>& points, bool closed)
 }
 
 QBrush
-Painter::make_brush(const Style& style, const Object& object, const Painter::Options& options)
+Painter::make_brush(const Style& style, const Object& object, const PainterOptions& options)
 {
   if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->value<bool>()) {
     if (style.property("gl-brush")->value<bool>()) {
@@ -210,18 +213,10 @@ QPen Painter::make_simple_pen(const Style& style)
 
 void Painter::set_style(const Style& style,
                         const Object& object,
-                        const Painter::Options& options) const
+                        const PainterOptions& options) const
 {
   painter->setPen(make_pen(style, object));
   painter->setBrush(make_brush(style, object, options));
-}
-
-Painter::Options::Options(const QWidget& viewport) : device_is_viewport(true), device(viewport)
-{
-}
-
-Painter::Options::Options(const QPaintDevice& device) : device_is_viewport(false), device(device)
-{
 }
 
 }  // namespace omm

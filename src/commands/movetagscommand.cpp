@@ -1,5 +1,7 @@
 #include "commands/movetagscommand.h"
+#include "objects/object.h"
 #include "tags/tag.h"
+#include "scene/contextes.h"
 
 namespace
 {

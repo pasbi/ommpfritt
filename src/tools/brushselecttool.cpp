@@ -1,6 +1,8 @@
 #include "tools/brushselecttool.h"
 #include "objects/path.h"
+#include "preferences/uicolors.h"
 #include "properties/floatproperty.h"
+#include "renderers/painter.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/selectpointstool.h"

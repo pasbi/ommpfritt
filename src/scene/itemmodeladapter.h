@@ -1,8 +1,6 @@
 #pragma once
 
 #include "objects/object.h"
-#include "scene/list.h"
-#include "scene/structure.h"
 #include <QAbstractItemModel>
 
 namespace omm
@@ -42,8 +40,6 @@ public:
   virtual QModelIndex index_of(ItemT& item) const = 0;
   Scene& scene;
   StructureT& structure;
-
-private:
 };
 
 }  // namespace omm

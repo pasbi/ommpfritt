@@ -3,6 +3,7 @@
 #include "aspects/serializable.h"
 #include "common.h"
 #include "logging.h"
+#include "geometry/polarcoordinates.h"
 #include <iomanip>
 #include <typeinfo>
 

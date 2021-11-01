@@ -14,6 +14,9 @@
 #include "python/objectwrapper.h"
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
+#include "renderers/painter.h"
+#include "renderers/painteroptions.h"
+#include "scene/scene.h"
 #include "scene/mailbox.h"
 #include <random>
 
@@ -128,7 +131,7 @@ const Object* Cloner::path_object_reference() const
 
 void Cloner::draw_object(Painter& renderer,
                          const Style& style,
-                         const Painter::Options& options) const
+                         const PainterOptions& options) const
 {
   assert(&renderer.scene == scene());
   auto options_copy = options;

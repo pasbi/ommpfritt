@@ -5,7 +5,6 @@
 
 #include "color/color.h"
 #include "common.h"
-#include "geometry/boundingbox.h"
 #include "geometry/objecttransformation.h"
 #include "geometry/point.h"
 #include "renderers/imagecache.h"
@@ -17,24 +16,17 @@ class QTextOption;
 
 namespace omm
 {
-class Style;
-class Scene;
+
 class Object;
 class Rectangle;
+class Scene;
+class Style;
 class Viewport;
+struct PainterOptions;
 
 class Painter
 {
 public:
-  struct Options {
-    explicit Options(const QWidget& viewport);
-    explicit Options(const QPaintDevice& device);
-    std::vector<const Style*> styles;
-    const Style* default_style = nullptr;
-    const bool device_is_viewport;
-    const QPaintDevice& device;
-  };
-
   enum class Category {
     None = 0x0,
     Objects = 0x1,
@@ -43,7 +35,7 @@ public:
     All = Objects | Handles | BoundingBox
   };
   explicit Painter(const Scene& scene, Category filter);
-  void render(Options options);
+  void render(const PainterOptions& options);
 
   void push_transformation(const ObjectTransformation& transformation);
   void pop_transformation();
@@ -52,13 +44,13 @@ public:
   void toast(const Vec2f& pos, const QString& text) const;
 
   static QPainterPath path(const std::vector<Point>& points, bool closed = false);
-  static QBrush make_brush(const Style& style, const Object& object, const Options& options);
+  static QBrush make_brush(const Style& style, const Object& object, const PainterOptions& options);
   static QPen make_pen(const Style& style, const Object& object);
 
   static QBrush make_simple_brush(const Style& style);
   static QPen make_simple_pen(const Style& style);
 
-  void set_style(const Style& style, const Object& object, const Options& options) const;
+  void set_style(const Style& style, const Object& object, const PainterOptions& options) const;
 
   const Scene& scene;
   Category category_filter;

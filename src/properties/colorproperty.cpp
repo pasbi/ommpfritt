@@ -1,4 +1,5 @@
 #include "properties/colorproperty.h"
+#include <QCoreApplication>
 
 namespace omm
 {

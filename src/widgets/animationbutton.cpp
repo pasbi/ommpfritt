@@ -2,6 +2,7 @@
 
 #include "animation/animator.h"
 #include "animation/track.h"
+#include "animation/knot.h"
 #include "aspects/propertyowner.h"
 #include "commands/keyframecommand.h"
 #include "commands/setinterpolationcommand.h"
@@ -9,6 +10,7 @@
 #include "logging.h"
 #include "preferences/uicolors.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/scene.h"
 #include <QMenu>
 #include <QPainter>

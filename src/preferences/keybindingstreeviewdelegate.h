@@ -1,13 +1,12 @@
 #pragma once
 
-#include "preferences/keysequenceedit.h"
-#include "preferences/preferencestreeview.h"
 #include "preferences/preferencestreeviewdelegate.h"
 #include <QKeySequenceEdit>
 #include <memory>
 
 namespace omm
 {
+class KeySequenceEdit;
 class KeyBindingsTreeViewDelegate : public PreferencesTreeViewDelegate<KeySequenceEdit>
 {
 public:

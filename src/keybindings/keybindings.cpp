@@ -3,6 +3,7 @@
 #include "keybindings/commandinterface.h"
 #include "logging.h"
 #include "main/application.h"
+#include "preferences/preferencestreeitem.h"
 #include <QApplication>
 #include <QCoreApplication>
 #include <QKeyEvent>

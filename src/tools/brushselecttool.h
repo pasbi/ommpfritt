@@ -1,7 +1,6 @@
 #pragma once
 
 #include "tools/selectpointstool.h"
-#include "tools/tool.h"
 #include <QCoreApplication>
 
 namespace omm

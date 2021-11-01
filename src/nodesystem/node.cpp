@@ -1,6 +1,7 @@
 #include "nodesystem/node.h"
 #include "common.h"
 #include "nodesystem/nodemodel.h"
+#include <QApplication>
 
 namespace omm
 {

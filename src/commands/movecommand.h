@@ -1,8 +1,8 @@
 #pragma once
 
 #include "commands/command.h"
-#include "scene/contextes.h"
 #include "scene/stylelist.h"
+#include "scene/contextes.h"
 
 namespace omm
 {

@@ -1,5 +1,6 @@
 #include "managers/nodemanager/nodemanager.h"
 #include "commands/nodecommand.h"
+#include "keybindings/keybindings.h"
 #include "logging.h"
 #include "main/application.h"
 #include "managers/nodemanager/nodemanagertitlebar.h"
@@ -11,6 +12,7 @@
 #include "nodesystem/nodes/fragmentnode.h"
 #include "nodesystem/nodesowner.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 #include "ui_nodemanager.h"
 #include <QClipboard>
 #include <QContextMenuEvent>
@@ -90,7 +92,7 @@ void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selectio
 std::unique_ptr<QMenu> NodeManager::make_context_menu()
 {
   Application& app = Application::instance();
-  KeyBindings& kb = app.key_bindings;
+  KeyBindings& kb = *app.key_bindings;
 
   auto menu = std::make_unique<QMenu>();
 

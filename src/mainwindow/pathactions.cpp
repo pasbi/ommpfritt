@@ -11,7 +11,9 @@
 #include "mainwindow/mainwindow.h"
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
+#include "objects/path.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/toolbox.h"
@@ -34,7 +36,7 @@ void set_selected(Point& point)
 }
 template<typename F> void foreach_segment(Application& app, F&& f)
 {
-  for (auto* path : app.scene.item_selection<Path>()) {
+  for (auto* path : app.scene->item_selection<Path>()) {
     for (auto&& segment : path->segments) {
       f(segment);
     }
@@ -44,16 +46,16 @@ template<typename F> void foreach_segment(Application& app, F&& f)
 void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
 {
   using namespace omm;
-  std::map<Path::iterator, omm::Point> map;
-  const auto paths = app.scene.item_selection<Path>();
+  std::map<PathIterator, omm::Point> map;
+  const auto paths = app.scene->item_selection<Path>();
   for (omm::Path* path : paths) {
     const bool is_closed = path->is_closed();
     for (std::size_t s = 0; s < path->segments.size(); ++s) {
-      const Path::Segment& segment = path->segments[s];
+      const Segment& segment = path->segments[s];
       const std::size_t n = segment.size();
       for (std::size_t i = 0; i < n; ++i) {
         if (segment[i].is_selected) {
-          const Path::iterator it{*path, s, i};
+          const PathIterator it{*path, s, i};
           switch (mode) {
           case InterpolationMode::Bezier:
             break;  // do nothing.
@@ -74,14 +76,14 @@ void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
   });
 
   if (!map.empty()) {
-    auto macro = app.scene.history().start_macro(QObject::tr("modify tangents"));
+    auto macro = app.scene->history().start_macro(QObject::tr("modify tangents"));
     using OptionPropertyCommand = omm::PropertiesCommand<omm::OptionProperty>;
-    app.scene.submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
-    app.scene.submit<omm::ModifyPointsCommand>(map);
+    app.scene->submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
+    app.scene->submit<omm::ModifyPointsCommand>(map);
   }
 }
 
-std::set<std::size_t> neighbors_of_selected(const Path::Segment& segment)
+std::set<std::size_t> neighbors_of_selected(const Segment& segment)
 {
   std::set<std::size_t> selection;
   for (std::size_t i = 1; i < segment.size() - 1; ++i) {
@@ -118,16 +120,16 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
     for (auto&& c : convertibles) {
       auto [converted, move_children] = c->convert();
 
-      converted->set_object_tree(app.scene.object_tree());
+      converted->set_object_tree(app.scene->object_tree());
       assert(!c->is_root());
       ObjectTreeOwningContext context(*converted, c->tree_parent(), c);
-      const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
+      const auto properties = ::transform<Property*>(app.scene->find_reference_holders(*c));
       if (!properties.empty()) {
-        app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
+        app.scene->submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
       }
       auto& converted_ref = *converted;
       context.subject.capture(std::move(converted));
-      app.scene.submit<AddCommand<ObjectTree>>(app.scene.object_tree(), std::move(context));
+      app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
       converted_ref.set_transformation(c->transformation());
       converted_objects.insert(&converted_ref);
 
@@ -143,12 +145,12 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
       }
     }
 
-    app.scene.template submit<MoveCommand<ObjectTree>>(
-        app.scene.object_tree(),
+    app.scene->template submit<MoveCommand<ObjectTree>>(
+        app.scene->object_tree(),
         std::vector(move_contextes.begin(), move_contextes.end()));
     const auto selection = ::transform<Object*, std::set>(convertibles, ::identity);
     using remove_command = RemoveCommand<ObjectTree>;
-    app.scene.template submit<remove_command>(app.scene.object_tree(), selection);
+    app.scene->template submit<remove_command>(app.scene->object_tree(), selection);
 
     // process the left over items
     const auto cos = convert_objects(app, leftover_convertibles);
@@ -160,10 +162,10 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
 void remove_selected_points(Application& app)
 {
   std::unique_ptr<Macro> macro;
-  for (auto* path : app.scene.item_selection<Path>()) {
+  for (auto* path : app.scene->item_selection<Path>()) {
     std::vector<RemovePointsCommand::Range> removed_points;
     auto last = path->end();
-    const auto is_contiguos = [&last](const Path::iterator& it) {
+    const auto is_contiguos = [&last](const PathIterator& it) {
       if (it.path != last.path || it.segment != last.segment) {
         return false;
       } else {
@@ -183,10 +185,10 @@ void remove_selected_points(Application& app)
     if (!removed_points.empty()) {
       auto command = std::make_unique<RemovePointsCommand>(*path, removed_points);
       if (!macro) {
-        macro = app.scene.history().start_macro(command->actionText());
+        macro = app.scene->history().start_macro(command->actionText());
       }
-      app.scene.submit(std::move(command));
-      app.scene.update_tool();
+      app.scene->submit(std::move(command));
+      app.scene->update_tool();
     }
   }
 }
@@ -204,7 +206,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
          remove_selected_points(app);
          break;
        case SceneMode::Object:
-         app.scene.remove(app.main_window(), app.scene.selection());
+         app.scene->remove(app.main_window(), app.scene->selection());
          break;
        }
      }},
@@ -212,7 +214,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
     {"subdivide",
      [](Application& app) {
        std::list<std::unique_ptr<SubdividePathCommand>> cmds;
-       for (auto* path : app.scene.item_selection<Path>()) {
+       for (auto* path : app.scene->item_selection<Path>()) {
          auto cmd = std::make_unique<SubdividePathCommand>(*path);
          if (!cmd->is_noop()) {
            cmds.push_back(std::move(cmd));
@@ -221,10 +223,10 @@ const std::map<QString, std::function<void(Application& app)>> actions{
 
        std::unique_ptr<Macro> macro;
        if (!cmds.empty()) {
-         macro = app.scene.history().start_macro(QObject::tr("Subdivide Paths"));
+         macro = app.scene->history().start_macro(QObject::tr("Subdivide Paths"));
        }
        for (auto&& cmd : cmds) {
-         app.scene.submit(std::move(cmd));
+         app.scene->submit(std::move(cmd));
        }
      }},
 
@@ -232,15 +234,15 @@ const std::map<QString, std::function<void(Application& app)>> actions{
      [](Application& app) {
        switch (app.scene_mode()) {
        case SceneMode::Vertex:
-         for (auto* path : app.scene.item_selection<Path>()) {
+         for (auto* path : app.scene->item_selection<Path>()) {
            for (auto&& point : *path) {
              point.is_selected = true;
            }
          }
-         Q_EMIT app.scene.mail_box().point_selection_changed();
+         Q_EMIT app.scene->mail_box().point_selection_changed();
          break;
        case SceneMode::Object:
-         app.scene.set_selection(down_cast(app.scene.object_tree().items()));
+         app.scene->set_selection(down_cast(app.scene->object_tree().items()));
          break;
        }
        Q_EMIT app.mail_box().scene_appearance_changed();
@@ -250,15 +252,15 @@ const std::map<QString, std::function<void(Application& app)>> actions{
      [](Application& app) {
        switch (app.scene_mode()) {
        case SceneMode::Vertex:
-         for (auto* path : app.scene.item_selection<Path>()) {
+         for (auto* path : app.scene->item_selection<Path>()) {
            for (auto&& point : *path) {
              point.is_selected = false;
            }
          }
-         Q_EMIT app.scene.mail_box().point_selection_changed();
+         Q_EMIT app.scene->mail_box().point_selection_changed();
          break;
        case SceneMode::Object:
-         app.scene.set_selection({});
+         app.scene->set_selection({});
          break;
        }
        Q_EMIT app.mail_box().scene_appearance_changed();
@@ -268,20 +270,20 @@ const std::map<QString, std::function<void(Application& app)>> actions{
      [](Application& app) {
        switch (app.scene_mode()) {
        case SceneMode::Vertex:
-         for (auto* path : app.scene.item_selection<Path>()) {
+         for (auto* path : app.scene->item_selection<Path>()) {
            for (auto&& point : *path) {
              point.is_selected = !point.is_selected;
            }
          }
-         Q_EMIT app.scene.mail_box().point_selection_changed();
+         Q_EMIT app.scene->mail_box().point_selection_changed();
          break;
        case SceneMode::Object: {
-         const auto object_selection = app.scene.item_selection<Object>();
-         auto difference = app.scene.object_tree().items();
+         const auto object_selection = app.scene->item_selection<Object>();
+         auto difference = app.scene->object_tree().items();
          for (auto&& s : object_selection) {
            difference.erase(s);
          }
-         app.scene.set_selection(down_cast(difference));
+         app.scene->set_selection(down_cast(difference));
          break;
        }
        }
@@ -291,14 +293,14 @@ const std::map<QString, std::function<void(Application& app)>> actions{
     {"convert objects",
      [](Application& app) {
        const auto convertibles
-           = ::filter_if(app.scene.item_selection<Object>(),
+           = ::filter_if(app.scene->item_selection<Object>(),
                          [](const Object* o) { return !!(o->flags() & Flag::Convertible); });
        if (!convertibles.empty()) {
-         Scene& scene = app.scene;
+         Scene& scene = *app.scene;
          auto macro = scene.history().start_macro(QObject::tr("convert"));
-         scene.submit<ObjectSelectionCommand>(app.scene, convertibles);
+         scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
          const auto converted_objects = ::convert_objects(app, convertibles);
-         scene.submit<ObjectSelectionCommand>(app.scene, converted_objects);
+         scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
          const auto is_path = [](auto&& object) { return object->type() == Path::TYPE; };
          if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
            scene.set_mode(SceneMode::Vertex);
@@ -310,10 +312,10 @@ const std::map<QString, std::function<void(Application& app)>> actions{
      [](Application& app) {
        auto& scene = app.scene;
        const auto unused_styles
-           = ::filter_if(app.scene.styles().items(), [&scene](const auto* style) {
-               return scene.find_reference_holders(*style).empty();
+           = ::filter_if(app.scene->styles().items(), [&scene](const auto* style) {
+               return scene->find_reference_holders(*style).empty();
              });
-       scene.submit<RemoveCommand<StyleList>>(scene.styles(), unused_styles);
+       scene->submit<RemoveCommand<StyleList>>(scene->styles(), unused_styles);
      }},
 
     {"select connected points",

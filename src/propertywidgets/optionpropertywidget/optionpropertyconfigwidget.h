@@ -1,12 +1,14 @@
 #pragma once
 
-#include "properties/optionproperty.h"
 #include "propertywidgets/propertyconfigwidget.h"
 
 class QListWidget;
 
 namespace omm
 {
+
+class OptionProperty;
+
 class OptionPropertyConfigWidget : public PropertyConfigWidget<OptionProperty>
 {
 public:

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "renderers/painter.h"
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
 #include <QPainter>

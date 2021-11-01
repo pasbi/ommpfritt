@@ -1,12 +1,15 @@
 #include "widgets/pointedit.h"
 #include "commands/modifypointscommand.h"
 #include "scene/scene.h"
+#include "objects/path.h"
 #include "widgets/coordinateedit.h"
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <memory>
 
+namespace
+{
 auto make_tangent_layout(omm::CoordinateEdit*& coordinate_edit_ref,
                          QPushButton*& mirror_button_ref,
                          QPushButton*& vanish_button_ref)
@@ -28,6 +31,7 @@ auto make_tangent_layout(omm::CoordinateEdit*& coordinate_edit_ref,
 
   return vlayout;
 }
+}  // namespace
 
 namespace omm
 {

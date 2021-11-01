@@ -1,12 +1,13 @@
+#include "logging.h"
+#include "config.h"
+#include "main/application.h"
+#include "main/commandlineparser.h"
+#include "main/options.h"
 #include <QApplication>
 #include <QDirIterator>
 #include <QSettings>
 #include <QVariant>
 #include <iostream>
-#include "logging.h"
-#include "main/commandlineparser.h"
-#include "main/application.h"
-#include "config.h"
 
 const bool print_long_message = true;
 

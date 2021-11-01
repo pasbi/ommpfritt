@@ -2,7 +2,8 @@
 
 #include "commands/command.h"
 #include "geometry/point.h"
-#include "objects/path.h"
+#include "objects/pathiterator.h"
+#include "objects/segment.h"
 #include <list>
 
 namespace omm
@@ -11,7 +12,7 @@ class Path;
 class ModifyPointsCommand : public Command
 {
 public:
-  using map_type = std::map<Path::iterator, Point>;
+  using map_type = std::map<PathIterator, Point>;
   ModifyPointsCommand(const map_type& points);
   void redo() override;
   void undo() override;
@@ -19,7 +20,7 @@ public:
   bool mergeWith(const QUndoCommand* command) override;
 
 private:
-  std::map<Path::iterator, Point> m_data;
+  std::map<PathIterator, Point> m_data;
   void swap();
 };
 
@@ -27,14 +28,14 @@ class AbstractPointsCommand : public Command
 {
 public:
   struct LocatedSegment {
-    Path::iterator index;
-    Path::Segment points;
+    PathIterator index;
+    Segment points;
     bool operator<(const LocatedSegment& other) const;
     bool operator>(const LocatedSegment& other) const;
   };
 
   struct Range {
-    Path::iterator begin;
+    PathIterator begin;
     std::size_t length;
     [[nodiscard]] bool intersects(const Range& other) const;
     bool operator<(const Range& other) const;

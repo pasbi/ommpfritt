@@ -1,7 +1,7 @@
 #pragma once
 
 #include "abstractfactory.h"
-#include "properties/property.h"
+#include "properties/propertyconfiguration.h"
 #include <QWidget>
 
 class QComboBox;

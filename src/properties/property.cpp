@@ -13,9 +13,13 @@ namespace omm
 std::map<QString, const Property::PropertyDetail*> Property::m_details;
 
 // NOLINTNEXTLINE(readability-redundant-member-init)
+Property::Property() = default;
+
 Property::Property(const Property& other) : QObject(), configuration(other.configuration)
 {
 }
+
+Property::~Property() = default;
 
 QString Property::widget_type() const
 {

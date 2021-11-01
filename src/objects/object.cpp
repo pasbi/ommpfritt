@@ -1,11 +1,5 @@
 #include "objects/object.h"
 
-#include <QObject>
-#include <algorithm>
-#include <cassert>
-#include <functional>
-#include <map>
-
 #include "common.h"
 #include "logging.h"
 #include "objects/path.h"
@@ -14,10 +8,13 @@
 #include "properties/floatvectorproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/integervectorproperty.h"
+#include "properties/propertygroups/markerproperties.h"
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
 #include "renderers/style.h"
+#include "renderers/painter.h"
+#include "renderers/painteroptions.h"
 #include "scene/contextes.h"
 #include "scene/mailbox.h"
 #include "scene/objecttree.h"
@@ -25,6 +22,15 @@
 #include "serializers/jsonserializer.h"
 #include "tags/styletag.h"
 #include "tags/tag.h"
+
+#include <QObject>
+#include <QPen>
+#include <QPainter>
+#include <algorithm>
+#include <cassert>
+#include <functional>
+#include <map>
+
 
 namespace
 {
@@ -302,7 +308,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   this->tags.set(std::move(tags));
 }
 
-void Object::draw_recursive(Painter& renderer, Painter::Options options) const
+void Object::draw_recursive(Painter& renderer, PainterOptions options) const
 {
   renderer.push_transformation(transformation());
   const bool is_enabled = !!(renderer.category_filter & Painter::Category::Objects);
@@ -635,7 +641,7 @@ QString Object::tree_path() const
 
 void Object::draw_object(Painter& renderer,
                          const Style& style,
-                         const Painter::Options& options) const
+                         const PainterOptions& options) const
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     if (const auto painter_path = this->painter_path(); !painter_path.isEmpty()) {
@@ -653,8 +659,8 @@ void Object::draw_object(Painter& renderer,
           const auto tt = compute_path_vector_time(path_index, t);
           return this->pos(tt).rotated(M_PI_2);
         };
-        style.start_marker.draw_marker(renderer, pos(0.0), marker_color, width);
-        style.end_marker.draw_marker(renderer, pos(1.0), marker_color, width);
+        style.start_marker->draw_marker(renderer, pos(0.0), marker_color, width);
+        style.end_marker->draw_marker(renderer, pos(1.0), marker_color, width);
       }
     }
   }
@@ -717,10 +723,10 @@ void Object::listen_to_children_changes()
   connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
 }
 
-Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
+Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
 {
   const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
-  Path::Segment segment;
+  Segment segment;
   segment.reserve(path.size_default() + 1);
   const auto n = path.size();
   for (std::size_t i = 0; i < n; ++i) {

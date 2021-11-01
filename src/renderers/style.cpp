@@ -5,6 +5,7 @@
 #include "nodesystem/nodemodel.h"
 #include "nodesystem/nodes/fragmentnode.h"
 #include "nodesystem/propertyport.h"
+#include "nodesystem/nodecompilerglsl.h"
 #include "objects/tip.h"
 #include "properties/boolproperty.h"
 #include "properties/colorproperty.h"
@@ -12,8 +13,10 @@
 #include "properties/optionproperty.h"
 #include "properties/stringproperty.h"
 #include "properties/triggerproperty.h"
+#include "properties/propertygroups/markerproperties.h"
 #include "renderers/offscreenrenderer.h"
 #include "renderers/styleiconengine.h"
+#include "renderers/texture.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <QApplication>
@@ -22,20 +25,29 @@
 
 namespace
 {
+
 constexpr auto start_marker_prefix = "start";
 constexpr auto end_marker_prefix = "end";
-constexpr double default_marker_size = 2.0;
-constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
+
+auto make_default_marker_properties(const QString& prefix, omm::Style& style)
+{
+  constexpr double default_marker_size = 2.0;
+  constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
+  return std::make_unique<omm::MarkerProperties>(prefix,
+                                                 style,
+                                                 default_marker_shape,
+                                                 default_marker_size);
+}
 
 }  // namespace
 
 namespace omm
 {
 Style::Style(Scene* scene)
-    : PropertyOwner(scene), NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene),
-      start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size),
-      end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size),
-      m_offscreen_renderer(OffscreenRenderer::make())
+    : PropertyOwner(scene), NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene)
+    , start_marker(make_default_marker_properties(start_marker_prefix,*this))
+    , end_marker(make_default_marker_properties(end_marker_prefix, *this))
+    , m_offscreen_renderer(OffscreenRenderer::make())
 {
   static constexpr double DEFAULT_PEN_WIDTH = 5.0;
   static constexpr double PEN_WIDTH_STEP = 0.1;
@@ -91,18 +103,18 @@ Style::Style(Scene* scene)
       .set_label(QObject::tr("Edit ..."))
       .set_category(brush_category);
 
-  start_marker.make_properties(decoration_category);
-  end_marker.make_properties(decoration_category);
+  start_marker->make_properties(decoration_category);
+  end_marker->make_properties(decoration_category);
   polish();
 }
 
 Style::~Style() = default;
 
 Style::Style(const Style& other)
-    : PropertyOwner(other), NodesOwner(other),
-      start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size),
-      end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size),
-      m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
+    : PropertyOwner(other), NodesOwner(other)
+    , start_marker(make_default_marker_properties(start_marker_prefix, *this))
+    , end_marker(make_default_marker_properties(end_marker_prefix, *this))
+    , m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
 {
   other.copy_properties(*this, CopiedProperties::Compatible);
   polish();
@@ -137,7 +149,7 @@ Flag Style::flags() const
 Texture Style::render_texture(const Object& object,
                               const QSize& size,
                               const QRectF& roi,
-                              const Painter::Options& options) const
+                              const PainterOptions& options) const
 {
   update_uniform_values();
   return m_offscreen_renderer->render(object, size, roi, options);

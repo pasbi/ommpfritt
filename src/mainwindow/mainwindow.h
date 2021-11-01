@@ -1,6 +1,5 @@
 #pragma once
 
-#include "keybindings/keybindings.h"
 #include <QMainWindow>
 #include <map>
 #include <memory>

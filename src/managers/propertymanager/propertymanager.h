@@ -5,16 +5,17 @@
 #include <functional>
 #include <vector>
 
-#include "aspects/propertyowner.h"
 #include "managers/manager.h"
+#include "managers/propertymanager/propertymanagertab.h"
 #include "managers/propertymanager/userpropertydialog.h"
-#include "scene/scene.h"
+#include "orderedmap.h"
 #include "widgets/multitabbar.h"
 
 class QTabWidget;
 
 namespace omm
 {
+class AbstractPropertyOwner;
 class PropertyView;
 class PropertyManagerTab;
 class PropertyManagerTitleBar;

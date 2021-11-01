@@ -1,6 +1,7 @@
 #include "propertywidgets/propertywidget.h"
 
 #include "widgets/animationbutton.h"
+#include "scene/scene.h"
 #include <QBoxLayout>
 #include <QLabel>
 
@@ -54,6 +55,11 @@ void AbstractPropertyWidget::set_widget(std::unique_ptr<QWidget> widget)
 QString AbstractPropertyWidget::label() const
 {
   return Property::get_value<QString>(m_properties, std::mem_fn(&Property::label));
+}
+
+void AbstractPropertyWidget::submit_command(std::unique_ptr<Command> command)
+{
+  scene.submit(std::move(command));
 }
 
 AbstractPropertyWidget::LabelLayout::LabelLayout()

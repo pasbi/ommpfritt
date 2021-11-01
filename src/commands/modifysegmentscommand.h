@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/command.h"
-#include "objects/path.h"
+#include "objects/segment.h"
 #include <2geom/pathvector.h>
 
 namespace omm
@@ -11,7 +11,7 @@ class Path;
 class ModifySegmentsCommand : public Command
 {
 public:
-  using Segments = std::vector<std::optional<Path::Segment>>;
+  using Segments = std::vector<std::optional<Segment>>;
   explicit ModifySegmentsCommand(const QString& label, Path& path, const Segments& segments);
   void undo() override;
   void redo() override;

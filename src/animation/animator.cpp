@@ -1,6 +1,7 @@
 #include "animation/animator.h"
 #include "animation/channelproxy.h"
 #include "animation/track.h"
+#include "animation/knot.h"
 #include "aspects/propertyowner.h"
 #include "logging.h"
 #include "main/application.h"
@@ -10,9 +11,9 @@
 #include "scene/stylelist.h"
 #include "serializers/abstractserializer.h"
 #include "tags/tag.h"
+#include "mainwindow/iconprovider.h"
 #include <functional>
 #include <list>
-#include "mainwindow/iconprovider.h"
 
 namespace
 {
@@ -418,14 +419,14 @@ std::unique_ptr<Track> Animator::extract_track(Property& property)
   return track;
 }
 
-std::unique_ptr<Track::Knot> Animator::remove_knot(Track& track, int frame)
+std::unique_ptr<Knot> Animator::remove_knot(Track& track, int frame)
 {
   auto knot = track.remove_knot(frame);
   Q_EMIT knot_removed(track, frame);
   return knot;
 }
 
-void Animator::insert_knot(Track& track, int frame, std::unique_ptr<Track::Knot> knot)
+void Animator::insert_knot(Track& track, int frame, std::unique_ptr<Knot> knot)
 {
   track.insert_knot(frame, std::move(knot));
   Q_EMIT knot_inserted(track, frame);

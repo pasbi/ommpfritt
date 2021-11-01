@@ -1,4 +1,5 @@
 #include "objects/path.h"
+#include "objects/segment.h"
 #include "gtest/gtest.h"
 #include <2geom/2geom.h>
 
@@ -21,8 +22,8 @@ TEST(Path, set)
   Path path(nullptr);
   path.property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
 
-  const Path::Segment segment0{Point({0, 0}), Point({1, 1}), Point({2, 2})};
-  const Path::Segment segment1{Point({2, 0}), Point({1, 1}), Point({2, 0})};
+  const Segment segment0{Point({0, 0}), Point({1, 1}), Point({2, 2})};
+  const Segment segment1{Point({2, 0}), Point({1, 1}), Point({2, 0})};
   path.segments.push_back(segment0);
   path.segments.push_back(segment1);
 

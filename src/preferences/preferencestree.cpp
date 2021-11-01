@@ -1,5 +1,6 @@
 #include "preferences/preferencestree.h"
 #include "logging.h"
+#include "preferences/preferencestreeitem.h"
 #include <QApplication>
 #include <QCoreApplication>
 #include <QFile>

@@ -31,10 +31,13 @@
 #include "keybindings/modeselector.h"
 #include "main/application.h"
 #include "nodesystem/node.h"
+#include "nodesystem/nodemodel.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/mailbox.h"
 #include "scene/objecttree.h"
 #include "scene/stylelist.h"
+#include "scene/pointselection.h"
 #include "tools/toolbox.h"
 
 namespace
@@ -105,11 +108,16 @@ std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scen
 namespace omm
 {
 Scene::Scene(PythonEngine& python_engine)
-    : python_engine(python_engine), point_selection(*this), m_mail_box(new MailBox()),
-      m_object_tree(new ObjectTree(make_root(), *this)), m_styles(new StyleList(*this)),
-      m_history(new HistoryModel()), m_tool_box(new ToolBox(*this)),
-      m_animator(new Animator(*this)), m_named_colors(new NamedColors()),
-      m_export_options(new ExportOptions())
+    : python_engine(python_engine)
+    , point_selection(std::make_unique<PointSelection>(*this))
+    , m_mail_box(new MailBox())
+    , m_object_tree(new ObjectTree(make_root(), *this))
+    , m_styles(new StyleList(*this))
+    , m_history(new HistoryModel())
+    , m_tool_box(new ToolBox(*this))
+    , m_animator(new Animator(*this))
+    , m_named_colors(new NamedColors())
+    , m_export_options(new ExportOptions())
 {
   object_tree().root().set_object_tree(object_tree());
   for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, Node::KIND}) {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "objects/path.h"
 #include "tools/selectpointstool.h"
 
 namespace omm
@@ -26,8 +25,8 @@ private:
   void update_selection();
   void apply();
   void update_base_selection();
-  bool is_similar(const Path::iterator& a, const Path::iterator& b) const;
-  std::set<Path::iterator> m_base_selection;
+  bool is_similar(const PathIterator& a, const PathIterator& b) const;
+  std::set<PathIterator> m_base_selection;
   void end() override;
   void start() override;
   void update_property_appearance();

@@ -1,10 +1,11 @@
 #include "commands/subdividepathcommand.h"
+#include "objects/path.h"
 
 namespace
 {
 using namespace omm;
 
-auto compute_cuts(const Path::Segment& segment, bool is_closed)
+auto compute_cuts(const Segment& segment, bool is_closed)
 {
   std::list<Geom::PathTime> cuts;
   const auto off = is_closed ? 0 : 1;

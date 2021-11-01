@@ -6,6 +6,7 @@
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/scene.h"
 #include <QEvent>
 #include <QMouseEvent>
@@ -90,7 +91,7 @@ Property& PropertyArea::property(const QModelIndex& index) const
 void PropertyArea::begin(const QModelIndex& index, QMouseEvent&)
 {
   is_active = true;
-  Scene& scene = Application::instance().scene;
+  Scene& scene = *Application::instance().scene;
 
   // unfortunately, commands cannot be copied. Creating it twice should be fine...
   m_command_on_hold = make_command(index, true);
@@ -108,7 +109,7 @@ void PropertyArea::perform(const QModelIndex& index, QMouseEvent&)
 {
   auto command = make_command(index, false);
   if (command != nullptr) {
-    Scene& scene = Application::instance().scene;
+    Scene& scene = *Application::instance().scene;
     // if the macro has not yet been started, start it now.
     if (m_macro == nullptr) {
       // move the command that was issued on click inside the macro.

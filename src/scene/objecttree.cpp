@@ -5,9 +5,12 @@
 #include "main/application.h"
 #include "mainwindow/iconprovider.h"
 #include "properties/referenceproperty.h"
+#include "properties/stringproperty.h"
 #include "propertyownermimedata.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 #include "tags/styletag.h"
 
 namespace

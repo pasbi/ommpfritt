@@ -82,8 +82,7 @@ protected:
       using command_t = VectorPropertiesCommand<VectorPropertyT, dim>;
       auto command = std::make_unique<command_t>(properties, value);
 
-      std::unique_ptr<Macro> macro;
-      this->scene.submit(std::move(command));
+      this->submit_command(std::move(command));
     }
   }
 

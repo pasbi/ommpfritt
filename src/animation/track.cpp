@@ -3,6 +3,7 @@
 #include "logging.h"
 #include "properties/property.h"
 #include "scene/scene.h"
+#include "animation/knot.h"
 
 namespace
 {
@@ -109,7 +110,7 @@ void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& point
   }
 }
 
-std::unique_ptr<Track::Knot> Track::remove_knot(int frame)
+std::unique_ptr<Knot> Track::remove_knot(int frame)
 {
   assert(m_knots.find(frame) != m_knots.end());
   return std::move(m_knots.extract(frame).mapped());
@@ -177,7 +178,7 @@ variant_type Track::interpolate(double frame) const
   }
 }
 
-Track::Knot& Track::knot(int frame) const
+Knot& Track::knot(int frame) const
 {
   return *m_knots.at(frame);
 }
@@ -237,84 +238,6 @@ void Track::set_interpolation(Track::Interpolation interpolation)
 Track::Interpolation Track::interpolation() const
 {
   return m_interpolation;
-}
-
-Track::Knot::Knot(AbstractDeserializer& deserializer, const Pointer& pointer, const QString& type)
-{
-  if (type == "Reference") {
-    m_reference_id = deserializer.get<std::size_t>(pointer);
-    deserializer.register_reference_polisher(*this);
-    value = nullptr;
-  } else {
-    value = deserializer.get(pointer, type);
-    polish();
-  }
-}
-
-Track::Knot::Knot(const variant_type& value) : value(value)
-{
-  polish();
-}
-
-void Track::Knot::swap(Track::Knot& other)
-{
-  std::swap(other.value, value);
-  std::swap(other.left_offset, left_offset);
-  std::swap(other.right_offset, right_offset);
-  std::swap(other.m_reference_id, m_reference_id);
-}
-
-std::unique_ptr<Track::Knot> Track::Knot::clone() const
-{
-  return std::unique_ptr<Track::Knot>(new Track::Knot(*this));
-}
-
-void Track::Knot::update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
-{
-  if (m_reference_id == 0) {
-    value = nullptr;
-  } else {
-    value = map.at(m_reference_id);
-  }
-}
-
-bool Track::Knot::operator==(const Track::Knot& other) const
-{
-  return value == other.value && left_offset == other.left_offset
-         && right_offset == other.right_offset;
-}
-
-bool Track::Knot::operator!=(const Track::Knot& other) const
-{
-  return !(*this == other);
-}
-
-variant_type& Track::Knot::offset(Track::Knot::Side side)
-{
-  switch (side) {
-  case Side::Left:
-    return left_offset;
-  case Side::Right:
-    return right_offset;
-  default:
-    Q_UNREACHABLE();
-    return right_offset;
-  }
-}
-
-void Track::Knot::polish()
-{
-  std::visit(
-      [this](auto&& vv) {
-        using T = std::decay_t<decltype(vv)>;
-        if constexpr (n_channels<T>() > 0) {
-          left_offset = null_value<T>();
-          right_offset = null_value<T>();
-        } else {
-          // don't care about non numeric types.
-        }
-      },
-      value);
 }
 
 }  // namespace omm

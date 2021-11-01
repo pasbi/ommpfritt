@@ -2,6 +2,7 @@
 
 #include "commands/addcommand.h"
 #include "commands/removecommand.h"
+#include "keybindings/keybindings.h"
 #include "main/application.h"
 #include "managers/stylemanager/stylelistview.h"
 #include "renderers/style.h"
@@ -41,7 +42,7 @@ bool StyleManager::perform_action(const QString& action_name)
 void StyleManager::contextMenuEvent(QContextMenuEvent* event)
 {
   Application& app = Application::instance();
-  KeyBindings& kb = app.key_bindings;
+  KeyBindings& kb = *app.key_bindings;
   const bool style_selected = !item_view().selected_items().empty();
 
   const auto e_os = [style_selected](QAction* action) {

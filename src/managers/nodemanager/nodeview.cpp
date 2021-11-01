@@ -10,11 +10,13 @@
 #include "nodesystem/nodes/fragmentnode.h"
 #include "nodesystem/nodes/referencenode.h"
 #include "preferences/preferences.h"
+#include "preferences/uicolors.h"
 #include "properties/referenceproperty.h"
 #include "propertywidgets/propertywidget.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/propertyownermimedata.h"
+#include "scene/scene.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QGraphicsItem>

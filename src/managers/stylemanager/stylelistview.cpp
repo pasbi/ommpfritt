@@ -5,9 +5,10 @@
 #include "scene/stylelist.h"
 #include <QLineEdit>
 #include <QMouseEvent>
-#include <QStyledItemDelegate>
-
+#include <QPainter>
+#include <QPicture>
 #include <QResizeEvent>
+#include <QStyledItemDelegate>
 
 namespace
 {

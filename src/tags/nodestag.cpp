@@ -8,6 +8,7 @@
 #include "nodesystem/port.h"
 #include "nodesystem/propertyport.h"
 #include "properties/triggerproperty.h"
+#include "objects/object.h"
 
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
@@ -115,7 +116,7 @@ void NodesTag::force_evaluate()
   populate_locals<PortType::Output>(locals, model);
 
   const auto code = model.compiler().code();
-  if (Application::instance().python_engine.exec(code, locals, this)) {
+  if (Application::instance().python_engine->exec(code, locals, this)) {
     for (InputPort* port : model.ports<InputPort>()) {
       if (port->node.type() == SpyNode::TYPE) {
         auto& spy_node = dynamic_cast<SpyNode&>(port->node);

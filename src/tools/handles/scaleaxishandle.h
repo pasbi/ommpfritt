@@ -1,9 +1,6 @@
 #pragma once
 
-#include "geometry/util.h"
 #include "geometry/vec2.h"
-#include "preferences/uicolors.h"
-#include "renderers/painter.h"
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
 #include <QMouseEvent>

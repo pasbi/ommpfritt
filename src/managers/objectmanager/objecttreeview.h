@@ -2,16 +2,17 @@
 
 #include "common.h"
 #include "managers/manageritemview.h"
-#include "managers/objectmanager/objectquickaccessdelegate.h"
-#include "managers/objectmanager/objecttreeselectionmodel.h"
-#include "managers/objectmanager/tagsitemdelegate.h"
 #include "scene/objecttree.h"
 #include <QTreeView>
 
 namespace omm
 {
+class AbstractPropertyOwner;
 class ObjectDelegate;
 class Object;
+class ObjectTreeSelectionModel;
+class ObjectQuickAccessDelegate;
+class TagsItemDelegate;
 
 class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTree>
 {
@@ -19,6 +20,7 @@ class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTree>
 public:
   using model_type = ObjectTree;
   explicit ObjectTreeView(ObjectTree& model);
+  ~ObjectTreeView() override;
   [[nodiscard]] std::set<AbstractPropertyOwner*> selected_items() const override;
   [[nodiscard]] std::set<AbstractPropertyOwner*> selected_objects() const;
   [[nodiscard]] std::set<AbstractPropertyOwner*> selected_tags() const;

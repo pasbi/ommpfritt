@@ -117,11 +117,11 @@ std::size_t Path::count() const
   });
 }
 
-Path::iterator Path::end()
+PathIterator Path::end()
 {
   return ::omm::end<Path&>(*this);
 }
-Path::iterator Path::begin()
+PathIterator Path::begin()
 {
   return ::omm::begin<Path&>(*this);
 }
@@ -141,25 +141,25 @@ Geom::PathVector Path::paths() const
 }
 
 template<typename PathRef>
-Path::Iterator<PathRef>::Iterator(PathRef path, std::size_t segment, std::size_t point)
+PathIteratorBase<PathRef>::PathIteratorBase(PathRef path, std::size_t segment, std::size_t point)
     : path(&path), segment(segment), point(point)
 {
 }
 
 template<typename PathRef>
-bool Path::Iterator<PathRef>::operator<(const Path::Iterator<PathRef>& other) const
+bool PathIteratorBase<PathRef>::operator<(const PathIteratorBase<PathRef>& other) const
 {
   return iterator_to_tuple(*this) < iterator_to_tuple(other);
 }
 
 template<typename PathRef>
-bool Path::Iterator<PathRef>::operator>(const Path::Iterator<PathRef>& other) const
+bool PathIteratorBase<PathRef>::operator>(const PathIteratorBase<PathRef>& other) const
 {
   return iterator_to_tuple(*this) > iterator_to_tuple(other);
 }
 
 template<typename PathRef>
-bool Path::Iterator<PathRef>::operator==(const Path::Iterator<PathRef>& other) const
+bool PathIteratorBase<PathRef>::operator==(const PathIteratorBase<PathRef>& other) const
 {
   if (path != other.path) {
     return false;
@@ -172,29 +172,29 @@ bool Path::Iterator<PathRef>::operator==(const Path::Iterator<PathRef>& other) c
 }
 
 template<typename PathRef>
-bool Path::Iterator<PathRef>::operator!=(const Path::Iterator<PathRef>& other) const
+bool PathIteratorBase<PathRef>::operator!=(const PathIteratorBase<PathRef>& other) const
 {
   return !(*this == other);
 }
 
-template<typename PathRef> bool Path::Iterator<PathRef>::is_end() const
+template<typename PathRef> bool PathIteratorBase<PathRef>::is_end() const
 {
   return segment >= path->segments.size();
 }
 
 template<typename PathRef>
-typename Path::Iterator<PathRef>::reference Path::Iterator<PathRef>::operator*() const
+typename PathIteratorBase<PathRef>::reference PathIteratorBase<PathRef>::operator*() const
 {
   return path->segments[segment][point];
 }
 
 template<typename PathRef>
-typename Path::Iterator<PathRef>::pointer Path::Iterator<PathRef>::operator->() const
+typename PathIteratorBase<PathRef>::pointer PathIteratorBase<PathRef>::operator->() const
 {
   return &**this;
 }
 
-template<typename PathRef> Path::Iterator<PathRef>& Path::Iterator<PathRef>::operator++()
+template<typename PathRef> PathIteratorBase<PathRef>& PathIteratorBase<PathRef>::operator++()
 {
   point += 1;
   if (path->segments[segment].size() == point) {
@@ -204,7 +204,7 @@ template<typename PathRef> Path::Iterator<PathRef>& Path::Iterator<PathRef>::ope
   return *this;
 }
 
-Point Path::smoothen_point(const Path::Segment& segment, bool is_closed, std::size_t i)
+Point Path::smoothen_point(const Segment& segment, bool is_closed, std::size_t i)
 {
   const std::size_t n = segment.size();
   Vec2f left;
@@ -231,7 +231,7 @@ Flag Path::flags() const
   return Flag::None;
 }
 
-template struct Path::Iterator<Path&>;
-template struct Path::Iterator<const Path&>;
+template struct PathIteratorBase<Path&>;
+template struct PathIteratorBase<const Path&>;
 
 }  // namespace omm

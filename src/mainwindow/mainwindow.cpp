@@ -14,7 +14,9 @@
 #include <functional>
 
 #include "common.h"
+#include "config.h"
 #include "keybindings/commandinterface.h"
+#include "keybindings/keybindings.h"
 #include "logging.h"
 #include "main/application.h"
 #include "mainwindow/gpl3.h"
@@ -25,11 +27,11 @@
 #include "managers/timeline/timeline.h"
 #include "scene/history/historymodel.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 #include "tags/tag.h"
 #include "tools/tool.h"
 #include "ui_aboutdialog.h"
 #include "widgets/colorwidget/colorwidget.h"
-#include "config.h"
 
 namespace
 {
@@ -170,10 +172,10 @@ std::vector<QString> MainWindow::main_menu_entries()
 
 void MainWindow::update_window_title()
 {
-  QString filename = m_app.scene.filename();
+  QString filename = m_app.scene->filename();
   static const QString clean_indicator = tr("");
   static const QString dirty_indicator = tr("*");
-  QString indicator = m_app.scene.has_pending_changes() ? dirty_indicator : clean_indicator;
+  QString indicator = m_app.scene->has_pending_changes() ? dirty_indicator : clean_indicator;
   if (filename.isEmpty()) {
     filename = tr("unnamed");
     indicator = clean_indicator;  // never show dirty indicator if no filename is set.
@@ -186,7 +188,7 @@ void MainWindow::update_window_title()
 MainWindow::MainWindow(Application& app) : m_app(app)
 {
   setDockNestingEnabled(true);
-  auto viewport = std::make_unique<Viewport>(app.scene);
+  auto viewport = std::make_unique<Viewport>(*app.scene);
   m_viewport = viewport.get();
   setCentralWidget(viewport.release());
 
@@ -198,7 +200,7 @@ MainWindow::MainWindow(Application& app) : m_app(app)
   }
 
   setMenuBar(std::make_unique<QMenuBar>().release());
-  for (auto&& menu : m_app.key_bindings.make_menus(m_app, main_menu_entries())) {
+  for (auto&& menu : m_app.key_bindings->make_menus(m_app, main_menu_entries())) {
     menuBar()->addMenu(menu.release());
   }
   menuBar()->addMenu(make_about_menu().release());
@@ -206,7 +208,7 @@ MainWindow::MainWindow(Application& app) : m_app(app)
 
   connect(&app.mail_box(), &MailBox::filename_changed, this, &MainWindow::update_window_title);
   connect(&app.mail_box(), &MailBox::filename_changed, [&app, this] {
-    if (QString fn = app.scene.filename(); !fn.isEmpty()) {
+    if (QString fn = app.scene->filename(); !fn.isEmpty()) {
       QSettings settings;
       auto fns = settings.value(RECENT_SCENES_SETTINGS_KEY, QStringList()).toStringList();
       fn = QDir::cleanPath(QDir::current().absoluteFilePath(fn));
@@ -391,7 +393,7 @@ void MainWindow::load_layout(QSettings& settings)
       const QString type = settings.value(MANAGER_TYPE_SETTINGS_KEY).toString();
       const QString name = settings.value(MANAGER_NAME_SETTINGS_KEY).toString();
 
-      auto manager = Manager::make(type, m_app.scene);
+      auto manager = Manager::make(type, *m_app.scene);
       assert(manager);
       manager->setObjectName(name);
 
@@ -452,7 +454,7 @@ void MainWindow::update_recent_scenes_menu()
 {
   auto* recent_scene_menu = find_menu(menuBar(), "open recent");
   recent_scene_menu->clear();
-  Scene& scene = Application::instance().scene;
+  Scene& scene = *Application::instance().scene;
   recent_scene_menu->setToolTipsVisible(true);
   assert(recent_scene_menu != nullptr);
   std::size_t count = 0;

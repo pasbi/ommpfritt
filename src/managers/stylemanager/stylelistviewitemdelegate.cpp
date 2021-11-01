@@ -1,5 +1,6 @@
 #include "managers/stylemanager/stylelistviewitemdelegate.h"
 #include "managers/stylemanager/stylelistview.h"
+#include <QPainter>
 
 namespace omm
 {

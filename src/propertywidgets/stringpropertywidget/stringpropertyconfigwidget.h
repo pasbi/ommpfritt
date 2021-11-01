@@ -5,6 +5,7 @@
 
 namespace omm
 {
+
 class StringPropertyConfigWidget : public PropertyConfigWidget<StringProperty>
 {
 public:

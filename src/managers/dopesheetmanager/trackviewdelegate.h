@@ -1,6 +1,5 @@
 #pragma once
 
-#include "managers/timeline/timelinecanvas.h"
 #include <QAbstractItemDelegate>
 #include <set>
 
@@ -9,6 +8,7 @@ namespace omm
 class Track;
 class DopeSheetView;
 class Property;
+class TimelineCanvas;
 
 class TrackViewDelegate : public QAbstractItemDelegate
 {

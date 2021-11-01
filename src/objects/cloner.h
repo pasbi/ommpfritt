@@ -1,6 +1,5 @@
 #pragma once
 
-#include "objects/instance.h"
 #include "objects/object.h"
 #include "properties/propertygroups/pathproperties.h"
 #include <Qt>
@@ -24,7 +23,7 @@ public:
 
   void draw_object(Painter& renderer,
                    const Style& style,
-                   const Painter::Options& options) const override;
+                   const PainterOptions& options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;

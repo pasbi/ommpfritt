@@ -1,7 +1,5 @@
 #pragma once
 
-#include "commands/command.h"
-#include "scene/history/macro.h"
 #include <QAbstractItemDelegate>
 #include <memory>
 

@@ -5,7 +5,8 @@
 
 namespace omm
 {
-struct PolarCoordinates {
+struct PolarCoordinates
+{
   explicit PolarCoordinates(double argument, double magnitude);
   explicit PolarCoordinates(const Vec2f& cartesian);
   explicit PolarCoordinates();

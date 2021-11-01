@@ -1,16 +1,13 @@
 #pragma once
 
-#include "aspects/propertyowner.h"
-#include "properties/referenceproperty.h"
 #include "propertywidgets/multivalueedit.h"
-#include "tags/tag.h"
+#include "properties/propertyfilter.h"
 #include <QComboBox>
-
-class QMimeData;
 
 namespace omm
 {
 class AbstractPropertyOwner;
+class Scene;
 
 class ReferenceLineEdit
     : public QComboBox

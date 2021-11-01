@@ -1,6 +1,6 @@
 #include "propertywidgets/referencepropertywidget/referencepropertyconfigwidget.h"
-
 #include "enumnames.h"
+#include "properties/referenceproperty.h"
 
 #include <QCheckBox>
 #include <QLabel>

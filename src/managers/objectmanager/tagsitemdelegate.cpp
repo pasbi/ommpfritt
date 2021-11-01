@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <cmath>
 
+#include "preferences/uicolors.h"
 #include "mainwindow/iconprovider.h"
 #include "main/application.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"

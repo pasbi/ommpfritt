@@ -3,10 +3,13 @@
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
+#include "preferences/uicolors.h"
 #include "properties/boolproperty.h"
 #include "properties/floatvectorproperty.h"
 #include "properties/triggerproperty.h"
+#include "renderers/painter.h"
 #include "renderers/style.h"
+#include "scene/scene.h"
 #include <QObject>
 
 namespace omm
@@ -42,7 +45,7 @@ QString View::type() const
   return TYPE;
 }
 
-void View::draw_object(Painter&, const Style&, const Painter::Options&) const
+void View::draw_object(Painter&, const Style&, const PainterOptions&) const
 {
   // do nothing
 }

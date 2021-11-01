@@ -1,10 +1,13 @@
 #pragma once
 
-#include "aspects/propertyowner.h"
+#include "common.h"
 #include <QMimeData>
+#include <vector>
 
 namespace omm
 {
+
+class AbstractPropertyOwner;
 class Tag;
 class Object;
 class Style;

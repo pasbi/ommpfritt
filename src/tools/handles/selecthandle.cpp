@@ -9,12 +9,14 @@
 #include "scene/scene.h"
 #include "tools/selectpointstool.h"
 #include "tools/selecttool.h"
+#include "tools/tool.h"
 #include <QGuiApplication>
 #include <QMouseEvent>
 
 namespace omm
 {
-AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool)
+AbstractSelectHandle::AbstractSelectHandle(Tool& tool)
+  : Handle(tool)
 {
 }
 
@@ -118,11 +120,12 @@ bool ObjectSelectHandle::is_selected() const
   return ::contains(m_scene.item_selection<Object>(), &m_object);
 }
 
-PointSelectHandle::PointSelectHandle(Tool& tool, const Path::iterator& iterator)
-    : AbstractSelectHandle(tool), m_iterator(iterator),
-      m_left_tangent_handle(
-          std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left)),
-      m_right_tangent_handle(
+PointSelectHandle::PointSelectHandle(Tool& tool, const PathIterator& iterator)
+    : AbstractSelectHandle(tool)
+    , m_iterator(iterator)
+    , m_left_tangent_handle(
+          std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left))
+    , m_right_tangent_handle(
           std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Right))
 {
 }
@@ -224,7 +227,7 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
     }
   }
 
-  std::map<Path::iterator, Point> map;
+  std::map<PathIterator, Point> map;
   map[m_iterator] = new_point;
   tool.scene()->submit<ModifyPointsCommand>(map);
 }

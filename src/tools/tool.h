@@ -2,6 +2,7 @@
 
 #include "aspects/propertyowner.h"
 #include "external/json_fwd.hpp"
+#include "geometry/objecttransformation.h"
 #include "tools/handles/handle.h"
 #include <QIcon>
 #include <QMenu>

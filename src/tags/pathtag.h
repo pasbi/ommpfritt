@@ -1,17 +1,20 @@
 #pragma once
 
-#include "properties/propertygroups/pathproperties.h"
 #include "tags/tag.h"
 #include <Qt>
+#include <memory>
 
 namespace omm
 {
+
+class PathProperties;
+
 class PathTag : public Tag
 {
 public:
   explicit PathTag(Object& owner);
   explicit PathTag(const PathTag& other);
-  ~PathTag() override = default;
+  ~PathTag() override;
   PathTag(PathTag&&) = delete;
   PathTag& operator=(PathTag&&) = delete;
   PathTag& operator=(const PathTag&) = delete;
@@ -26,7 +29,7 @@ public:
   Flag flags() const override;
   void on_property_value_changed(Property* property) override;
 
-  const PathProperties path_properties;
+  const std::unique_ptr<PathProperties> path_properties;
 };
 
 }  // namespace omm

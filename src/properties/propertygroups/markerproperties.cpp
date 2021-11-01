@@ -4,6 +4,7 @@
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
+#include "renderers/painter.h"
 
 namespace omm
 {

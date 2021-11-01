@@ -9,10 +9,13 @@
 #include "tools/handles/rotatehandle.h"
 #include "tools/handles/scaleaxishandle.h"
 #include "tools/handles/scalebandhandle.h"
+#include "tools/transformobjectshelper.h"
 
 namespace omm
 {
-SelectObjectsTool::SelectObjectsTool(Scene& scene) : AbstractSelectTool(scene)
+SelectObjectsTool::SelectObjectsTool(Scene& scene)
+  : AbstractSelectTool(scene)
+  , m_transform_objects_helper(std::make_unique<TransformObjectsHelper>())
 {
   create_property<OptionProperty>(TRANSFORMATION_MODE_KEY, 0)
       .set_options({QObject::tr("Object"), QObject::tr("Axis")})
@@ -20,6 +23,8 @@ SelectObjectsTool::SelectObjectsTool(Scene& scene) : AbstractSelectTool(scene)
       .set_category(QObject::tr("tool"))
       .set_animatable(false);
 }
+
+SelectObjectsTool::~SelectObjectsTool() = default;
 
 QString SelectObjectsTool::type() const
 {
@@ -34,7 +39,7 @@ void SelectObjectsTool::transform_objects(ObjectTransformation t)
 
   using TransformationMode = ObjectsTransformationCommand::TransformationMode;
   const auto mode = property(TRANSFORMATION_MODE_KEY)->value<TransformationMode>();
-  scene()->submit(m_transform_objects_helper.make_command(premul, mode));
+  scene()->submit(m_transform_objects_helper->make_command(premul, mode));
 }
 
 void SelectObjectsTool::reset()
@@ -64,7 +69,7 @@ void SelectObjectsTool::reset()
 bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
   if (AbstractSelectTool::mouse_press(pos, event)) {
-    m_transform_objects_helper.update(scene()->item_selection<Object>());
+    m_transform_objects_helper->update(scene()->item_selection<Object>());
     return true;
   } else {
     scene()->set_selection({});
@@ -102,36 +107,6 @@ Vec2f SelectObjectsTool::selection_center() const
     sum += o->global_transformation(Space::Viewport).translation();
   }
   return sum / static_cast<double>(objects.size());
-}
-
-TransformObjectsHelper::TransformObjectsHelper()
-{
-  update();
-}
-
-std::unique_ptr<ObjectsTransformationCommand>
-TransformObjectsHelper::make_command(const Matrix& t, TransformationMode mode) const
-{
-  ObjectsTransformationCommand::Map map;
-  for (auto&& [object, transformation] : m_initial_transformations) {
-    map.insert(std::pair(object, ObjectTransformation(t * transformation.to_mat())));
-  }
-  return std::make_unique<ObjectsTransformationCommand>(map, mode);
-}
-
-void TransformObjectsHelper::update(const std::set<Object*>& objects)
-{
-  m_objects = objects;
-  update();
-}
-
-void TransformObjectsHelper::update()
-{
-  m_initial_transformations.clear();
-  for (auto&& o : m_objects) {
-    m_initial_transformations.insert(std::pair(o, o->global_transformation(Space::Scene)));
-  }
-  Q_EMIT initial_transformations_changed();
 }
 
 }  // namespace omm

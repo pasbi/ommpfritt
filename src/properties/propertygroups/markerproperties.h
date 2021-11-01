@@ -1,10 +1,14 @@
 #pragma once
 
 #include "properties/propertygroups/propertygroup.h"
-#include "renderers/painter.h"
+#include <vector>
 
 namespace omm
 {
+
+class Painter;
+class Point;
+
 class MarkerProperties : public PropertyGroup
 {
 public:

@@ -9,16 +9,20 @@
 #include "external/json_fwd.hpp"
 #include "geometry/objecttransformation.h"
 #include "geometry/point.h"
-#include "renderers/painter.h"
 #include "scene/taglist.h"
+#include "objects/segment.h"
 #include <memory>
 #include <vector>
+#include <QPainterPath>
 
 namespace omm
 {
+
 class ObjectTree;
-class Scene;
+class Painter;
 class Property;
+class Scene;
+struct PainterOptions;
 
 class Object
     : public PropertyOwner<Kind::Object>
@@ -54,8 +58,8 @@ public:
   virtual void draw_handles(Painter& renderer) const;
 
   virtual void
-  draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const;
-  void draw_recursive(Painter& renderer, Painter::Options options) const;
+  draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const;
+  void draw_recursive(Painter& renderer, PainterOptions options) const;
 
   /**
    * @brief bounding_box returns the bounding box in world coordinates
@@ -112,8 +116,6 @@ public:
   } geom_paths;
 
   friend struct CachedQPainterPathGetter;
-
-  using Segment = std::vector<Point>;
 
   static Segment path_to_segment(const Geom::Path& path, bool is_closed);
   static Geom::Path segment_to_path(Segment segment,

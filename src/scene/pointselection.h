@@ -1,12 +1,14 @@
 #pragma once
 
 #include "common.h"
-#include "geometry/point.h"
+#include "geometry/vec2.h"
 #include <set>
 
 namespace omm
 {
+
 class Path;
+class Point;
 class Scene;
 
 class PointSelection

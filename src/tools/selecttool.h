@@ -1,6 +1,5 @@
 #pragma once
 
-#include "objects/object.h"
 #include "tools/handles/selecthandle.h"
 #include "tools/tool.h"
 #include <Qt>

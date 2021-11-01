@@ -1,11 +1,11 @@
 #pragma once
 
-#include "color/color.h"
 #include "external/json.hpp"
 #include "serializers/abstractserializer.h"
 
 namespace omm
 {
+
 class JSONSerializer : public AbstractSerializer
 {
 public:

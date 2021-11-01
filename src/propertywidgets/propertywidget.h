@@ -1,9 +1,9 @@
 #pragma once
+
 #include "commands/propertycommand.h"
 #include "common.h"
 #include "properties/typedproperty.h"
 #include "scene/history/macro.h"
-#include "scene/scene.h"
 #include <QBoxLayout>
 #include <QLabel>
 #include <QTimer>
@@ -73,6 +73,7 @@ protected:
   virtual void update_configuration()
   {
   }
+  void submit_command(std::unique_ptr<Command> command);
 
 private:
   std::set<Property*> m_properties;
@@ -96,8 +97,7 @@ protected:
   {
     const auto is_noop = [&value](const Property* p) { return p->value<value_type>() == value; };
     if (!std::all_of(m_properties.begin(), m_properties.end(), is_noop)) {
-      auto command = std::make_unique<PropertiesCommand<property_type>>(m_properties, value);
-      scene.submit(std::move(command));
+      submit_command(std::make_unique<PropertiesCommand<property_type>>(m_properties, value));
     }
   }
 

@@ -4,6 +4,7 @@
 #include "objects/empty.h"
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
+#include "renderers/painteroptions.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tags/scripttag.h"
@@ -54,7 +55,7 @@ void Instance::polish()
 
 void Instance::draw_object(Painter& renderer,
                            [[maybe_unused]] const Style& style,
-                           const Painter::Options& options) const
+                           const PainterOptions& options) const
 {
   auto cycle_guard = scene()->make_cycle_guard(this);
   if (!cycle_guard->inside_cycle() && is_active()) {

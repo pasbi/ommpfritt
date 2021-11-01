@@ -7,20 +7,19 @@
 #include "mainwindow/viewport/headupdisplay.h"
 #include "mainwindow/viewport/mousepancontroller.h"
 #include "preferences/preferences.h"
-#include "renderers/painter.h"
-#include "scene/scene.h"
 #include <QWidget>
 
 namespace omm
 {
 class Scene;
+class Painter;
 
 class Viewport : public QWidget
 {
   Q_OBJECT
 public:
   Viewport(Scene& scene);
-  ~Viewport() override = default;
+  ~Viewport() override;
   Viewport(Viewport&&) = delete;
   Viewport(const Viewport&) = delete;
   Viewport& operator=(Viewport&&) = delete;
@@ -52,10 +51,9 @@ Q_SIGNALS:
 
 private:
   Scene& m_scene;
-  std::unique_ptr<QTimer> m_timer;
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
-  Painter m_renderer;
+  std::unique_ptr<Painter> m_renderer;
   Vec2f m_last_cursor_pos;
 
   QTimer m_fps_limiter;

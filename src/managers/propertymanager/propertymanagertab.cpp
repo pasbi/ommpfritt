@@ -1,6 +1,7 @@
 #include "managers/propertymanager/propertymanagertab.h"
 #include "properties/typedproperty.h"
 #include "propertywidgets/propertywidget.h"
+#include "scene/scene.h"
 #include "widgets/animationbutton.h"
 #include <QLabel>
 #include <QPushButton>

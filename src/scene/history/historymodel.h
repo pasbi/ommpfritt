@@ -1,12 +1,16 @@
 #pragma once
 
-#include "commands/command.h"
-#include "scene/history/macro.h"
 #include <QAbstractListModel>
+#include <QUndoStack>
 #include <memory>
 
 namespace omm
 {
+
+class Command;
+class Macro;
+class Scene;
+
 class HistoryModel : public QAbstractListModel
 {
   Q_OBJECT

@@ -167,8 +167,8 @@ public:
 public:
   void insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track> track);
   std::unique_ptr<Track> extract_track(Property& property);
-  std::unique_ptr<Track::Knot> remove_knot(Track& track, int frame);
-  void insert_knot(Track& track, int frame, std::unique_ptr<Track::Knot> knot);
+  std::unique_ptr<Knot> remove_knot(Track& track, int frame);
+  void insert_knot(Track& track, int frame, std::unique_ptr<Knot> knot);
   void move_knot(Track& track, int old_frame, int new_frame);
 
   static constexpr int DEFAULT_START_FRAME = 1;

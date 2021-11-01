@@ -1,12 +1,16 @@
 #pragma once
 
-#include "preferences/preferencestreeitem.h"
 #include <QAbstractItemModel>
 #include <map>
+#include <memory>
 #include <string>
 
 namespace omm
 {
+
+class PreferencesTreeGroupItem;
+class PreferencesTreeValueItem;
+
 /**
  * @brief The SettingsTree class represents an abstract store for settings.
  * A settings is identified by its group and key.

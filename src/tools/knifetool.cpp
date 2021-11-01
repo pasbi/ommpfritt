@@ -3,7 +3,10 @@
 #include "commands/modifypointscommand.h"
 #include "common.h"
 #include "objects/path.h"
+#include "preferences/uicolors.h"
+#include "renderers/painter.h"
 #include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "scene/scene.h"
 #include <2geom/line.h>
 #include <2geom/path-intersection.h>

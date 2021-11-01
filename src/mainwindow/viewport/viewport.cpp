@@ -4,14 +4,18 @@
 #include "main/application.h"
 #include "mainwindow/viewport/anchorhud.h"
 
-#include <QMouseEvent>
-#include <QPainter>
-#include <QTimer>
-
+#include "preferences/uicolors.h"
 #include "python/pythonengine.h"
+#include "renderers/painter.h"
+#include "renderers/painteroptions.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/toolbox.h"
+#include "tools/tool.h"
+
+#include <QMouseEvent>
+#include <QPainter>
+#include <QTimer>
 
 namespace
 {
@@ -53,9 +57,9 @@ template<typename... VecTs> auto max(const VecTs&... vecs)
 namespace omm
 {
 Viewport::Viewport(Scene& scene)
-    : m_scene(scene), m_timer(std::make_unique<QTimer>()),
-      m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); }),
-      m_renderer(scene, Painter::Category::Handles | Painter::Category::Objects)
+    : m_scene(scene)
+    , m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); })
+    , m_renderer(std::make_unique<Painter>(scene, Painter::Category::Handles | Painter::Category::Objects))
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setFocusPolicy(Qt::StrongFocus);
@@ -64,7 +68,7 @@ Viewport::Viewport(Scene& scene)
   connect(&scene.mail_box(), &MailBox::selection_changed, this, &Viewport::update);
 
   connect(&scene.mail_box(), &MailBox::scene_appearance_changed, this, &Viewport::update);
-  connect(&m_fps_limiter, &QTimer::timeout, [this]() {
+  connect(&m_fps_limiter, &QTimer::timeout, this, [this]() {
     m_fps_limiter.stop();
     if (m_update_later) {
       m_update_later = false;
@@ -78,6 +82,8 @@ Viewport::Viewport(Scene& scene)
     update_cursor();
   });
 }
+
+Viewport::~Viewport() = default;
 
 void Viewport::draw_grid(QPainter& painter,
                          const std::pair<Vec2f, Vec2f>& bounds,
@@ -136,7 +142,7 @@ void Viewport::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
   painter.save();
-  m_renderer.painter = &painter;
+  m_renderer->painter = &painter;
 
   painter.setRenderHint(QPainter::Antialiasing);
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
@@ -151,13 +157,13 @@ void Viewport::paintEvent(QPaintEvent*)
 
   m_scene.object_tree().root().set_transformation(viewport_transformation);
 
-  Painter::Options options(*this);
-  m_renderer.render(options);
+  PainterOptions options(*this);
+  m_renderer->render(options);
 
   auto& tool = m_scene.tool_box().active_tool();
   tool.viewport_transformation = viewport_transformation;
-  tool.draw(m_renderer);
-  m_renderer.painter = nullptr;
+  tool.draw(*m_renderer);
+  m_renderer->painter = nullptr;
   painter.restore();
 
   painter.save();

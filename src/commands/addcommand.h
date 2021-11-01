@@ -1,8 +1,6 @@
 #pragma once
 
 #include "commands/command.h"
-#include "objects/object.h"
-#include "properties/stringproperty.h"
 #include "renderers/style.h"
 #include "scene/contextes.h"
 #include <memory>

@@ -1,14 +1,9 @@
 #pragma once
 
+#include "common.h"
 #include "keybindings/commandinterface.h"
-#include "keybindings/keybindings.h"
-#include "main/options.h"
-#include "managers/manager.h"
-#include "preferences/preferences.h"
-#include "preferences/uicolors.h"
-#include "python/pythonengine.h"
-#include "scene/scene.h"
 #include "translator.h"
+#include <QCoreApplication>
 #include <QKeySequence>
 #include <QObject>
 #include <QTimer>
@@ -22,11 +17,18 @@ class QAbstractButton;
 
 namespace omm
 {
+class KeyBindings;
 class MainWindow;
+class MailBox;
 class Manager;
-class ToolBar;
-class Options;
 class ModeSelector;
+class Object;
+class Options;
+class Preferences;
+class PythonEngine;
+class Scene;
+class ToolBar;
+class UiColors;
 
 class Application
     : public QObject
@@ -63,14 +65,14 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Application");
   QString type() const override;
 
-  KeyBindings key_bindings;
-  UiColors ui_colors;
-  Preferences preferences;
+  std::unique_ptr<KeyBindings> key_bindings;
+  std::unique_ptr<UiColors> ui_colors;
+  std::unique_ptr<Preferences> preferences;
   bool handle_mode(const QString& action_name);
   const std::map<QString, std::unique_ptr<ModeSelector>> mode_selectors;
 
-  PythonEngine python_engine;
-  Scene scene;
+  std::unique_ptr<PythonEngine> python_engine;
+  std::unique_ptr<Scene> scene;
   MailBox& mail_box() const;
   MainWindow* main_window() const;
 

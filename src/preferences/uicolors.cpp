@@ -1,10 +1,12 @@
 #include "preferences/uicolors.h"
 #include "color/color.h"
 #include "logging.h"
+#include "preferences/preferencestreeitem.h"
 #include "main/application.h"
 #include <QApplication>
 #include <QColor>
 #include <QCoreApplication>
+#include <QPainter>
 #include <QPalette>
 #include <QProxyStyle>
 #include <QSettings>
@@ -210,7 +212,7 @@ void UiColors::draw_background(QPainter& painter, const QRectF& rect)
 
 QColor ui_color(const QPalette::ColorGroup& status, const QString& group, const QString& name)
 {
-  return Application::instance().ui_colors.color(status, group, name).to_qcolor();
+  return Application::instance().ui_colors->color(status, group, name).to_qcolor();
 }
 
 QColor ui_color(const HandleStatus status, const QString& group, const QString& name)

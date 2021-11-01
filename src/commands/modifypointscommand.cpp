@@ -1,10 +1,11 @@
 #include "commands/modifypointscommand.h"
 #include "common.h"
 #include "scene/scene.h"
+#include "objects/path.h"
 
 namespace omm
 {
-ModifyPointsCommand ::ModifyPointsCommand(const std::map<Path::iterator, Point>& points)
+ModifyPointsCommand ::ModifyPointsCommand(const std::map<PathIterator, Point>& points)
     : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
 {
   assert(!points.empty());
@@ -90,7 +91,7 @@ void AbstractPointsCommand::remove()
     } else {
       auto begin = segment.begin() + range.begin.point;
       auto end = begin + range.length;
-      Path::Segment extracted_segment;
+      Segment extracted_segment;
       extracted_segment.reserve(range.length);
       std::copy(begin, end, std::back_inserter(extracted_segment));
       segment.erase(begin, end);

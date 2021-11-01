@@ -27,10 +27,10 @@ bool PanZoomController::press(const QMouseEvent& event)
   m_start_scene_pos = m_view.mapToScene(m_start_widget_pos);
   m_last_pos = event.pos();
   const auto& preferences = Application::instance().preferences;
-  if (preferences.match("shift viewport", event, true)) {
+  if (preferences->match("shift viewport", event, true)) {
     m_current_action = Action::Pan;
     return true;
-  } else if (preferences.match("zoom viewport", event, true)) {
+  } else if (preferences->match("zoom viewport", event, true)) {
     m_current_action = Action::Zoom;
     return true;
   } else {

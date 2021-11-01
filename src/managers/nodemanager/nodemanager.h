@@ -9,8 +9,11 @@ class NodeManager;
 
 namespace omm
 {
+
+class KeyBindings;
 class AbstractPropertyOwner;
 class NodeModel;
+
 class NodeManager : public Manager
 {
   Q_OBJECT

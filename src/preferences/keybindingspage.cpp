@@ -1,6 +1,7 @@
 #include "preferences/keybindingspage.h"
 #include "keybindings/keybindings.h"
 #include "preferences/keybindingstreeviewdelegate.h"
+#include "preferences/keysequenceedit.h"
 #include "ui_keybindingspage.h"
 #include <QDialogButtonBox>
 #include <QHeaderView>

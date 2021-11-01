@@ -1,9 +1,12 @@
 #include "mainwindow/toolbar/toolbaritemmodel.h"
 #include "common.h"
 #include "keybindings/modeselector.h"
+#include "keybindings/keybindings.h"
 #include "main/application.h"
 #include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/toolbar/toolbardialog.h"
+#include "preferences/preferencestreeitem.h"
+#include "logging.h"
 #include <QMimeData>
 #include <QToolButton>
 #include <QTreeWidgetItem>
@@ -52,7 +55,7 @@ public:
   explicit ActionItem(const QString& command_name) : command_name(command_name)
   {
     const auto& key_bindings = omm::Application::instance().key_bindings;
-    const auto* item = key_bindings.value(omm::Application::TYPE, command_name);
+    const auto* item = key_bindings->value(omm::Application::TYPE, command_name);
     if (item == nullptr) {
       const auto d = ToolBarItemModel::tr("%1 is no valid command name.").arg(command_name);
       throw omm::ToolBarItemModel::BadConfigurationError(d);
@@ -65,7 +68,7 @@ public:
   {
     auto& app = Application::instance();
     const auto& key_bindings = omm::Application::instance().key_bindings;
-    return key_bindings.make_toolbar_action(app, command_name);
+    return key_bindings->make_toolbar_action(app, command_name);
   }
 
   [[nodiscard]] nlohmann::json encode() const override
@@ -173,7 +176,7 @@ public:
     auto& app = Application::instance();
     const auto& key_bindings = omm::Application::instance().key_bindings;
     for (auto&& command_name : mode_selector.activation_actions) {
-      auto action = key_bindings.make_toolbar_action(app, command_name);
+      auto action = key_bindings->make_toolbar_action(app, command_name);
       button->addAction(action.release());
     }
     button->setDefaultAction(button->actions()[mode_selector.mode()]);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "preferences/preferencepage.h"
-#include "preferences/preferences.h"
 #include <memory>
 
 namespace Ui
@@ -11,6 +10,7 @@ class GeneralPage;
 
 namespace omm
 {
+class Preferences;
 class GeneralPage : public PreferencePage
 {
   Q_OBJECT

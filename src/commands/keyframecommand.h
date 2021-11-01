@@ -1,6 +1,5 @@
 #pragma once
 
-#include "animation/track.h"
 #include "commands/command.h"
 #include "variant.h"
 #include <map>
@@ -8,28 +7,31 @@
 
 namespace omm
 {
+
 class Animator;
 class Property;
+struct Knot;
+
 class KeyFrameCommand : public Command
 {
 protected:
   KeyFrameCommand(Animator& animator,
                   const QString& label,
                   int frame,
-                  const std::map<Property*, Track::Knot*>& refs,
-                  std::map<Property*, std::unique_ptr<Track::Knot>>&& owns = {});
+                  const std::map<Property*, Knot*>& refs,
+                  std::map<Property*, std::unique_ptr<Knot>>&& owns = {});
   KeyFrameCommand(Animator& animator,
                   const QString& label,
                   int frame,
-                  std::map<Property*, std::unique_ptr<Track::Knot>>&& owns);
+                  std::map<Property*, std::unique_ptr<Knot>>&& owns);
   void insert();
   void remove();
 
 private:
   Animator& m_animator;
   const int m_frame;
-  const std::map<Property*, Track::Knot*> m_refs;
-  std::map<Property*, std::unique_ptr<Track::Knot>> m_owns;
+  const std::map<Property*, Knot*> m_refs;
+  std::map<Property*, std::unique_ptr<Knot>> m_owns;
   const QString m_property_key;
 };
 
@@ -79,7 +81,7 @@ public:
   }
 
 private:
-  mutable std::map<int, std::unique_ptr<Track::Knot>> m_removed_values;
+  mutable std::map<int, std::unique_ptr<Knot>> m_removed_values;
   Animator& m_animator;
   Property& m_property;
   const std::set<int> m_old_frames;
@@ -90,7 +92,7 @@ private:
 class ChangeKeyFrameCommand : public Command
 {
 public:
-  ChangeKeyFrameCommand(int frame, Property& property, std::unique_ptr<Track::Knot> new_value);
+  ChangeKeyFrameCommand(int frame, Property& property, std::unique_ptr<Knot> new_value);
   void undo() override
   {
     swap();
@@ -108,7 +110,7 @@ public:
 private:
   const int m_frame;
   Property& m_property;
-  std::unique_ptr<Track::Knot> m_other_value;
+  std::unique_ptr<Knot> m_other_value;
   void swap();
 };
 

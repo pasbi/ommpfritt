@@ -1,9 +1,12 @@
 #pragma once
+
 #include "tools/handles/handle.h"
 
 namespace omm
 {
+
 class PointSelectHandle;
+
 class TangentHandle : public Handle
 {
 public:

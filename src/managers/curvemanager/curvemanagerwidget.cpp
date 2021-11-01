@@ -7,9 +7,12 @@
 #include "managers/panzoomcontroller.h"
 #include "properties/numericproperty.h"
 #include "properties/property.h"
+#include "preferences/uicolors.h"
 #include "scene/history/historymodel.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
+#include "scene/history/macro.h"
+#include "preferences/preferences.h"
 #include <QEvent>
 #include <QMouseEvent>
 #include <QPainter>
@@ -122,7 +125,7 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     double new_y = value_range.pixel_to_unit(event->y());
     const double diff = new_y - old_y;
     const KeyFrameHandleKey& key = *m_dragged_tangent.key;
-    std::unique_ptr<Track::Knot> new_knot = key.track.knot(key.frame).clone();
+    std::unique_ptr<Knot> new_knot = key.track.knot(key.frame).clone();
     variant_type& vv = new_knot->offset(m_dragged_tangent.side);
     const double new_offset = get_channel_value(vv, key.channel) + diff;
     set_channel_value(vv, key.channel, new_offset);
@@ -280,10 +283,10 @@ bool CurveManagerWidget::is_visible(const Track& track, std::size_t channel) con
 
 const CurveManagerWidget::KeyFrameHandleKey*
 CurveManagerWidget::neighbor(const CurveManagerWidget::KeyFrameHandleKey& key,
-                             Track::Knot::Side side) const
+                             Knot::Side side) const
 {
   const auto cmp = [side](int a, int b) {
-    if (side == Track::Knot::Side::Left) {
+    if (side == Knot::Side::Left) {
       return a > b;
     } else {
       return a < b;
@@ -484,7 +487,7 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
         };
 
         if (data.is_selected) {
-          for (auto side : {Track::Knot::Side::Left, Track::Knot::Side::Right}) {
+          for (auto side : {Knot::Side::Left, Knot::Side::Right}) {
             const KeyFrameHandleKey* neighbor = this->neighbor(key, side);
             if (neighbor != nullptr) {
               const double value = key.value(side) + value_shift;
@@ -510,7 +513,7 @@ double CurveManagerWidget::interpolate_frame(int key_frame, int neighbor_frame)
 CurveManagerWidget::TangentHandle CurveManagerWidget::tangent_handle_at(const QPointF& point) const
 {
   for (auto&& [key, data] : m_keyframe_handles) {
-    for (auto side : {Track::Knot::Side::Left, Track::Knot::Side::Right}) {
+    for (auto side : {Knot::Side::Left, Knot::Side::Right}) {
       const auto* neighbor = this->neighbor(key, side);
       if (neighbor != nullptr) {
         const QPointF key_pos
@@ -610,7 +613,7 @@ void CurveManagerWidget::move_knot(Track& track, int old_frame, int new_frame)
   update();
 }
 
-double CurveManagerWidget::KeyFrameHandleKey::value(Track::Knot::Side side) const
+double CurveManagerWidget::KeyFrameHandleKey::value(Knot::Side side) const
 {
   const double v = get_channel_value(track.knot(frame).offset(side), channel);
   return multiplier(track) * v + value();

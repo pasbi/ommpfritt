@@ -3,7 +3,6 @@
 #include "animation/animator.h"
 #include "keybindings/commandinterface.h"
 #include "managers/manager.h"
-#include "managers/stylemanager/stylelistview.h"
 
 namespace omm
 {

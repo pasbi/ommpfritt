@@ -1,45 +1,17 @@
 #pragma once
 
-#include "commands/objectstransformationcommand.h"
 #include "tools/selecttool.h"
 
 namespace omm
 {
-class TransformObjectsHelper : public QObject
-{
-  Q_OBJECT
-public:
-  explicit TransformObjectsHelper();
-  using TransformationMode = ObjectsTransformationCommand::TransformationMode;
 
-  /**
-   * @brief make_command makes the command to transform the selected objects
-   * @param t the transformation to apply to each object
-   * @param mode
-   * @return
-   */
-  [[nodiscard]] std::unique_ptr<ObjectsTransformationCommand>
-  make_command(const Matrix& t, TransformationMode mode = TransformationMode::Object) const;
-
-  void update(const std::set<Object*>& objects);
-  void update();
-  [[nodiscard]] bool is_empty() const
-  {
-    return m_initial_transformations.empty();
-  }
-
-Q_SIGNALS:
-  void initial_transformations_changed();
-
-private:
-  ObjectsTransformationCommand::Map m_initial_transformations;
-  std::set<Object*> m_objects;
-};
+class TransformObjectsHelper;
 
 class SelectObjectsTool : public AbstractSelectTool
 {
 public:
   explicit SelectObjectsTool(Scene& scene);
+  ~SelectObjectsTool() override;
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
 
@@ -61,7 +33,7 @@ public:
 protected:
   bool has_transformation() const override;
   Vec2f selection_center() const override;
-  TransformObjectsHelper m_transform_objects_helper;
+  std::unique_ptr<TransformObjectsHelper> m_transform_objects_helper;
 };
 
 }  // namespace omm

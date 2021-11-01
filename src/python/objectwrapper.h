@@ -2,6 +2,7 @@
 
 #include "python/propertyownerwrapper.h"
 #include "python/wrapperfactory.h"
+#include "objects/object.h"
 
 namespace omm
 {
