@@ -12,6 +12,7 @@
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
 #include "objects/path.h"
+#include "objects/segment.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
@@ -151,39 +152,29 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
   return converted_objects;
 }
 
-//void remove_selected_points(Application& app)
-//{
-//  std::unique_ptr<Macro> macro;
-//  for (auto* path : app.scene->item_selection<Path>()) {
-//    std::vector<RemovePointsCommand::Range> removed_points;
-//    auto last = path->end();
-//    const auto is_contiguos = [&last](const PathIterator& it) {
-//      if (it.path != last.path || it.segment != last.segment) {
-//        return false;
-//      } else {
-//        return it.point == last.point + 1;
-//      }
-//    };
-//    for (auto it = path->begin(); it != path->end(); ++it) {
-//      if (it->is_selected) {
-//        if (is_contiguos(it)) {
-//          removed_points.back().length += 1;
-//        } else {
-//          removed_points.push_back(RemovePointsCommand::Range{it, 1});
-//        }
-//        last = it;
-//      }
-//    }
-//    if (!removed_points.empty()) {
-//      auto command = std::make_unique<RemovePointsCommand>(*path, removed_points);
-//      if (!macro) {
-//        macro = app.scene->history().start_macro(command->actionText());
-//      }
-//      app.scene->submit(std::move(command));
-//      app.scene->update_tool();
-//    }
-//  }
-//}
+void remove_selected_points(Application& app)
+{
+  std::unique_ptr<Macro> macro;
+  for (auto* path : app.scene->item_selection<Path>()) {
+    std::deque<SegmentView> removed_points;
+    for (Segment* segment : path->segments()) {
+      const auto selected_ranges = find_coherent_ranges(segment->points(),
+                                                        std::mem_fn(&Point::is_selected));
+      for (const auto& range : selected_ranges) {
+        removed_points.emplace_back(*segment, range.start, range.size);
+      }
+    }
+
+    if (!removed_points.empty()) {
+      auto command = std::make_unique<RemovePointsCommand>(*path, std::move(removed_points));
+      if (!macro) {
+        macro = app.scene->history().start_macro(command->actionText());
+      }
+      app.scene->submit(std::move(command));
+      app.scene->update_tool();
+    }
+  }
+}
 
 using namespace omm;
 
@@ -191,17 +182,17 @@ const std::map<QString, std::function<void(Application& app)>> actions{
 //    {"make linear", [](Application& app) { modify_tangents(InterpolationMode::Linear, app); }},
 //    {"make smooth", [](Application& app) { modify_tangents(InterpolationMode::Smooth, app); }},
 
-//    {"remove selected items",
-//     [](Application& app) {
-//       switch (app.scene_mode()) {
-//       case SceneMode::Vertex:
-//         remove_selected_points(app);
-//         break;
-//       case SceneMode::Object:
-//         app.scene->remove(app.main_window(), app.scene->selection());
-//         break;
-//       }
-//     }},
+    {"remove selected items",
+     [](Application& app) {
+       switch (app.scene_mode()) {
+       case SceneMode::Vertex:
+         remove_selected_points(app);
+         break;
+       case SceneMode::Object:
+         app.scene->remove(app.main_window(), app.scene->selection());
+         break;
+       }
+     }},
 
 //    {"subdivide",
 //     [](Application& app) {

@@ -144,7 +144,7 @@ Geom::Path Segment::to_geom_path(InterpolationMode interpolation, bool is_closed
     }
   }
 
-  return Geom::Path(bzs.begin(), bzs.end(), is_closed);
+  return {bzs.begin(), bzs.end(), is_closed};
 }
 
 void Segment::smoothen(bool is_closed)
@@ -180,7 +180,7 @@ std::deque<Point*> Segment::points() const
   return ::transform<Point*>(m_points, [](const auto& pt) { return pt.get(); });
 }
 
-void Segment::insert_points(std::size_t i, std::deque<std::unique_ptr<Point>> points)
+void Segment::insert_points(std::size_t i, std::deque<std::unique_ptr<Point>>&& points)
 {
   m_points.insert(m_points.begin() + i,
                   std::make_move_iterator(points.begin()),
@@ -190,7 +190,7 @@ void Segment::insert_points(std::size_t i, std::deque<std::unique_ptr<Point>> po
 std::deque<std::unique_ptr<Point>> Segment::extract(std::size_t start, std::size_t size)
 {
   std::deque<std::unique_ptr<Point>> points(size);
-  for (std::size_t i = 0; i <= size; ++i) {
+  for (std::size_t i = 0; i < size; ++i) {
     std::swap(points[i], m_points[i + start]);
   }
   const auto begin = m_points.begin() + start;
@@ -220,8 +220,22 @@ void Segment::deserialize(AbstractDeserializer& deserializer, const Pointer& roo
 }
 
 SegmentView::SegmentView(Segment& segment, std::size_t index, std::size_t size)
-  : segment(segment), index(index), size(size)
+  : segment(&segment), index(index), size(size)
 {
+}
+
+std::weak_ordering operator<=>(const SegmentView& a, const SegmentView& b)
+{
+  static constexpr auto as_tuple = [](const SegmentView& a) {
+    return std::tuple{a.segment, a.index};
+  };
+  return as_tuple(a) <=> as_tuple(b);
+}
+
+std::ostream& operator<<(std::ostream& ostream, const SegmentView& segment_view)
+{
+  ostream << "Segment[" << segment_view.segment << " " << segment_view.index << " " << segment_view.size << "]";
+  return ostream;
 }
 
 }  // namespace omm

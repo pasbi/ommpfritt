@@ -36,6 +36,7 @@ public:
     explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point>>&& points);
     explicit OwnedLocatedSegment(std::unique_ptr<Segment> segment);
     SegmentView insert_into(Path& path);
+    friend std::weak_ordering operator<=>(const OwnedLocatedSegment& a, const OwnedLocatedSegment& b);
 
   private:
     Segment* m_segment = nullptr;
@@ -46,7 +47,7 @@ public:
 
 protected:
   explicit AbstractPointsCommand(const QString& label, Path& path, std::deque<OwnedLocatedSegment>&& points_to_add);
-  explicit AbstractPointsCommand(const QString& label, Path& path, const std::deque<SegmentView>& points_to_remove);
+  explicit AbstractPointsCommand(const QString& label, Path& path, std::deque<SegmentView>&& points_to_remove);
   void add();
   void remove();
 
@@ -70,7 +71,7 @@ public:
 class RemovePointsCommand : public AbstractPointsCommand
 {
 public:
-  RemovePointsCommand(Path& path, const std::deque<SegmentView>& removed_points);
+  RemovePointsCommand(Path& path, std::deque<SegmentView>&& removed_points);
   void redo() override;
   void undo() override;
 };

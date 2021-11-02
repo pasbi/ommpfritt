@@ -19,7 +19,9 @@ struct SegmentView
 {
 public:
   explicit SegmentView(Segment& segment, std::size_t index, std::size_t size);
-  Segment& segment;
+  friend std::weak_ordering operator<=>(const SegmentView& a, const SegmentView& b);
+  friend std::ostream& operator<<(std::ostream& ostream, const SegmentView& segment_view);
+  Segment* segment;
   std::size_t index;
   std::size_t size;
 };
@@ -45,7 +47,7 @@ public:
   void smoothen(bool is_closed);
   void smoothen_point(std::size_t i, bool is_closed);
   std::deque<Point*> points() const;
-  void insert_points(std::size_t i, std::deque<std::unique_ptr<Point>> points);
+  void insert_points(std::size_t i, std::deque<std::unique_ptr<Point> >&& points);
   std::deque<std::unique_ptr<Point>> extract(std::size_t i, std::size_t n);
 
 private:

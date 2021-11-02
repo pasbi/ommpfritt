@@ -53,13 +53,17 @@ AbstractPointsCommand::AbstractPointsCommand(const QString& label, Path& path, s
   , m_path(path)
   , m_points_to_add(std::move(points_to_add))
 {
+  std::sort(m_points_to_add.rbegin(), m_points_to_add.rend());
+  assert(std::is_sorted(m_points_to_add.rbegin(), m_points_to_add.rend()));
 }
 
-AbstractPointsCommand::AbstractPointsCommand(const QString& label, Path& path, const std::deque<SegmentView>& points_to_remove)
+AbstractPointsCommand::AbstractPointsCommand(const QString& label, Path& path, std::deque<SegmentView>&& points_to_remove)
   : Command(label)
   , m_path(path)
-  , m_points_to_remove(points_to_remove)
+  , m_points_to_remove(std::move(points_to_remove))
 {
+  std::sort(m_points_to_remove.rbegin(), m_points_to_remove.rend());
+  assert(std::is_sorted(m_points_to_remove.rbegin(), m_points_to_remove.rend()));
 }
 
 void AbstractPointsCommand::add()
@@ -78,14 +82,14 @@ void AbstractPointsCommand::remove()
 {
   assert(m_points_to_add.empty());
   for (const auto& segment_view : m_points_to_remove) {
-    m_points_to_add.push_back([this, &view=segment_view]() {
-      const auto remove_segment = view.size == view.segment.size();
+    m_points_to_add.push_front([this, &view=segment_view]() {
+      const auto remove_segment = view.size == view.segment->size();
       if (remove_segment) {
-        auto owned_segment = m_path.remove_segment(view.segment);
+        auto owned_segment = m_path.remove_segment(*view.segment);
         return OwnedLocatedSegment{std::move(owned_segment)};
       } else {
-        auto points = view.segment.extract(view.index, view.size);
-        return OwnedLocatedSegment{&view.segment, view.index, std::move(points)};
+        auto points = view.segment->extract(view.index, view.size);
+        return OwnedLocatedSegment{view.segment, view.index, std::move(points)};
       }
     }());
   }
@@ -114,8 +118,8 @@ QString AddPointsCommand::static_label()
   return QObject::tr("AddPointsCommand");
 }
 
-RemovePointsCommand::RemovePointsCommand(Path& path, const std::deque<SegmentView>& removed_points)
-    : AbstractPointsCommand(QObject::tr("RemovePointsCommand"), path, removed_points)
+RemovePointsCommand::RemovePointsCommand(Path& path, std::deque<SegmentView>&& removed_points)
+    : AbstractPointsCommand(QObject::tr("RemovePointsCommand"), path, std::move(removed_points))
 {
 }
 
@@ -129,7 +133,8 @@ void RemovePointsCommand::undo()
   add();
 }
 
-AbstractPointsCommand::OwnedLocatedSegment::OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point> >&& points)
+AbstractPointsCommand::OwnedLocatedSegment::
+OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point> >&& points)
   : m_segment(segment), m_index(index), m_points(std::move(points))
 {
   assert(m_segment != nullptr);
@@ -153,6 +158,16 @@ SegmentView AbstractPointsCommand::OwnedLocatedSegment::insert_into(Path& path)
     m_segment->insert_points(m_index, std::move(m_points));
     return SegmentView{*m_segment, m_index, n_points};
   }
+}
+
+std::weak_ordering operator<=>(const AbstractPointsCommand::OwnedLocatedSegment& a,
+                               const AbstractPointsCommand::OwnedLocatedSegment& b)
+{
+  static constexpr auto as_tuple = [](const auto& ola) {
+    return std::tuple{ola.m_segment, ola.m_owned_segment.get(), ola.m_index};
+  };
+
+  return as_tuple(a) <=> as_tuple(b);
 }
 
 }  // namespace omm
