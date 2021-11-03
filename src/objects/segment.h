@@ -44,8 +44,8 @@ public:
   std::size_t find(const Point& point) const;
   Point& add_point(const Vec2f& pos);
   Geom::Path to_geom_path(InterpolationMode interpolation, bool is_closed) const;
-  void smoothen(bool is_closed);
-  void smoothen_point(std::size_t i, bool is_closed);
+  void smoothen(bool is_closed) const;
+  Point smoothen_point(std::size_t i, bool is_closed) const;
   std::deque<Point*> points() const;
   void insert_points(std::size_t i, std::deque<std::unique_ptr<Point> >&& points);
   std::deque<std::unique_ptr<Point>> extract(std::size_t i, std::size_t n);

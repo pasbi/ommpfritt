@@ -147,15 +147,16 @@ Geom::Path Segment::to_geom_path(InterpolationMode interpolation, bool is_closed
   return {bzs.begin(), bzs.end(), is_closed};
 }
 
-void Segment::smoothen(bool is_closed)
+void Segment::smoothen(bool is_closed) const
 {
   std::deque<std::unique_ptr<Point>> points;
   for (std::size_t i = 0; i < m_points.size(); ++i) {
-    smoothen_point(i, is_closed);
+    Point smoothened_point = smoothen_point(i, is_closed);
+    swap(*m_points[i], smoothened_point);
   }
 }
 
-void Segment::smoothen_point(std::size_t i, bool is_closed)
+Point Segment::smoothen_point(std::size_t i, bool is_closed) const
 {
   const std::size_t n = m_points.size();
   Vec2f left;
@@ -170,9 +171,11 @@ void Segment::smoothen_point(std::size_t i, bool is_closed)
     left = m_points.at(i - 1)->position;
     right = m_points.at(i + 1)->position;
   }
+  Point copy = *m_points[i];
   const Vec2f d = (left - right) / 6.0;
-  m_points.at(i)->right_tangent = PolarCoordinates(-d);
-  m_points.at(i)->left_tangent = PolarCoordinates(d);
+  copy.right_tangent = PolarCoordinates(-d);
+  copy.left_tangent = PolarCoordinates(d);
+  return copy;
 }
 
 std::deque<Point*> Segment::points() const

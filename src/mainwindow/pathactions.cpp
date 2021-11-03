@@ -30,63 +30,50 @@ using namespace omm;
 template<typename F> void foreach_segment(Application& app, F&& f)
 {
   for (auto* path : app.scene->item_selection<Path>()) {
-    for (auto&& segment : path->segments()) {
+    for (auto* segment : path->segments()) {
       f(segment);
     }
   }
 }
 
-//void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
-//{
-//  using namespace omm;
-//  std::map<PathIterator, omm::Point> map;
-//  const auto paths = app.scene->item_selection<Path>();
-//  for (omm::Path* path : paths) {
-//    const bool is_closed = path->is_closed();
-//    for (std::size_t s = 0; s < path->segments.size(); ++s) {
-//      const Segment& segment = path->segments[s];
-//      const std::size_t n = segment.size();
-//      for (std::size_t i = 0; i < n; ++i) {
-//        if (segment[i].is_selected) {
-//          const PathIterator it{*path, s, i};
-//          switch (mode) {
-//          case InterpolationMode::Bezier:
-//            break;  // do nothing.
-//          case InterpolationMode::Smooth:
-//            map[it] = Path::smoothen_point(segment, is_closed, i);
-//            break;
-//          case InterpolationMode::Linear:
-//            map[it] = segment[i].nibbed();
-//          }
-//        }
-//      }
-//    }
-//  }
+void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
+{
+  using namespace omm;
+  std::map<Path*, std::map<Point*, Point>> map;
+  const auto paths = app.scene->item_selection<Path>();
+  for (Path* path : paths) {
+    const bool is_closed = path->is_closed();
+    for (const Segment* segment : path->segments()) {
+      const auto points = segment->points();
+      for (std::size_t i = 0; i < points.size(); ++i) {
+        Point* point = points[i];
+        if (point->is_selected()) {
+          switch (mode) {
+          case InterpolationMode::Bezier:
+            break;  // do nothing.
+          case InterpolationMode::Smooth:
+            map[path][point] = segment->smoothen_point(i, is_closed);
+            break;
+          case InterpolationMode::Linear:
+            map[path][point] = point->nibbed();
+          }
+        }
+      }
+    }
+  }
 
-//  constexpr auto bezier_mode = static_cast<std::size_t>(omm::InterpolationMode::Bezier);
-//  const auto interpolation_properties = ::transform<omm::Property*>(paths, [](omm::Path* path) {
-//    return path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
-//  });
+  constexpr auto bezier_mode = static_cast<std::size_t>(omm::InterpolationMode::Bezier);
+  const auto interpolation_properties = ::transform<omm::Property*>(paths, [](omm::Path* path) {
+    return path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
+  });
 
-//  if (!map.empty()) {
-//    auto macro = app.scene->history().start_macro(QObject::tr("modify tangents"));
-//    using OptionPropertyCommand = omm::PropertiesCommand<omm::OptionProperty>;
-//    app.scene->submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
-//    app.scene->submit<omm::ModifyPointsCommand>(map);
-//  }
-//}
-
-//std::set<std::size_t> neighbors_of_selected(const Segment& segment)
-//{
-//  std::set<std::size_t> selection;
-//  for (std::size_t i = 1; i < segment.size() - 1; ++i) {
-//    if (segment[i].is_selected) {
-//      selection.insert(i - 1);
-//      selection.insert(i + 1);
-//    }
-//  }
-//  return selection;
-//}
+  if (!map.empty()) {
+    auto macro = app.scene->history().start_macro(QObject::tr("modify tangents"));
+    using OptionPropertyCommand = omm::PropertiesCommand<omm::OptionProperty>;
+    app.scene->submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
+    app.scene->submit<omm::ModifyPointsCommand>(map);
+  }
+}
 
 std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Object*> convertibles)
 {
@@ -179,8 +166,8 @@ void remove_selected_points(Application& app)
 using namespace omm;
 
 const std::map<QString, std::function<void(Application& app)>> actions{
-//    {"make linear", [](Application& app) { modify_tangents(InterpolationMode::Linear, app); }},
-//    {"make smooth", [](Application& app) { modify_tangents(InterpolationMode::Smooth, app); }},
+    {"make linear", [](Application& app) { modify_tangents(InterpolationMode::Linear, app); }},
+    {"make smooth", [](Application& app) { modify_tangents(InterpolationMode::Smooth, app); }},
 
     {"remove selected items",
      [](Application& app) {
@@ -213,65 +200,65 @@ const std::map<QString, std::function<void(Application& app)>> actions{
 //       }
 //     }},
 
-//    {"select all",
-//     [](Application& app) {
-//       switch (app.scene_mode()) {
-//       case SceneMode::Vertex:
-//         for (auto* path : app.scene->item_selection<Path>()) {
-//           for (auto&& point : *path) {
-//             point.is_selected = true;
-//           }
-//         }
-//         Q_EMIT app.scene->mail_box().point_selection_changed();
-//         break;
-//       case SceneMode::Object:
-//         app.scene->set_selection(down_cast(app.scene->object_tree().items()));
-//         break;
-//       }
-//       Q_EMIT app.mail_box().scene_appearance_changed();
-//     }},
+    {"select all",
+     [](Application& app) {
+       switch (app.scene_mode()) {
+       case SceneMode::Vertex:
+         for (auto* path : app.scene->item_selection<Path>()) {
+           for (auto* point : path->points()) {
+             point->set_selected(true);
+           }
+         }
+         Q_EMIT app.scene->mail_box().point_selection_changed();
+         break;
+       case SceneMode::Object:
+         app.scene->set_selection(down_cast(app.scene->object_tree().items()));
+         break;
+       }
+       Q_EMIT app.mail_box().scene_appearance_changed();
+     }},
 
-//    {"deselect all",
-//     [](Application& app) {
-//       switch (app.scene_mode()) {
-//       case SceneMode::Vertex:
-//         for (auto* path : app.scene->item_selection<Path>()) {
-//           for (auto&& point : *path) {
-//             point.is_selected = false;
-//           }
-//         }
-//         Q_EMIT app.scene->mail_box().point_selection_changed();
-//         break;
-//       case SceneMode::Object:
-//         app.scene->set_selection({});
-//         break;
-//       }
-//       Q_EMIT app.mail_box().scene_appearance_changed();
-//     }},
+    {"deselect all",
+     [](Application& app) {
+       switch (app.scene_mode()) {
+       case SceneMode::Vertex:
+         for (auto* path : app.scene->item_selection<Path>()) {
+           for (auto* point : path->points()) {
+             point->set_selected(false);
+           }
+         }
+         Q_EMIT app.scene->mail_box().point_selection_changed();
+         break;
+       case SceneMode::Object:
+         app.scene->set_selection({});
+         break;
+       }
+       Q_EMIT app.mail_box().scene_appearance_changed();
+     }},
 
-//    {"invert selection",
-//     [](Application& app) {
-//       switch (app.scene_mode()) {
-//       case SceneMode::Vertex:
-//         for (auto* path : app.scene->item_selection<Path>()) {
-//           for (auto&& point : *path) {
-//             point.is_selected = !point.is_selected;
-//           }
-//         }
-//         Q_EMIT app.scene->mail_box().point_selection_changed();
-//         break;
-//       case SceneMode::Object: {
-//         const auto object_selection = app.scene->item_selection<Object>();
-//         auto difference = app.scene->object_tree().items();
-//         for (auto&& s : object_selection) {
-//           difference.erase(s);
-//         }
-//         app.scene->set_selection(down_cast(difference));
-//         break;
-//       }
-//       }
-//       Q_EMIT app.mail_box().scene_appearance_changed();
-//     }},
+    {"invert selection",
+     [](Application& app) {
+       switch (app.scene_mode()) {
+       case SceneMode::Vertex:
+         for (auto* path : app.scene->item_selection<Path>()) {
+           for (auto* point : path->points()) {
+             point->set_selected(!point->is_selected());
+           }
+         }
+         Q_EMIT app.scene->mail_box().point_selection_changed();
+         break;
+       case SceneMode::Object: {
+         const auto object_selection = app.scene->item_selection<Object>();
+         auto difference = app.scene->object_tree().items();
+         for (auto&& s : object_selection) {
+           difference.erase(s);
+         }
+         app.scene->set_selection(down_cast(difference));
+         break;
+       }
+       }
+       Q_EMIT app.mail_box().scene_appearance_changed();
+     }},
 
 //    {"convert objects",
 //     [](Application& app) {
@@ -291,64 +278,74 @@ const std::map<QString, std::function<void(Application& app)>> actions{
 //       }
 //     }},
 
-//    {"remove unused styles",
-//     [](Application& app) {
-//       auto& scene = app.scene;
-//       const auto unused_styles
-//           = ::filter_if(app.scene->styles().items(), [&scene](const auto* style) {
-//               return scene->find_reference_holders(*style).empty();
-//             });
-//       scene->submit<RemoveCommand<StyleList>>(scene->styles(), unused_styles);
-//     }},
+    {"remove unused styles",
+     [](Application& app) {
+       auto& scene = app.scene;
+       const auto unused_styles
+           = ::filter_if(app.scene->styles().items(), [&scene](const auto* style) {
+               return scene->find_reference_holders(*style).empty();
+             });
+       scene->submit<RemoveCommand<StyleList>>(scene->styles(), unused_styles);
+     }},
 
-//    {"select connected points",
-//     [](Application& app) {
-//       foreach_segment(app, [](auto&& segment) {
-//         if (std::any_of(segment.begin(), segment.end(), is_selected)) {
-//           std::for_each(segment.begin(), segment.end(), set_selected);
-//         }
-//       });
-//       Q_EMIT app.mail_box().scene_appearance_changed();
-//     }},
+    {"select connected points",
+     [](Application& app) {
+       foreach_segment(app, [](const auto* segment) {
+         const auto points = segment->points();
+         if (std::any_of(points.begin(), points.end(), std::mem_fn(&Point::is_selected))) {
+           std::for_each(points.begin(), points.end(), [](auto* point) { point->set_selected(true); });
+         }
+       });
+       Q_EMIT app.mail_box().scene_appearance_changed();
+     }},
 
-//    {"fill selection",
-//     [](Application& app) {
-//       foreach_segment(app, [](auto&& segment) {
-//         const auto is_selected = [](const auto& point) { return point.is_selected; };
-//         auto first_it = std::find_if(segment.begin(), segment.end(), is_selected);
-//         auto last_it = std::find_if(segment.rbegin(), segment.rend(), is_selected);
-//         if (first_it != segment.end() && last_it != segment.rend()) {
-//           std::for_each(first_it, last_it.base(), set_selected);
-//         }
-//       });
-//       Q_EMIT app.mail_box().scene_appearance_changed();
-//     }},
+    {"fill selection",
+     [](Application& app) {
+       foreach_segment(app, [](const auto* segment) {
+         const auto points = segment->points();
+         auto first_it = std::find_if(points.begin(), points.end(), std::mem_fn(&Point::is_selected));
+         auto last_it = std::find_if(points.rbegin(), points.rend(), std::mem_fn(&Point::is_selected));
+         if (first_it != points.end() && last_it != points.rend()) {
+           std::for_each(first_it, last_it.base(), [](auto* point) { point->set_selected(true); });
+         }
+       });
+       Q_EMIT app.mail_box().scene_appearance_changed();
+     }},
 
-//    {"extend selection",
-//     [](Application& app) {
-//       foreach_segment(app, [](auto&& segment) {
-//         for (auto&& i : neighbors_of_selected(segment)) {
-//           segment[i].is_selected = true;
-//         }
-//       });
-//       Q_EMIT app.mail_box().scene_appearance_changed();
-//     }},
+    {"extend selection",
+     [](Application& app) {
+       foreach_segment(app, [](const auto* segment) {
+         std::set<std::size_t> selection;
+         const auto points = segment->points();
+         for (std::size_t i = 1; i < points.size() - 1; ++i) {
+           if (points[i]->is_selected()) {
+             selection.insert(i - 1);
+             selection.insert(i + 1);
+           }
+         }
+         for (const auto& i : selection) {
+           points[i]->set_selected(true);
+         }
+       });
+       Q_EMIT app.mail_box().scene_appearance_changed();
+     }},
 
-//    {"shrink selection",
-//     [](Application& app) {
-//       foreach_segment(app, [](auto&& segment) {
-//         std::set<std::size_t> selection_fringe;
-//         for (std::size_t i = 1; i < segment.size() - 1; ++i) {
-//           if (!segment[i - 1].is_selected || !segment[i + 1].is_selected) {
-//             selection_fringe.insert(i);
-//           }
-//         }
-//         for (auto&& i : selection_fringe) {
-//           segment[i].is_selected = false;
-//         }
-//       });
-//       Q_EMIT app.mail_box().scene_appearance_changed();
-//     }},
+    {"shrink selection",
+     [](Application& app) {
+       foreach_segment(app, [](const auto* segment) {
+         std::set<std::size_t> selection_fringe;
+         const auto points = segment->points();
+         for (std::size_t i = 1; i < points.size() - 1; ++i) {
+           if (!points[i - 1]->is_selected() || !points[i + 1]->is_selected()) {
+             selection_fringe.insert(i);
+           }
+         }
+         for (auto&& i : selection_fringe) {
+           points[i]->set_selected(false);
+         }
+       });
+       Q_EMIT app.mail_box().scene_appearance_changed();
+     }},
 };
 
 }  // namespace
