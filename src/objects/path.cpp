@@ -128,7 +128,7 @@ Geom::PathVector Path::paths() const
 
   Geom::PathVector paths;
   for (auto&& segment : m_segments) {
-    paths.push_back(segment->to_geom_path(interpolation, is_closed));
+    paths.push_back(segment->to_geom_path(is_closed, interpolation));
   }
   return paths;
 }

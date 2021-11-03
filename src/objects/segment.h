@@ -43,7 +43,7 @@ public:
   bool contains(const Point& point) const;
   std::size_t find(const Point& point) const;
   Point& add_point(const Vec2f& pos);
-  Geom::Path to_geom_path(InterpolationMode interpolation, bool is_closed) const;
+  Geom::Path to_geom_path(bool is_closed, InterpolationMode interpolation = InterpolationMode::Bezier) const;
   void smoothen(bool is_closed) const;
   Point smoothen_point(std::size_t i, bool is_closed) const;
   std::deque<Point*> points() const;

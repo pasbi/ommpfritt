@@ -260,23 +260,23 @@ const std::map<QString, std::function<void(Application& app)>> actions{
        Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
-//    {"convert objects",
-//     [](Application& app) {
-//       const auto convertibles
-//           = ::filter_if(app.scene->item_selection<Object>(),
-//                         [](const Object* o) { return !!(o->flags() & Flag::Convertible); });
-//       if (!convertibles.empty()) {
-//         Scene& scene = *app.scene;
-//         auto macro = scene.history().start_macro(QObject::tr("convert"));
-//         scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
-//         const auto converted_objects = ::convert_objects(app, convertibles);
-//         scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
-//         const auto is_path = [](auto&& object) { return object->type() == Path::TYPE; };
-//         if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
-//           scene.set_mode(SceneMode::Vertex);
-//         }
-//       }
-//     }},
+    {"convert objects",
+     [](Application& app) {
+       const auto convertibles
+           = ::filter_if(app.scene->item_selection<Object>(),
+                         [](const Object* o) { return !!(o->flags() & Flag::Convertible); });
+       if (!convertibles.empty()) {
+         Scene& scene = *app.scene;
+         auto macro = scene.history().start_macro(QObject::tr("convert"));
+         scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
+         const auto converted_objects = ::convert_objects(app, convertibles);
+         scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
+         const auto is_path = [](auto&& object) { return object->type() == Path::TYPE; };
+         if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
+           scene.set_mode(SceneMode::Vertex);
+         }
+       }
+     }},
 
     {"remove unused styles",
      [](Application& app) {

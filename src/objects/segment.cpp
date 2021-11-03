@@ -99,7 +99,7 @@ Point& Segment::add_point(const Vec2f& pos)
                                                         PolarCoordinates{}));
 }
 
-Geom::Path Segment::to_geom_path(InterpolationMode interpolation, bool is_closed) const
+Geom::Path Segment::to_geom_path(bool is_closed, InterpolationMode interpolation) const
 {
   const auto pts = [](const std::array<Vec2f, 4>& pts) {
     return ::transform<Geom::Point, std::vector>(pts, [](const auto& p) {
