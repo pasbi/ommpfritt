@@ -29,16 +29,15 @@ Segment::Segment(std::deque<std::unique_ptr<Point>>&& points)
 
 Segment::Segment(const Geom::Path& path, bool is_closed)
 {
-  const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
   const auto n = path.size();
   for (std::size_t i = 0; i < n; ++i) {
     const auto& c = dynamic_cast<const Geom::CubicBezier&>(path[i]);
-    const auto p0 = to_vec(c[0]);
+    const auto p0 = Vec2f(c[0]);
     if (m_points.empty()) {
       m_points.push_back(std::make_unique<Point>(p0));
     }
-    m_points.back()->set_right_tangent(PolarCoordinates(to_vec(c[1]) - p0));
-    const auto p1 = to_vec(c[3]);
+    m_points.back()->set_right_tangent(PolarCoordinates(Vec2f(c[1]) - p0));
+    const auto p1 = Vec2f(c[3]);
     auto& pref = *[wrap = is_closed && i == n - 1, p1, this]() -> decltype(auto) {
       if (wrap) {
         return m_points.front();
@@ -46,7 +45,7 @@ Segment::Segment(const Geom::Path& path, bool is_closed)
         return m_points.emplace_back(std::make_unique<Point>(p1));
       }
     }();
-    pref.set_left_tangent(PolarCoordinates(to_vec(c[2]) - p1));
+    pref.set_left_tangent(PolarCoordinates(Vec2f(c[2]) - p1));
   }
   if (is_closed) {
     assert(path.size() == m_points.size());
