@@ -100,12 +100,6 @@ Point& Segment::add_point(const Vec2f& pos)
 
 Geom::Path Segment::to_geom_path(bool is_closed, InterpolationMode interpolation) const
 {
-  const auto pts = [](const std::array<Vec2f, 4>& pts) {
-    return ::transform<Geom::Point, std::vector>(pts, [](const auto& p) {
-      return Geom::Point(p.x, p.y);
-    });
-  };
-
   std::vector<Geom::CubicBezier> bzs;
   const std::size_t n = m_points.size();
   if (n == 0) {
@@ -124,26 +118,34 @@ Geom::Path Segment::to_geom_path(bool is_closed, InterpolationMode interpolation
 
   for (std::size_t i = 0; i < m; ++i) {
     const std::size_t j = (i + 1) % n;
-    static constexpr double t = 1.0 / 3.0;
-    switch (interpolation) {
-    case InterpolationMode::Bezier:
-      [[fallthrough]];
-    case InterpolationMode::Smooth:
-      bzs.emplace_back(pts({self->at(i).position(),
-                            self->at(i).right_position(),
-                            self->at(j).left_position(),
-                            self->at(j).position()}));
-      break;
-    case InterpolationMode::Linear:
-      bzs.emplace_back(pts({self->at(i).position(),
-                            (1.0 - t) * self->at(i).position() + t * self->at(j).position(),
-                            (1.0 - t) * self->at(j).position() + t * self->at(i).position(),
-                            self->at(j).position()}));
-      break;
-    }
+    bzs.push_back(compute_control_points(self->at(i), self->at(j), interpolation));
   }
 
   return {bzs.begin(), bzs.end(), is_closed};
+}
+
+std::vector<Geom::Point>
+Segment::compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation)
+{
+  static constexpr double t = 1.0 / 3.0;
+  switch (interpolation) {
+  case InterpolationMode::Bezier:
+    [[fallthrough]];
+  case InterpolationMode::Smooth:
+    return {a.position().to_geom_point(),
+            a.right_position().to_geom_point(),
+            b.left_position().to_geom_point(),
+            b.position().to_geom_point()};
+    break;
+  case InterpolationMode::Linear:
+    return {a.position().to_geom_point(),
+            ((1.0 - t) * a.position() + t * b.position()).to_geom_point(),
+            ((1.0 - t) * b.position() + t * a.position()).to_geom_point(),
+            b.position().to_geom_point()};
+    break;
+  }
+  Q_UNREACHABLE();
+  return {};
 }
 
 void Segment::smoothen(bool is_closed) const

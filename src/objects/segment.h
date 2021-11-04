@@ -7,6 +7,8 @@
 namespace Geom
 {
 class Path;
+class Curve;
+class Point;
 }  // namespace Geom
 
 namespace omm
@@ -49,6 +51,8 @@ public:
   std::deque<Point*> points() const;
   void insert_points(std::size_t i, std::deque<std::unique_ptr<Point> >&& points);
   std::deque<std::unique_ptr<Point>> extract(std::size_t i, std::size_t n);
+  static std::vector<Geom::Point> compute_control_points(const Point& a, const Point& b,
+                                                         InterpolationMode interpolation);
 
 private:
   std::deque<std::unique_ptr<Point>> m_points;
