@@ -16,7 +16,7 @@ class PointEdit : public QWidget
 {
   Q_OBJECT
 public:
-  PointEdit(Point& point, QWidget* parent = nullptr);
+  PointEdit(Path& path, Point& point, QWidget* parent = nullptr);
   void set_display_mode(const DisplayMode& display_mode);
 
 private:

@@ -35,7 +35,8 @@ auto make_tangent_layout(omm::CoordinateEdit*& coordinate_edit_ref,
 
 namespace omm
 {
-PointEdit::PointEdit(Point& point, QWidget* parent) : QWidget(parent), m_point(point)
+PointEdit::PointEdit(Path& path, Point& point, QWidget* parent)
+  : QWidget(parent), m_point(point), m_path(&path)
 {
   if (m_point.is_selected()) {
     QPalette palette = this->palette();
@@ -142,11 +143,13 @@ void PointEdit::update_point()
     m_point.position = m_position_edit->to_cartesian();
     m_point.right_tangent = m_right_tangent_edit->to_polar();
   } else {
-//    ModifyPointsCommand::map_type map;
-//    m_point = Point(m_position_edit->to_cartesian(),
-//                    m_left_tangent_edit->to_polar(),
-//                    m_right_tangent_edit->to_polar());
-//    m_path->scene()->submit<ModifyPointsCommand>(map);
+    ModifyPointsCommand::Map map;
+    Point new_point(m_position_edit->to_cartesian(),
+                    m_left_tangent_edit->to_polar(),
+                    m_right_tangent_edit->to_polar());
+    map[m_path][&m_point] = new_point;
+    m_path->scene()->submit<ModifyPointsCommand>(map);
+    m_path->update();
   }
 }
 
