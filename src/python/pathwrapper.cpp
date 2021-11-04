@@ -16,9 +16,9 @@ py::object PathWrapper::points()
   auto& path = dynamic_cast<wrapped_type&>(wrapped);
   std::vector<PointWrapper> point_wrappers;
   point_wrappers.reserve(path.point_count());
-//  for (Point& point : path) {
-//    point_wrappers.emplace_back(point);
-//  }
+  for (Point* point : path.points()) {
+    point_wrappers.emplace_back(*point);
+  }
   return py::cast(point_wrappers);
 }
 
