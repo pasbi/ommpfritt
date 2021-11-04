@@ -235,9 +235,9 @@ ObjectTransformation ObjectTransformation::apply(const ObjectTransformation& t) 
 
 Point ObjectTransformation::apply(const Point& point) const
 {
-  Point p(apply_to_position(point.position));
-  p.left_tangent = apply_to_direction(point.left_tangent);
-  p.right_tangent = apply_to_direction(point.right_tangent);
+  Point p(apply_to_position(point.position()));
+  p.set_left_tangent(apply_to_direction(point.left_tangent()));
+  p.set_right_tangent(apply_to_direction(point.right_tangent()));
   return p;
 }
 

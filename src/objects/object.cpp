@@ -477,7 +477,7 @@ void Object::set_oriented_position(const Point& op, const bool align)
   if (align) {
     transformation.set_rotation(op.rotation());
   }
-  transformation.set_translation(op.position);
+  transformation.set_translation(op.position());
   set_global_transformation(transformation, Space::Scene);
 }
 

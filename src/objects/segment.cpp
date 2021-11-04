@@ -37,7 +37,7 @@ Segment::Segment(const Geom::Path& path, bool is_closed)
     if (m_points.empty()) {
       m_points.push_back(std::make_unique<Point>(p0));
     }
-    m_points.back()->right_tangent = PolarCoordinates(to_vec(c[1]) - p0);
+    m_points.back()->set_right_tangent(PolarCoordinates(to_vec(c[1]) - p0));
     const auto p1 = to_vec(c[3]);
     auto& pref = *[wrap = is_closed && i == n - 1, p1, this]() -> decltype(auto) {
       if (wrap) {
@@ -46,7 +46,7 @@ Segment::Segment(const Geom::Path& path, bool is_closed)
         return m_points.emplace_back(std::make_unique<Point>(p1));
       }
     }();
-    pref.left_tangent = PolarCoordinates(to_vec(c[2]) - p1);
+    pref.set_left_tangent(PolarCoordinates(to_vec(c[2]) - p1));
   }
   if (is_closed) {
     assert(path.size() == m_points.size());
@@ -130,16 +130,16 @@ Geom::Path Segment::to_geom_path(bool is_closed, InterpolationMode interpolation
     case InterpolationMode::Bezier:
       [[fallthrough]];
     case InterpolationMode::Smooth:
-      bzs.emplace_back(pts({self->at(i).position,
+      bzs.emplace_back(pts({self->at(i).position(),
                             self->at(i).right_position(),
                             self->at(j).left_position(),
-                            self->at(j).position}));
+                            self->at(j).position()}));
       break;
     case InterpolationMode::Linear:
-      bzs.emplace_back(pts({self->at(i).position,
-                            (1.0 - t) * self->at(i).position + t * self->at(j).position,
-                            (1.0 - t) * self->at(j).position + t * self->at(i).position,
-                            self->at(j).position}));
+      bzs.emplace_back(pts({self->at(i).position(),
+                            (1.0 - t) * self->at(i).position() + t * self->at(j).position(),
+                            (1.0 - t) * self->at(j).position() + t * self->at(i).position(),
+                            self->at(j).position()}));
       break;
     }
   }
@@ -162,19 +162,19 @@ Point Segment::smoothen_point(std::size_t i, bool is_closed) const
   Vec2f left;
   Vec2f right;
   if (i == 0) {
-    left = is_closed ? m_points.at(n - 1)->position : m_points.at(0)->position;
-    right = m_points.at(1)->position;
+    left = is_closed ? m_points.at(n - 1)->position() : m_points.at(0)->position();
+    right = m_points.at(1)->position();
   } else if (i == n - 1) {
-    left = m_points.at(n - 2)->position;
-    right = is_closed ? m_points.at(0)->position : m_points.at(n - 1)->position;
+    left = m_points.at(n - 2)->position();
+    right = is_closed ? m_points.at(0)->position() : m_points.at(n - 1)->position();
   } else {
-    left = m_points.at(i - 1)->position;
-    right = m_points.at(i + 1)->position;
+    left = m_points.at(i - 1)->position();
+    right = m_points.at(i + 1)->position();
   }
   Point copy = *m_points[i];
   const Vec2f d = (left - right) / 6.0;
-  copy.right_tangent = PolarCoordinates(-d);
-  copy.left_tangent = PolarCoordinates(d);
+  copy.set_right_tangent(PolarCoordinates(-d));
+  copy.set_left_tangent(PolarCoordinates(d));
   return copy;
 }
 

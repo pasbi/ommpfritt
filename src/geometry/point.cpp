@@ -8,7 +8,7 @@ namespace omm
 Point::Point(const Vec2f& position,
              const PolarCoordinates& left_tangent,
              const PolarCoordinates& right_tangent)
-    : position(position), left_tangent(left_tangent), right_tangent(right_tangent)
+    : m_position(position), m_left_tangent(left_tangent), m_right_tangent(right_tangent)
 {
 }
 
@@ -27,50 +27,91 @@ Point::Point() : Point(Vec2f::o())
 {
 }
 
+Vec2f Point::position() const
+{
+  return m_position;
+}
+
+void Point::set_position(const Vec2f& position)
+{
+  m_position = position;
+}
+
 Vec2f Point::left_position() const
 {
-  return position + left_tangent.to_cartesian();
+  return m_position + m_left_tangent.to_cartesian();
 }
+
+void Point::set_left_position(const Vec2f& position)
+{
+  m_left_tangent = PolarCoordinates(position - m_position);
+}
+
 Vec2f Point::right_position() const
 {
-  return position + right_tangent.to_cartesian();
+  return m_position + m_right_tangent.to_cartesian();
+}
+
+void Point::set_right_position(const Vec2f& position)
+{
+  m_right_tangent = PolarCoordinates(position - m_position);
+}
+
+PolarCoordinates Point::left_tangent() const
+{
+  return m_left_tangent;
+}
+
+void Point::set_left_tangent(const PolarCoordinates& vector)
+{
+  m_left_tangent = vector;
+}
+
+PolarCoordinates Point::right_tangent() const
+{
+  return m_right_tangent;
+}
+
+void Point::set_right_tangent(const PolarCoordinates& vector)
+{
+  m_right_tangent = vector;
 }
 
 void swap(Point& a, Point& b)
 {
-  swap(a.position, b.position);
-  swap(a.left_tangent, b.left_tangent);
-  swap(a.right_tangent, b.right_tangent);
+  swap(a.m_position, b.m_position);
+  swap(a.m_left_tangent, b.m_left_tangent);
+  swap(a.m_right_tangent, b.m_right_tangent);
 }
 
 bool Point::has_nan() const
 {
-  return position.has_nan() || left_tangent.has_nan() || right_tangent.has_nan();
+  return m_position.has_nan() || m_left_tangent.has_nan() || m_right_tangent.has_nan();
 }
 
 bool Point::has_inf() const
 {
-  return position.has_inf() || left_tangent.has_inf() || right_tangent.has_inf();
+  return m_position.has_inf() || m_left_tangent.has_inf() || m_right_tangent.has_inf();
 }
 
 double Point::rotation() const
 {
-  return PolarCoordinates(left_tangent).argument;
+  return PolarCoordinates(m_left_tangent).argument;
 }
 
 Point Point::rotated(const double rad) const
 {
   auto copy = *this;
-  copy.left_tangent.argument += rad;
-  copy.right_tangent.argument += rad;
+  copy.m_left_tangent.argument += rad;
+  copy.m_right_tangent.argument += rad;
   return copy;
 }
 
 Point Point::nibbed() const
 {
   auto copy = *this;
-  copy.left_tangent.magnitude = 0;
-  copy.right_tangent.magnitude = 0;
+  copy.m_left_tangent.magnitude = 0;
+  copy.m_right_tangent.magnitude = 0;
   return copy;
 }
 
@@ -86,23 +127,23 @@ void Point::set_selected(bool selected)
 
 void Point::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
 {
-  serializer.set_value(position, make_pointer(root, POSITION_POINTER));
-  serializer.set_value(left_tangent, make_pointer(root, LEFT_TANGENT_POINTER));
-  serializer.set_value(right_tangent, make_pointer(root, RIGHT_TANGENT_POINTER));
+  serializer.set_value(m_position, make_pointer(root, POSITION_POINTER));
+  serializer.set_value(m_left_tangent, make_pointer(root, LEFT_TANGENT_POINTER));
+  serializer.set_value(m_right_tangent, make_pointer(root, RIGHT_TANGENT_POINTER));
 }
 
 void Point::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
 {
-  position = deserializer.get_vec2f(make_pointer(root, POSITION_POINTER));
-  left_tangent = deserializer.get_polarcoordinates(make_pointer(root, LEFT_TANGENT_POINTER));
-  right_tangent = deserializer.get_polarcoordinates(make_pointer(root, RIGHT_TANGENT_POINTER));
+  m_position = deserializer.get_vec2f(make_pointer(root, POSITION_POINTER));
+  m_left_tangent = deserializer.get_polarcoordinates(make_pointer(root, LEFT_TANGENT_POINTER));
+  m_right_tangent = deserializer.get_polarcoordinates(make_pointer(root, RIGHT_TANGENT_POINTER));
 }
 
 Point Point::flattened(const double t) const
 {
   Point copy(*this);
-  double center = (left_tangent.argument + right_tangent.argument) / 2.0;
-  if (center - left_tangent.argument < 0) {
+  double center = (m_left_tangent.argument + m_right_tangent.argument) / 2.0;
+  if (center - m_left_tangent.argument < 0) {
     center += M_PI;
   }
 
@@ -112,8 +153,8 @@ Point Point::flattened(const double t) const
     return (v / 2.0).arg();
   };
 
-  copy.left_tangent.argument = lerp_angle(left_tangent.argument, center - M_PI_2, t);
-  copy.right_tangent.argument = lerp_angle(right_tangent.argument, center + M_PI_2, t);
+  copy.m_left_tangent.argument = lerp_angle(m_left_tangent.argument, center - M_PI_2, t);
+  copy.m_right_tangent.argument = lerp_angle(m_right_tangent.argument, center + M_PI_2, t);
 
   return copy;
 }
@@ -122,19 +163,19 @@ QString Point::to_string() const
 {
   static constexpr bool verbose = false;
   if constexpr (verbose) {
-    return QString{"Point[%1, %2, %3]"}.arg(position.to_string(),
-                                            left_tangent.to_string(),
-                                            right_tangent.to_string());
+    return QString{"Point[%1, %2, %3]"}.arg(m_position.to_string(),
+                                            m_left_tangent.to_string(),
+                                            m_right_tangent.to_string());
   } else {
-    return QString{"[%1]"}.arg(position.to_string());
+    return QString{"[%1]"}.arg(m_position.to_string());
   }
 }
 
 bool Point::operator==(const Point& point) const
 {
-  return position == point.position
-         && left_tangent.to_cartesian() == point.left_tangent.to_cartesian()
-         && right_tangent.to_cartesian() == point.right_tangent.to_cartesian();
+  return m_position == point.m_position
+         && m_left_tangent.to_cartesian() == point.m_left_tangent.to_cartesian()
+         && m_right_tangent.to_cartesian() == point.m_right_tangent.to_cartesian();
 }
 
 bool Point::operator!=(const Point& point) const
@@ -165,18 +206,18 @@ double Point::get_direction(const Point* left_neighbor, const Point* right_neigh
   bool has_right_direction = true;
   static constexpr auto eps = 0.001;
 
-  if (right_tangent.magnitude >= eps) {
-    left_arg = right_tangent.argument;
+  if (m_right_tangent.magnitude >= eps) {
+    left_arg = m_right_tangent.argument;
   } else if (left_neighbor != nullptr) {
-    left_arg = (position - left_neighbor->position).arg();
+    left_arg = (m_position - left_neighbor->m_position).arg();
   } else {
     has_left_direction = false;
   }
 
-  if (left_tangent.magnitude >= eps) {
-    right_arg = left_tangent.argument;
+  if (m_left_tangent.magnitude >= eps) {
+    right_arg = m_left_tangent.argument;
   } else if (right_neighbor != nullptr) {
-    right_arg = (position - right_neighbor->position).arg();
+    right_arg = (m_position - right_neighbor->m_position).arg();
   } else {
     has_right_direction = false;
   }
@@ -208,11 +249,11 @@ Point Point::offset(double t, const Point* left_neighbor, const Point* right_nei
     return mag + std::clamp(t, -mag, 0.0) + std::max(0.0, t) / 2.0;
   };
 
-  auto left_tanget = this->left_tangent;
-  auto right_tangent = this->right_tangent;
-  left_tanget.magnitude = f(t, left_tangent.magnitude);
+  auto left_tanget = this->m_left_tangent;
+  auto right_tangent = this->m_right_tangent;
+  left_tanget.magnitude = f(t, m_left_tangent.magnitude);
   right_tangent.magnitude = f(t, right_tangent.magnitude);
-  Point offset(position + t * pdirection, left_tanget, right_tangent);
+  Point offset(m_position + t * pdirection, left_tanget, right_tangent);
   const double tn = t / Vec2f(left_tanget.magnitude, right_tangent.magnitude).euclidean_norm();
   return offset.flattened(std::clamp(tn, 0.0, 1.0));
 }
@@ -243,20 +284,20 @@ Point::offset(const double t, const std::vector<Point>& points, const bool is_cl
 
 bool Point::operator<(const Point& point) const
 {
-  if (position == point.position) {
-    if (left_tangent == point.left_tangent) {
-      return right_tangent < point.right_tangent;
+  if (m_position == point.m_position) {
+    if (m_left_tangent == point.m_left_tangent) {
+      return m_right_tangent < point.m_right_tangent;
     } else {
-      return left_tangent < point.left_tangent;
+      return m_left_tangent < point.m_left_tangent;
     }
   } else {
-    return position < point.position;
+    return m_position < point.m_position;
   }
 }
 
 bool fuzzy_eq(const Point& a, const Point& b)
 {
-  return fuzzy_eq(a.position, b.position) && fuzzy_eq(a.left_position(), b.left_position())
+  return fuzzy_eq(a.position(), b.position()) && fuzzy_eq(a.left_position(), b.left_position())
          && fuzzy_eq(a.right_position(), b.right_position());
 }
 

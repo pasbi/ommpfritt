@@ -68,9 +68,9 @@ PointEdit::PointEdit(Path& path, Point& point, QWidget* parent)
 
   setLayout(main.release());
 
-  m_left_tangent_edit->set_coordinates(m_point.left_tangent.to_cartesian());
-  m_right_tangent_edit->set_coordinates(m_point.right_tangent.to_cartesian());
-  m_position_edit->set_coordinates(m_point.position);
+  m_left_tangent_edit->set_coordinates(m_point.left_tangent().to_cartesian());
+  m_right_tangent_edit->set_coordinates(m_point.right_tangent().to_cartesian());
+  m_position_edit->set_coordinates(m_point.position());
   m_position_edit->set_display_mode(DisplayMode::Cartesian);
 
   connect(m_mirror_from_left, &QPushButton::clicked, this, &PointEdit::mirror_from_left);
@@ -139,9 +139,9 @@ void PointEdit::set_right_maybe(const PolarCoordinates& old_left, const PolarCoo
 void PointEdit::update_point()
 {
   if (m_path == nullptr || m_path->scene() == nullptr) {
-    m_point.left_tangent = m_left_tangent_edit->to_polar();
-    m_point.position = m_position_edit->to_cartesian();
-    m_point.right_tangent = m_right_tangent_edit->to_polar();
+    m_point.set_left_tangent(m_left_tangent_edit->to_polar());
+    m_point.set_position(m_position_edit->to_cartesian());
+    m_point.set_right_tangent(m_right_tangent_edit->to_polar());
   } else {
     ModifyPointsCommand::Map map;
     Point new_point(m_position_edit->to_cartesian(),

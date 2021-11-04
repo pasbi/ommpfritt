@@ -463,7 +463,7 @@ void Cloner::set_fillrandom(Object& object, std::mt19937& rng)
       LINFO << "Return a random point on edge instead.";
 
       const auto t = dist(rng);
-      return o->pos(o->compute_path_vector_time(t)).position;
+      return o->pos(o->compute_path_vector_time(t)).position();
     }();
 
     if (property(ANCHOR_PROPERTY_KEY)->value<Anchor>() == Anchor::Path) {

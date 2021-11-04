@@ -25,7 +25,7 @@ Vec2f PointSelection::center(Space space) const
   const auto selected_points = points(space);
   Vec2f sum(0.0, 0.0);
   for (const Point& p : selected_points) {
-    sum += p.position;
+    sum += p.position();
   }
   return sum / static_cast<double>(selected_points.size());
 }

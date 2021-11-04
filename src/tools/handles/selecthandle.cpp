@@ -138,7 +138,7 @@ ObjectTransformation PointSelectHandle::transformation() const
 
 bool PointSelectHandle::contains_global(const Vec2f& point) const
 {
-  const auto tpoint = transformation().apply_to_position(m_point.position);
+  const auto tpoint = transformation().apply_to_position(m_point.position());
   const auto d = (point - tpoint).euclidean_norm();
   return d < interact_epsilon();
 }
@@ -176,7 +176,7 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
 
 void PointSelectHandle::draw(QPainter& painter) const
 {
-  const auto pos = transformation().apply_to_position(m_point.position);
+  const auto pos = transformation().apply_to_position(m_point.position());
   const auto left_pos = transformation().apply_to_position(m_point.left_position());
   const auto right_pos = transformation().apply_to_position(m_point.right_position());
 
@@ -214,20 +214,29 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
                                           TangentHandle::Tangent tangent)
 {
   auto new_point = m_point;
-  const auto [primary_pos, secondary_pos] = [tangent, &new_point]() {
-    if (tangent == TangentHandle::Tangent::Left) {
-      return std::pair{&new_point.left_tangent, &new_point.right_tangent};
-    } else {
-      return std::pair{&new_point.right_tangent, &new_point.left_tangent};
-    }
-  }();
+  PolarCoordinates primary_pos;
+  PolarCoordinates secondary_pos;
+  if (tangent == TangentHandle::Tangent::Right) {
+    primary_pos = new_point.right_tangent();
+    secondary_pos = new_point.left_tangent();
+  } else {
+    primary_pos = new_point.left_tangent();
+    secondary_pos = new_point.right_tangent();
+  }
 
-  const auto old_primary_pos = *primary_pos;
+  const auto old_primary_pos = primary_pos;
   const auto transformation = ObjectTransformation().translated(delta);
-  *primary_pos = transformation.transformed(this->transformation()).apply_to_position(*primary_pos);
-  if (mode == TangentMode::Mirror
-      && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
-    *secondary_pos = Point::mirror_tangent(*secondary_pos, old_primary_pos, *primary_pos);
+  primary_pos = transformation.transformed(this->transformation()).apply_to_position(primary_pos);
+  if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
+    secondary_pos = Point::mirror_tangent(secondary_pos, old_primary_pos, primary_pos);
+  }
+
+  if (tangent == TangentHandle::Tangent::Right) {
+    new_point.set_right_tangent(primary_pos);
+    new_point.set_left_tangent(secondary_pos);
+  } else {
+    new_point.set_left_tangent(primary_pos);
+    new_point.set_right_tangent(secondary_pos);
   }
 
   ModifyPointsCommand::Map map;

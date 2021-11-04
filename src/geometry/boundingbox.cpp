@@ -29,7 +29,7 @@ std::set<omm::Vec2f> get_all_control_points(const std::set<omm::Point>& points)
   std::set<omm::Vec2f> control_points;
   for (auto&& p : points) {
     control_points.insert(p.left_position());
-    control_points.insert(p.position);
+    control_points.insert(p.position());
     control_points.insert(p.right_position());
   }
   return control_points;

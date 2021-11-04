@@ -25,8 +25,8 @@ double normal_distance(const Point& a, const Point& b)
     return M_180_PI * PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
   };
 
-  return std::min(normalize(a.left_tangent.argument, b.left_tangent.argument),
-                  normalize(a.right_tangent.argument, b.right_tangent.argument));
+  return std::min(normalize(a.left_tangent().argument, b.left_tangent().argument),
+                  normalize(a.right_tangent().argument, b.right_tangent().argument));
 }
 
 omm::Vec2f distance(const Path& path, const Point& a, const Point& b, omm::SelectSimilarTool::Alignment alignment)
@@ -34,11 +34,11 @@ omm::Vec2f distance(const Path& path, const Point& a, const Point& b, omm::Selec
   if (alignment == SelectSimilarTool::Alignment::Global) {
     const auto global_pos = [&path](const Point& point) {
       const auto t = path.global_transformation(omm::Space::Viewport);
-      return t.apply_to_position(point.position);
+      return t.apply_to_position(point.position());
     };
     return global_pos(a) - global_pos(b);
   } else {
-    return a.position - b.position;
+    return a.position() - b.position();
   }
 }
 

@@ -79,7 +79,7 @@ void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& eve
         // we can't transform `pos` with path's inverse transformation because if it scales,
         // `radius` will be wrong.
         const auto gt = path->global_transformation(Space::Viewport);
-        const auto gpos = gt.apply_to_position(point->position);
+        const auto gpos = gt.apply_to_position(point->position());
         if ((gpos - pos).euclidean_norm() < radius) {
           if (point->is_selected() != extend_selection) {
             is_noop = false;

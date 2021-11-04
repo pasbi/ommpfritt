@@ -24,9 +24,9 @@ bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEven
   } else if (m_current_path == nullptr || m_current_point ==  nullptr) {
     return false;
   } else {
-    const auto lt = PolarCoordinates(m_current_point->left_tangent.to_cartesian() + delta);
-    m_current_point->left_tangent = lt;
-    m_current_point->right_tangent = -lt;
+    const auto lt = PolarCoordinates(m_current_point->left_tangent().to_cartesian() + delta);
+    m_current_point->set_left_tangent(lt);
+    m_current_point->set_right_tangent(-lt);
     m_current_path->update();
     return true;
   }

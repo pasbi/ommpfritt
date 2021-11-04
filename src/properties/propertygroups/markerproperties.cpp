@@ -49,7 +49,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
 {
   QPainter& p = *painter.painter;
   p.save();
-  p.translate(to_qpoint(location.position));
+  p.translate(to_qpoint(location.position()));
   if (property_value<bool>(REVERSE_PROPERTY_KEY)) {
     p.rotate((location.rotation() + M_PI_2) * M_180_PI);
   } else {
