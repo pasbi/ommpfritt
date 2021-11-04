@@ -2,7 +2,6 @@
 
 #include "cachedgetter.h"
 #include "objects/object.h"
-#include "objects/pathiterator.h"
 #include <deque>
 #include <list>
 #include <type_traits>
