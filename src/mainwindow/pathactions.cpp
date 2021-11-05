@@ -181,24 +181,24 @@ const std::map<QString, std::function<void(Application& app)>> actions{
        }
      }},
 
-//    {"subdivide",
-//     [](Application& app) {
-//       std::list<std::unique_ptr<SubdividePathCommand>> cmds;
-//       for (auto* path : app.scene->item_selection<Path>()) {
-//         auto cmd = std::make_unique<SubdividePathCommand>(*path);
-//         if (!cmd->is_noop()) {
-//           cmds.push_back(std::move(cmd));
-//         }
-//       }
+    {"subdivide",
+     [](Application& app) {
+       std::list<std::unique_ptr<SubdividePathCommand>> cmds;
+       for (auto* path : app.scene->item_selection<Path>()) {
+         auto cmd = std::make_unique<SubdividePathCommand>(*path);
+         if (!cmd->is_noop()) {
+           cmds.push_back(std::move(cmd));
+         }
+       }
 
-//       std::unique_ptr<Macro> macro;
-//       if (!cmds.empty()) {
-//         macro = app.scene->history().start_macro(QObject::tr("Subdivide Paths"));
-//       }
-//       for (auto&& cmd : cmds) {
-//         app.scene->submit(std::move(cmd));
-//       }
-//     }},
+       std::unique_ptr<Macro> macro;
+       if (!cmds.empty()) {
+         macro = app.scene->history().start_macro(QObject::tr("Subdivide Paths"));
+       }
+       for (auto&& cmd : cmds) {
+         app.scene->submit(std::move(cmd));
+       }
+     }},
 
     {"select all",
      [](Application& app) {
