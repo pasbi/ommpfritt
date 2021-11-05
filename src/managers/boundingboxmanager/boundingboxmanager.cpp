@@ -222,12 +222,12 @@ void BoundingBoxManager::update_bounding_box()
 
   const ObjectTransformation t
       = find_transformation(m_old_bounding_box, new_bounding_box, aspect_ratio);
-//  switch (m_current_mode) {
-//  case Mode::Points:
-//    return scene().submit(m_transform_points_helper.make_command(t));
-//  case Mode::Objects:
-//    return scene().submit(m_transform_objects_helper.make_command(t.to_mat()));
-//  }
+  switch (m_current_mode) {
+  case Mode::Points:
+    return scene().submit(m_transform_points_helper.make_command(t));
+  case Mode::Objects:
+    return scene().submit(m_transform_objects_helper.make_command(t.to_mat()));
+  }
 }
 
 void BoundingBoxManager::reset_transformation()
