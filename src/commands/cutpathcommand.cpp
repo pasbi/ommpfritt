@@ -1,95 +1,123 @@
-//#include "commands/cutpathcommand.h"
-//#include "objects/path.h"
+#include "commands/cutpathcommand.h"
+#include "objects/segment.h"
+#include "commands/modifypointscommand.h"
+#include "objects/path.h"
 
-//namespace
-//{
-//void cut(const Geom::Curve& curve, std::list<double> cuts, Geom::Path& path)
-//{
-//  assert(std::is_sorted(cuts.begin(), cuts.end()));
-//  if (cuts.empty() || cuts.back() < 1.0) {
-//    cuts.push_back(1.0);
-//  }
-//  if (!cuts.empty() && cuts.front() == 0.0) {
-//    cuts.erase(cuts.begin());
-//  }
+namespace
+{
 
-//  double t0 = 0.0;
-//  for (double t : cuts) {
-//    path.append(curve.portion(t0, t));
-//    t0 = t;
-//  }
-//}
+using namespace omm;
 
-//Geom::Path cut(const Geom::Path& path, std::list<Geom::PathTime> cuts)
-//{
-//  if (cuts.empty()) {
-//    // this is the most common case.
-//    return path;
-//  }
+std::deque<std::unique_ptr<Point>> cut(Point& a, Point& b,
+                                       std::deque<double>&& positions,
+                                       InterpolationMode interpolation,
+                                       std::map<Point*, Point>& modified_points)
+{
+  const auto control_points = Segment::compute_control_points(a, b, interpolation);
+  const auto curve = std::unique_ptr<Geom::BezierCurve>(Geom::BezierCurve::create(control_points));
+  assert(std::is_sorted(positions.begin(), positions.end()));
+  assert(!positions.empty());
+  assert(positions.front() >= 0.0 && positions.back() <= 1.0);
+  if (!positions.empty() && positions.front() == 0.0) {
+    positions.pop_front();
+  }
+  if (!positions.empty() && positions.back() == 1.0) {
+    positions.pop_back();
+  }
+  if (positions.empty()) {
+    return {};
+  }
 
-//  assert(std::is_sorted(cuts.begin(), cuts.end()));
-//  auto current_cut = cuts.begin();
-//  Geom::Path cut_path;
-//  for (std::size_t i = 0; i < path.size(); ++i) {
-//    std::list<double> curve_cut_buffer;
-//    for (; current_cut != cuts.end() && current_cut->curve_index == i; ++current_cut) {
-//      curve_cut_buffer.push_back(current_cut->t);
-//    }
-//    cut(path[i], curve_cut_buffer, cut_path);
-//  }
-//  return cut_path;
-//}
+  std::deque<std::unique_ptr<Geom::BezierCurve>> new_curves;
+  new_curves.emplace_back(dynamic_cast<Geom::BezierCurve*>(curve->portion(0.0, positions.front())));
+  for (std::size_t i = 0; i < positions.size() - 1; ++i) {
+    new_curves.emplace_back(dynamic_cast<Geom::BezierCurve*>(curve->portion(positions[i], positions[i+1])));
+  }
+  new_curves.emplace_back(dynamic_cast<Geom::BezierCurve*>(curve->portion(positions.back(), 1.0)));
 
-//Geom::PathVector cut(const Geom::PathVector& paths, std::vector<Geom::PathVectorTime> cuts)
-//{
-//  std::sort(cuts.begin(), cuts.end());
-//  std::vector<Geom::Path> cut_paths;
-//  cut_paths.reserve(paths.size());
+  Point left_point = a;
+  left_point.set_right_position(Vec2f{new_curves.front()->controlPoint(1)});
+  modified_points[&a] = left_point;
 
-//  auto current_cut = cuts.begin();
-//  for (std::size_t i = 0; i < paths.size(); ++i) {
-//    std::list<Geom::PathTime> path_cut_buffer;
-//    for (; current_cut != cuts.end() && current_cut->path_index == i; ++current_cut) {
-//      path_cut_buffer.push_back(*current_cut);
-//    }
-//    cut_paths.push_back(cut(paths[i], path_cut_buffer));
-//  }
+  Point right_point = b;
+  right_point.set_left_position(Vec2f{new_curves.back()->controlPoint(2)});
+  modified_points[&b] = right_point;
 
-//  return Geom::PathVector(cut_paths.begin(), cut_paths.end());
-//}
+  std::deque<std::unique_ptr<Point>> new_points;
+  for (std::size_t i = 1; i < new_curves.size(); ++i) {
+    // the last point of the previous curve must match the first point of the current one
+    assert(new_curves[i-1]->controlPoint(3) == new_curves[i]->controlPoint(0));
+    auto point = std::make_unique<Point>(Vec2f{new_curves[i-1]->controlPoint(3)});
+    point->set_left_position(Vec2f{new_curves[i-1]->controlPoint(2)});
+    point->set_right_position(Vec2f{new_curves[i]->controlPoint(1)});
+    new_points.push_back(std::move(point));
+  }
 
-//using namespace omm;
+  assert(new_points.size() ==  positions.size());
+  return new_points;
+}
 
-//auto cut_segments(const Path& path, const std::vector<Geom::PathVectorTime>& cuts)
-//{
-//  const auto path_vector = cut(path.paths(), cuts);
-//  ModifySegmentsCommand::Segments segments;
-//  segments.reserve(path_vector.size());
-//  for (std::size_t i = 0; i < path_vector.size(); ++i) {
-//    const auto n_old_points = path_vector[i].size() + 1;
-//    if (n_old_points == path.segments[i].size()) {
-//      segments.push_back({});
-//    } else {
-//      segments.push_back(Object::path_to_segment(path_vector[i], path.is_closed()));
-//    }
-//  }
-//  return segments;
-//}
+void cut(Segment& segment,
+         std::vector<Geom::PathTime>&& positions,
+         const InterpolationMode interpolation,
+         std::deque<omm::AddPointsCommand::OwnedLocatedSegment>& new_point_sequences,
+         std::map<Point*, Point>& modified_points)
+{
+  assert(std::is_sorted(positions.begin(), positions.end()));
 
-//}  // namespace
+  std::map<std::size_t, std::deque<double>> curve_positions;
+  for (const auto& position : positions) {
+    curve_positions[position.curve_index].push_back(position.t);
+  }
 
-//namespace omm
-//{
-//CutPathCommand::CutPathCommand(Path& path, const std::vector<Geom::PathVectorTime>& cuts)
-//    : CutPathCommand(QObject::tr("CutPathCommand"), path, cuts)
-//{
-//}
+  for (auto&& [i, positions] : curve_positions) {
+    const auto j = i == segment.size() - 1 ? 0 : i + 1;
+    auto new_points = cut(segment.at(i), segment.at(j), std::move(positions), interpolation, modified_points);
+    if (!new_points.empty()) {
+      new_point_sequences.emplace_back(&segment, i + 1, std::move(new_points));
+    }
+  }
+}
 
-//CutPathCommand::CutPathCommand(const QString& label,
-//                               Path& path,
-//                               const std::vector<Geom::PathVectorTime>& cuts)
-//    : ModifySegmentsCommand(label, path, cut_segments(path, cuts))
-//{
-//}
+void cut(Path& path,
+         const std::vector<Geom::PathVectorTime>& positions,
+         std::deque<omm::AddPointsCommand::OwnedLocatedSegment>& new_points,
+         ModifyPointsCommand::Map& modified_points)
+{
+  const auto segments = path.segments();
+  std::map<Segment*, std::vector<Geom::PathTime>> path_positions;
+  for (const auto position : positions) {
+    path_positions[segments.at(position.path_index)].push_back(position.asPathTime());
+  }
 
-//}  // namespace omm
+  const auto interpolation = path.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
+  for (auto&& [segment, positions] : path_positions) {
+    cut(*segment, std::move(positions), interpolation, new_points, modified_points[&path]);
+  }
+}
+
+}  // namespace
+
+namespace omm
+{
+
+CutPathCommand::CutPathCommand(Path& path, const std::vector<Geom::PathVectorTime>& cuts)
+    : CutPathCommand(QObject::tr("CutPathCommand"), path, cuts)
+{
+}
+
+CutPathCommand::CutPathCommand(const QString& label,
+                               Path& path,
+                               const std::vector<Geom::PathVectorTime>& cuts)
+    : ComposeCommand(label)
+{
+  std::deque<omm::AddPointsCommand::OwnedLocatedSegment> new_points;
+  ModifyPointsCommand::Map modified_points;
+  cut(path, cuts, new_points, modified_points);
+  std::vector<std::unique_ptr<Command>> commands;
+  commands.push_back(std::make_unique<ModifyPointsCommand>(modified_points));
+  commands.push_back(std::make_unique<AddPointsCommand>(path, std::move(new_points)));
+  set_commands(std::move(commands));
+}
+
+}  // namespace omm
