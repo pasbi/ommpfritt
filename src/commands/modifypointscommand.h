@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commands/command.h"
+#include <compare>
 #include <deque>
 #include <memory>
 
