@@ -2,6 +2,8 @@ target_sources(libommpfritt PRIVATE
   command.cpp
   command.h
   addcommand.h
+  composecommand.cpp
+  composecommand.h
   copycommand.cpp
   copycommand.h
   cutpathcommand.cpp

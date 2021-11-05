@@ -27,6 +27,7 @@ protected:
   static constexpr int CHANGE_NAMED_COLORS_COLOR_COMMAND_ID = 6;
   static constexpr int CHANGE_KEYFRAMES_COMMAND_ID = 7;
   static constexpr int MOVE_NODES_COMMAND_ID = 8;
+  static constexpr int COMPOSE_COMMAND_ID = 9;
 };
 
 }  // namespace omm
