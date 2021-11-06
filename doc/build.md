@@ -58,6 +58,8 @@ That may sound complicated, but a CMake target exists for every step, which simp
 4.  Configure again to make the build system aware: `cmake -S SOURCE_DIRECTORY -B BUILD_DIRECTORY`
 5.  Build with icons (and optionally install) `cmake --build BUILD_DIRECTORY`
 
+`SOURCE_DIRECTORY` here is the root of the repository.
+
 Step *3.* may take some time and CMake won't display the output until it's done, so it looks like the process froze.
 If you want more direct feedback, you can generate the icons manually by calling `BUILD_DIRECTORY/generate-icons.py` (without any parameters).
 It will do exactly the same in the same time, but with more direct feedback.
