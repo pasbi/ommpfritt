@@ -10,5 +10,4 @@ jobs:
         with:
           submodules: recursive
       - run: |
-          stylechecker/main.py --root src --options stylechecker-options.json
-          stylechecker/main.py --root test --options stylechecker-options.json
+          stylechecker/main.py --root . --options stylechecker-options.json
