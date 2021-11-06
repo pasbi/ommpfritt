@@ -38,6 +38,9 @@ public:
   explicit Segment(std::deque<std::unique_ptr<Point> >&& points);
   explicit Segment(const Geom::Path& path, bool is_closed);
   ~Segment();
+
+  static constexpr auto POINTS_POINTER = "points";
+
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   std::size_t size() const;

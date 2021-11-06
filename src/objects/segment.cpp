@@ -205,7 +205,7 @@ std::deque<std::unique_ptr<Point>> Segment::extract(std::size_t start, std::size
 
 void Segment::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
-  const auto points_ptr = make_pointer(root, "points");
+  const auto points_ptr = make_pointer(root, POINTS_POINTER);
   serializer.start_array(m_points.size(), points_ptr);
   for (std::size_t i = 0; i < m_points.size(); ++i) {
     m_points.at(i)->serialize(serializer, make_pointer(points_ptr, i));
@@ -215,7 +215,7 @@ void Segment::serialize(AbstractSerializer& serializer, const Pointer& root) con
 
 void Segment::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
-  const auto points_ptr = make_pointer(root, "points");
+  const auto points_ptr = make_pointer(root, POINTS_POINTER);
   const auto size = deserializer.array_size(points_ptr);
   for (std::size_t i = 0; i < size; ++i) {
     Point& point = *m_points.emplace_back(std::make_unique<Point>());

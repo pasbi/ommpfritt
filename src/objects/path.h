@@ -25,7 +25,7 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
-  static constexpr auto SEGMENTS_POINTER = "paths";
+  static constexpr auto SEGMENTS_POINTER = "segments";
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
