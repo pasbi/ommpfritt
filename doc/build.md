@@ -17,7 +17,7 @@ build process.
 
 ## Build environment
 
-*omm* is known to successfully compile and run on Arch Linux, Ubuntu Linux and 
+*omm* is known to successfully compile and run on Arch Linux, Ubuntu Linux and
 Windows/MSYS2.
 Neither building nor running on Mac has ever been tested, but it should work in theory!
 We recommend using **g++9.x** or later. g++7.x or earlier will not work.
