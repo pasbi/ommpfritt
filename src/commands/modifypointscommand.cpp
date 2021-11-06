@@ -48,7 +48,9 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
   return ::get_keys(m_data) == ::get_keys(mtc.m_data);
 }
 
-AbstractPointsCommand::AbstractPointsCommand(const QString& label, Path& path, std::deque<OwnedLocatedSegment>&& points_to_add)
+AbstractPointsCommand::AbstractPointsCommand(const QString& label,
+                                             Path& path,
+                                             std::deque<OwnedLocatedSegment>&& points_to_add)
   : Command(label)
   , m_path(path)
   , m_points_to_add(std::move(points_to_add))
@@ -57,7 +59,9 @@ AbstractPointsCommand::AbstractPointsCommand(const QString& label, Path& path, s
   assert(std::is_sorted(m_points_to_add.rbegin(), m_points_to_add.rend()));
 }
 
-AbstractPointsCommand::AbstractPointsCommand(const QString& label, Path& path, std::deque<SegmentView>&& points_to_remove)
+AbstractPointsCommand::AbstractPointsCommand(const QString& label,
+                                             Path& path,
+                                             std::deque<SegmentView>&& points_to_remove)
   : Command(label)
   , m_path(path)
   , m_points_to_remove(std::move(points_to_remove))
