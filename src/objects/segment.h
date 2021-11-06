@@ -21,7 +21,7 @@ struct SegmentView
 {
 public:
   explicit SegmentView(Segment& segment, std::size_t index, std::size_t size);
-  friend std::weak_ordering operator<=>(const SegmentView& a, const SegmentView& b);
+  friend bool operator<(const SegmentView& a, const SegmentView& b);
   friend std::ostream& operator<<(std::ostream& ostream, const SegmentView& segment_view);
   Segment* segment;
   std::size_t index;

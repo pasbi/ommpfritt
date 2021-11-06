@@ -1,7 +1,6 @@
 #pragma once
 
 #include "commands/command.h"
-#include <compare>
 #include <deque>
 #include <memory>
 
@@ -37,7 +36,7 @@ public:
     explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point>>&& points);
     explicit OwnedLocatedSegment(std::unique_ptr<Segment> segment);
     SegmentView insert_into(Path& path);
-    friend std::weak_ordering operator<=>(const OwnedLocatedSegment& a, const OwnedLocatedSegment& b);
+    friend bool operator<(const OwnedLocatedSegment& a, const OwnedLocatedSegment& b);
 
   private:
     Segment* m_segment = nullptr;

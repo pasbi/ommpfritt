@@ -228,12 +228,12 @@ SegmentView::SegmentView(Segment& segment, std::size_t index, std::size_t size)
 {
 }
 
-std::weak_ordering operator<=>(const SegmentView& a, const SegmentView& b)
+bool operator<(const SegmentView& a, const SegmentView& b)
 {
   static constexpr auto as_tuple = [](const SegmentView& a) {
     return std::tuple{a.segment, a.index};
   };
-  return as_tuple(a) <=> as_tuple(b);
+  return as_tuple(a) < as_tuple(b);
 }
 
 std::ostream& operator<<(std::ostream& ostream, const SegmentView& segment_view)

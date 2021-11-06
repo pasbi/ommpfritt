@@ -164,14 +164,14 @@ SegmentView AbstractPointsCommand::OwnedLocatedSegment::insert_into(Path& path)
   }
 }
 
-std::weak_ordering operator<=>(const AbstractPointsCommand::OwnedLocatedSegment& a,
-                               const AbstractPointsCommand::OwnedLocatedSegment& b)
+bool operator<(const AbstractPointsCommand::OwnedLocatedSegment& a,
+               const AbstractPointsCommand::OwnedLocatedSegment& b)
 {
   static constexpr auto as_tuple = [](const auto& ola) {
     return std::tuple{ola.m_segment, ola.m_owned_segment.get(), ola.m_index};
   };
 
-  return as_tuple(a) <=> as_tuple(b);
+  return as_tuple(a) < as_tuple(b);
 }
 
 }  // namespace omm
