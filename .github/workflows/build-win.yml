@@ -12,6 +12,9 @@ jobs:
           path: omm
           fetch-depth: 0
       - uses: ./omm/.github/actions/prepare-msys
+      - run: echo "PYTHONPATH=$(python3 -c "import sys; print(';'.join(sys.path))")" >> $GITHUB_ENV
+      - run: echo "PYTHONHOME=$(python3 -c "import sys; print(sys.executable)")" >> GITHUB_ENV
+      - run: echo "PYTHONPATH ${PYTHONPATH} PYTHONHOME ${PYTHONHOME}"
       - run: git clone https://gitlab.com/inkscape/lib2geom.git
       - run: cd lib2geom; git checkout 37876ed4; cd ..
       - run: cmake -S lib2geom
@@ -74,7 +77,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build
-      - run: ctest --test-dir $GITHUB_WORKSPACE/omm-build --output-on-failure --no-tests=error
+      - run: echo "PYTHONPATH=$(python3 -c "import sys; print(';'.join(sys.path))")" >> $GITHUB_ENV
+      - run: echo "PYTHONHOME=$(python3 -c "import sys; print(sys.executable)")" >> GITHUB_ENV
+      - run: echo "PYTHONPATH ${PYTHONPATH} PYTHONHOME ${PYTHONHOME}"
+      - run: PYTHONPATH="${PYTHONPATH}" PYTHONHOME="${PYTHONHOME}" ctest --test-dir $GITHUB_WORKSPACE/omm-build --output-on-failure --no-tests=error
   release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
