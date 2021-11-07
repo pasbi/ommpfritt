@@ -1,52 +1,53 @@
 #pragma once
 
 #include "commands/command.h"
-#include "geometry/point.h"
-#include "objects/pathiterator.h"
-#include "objects/segment.h"
-#include <list>
+#include <deque>
+#include <memory>
 
 namespace omm
 {
+
 class Path;
+class Point;
+class Segment;
+struct SegmentView;
+
 class ModifyPointsCommand : public Command
 {
 public:
-  using map_type = std::map<PathIterator, Point>;
-  ModifyPointsCommand(const map_type& points);
+  using Map = std::map<Path*, std::map<Point*, Point>>;
+  ModifyPointsCommand(const Map& points);
   void redo() override;
   void undo() override;
   [[nodiscard]] int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
 
 private:
-  std::map<PathIterator, Point> m_data;
-  void swap();
+  Map m_data;
+  void exchange();
 };
 
 class AbstractPointsCommand : public Command
 {
 public:
-  struct LocatedSegment {
-    PathIterator index;
-    Segment points;
-    bool operator<(const LocatedSegment& other) const;
-    bool operator>(const LocatedSegment& other) const;
-  };
+  class OwnedLocatedSegment
+  {
+  public:
+    explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point>>&& points);
+    explicit OwnedLocatedSegment(std::unique_ptr<Segment> segment);
+    SegmentView insert_into(Path& path);
+    friend bool operator<(const OwnedLocatedSegment& a, const OwnedLocatedSegment& b);
 
-  struct Range {
-    PathIterator begin;
-    std::size_t length;
-    [[nodiscard]] bool intersects(const Range& other) const;
-    bool operator<(const Range& other) const;
-    bool operator>(const Range& other) const;
+  private:
+    Segment* m_segment = nullptr;
+    std::unique_ptr<Segment> m_owned_segment{};
+    std::size_t m_index;
+    std::deque<std::unique_ptr<Point>> m_points;
   };
 
 protected:
-  AbstractPointsCommand(const QString& label,
-                        Path& path,
-                        const std::vector<LocatedSegment>& added_points);
-  AbstractPointsCommand(const QString& label, Path& path, const std::vector<Range>& removed_points);
+  explicit AbstractPointsCommand(const QString& label, Path& path, std::deque<OwnedLocatedSegment>&& points_to_add);
+  explicit AbstractPointsCommand(const QString& label, Path& path, std::deque<SegmentView>&& points_to_remove);
   void add();
   void remove();
 
@@ -54,22 +55,23 @@ protected:
 
 private:
   Path& m_path;
-  std::vector<LocatedSegment> m_points_to_add;
-  std::vector<Range> m_points_to_remove;
+  std::deque<OwnedLocatedSegment> m_points_to_add;
+  std::deque<SegmentView> m_points_to_remove;
 };
 
 class AddPointsCommand : public AbstractPointsCommand
 {
 public:
-  AddPointsCommand(Path& path, const std::vector<LocatedSegment>& added_points);
+  AddPointsCommand(Path& path, std::deque<OwnedLocatedSegment>&& added_points);
   void redo() override;
   void undo() override;
+  static QString static_label();
 };
 
 class RemovePointsCommand : public AbstractPointsCommand
 {
 public:
-  RemovePointsCommand(Path& path, const std::vector<Range>& removed_points);
+  RemovePointsCommand(Path& path, std::deque<SegmentView>&& removed_points);
   void redo() override;
   void undo() override;
 };

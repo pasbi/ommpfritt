@@ -1,7 +1,6 @@
 #pragma once
 
 #include "geometry/vec2.h"
-#include "objects/pathiterator.h"
 #include "tools/handles/handle.h"
 #include "tools/handles/particlehandle.h"
 #include "tools/handles/tangenthandle.h"
@@ -52,7 +51,7 @@ class PointSelectHandle : public AbstractSelectHandle
 {
 public:
   enum class TangentMode { Mirror, Individual };
-  explicit PointSelectHandle(Tool& tool, const PathIterator& iterator);
+  explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
   [[nodiscard]] bool contains_global(const Vec2f& point) const override;
   void draw(QPainter& painter) const override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
@@ -69,7 +68,8 @@ protected:
   [[nodiscard]] bool is_selected() const override;
 
 private:
-  PathIterator m_iterator;
+  Path& m_path;
+  Point& m_point;
   std::unique_ptr<TangentHandle> m_left_tangent_handle;
   std::unique_ptr<TangentHandle> m_right_tangent_handle;
   [[nodiscard]] bool tangents_active() const;

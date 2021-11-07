@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include "geometry/point.h"
 
 namespace omm
 {

@@ -16,28 +16,34 @@ public:
   explicit Point(const Vec2f& position, double rotation, double tangent_length = 1.0);
   explicit Point(const Vec2f& position);
   Point();
-  Vec2f position;
+  [[nodiscard]] Vec2f position() const;
+  void set_position(const Vec2f& position);
   [[nodiscard]] Vec2f left_position() const;
+  void set_left_position(const Vec2f& position);
   [[nodiscard]] Vec2f right_position() const;
+  void set_right_position(const Vec2f& position);
+  PolarCoordinates left_tangent() const;
+  void set_left_tangent(const PolarCoordinates& vector);
+  PolarCoordinates right_tangent() const;
+  void set_right_tangent(const PolarCoordinates& vector);
   [[nodiscard]] double rotation() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
-  bool is_selected = false;
-  void swap(Point& other);
+  friend void swap(Point& a, Point& b);
   [[nodiscard]] bool has_nan() const;
   [[nodiscard]] bool has_inf() const;
 
-  PolarCoordinates left_tangent;
-  PolarCoordinates right_tangent;
-
   [[nodiscard]] Point rotated(double rad) const;
   [[nodiscard]] Point nibbed() const;
+
+  bool is_selected() const;
+  void set_selected(bool selected);
 
   static constexpr auto POSITION_POINTER = "position";
   static constexpr auto LEFT_TANGENT_POINTER = "left";
   static constexpr auto RIGHT_TANGENT_POINTER = "right";
 
   void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override;
-  void deserialize(AbstractDeserializer& serializer, const Serializable::Pointer& root) override;
+  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override;
 
   /**
    * @brief flattened means adjust the tangents such that the angle between them approaches
@@ -56,6 +62,8 @@ public:
   bool operator<(const Point& point) const;
 
   Point offset(double t, const Point* left_neighbor, const Point* right_neighbor) const;
+  static std::vector<Point> offset(double t, const std::vector<Point>& points, bool is_closed);
+  QString to_string() const;
 
   /**
    * @brief When a tangent is at `old_pos` and it is mirror-coupled with its sibling which moves
@@ -72,10 +80,10 @@ public:
 
 private:
   double get_direction(const Point* left_neighbor, const Point* right_neighbor) const;
-
-public:
-  static std::vector<Point> offset(double t, const std::vector<Point>& points, bool is_closed);
-  QString to_string() const;
+  Vec2f m_position;
+  PolarCoordinates m_left_tangent;
+  PolarCoordinates m_right_tangent;
+  bool m_is_selected = false;
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);

@@ -11,7 +11,7 @@ struct PolarCoordinates
   explicit PolarCoordinates(const Vec2f& cartesian);
   explicit PolarCoordinates();
   [[nodiscard]] Vec2f to_cartesian() const;
-  void swap(PolarCoordinates& other);
+  friend void swap(PolarCoordinates& a, PolarCoordinates& b);
   double argument;
   double magnitude;
   bool operator==(const PolarCoordinates& point) const;

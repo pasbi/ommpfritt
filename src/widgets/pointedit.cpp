@@ -35,9 +35,10 @@ auto make_tangent_layout(omm::CoordinateEdit*& coordinate_edit_ref,
 
 namespace omm
 {
-PointEdit::PointEdit(Point& point, QWidget* parent) : QWidget(parent), m_point(point)
+PointEdit::PointEdit(Path& path, Point& point, QWidget* parent)
+  : QWidget(parent), m_point(point), m_path(&path)
 {
-  if (m_point.is_selected) {
+  if (m_point.is_selected()) {
     QPalette palette = this->palette();
     palette.setColor(QPalette::Window, palette.color(QPalette::AlternateBase));
     setPalette(palette);
@@ -67,9 +68,9 @@ PointEdit::PointEdit(Point& point, QWidget* parent) : QWidget(parent), m_point(p
 
   setLayout(main.release());
 
-  m_left_tangent_edit->set_coordinates(m_point.left_tangent.to_cartesian());
-  m_right_tangent_edit->set_coordinates(m_point.right_tangent.to_cartesian());
-  m_position_edit->set_coordinates(m_point.position);
+  m_left_tangent_edit->set_coordinates(m_point.left_tangent().to_cartesian());
+  m_right_tangent_edit->set_coordinates(m_point.right_tangent().to_cartesian());
+  m_position_edit->set_coordinates(m_point.position());
   m_position_edit->set_display_mode(DisplayMode::Cartesian);
 
   connect(m_mirror_from_left, &QPushButton::clicked, this, &PointEdit::mirror_from_left);
@@ -138,15 +139,17 @@ void PointEdit::set_right_maybe(const PolarCoordinates& old_left, const PolarCoo
 void PointEdit::update_point()
 {
   if (m_path == nullptr || m_path->scene() == nullptr) {
-    m_point.left_tangent = m_left_tangent_edit->to_polar();
-    m_point.position = m_position_edit->to_cartesian();
-    m_point.right_tangent = m_right_tangent_edit->to_polar();
+    m_point.set_left_tangent(m_left_tangent_edit->to_polar());
+    m_point.set_position(m_position_edit->to_cartesian());
+    m_point.set_right_tangent(m_right_tangent_edit->to_polar());
   } else {
-    ModifyPointsCommand::map_type map;
-    m_point = Point(m_position_edit->to_cartesian(),
+    ModifyPointsCommand::Map map;
+    Point new_point(m_position_edit->to_cartesian(),
                     m_left_tangent_edit->to_polar(),
                     m_right_tangent_edit->to_polar());
+    map[m_path][&m_point] = new_point;
     m_path->scene()->submit<ModifyPointsCommand>(map);
+    m_path->update();
   }
 }
 

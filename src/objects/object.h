@@ -1,6 +1,5 @@
 #pragma once
 
-#include "2geom/pathvector.h"
 #include "abstractfactory.h"
 #include "aspects/propertyowner.h"
 #include "aspects/treeelement.h"
@@ -8,18 +7,18 @@
 #include "common.h"
 #include "external/json_fwd.hpp"
 #include "geometry/objecttransformation.h"
-#include "geometry/point.h"
 #include "scene/taglist.h"
-#include "objects/segment.h"
 #include <memory>
 #include <vector>
 #include <QPainterPath>
+#include <deque>
 
 namespace omm
 {
 
 class ObjectTree;
 class Painter;
+class Point;
 class Property;
 class Scene;
 struct PainterOptions;
@@ -116,25 +115,6 @@ public:
   } geom_paths;
 
   friend struct CachedQPainterPathGetter;
-
-  static Segment path_to_segment(const Geom::Path& path, bool is_closed);
-  static Geom::Path segment_to_path(Segment segment,
-                                    bool is_closed,
-                                    InterpolationMode interpolation = InterpolationMode::Bezier);
-
-  template<typename Segments = std::vector<Segment>>
-  static Geom::PathVector segments_to_path_vector(const Segments& segments,
-                                                  bool is_closed,
-                                                  InterpolationMode interpolation
-                                                  = InterpolationMode::Bezier)
-  {
-    Geom::PathVector paths;
-    for (auto&& segment : segments) {
-      paths.push_back(segment_to_path(segment, is_closed, interpolation));
-    }
-    return paths;
-  }
-
   TagList tags;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP(ANY_TR_CONTEXT, "Object");

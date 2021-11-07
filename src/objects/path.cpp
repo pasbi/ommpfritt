@@ -6,13 +6,19 @@
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
+#include "objects/segment.h"
 #include <QObject>
 
 namespace
 {
-template<typename Iterator> auto iterator_to_tuple(const Iterator& it)
+
+auto copy(const std::deque<std::unique_ptr<omm::Segment>>& vs)
 {
-  return std::tuple{it.path, it.segment, it.point};
+  std::decay_t<decltype(vs)> copy;
+  for (auto&& v : vs) {
+    copy.emplace_back(std::make_unique<omm::Segment>(*v));
+  }
+  return copy;
 }
 
 }  // namespace
@@ -36,6 +42,14 @@ Path::Path(Scene* scene) : Object(scene)
   Path::update();
 }
 
+Path::Path(const Path& other)
+  : Object(other)
+  , m_segments(copy(other.m_segments))
+{
+}
+
+Path::~Path() = default;
+
 QString Path::type() const
 {
   return TYPE;
@@ -45,20 +59,13 @@ void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   Object::serialize(serializer, root);
 
-  const auto subpath_ptr = make_pointer(root, SUBPATH_POINTER);
-  serializer.start_array(segments.size(), subpath_ptr);
-  for (std::size_t i = 0; i < segments.size(); ++i) {
-    if (segments.empty()) {
+  const auto segments_pointer = make_pointer(root, SEGMENTS_POINTER);
+  serializer.start_array(m_segments.size(), segments_pointer);
+  for (std::size_t i = 0; i < m_segments.size(); ++i) {
+    if (m_segments.empty()) {
       LWARNING << "Ignoring empty sub-path.";
     } else {
-      const auto pts_ptr = make_pointer(subpath_ptr, i);
-      serializer.start_array(segments.size(), pts_ptr);
-      std::size_t j = 0;
-      for (auto&& point : segments[i]) {
-        point.serialize(serializer, make_pointer(pts_ptr, j));
-        j += 1;
-        serializer.end_array();
-      }
+      m_segments[i]->serialize(serializer, make_pointer(segments_pointer, i));
     }
   }
   serializer.end_array();
@@ -68,22 +75,12 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   Object::deserialize(deserializer, root);
 
-  const auto subpath_ptr = make_pointer(root, SUBPATH_POINTER);
-  const std::size_t n_paths = deserializer.array_size(subpath_ptr);
-  segments.clear();
-  segments.reserve(n_paths);
+  const auto segments_pointer = make_pointer(root, SEGMENTS_POINTER);
+  const std::size_t n_paths = deserializer.array_size(segments_pointer);
+  m_segments.clear();
   for (std::size_t i = 0; i < n_paths; ++i) {
-    const auto pts_ptr = make_pointer(subpath_ptr, i);
-    const std::size_t n_points = deserializer.array_size(pts_ptr);
-    if (n_points == 0) {
-      throw AbstractDeserializer::DeserializeError("Empty sub-paths are not allowed.");
-    }
-    segments.emplace_back();
-    for (std::size_t j = 0; j < n_points; ++j) {
-      Point p;
-      p.deserialize(deserializer, make_pointer(pts_ptr, j));
-      segments[i].push_back(p);
-    }
+    Segment& segment = *m_segments.emplace_back(std::make_unique<Segment>());
+    segment.deserialize(deserializer, make_pointer(segments_pointer, i));
   }
   update();
 }
@@ -102,28 +99,18 @@ bool Path::is_closed() const
 
 void Path::set(const Geom::PathVector& paths)
 {
-  const auto path_to_segment = [is_closed = this->is_closed()](const Geom::Path& path) {
-    return Object::path_to_segment(path, is_closed);
-  };
-
   update();
-  segments = ::transform<Segment, std::vector>(paths, path_to_segment);
+  const auto is_closed = this->is_closed();
+  for (const auto& path : paths) {
+    m_segments.push_back(std::make_unique<Segment>(path, is_closed));
+  }
 }
 
-std::size_t Path::count() const
+std::size_t Path::point_count() const
 {
-  return std::accumulate(cbegin(segments), cend(segments), 0, [](std::size_t n, auto&& segment) {
-    return n + segment.size();
+  return std::accumulate(cbegin(m_segments), cend(m_segments), 0, [](std::size_t n, auto&& segment) {
+    return n + segment->size();
   });
-}
-
-PathIterator Path::end()
-{
-  return ::omm::end<Path&>(*this);
-}
-PathIterator Path::begin()
-{
-  return ::omm::begin<Path&>(*this);
 }
 
 void Path::on_property_value_changed(Property* property)
@@ -137,93 +124,13 @@ void Path::on_property_value_changed(Property* property)
 Geom::PathVector Path::paths() const
 {
   const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
-  return segments_to_path_vector(segments, is_closed(), interpolation);
-}
+  const auto is_closed = this->is_closed();
 
-template<typename PathRef>
-PathIteratorBase<PathRef>::PathIteratorBase(PathRef path, std::size_t segment, std::size_t point)
-    : path(&path), segment(segment), point(point)
-{
-}
-
-template<typename PathRef>
-bool PathIteratorBase<PathRef>::operator<(const PathIteratorBase<PathRef>& other) const
-{
-  return iterator_to_tuple(*this) < iterator_to_tuple(other);
-}
-
-template<typename PathRef>
-bool PathIteratorBase<PathRef>::operator>(const PathIteratorBase<PathRef>& other) const
-{
-  return iterator_to_tuple(*this) > iterator_to_tuple(other);
-}
-
-template<typename PathRef>
-bool PathIteratorBase<PathRef>::operator==(const PathIteratorBase<PathRef>& other) const
-{
-  if (path != other.path) {
-    return false;
+  Geom::PathVector paths;
+  for (auto&& segment : m_segments) {
+    paths.push_back(segment->to_geom_path(is_closed, interpolation));
   }
-  if (is_end() && other.is_end()) {
-    return true;
-  } else {
-    return segment == other.segment && point == other.point;
-  }
-}
-
-template<typename PathRef>
-bool PathIteratorBase<PathRef>::operator!=(const PathIteratorBase<PathRef>& other) const
-{
-  return !(*this == other);
-}
-
-template<typename PathRef> bool PathIteratorBase<PathRef>::is_end() const
-{
-  return segment >= path->segments.size();
-}
-
-template<typename PathRef>
-typename PathIteratorBase<PathRef>::reference PathIteratorBase<PathRef>::operator*() const
-{
-  return path->segments[segment][point];
-}
-
-template<typename PathRef>
-typename PathIteratorBase<PathRef>::pointer PathIteratorBase<PathRef>::operator->() const
-{
-  return &**this;
-}
-
-template<typename PathRef> PathIteratorBase<PathRef>& PathIteratorBase<PathRef>::operator++()
-{
-  point += 1;
-  if (path->segments[segment].size() == point) {
-    point = 0;
-    segment += 1;
-  }
-  return *this;
-}
-
-Point Path::smoothen_point(const Segment& segment, bool is_closed, std::size_t i)
-{
-  const std::size_t n = segment.size();
-  Vec2f left;
-  Vec2f right;
-  if (i == 0) {
-    left = is_closed ? segment[n - 1].position : segment[0].position;
-    right = segment[1].position;
-  } else if (i == n - 1) {
-    left = segment[n - 2].position;
-    right = is_closed ? segment[0].position : segment[n - 1].position;
-  } else {
-    left = segment[i - 1].position;
-    right = segment[i + 1].position;
-  }
-  auto copy = segment[i];
-  const Vec2f d = (left - right) / 6.0;
-  copy.right_tangent = PolarCoordinates(-d);
-  copy.left_tangent = PolarCoordinates(d);
-  return copy;
+  return paths;
 }
 
 Flag Path::flags() const
@@ -231,7 +138,50 @@ Flag Path::flags() const
   return Flag::None;
 }
 
-template struct PathIteratorBase<Path&>;
-template struct PathIteratorBase<const Path&>;
+std::deque<Segment*> Path::segments() const
+{
+  return ::transform<Segment*>(m_segments, std::mem_fn(&std::unique_ptr<Segment>::get));
+}
+
+Segment* Path::find_segment(const Point& point) const
+{
+  for (auto&& segment : m_segments) {
+    if (segment->contains(point)) {
+      return segment.get();
+    }
+  }
+  return nullptr;
+}
+
+Segment& Path::add_segment(std::unique_ptr<Segment>&& segment)
+{
+  return *m_segments.emplace_back(std::move(segment));
+}
+
+std::unique_ptr<Segment> Path::remove_segment(const Segment& segment)
+{
+  const auto it = std::find_if(m_segments.begin(), m_segments.end(), [&segment](const auto& s_ptr) {
+    return &segment == s_ptr.get();
+  });
+  std::unique_ptr<Segment> extracted_segment;
+  std::swap(extracted_segment, *it);
+  m_segments.erase(it);
+  return extracted_segment;
+}
+
+std::deque<Point*> Path::points() const
+{
+  std::deque<Point*> points;
+  for (const auto& segment : m_segments) {
+    const auto& ps = segment->points();
+    points.insert(points.end(), ps.begin(), ps.end());
+  }
+  return points;
+}
+
+std::deque<Point*> Path::selected_points() const
+{
+  return ::filter_if(points(), std::mem_fn(&Point::is_selected));
+}
 
 }  // namespace omm

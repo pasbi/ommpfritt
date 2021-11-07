@@ -2,6 +2,8 @@ target_sources(libommpfritt PRIVATE
   command.cpp
   command.h
   addcommand.h
+  composecommand.cpp
+  composecommand.h
   copycommand.cpp
   copycommand.h
   cutpathcommand.cpp
@@ -26,8 +28,6 @@ target_sources(libommpfritt PRIVATE
   objectselectioncommand.h
   objectstransformationcommand.cpp
   objectstransformationcommand.h
-  pointstransformationcommand.cpp
-  pointstransformationcommand.h
   propertycommand.cpp
   propertycommand.h
   removecommand.cpp

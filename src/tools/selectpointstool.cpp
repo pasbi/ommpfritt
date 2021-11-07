@@ -73,8 +73,8 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
     return true;
   } else if (allow_clear && event.buttons() == Qt::LeftButton) {
     for (auto* path : paths) {
-      for (auto&& point : *path) {
-        point.is_selected = false;
+      for (auto* point : path->points()) {
+        point->set_selected(false);
       }
     }
     Q_EMIT scene()->mail_box().point_selection_changed();
@@ -86,9 +86,11 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 
 bool SelectPointsBaseTool::has_transformation() const
 {
+  return false;
   const auto paths = type_casts<Path*>(scene()->template item_selection<Object>());
-  return std::any_of(paths.begin(), paths.end(), [](auto&& path) {
-    return std::any_of(path->begin(), path->end(), [](auto&& point) { return point.is_selected; });
+  return std::any_of(paths.begin(), paths.end(), [](const auto* path) {
+    const auto points = path->points();
+    return std::any_of(points.begin(), points.end(), std::mem_fn(&Point::is_selected));
   });
 }
 

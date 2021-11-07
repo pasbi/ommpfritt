@@ -17,11 +17,11 @@ target_sources(libommpfritt PRIVATE
   object.h
   path.cpp
   path.h
-  pathiterator.h
   proceduralpath.cpp
   proceduralpath.h
   rectangleobject.cpp
   rectangleobject.h
+  segment.cpp
   segment.h
   text.cpp
   text.h

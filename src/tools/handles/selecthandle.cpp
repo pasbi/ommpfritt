@@ -120,9 +120,10 @@ bool ObjectSelectHandle::is_selected() const
   return ::contains(m_scene.item_selection<Object>(), &m_object);
 }
 
-PointSelectHandle::PointSelectHandle(Tool& tool, const PathIterator& iterator)
+PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)
     : AbstractSelectHandle(tool)
-    , m_iterator(iterator)
+    , m_path(path)
+    , m_point(point)
     , m_left_tangent_handle(
           std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left))
     , m_right_tangent_handle(
@@ -132,12 +133,12 @@ PointSelectHandle::PointSelectHandle(Tool& tool, const PathIterator& iterator)
 
 ObjectTransformation PointSelectHandle::transformation() const
 {
-  return m_iterator.path->global_transformation(Space::Viewport);
+  return m_path.global_transformation(Space::Viewport);
 }
 
 bool PointSelectHandle::contains_global(const Vec2f& point) const
 {
-  const auto tpoint = transformation().apply_to_position(m_iterator->position);
+  const auto tpoint = transformation().apply_to_position(m_point.position());
   const auto d = (point - tpoint).euclidean_norm();
   return d < interact_epsilon();
 }
@@ -175,9 +176,9 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
 
 void PointSelectHandle::draw(QPainter& painter) const
 {
-  const auto pos = transformation().apply_to_position(m_iterator->position);
-  const auto left_pos = transformation().apply_to_position(m_iterator->left_position());
-  const auto right_pos = transformation().apply_to_position(m_iterator->right_position());
+  const auto pos = transformation().apply_to_position(m_point.position());
+  const auto left_pos = transformation().apply_to_position(m_point.left_position());
+  const auto right_pos = transformation().apply_to_position(m_point.right_position());
 
   const auto treat_sub_handle = [&painter, pos, this](auto& sub_handle, const auto& other_pos) {
     sub_handle.position = other_pos;
@@ -193,8 +194,8 @@ void PointSelectHandle::draw(QPainter& painter) const
   }
 
   painter.translate(pos.to_pointf());
-  const auto color
-      = m_iterator->is_selected ? ui_color(HandleStatus::Active, "point") : ui_color("point");
+  const auto color = m_point.is_selected() ? ui_color(HandleStatus::Active, "point")
+                                           : ui_color("point");
 
   const auto r = draw_epsilon();
   const QRectF rect{-r, -r, 2 * r, 2 * r};
@@ -212,52 +213,63 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
                                           TangentMode mode,
                                           TangentHandle::Tangent tangent)
 {
-  auto new_point = *m_iterator;
-  {
-    auto& master_pos = tangent == TangentHandle::Tangent::Left ? new_point.left_tangent
-                                                               : new_point.right_tangent;
-    const auto old_master_pos = master_pos;
-    const auto transformation = ObjectTransformation().translated(delta);
-    master_pos = transformation.transformed(this->transformation()).apply_to_position(master_pos);
-    if (mode == TangentMode::Mirror
-        && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
-      auto& slave_pos = tangent == TangentHandle::Tangent::Left ? new_point.right_tangent
-                                                                : new_point.left_tangent;
-      slave_pos = Point::mirror_tangent(slave_pos, old_master_pos, master_pos);
-    }
+  auto new_point = m_point;
+  PolarCoordinates primary_pos;
+  PolarCoordinates secondary_pos;
+  if (tangent == TangentHandle::Tangent::Right) {
+    primary_pos = new_point.right_tangent();
+    secondary_pos = new_point.left_tangent();
+  } else {
+    primary_pos = new_point.left_tangent();
+    secondary_pos = new_point.right_tangent();
   }
 
-  std::map<PathIterator, Point> map;
-  map[m_iterator] = new_point;
+  const auto old_primary_pos = primary_pos;
+  const auto transformation = ObjectTransformation().translated(delta);
+  primary_pos = transformation.transformed(this->transformation()).apply_to_position(primary_pos);
+  if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
+    secondary_pos = Point::mirror_tangent(secondary_pos, old_primary_pos, primary_pos);
+  }
+
+  if (tangent == TangentHandle::Tangent::Right) {
+    new_point.set_right_tangent(primary_pos);
+    new_point.set_left_tangent(secondary_pos);
+  } else {
+    new_point.set_left_tangent(primary_pos);
+    new_point.set_right_tangent(secondary_pos);
+  }
+
+  ModifyPointsCommand::Map map;
+  map[&m_path][&m_point] = new_point;
   tool.scene()->submit<ModifyPointsCommand>(map);
 }
 
 bool PointSelectHandle::tangents_active() const
 {
-  const auto& imode_property = m_iterator.path->property(Path::INTERPOLATION_PROPERTY_KEY);
+  const auto& imode_property = m_path.property(Path::INTERPOLATION_PROPERTY_KEY);
   const auto interpolation_mode = imode_property->value<InterpolationMode>();
   const bool is_bezier = interpolation_mode == InterpolationMode::Bezier;
-  return (is_bezier && m_iterator->is_selected) || force_draw_subhandles;
+  return (is_bezier && m_point.is_selected()) || force_draw_subhandles;
 }
 
 void PointSelectHandle::set_selected(bool selected)
 {
-  if (m_iterator->is_selected != selected) {
-    m_iterator->is_selected = selected;
+  if (m_point.is_selected() != selected) {
+    m_point.set_selected(selected);
     Q_EMIT tool.scene()->mail_box().point_selection_changed();
   }
 }
 
 void PointSelectHandle::clear()
 {
-  for (auto&& point : *m_iterator.path) {
-    point.is_selected = false;
+  for (auto* point : m_path.points()) {
+    point->set_selected(false);
   }
 }
 
 bool PointSelectHandle::is_selected() const
 {
-  return m_iterator->is_selected;
+  return m_point.is_selected();
 }
 
 }  // namespace omm

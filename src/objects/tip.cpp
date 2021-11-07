@@ -1,4 +1,5 @@
 #include "objects/tip.h"
+#include "objects/segment.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 
@@ -38,8 +39,11 @@ void Tip::on_property_value_changed(Property* property)
 
 Geom::PathVector Tip::paths() const
 {
-  const auto path = segment_to_path(m_marker_properties.shape(1.0), is_closed());
-  return Geom::PathVector(path);
+  std::deque<std::unique_ptr<Point>> points;
+  for (const auto& point : m_marker_properties.shape(1.0)) {
+    points.push_back(std::make_unique<Point>(point));
+  }
+  return Geom::PathVector{Segment{std::move(points)}.to_geom_path(is_closed())};
 }
 
 }  // namespace omm

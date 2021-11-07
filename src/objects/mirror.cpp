@@ -232,9 +232,9 @@ void Mirror::perform_update_path_mode()
         direction == Direction::Both) {
       const auto r = reflect(pv, Direction::Horizontal);
       wants_to_be_closed = !wants_to_be_closed;
-      reflection->set(reflect(r, Direction::Vertical));
+//      reflection->set(reflect(r, Direction::Vertical));
     } else {
-      reflection->set(reflect(pv, direction));
+//      reflection->set(reflect(pv, direction));
     }
 
     reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(wants_to_be_closed);

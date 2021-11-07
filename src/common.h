@@ -15,6 +15,7 @@
 #include <utility>
 #include <variant>
 #include <vector>
+#include <deque>
 
 namespace omm
 {
@@ -469,6 +470,36 @@ QString join(const Cs& ts, const std::function<QString(const typename Cs::value_
     return s;
   }
 }
+
+/**
+ * @brief find_coherent_ranges returns list of ranges such that cover every element in @param vs
+ *  that @param evaluates true for.
+ */
+template<typename Vs, typename F> auto find_coherent_ranges(const Vs& vs, F&& f)
+{
+  struct Range
+  {
+    std::size_t start;
+    std::size_t size;
+  };
+
+  std::deque<Range> ranges;
+  bool in_selection = false;
+  for (std::size_t i = 0; i < vs.size(); ++i) {
+    if (f(vs[i])) {
+      if (!in_selection) {
+        ranges.push_back({i, 1});
+      } else if (in_selection) {
+        ranges.back().size += 1;
+      }
+      in_selection = true;
+    } else {
+      in_selection = false;
+    }
+  }
+  return ranges;
+}
+
 
 }  // namespace omm
 

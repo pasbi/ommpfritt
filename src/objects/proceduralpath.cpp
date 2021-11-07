@@ -1,6 +1,7 @@
 #include "objects/proceduralpath.h"
 #include "external/pybind11/stl.h"
 #include "objects/path.h"
+#include "objects/segment.h"
 #include "properties/boolproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/stringproperty.h"
@@ -81,7 +82,11 @@ void ProceduralPath::update()
 
 Geom::PathVector ProceduralPath::paths() const
 {
-  return segments_to_path_vector({m_points}, is_closed());
+  std::deque<std::unique_ptr<Point>> points;
+  for (const auto& point : m_points) {
+    points.push_back(std::make_unique<Point>(point));
+  }
+  return Segment{std::move(points)}.to_geom_path(is_closed());
 }
 
 bool ProceduralPath::is_closed() const

@@ -11,6 +11,18 @@
         <source>Show GPL-3.0</source>
         <translation>GPL-3.0 anzeigen</translation>
     </message>
+    <message>
+        <source>VERSION</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This software is released under the terms of the GPL-3.0 licence (see below). Detailed information about the ommpfritt project can be found at</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>https://github.com/pasbi/ommpfritt.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>BoundingBoxManager</name>
@@ -185,26 +197,6 @@
     <message>
         <source>Convertible</source>
         <translation>Konvertierbar</translation>
-    </message>
-    <message>
-        <source>invalid input format</source>
-        <translation>Ungültiges Eingabeformat</translation>
-    </message>
-    <message>
-        <source>object name not found</source>
-        <translation>Objektname nicht gefunden</translation>
-    </message>
-    <message>
-        <source>object type not found</source>
-        <translation>Objekttyp nicht gefunden</translation>
-    </message>
-    <message>
-        <source>refuse overwrite file</source>
-        <translation>existierende Datei kann nicht überschrieben werden</translation>
-    </message>
-    <message>
-        <source>non unique object reference</source>
-        <translation>nicht-eindeutige Objektreferenz</translation>
     </message>
 </context>
 <context>
@@ -422,28 +414,12 @@
         <translation>Kopieren</translation>
     </message>
     <message>
-        <source>ModifyPointsCommand</source>
-        <translation>Punkte verändern</translation>
-    </message>
-    <message>
-        <source>AddPointsCommand</source>
-        <translation>Punkte hinzufügen</translation>
-    </message>
-    <message>
-        <source>RemovePointsCommand</source>
-        <translation>Punkte entfernen</translation>
-    </message>
-    <message>
         <source>reparent</source>
         <translation>Elternbeziehung ändern</translation>
     </message>
     <message>
         <source>Move tags</source>
         <translation>Tags verschieben</translation>
-    </message>
-    <message>
-        <source>PointsTransformationCommand</source>
-        <translation>Punkte transformieren</translation>
     </message>
     <message>
         <source>Set </source>
@@ -464,14 +440,6 @@
     <message>
         <source>ommpfritt</source>
         <translation>omm</translation>
-    </message>
-    <message>
-        <source>modify tangents</source>
-        <translation>Tangenten ändern</translation>
-    </message>
-    <message>
-        <source>convert</source>
-        <translation>Konvertieren</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -1345,10 +1313,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>b</translation>
     </message>
     <message>
-        <source>The input scene file.</source>
-        <translation>Die Eingabe Szenedatei.</translation>
-    </message>
-    <message>
         <source>Where to save the batch renderings. Use `%1` as framenumber placeholder.</source>
         <translation>Wo die renderings gespeichert werden. Benutze `%1` als Platzhalter für die Frame-Nummer.</translation>
     </message>
@@ -1371,18 +1335,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Expected integer argument for &apos;%1&apos;, but got &apos;%2&apos;.</source>
         <translation>Erwartete ganze Zahl als Argument &apos;%1&apos;, nicht &apos;%2&apos;.</translation>
-    </message>
-    <message>
-        <source>Framenumber placeholder must be contiguous.</source>
-        <translation>Platzhalter für Frame-Nummer müssen zusammenhängen.</translation>
-    </message>
-    <message>
-        <source>Refuse to overwrite existing file &apos;%1&apos;.</source>
-        <translation>Verweigere &apos;%1&apos; zu überschreiben.</translation>
-    </message>
-    <message>
-        <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
-        <translation>Unbekanntes Kommando: %1. Versuche &apos;%2 --help&apos; für mehr Informationen.</translation>
     </message>
     <message>
         <source>#FRAME</source>
@@ -1415,10 +1367,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>FILENAME</source>
         <translation>DATEINAME</translation>
-    </message>
-    <message>
-        <source>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</source>
-        <translation>OpenGL deaktivieren. OpenGL ist normalerweise akiviert, wenn der `%1&apos;-Befehl benutzt wird.</translation>
     </message>
     <message>
         <source>Union</source>
@@ -1473,60 +1421,12 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Interpolation</translation>
     </message>
     <message>
-        <source>CutPathCommand</source>
-        <translation>Pfad Schneiden</translation>
-    </message>
-    <message>
         <source>Cut Path</source>
         <translation>Pfad schneiden</translation>
     </message>
     <message>
-        <source>Get status code for given description.</source>
-        <translation>Erhalte den Status-Code für eine Beschreibung.</translation>
-    </message>
-    <message>
-        <source>DESCRIPTION</source>
-        <translation>BESCHREIBUNG</translation>
-    </message>
-    <message>
-        <source>List status codes and descriptions.</source>
-        <translation>Liste alle Status Codes und Beschreibungen.</translation>
-    </message>
-    <message>
-        <source>Subdivide Paths</source>
-        <translation>Pfade unterteilen</translation>
-    </message>
-    <message>
         <source>Both</source>
         <translation>Beide</translation>
-    </message>
-    <message>
-        <source>threshold</source>
-        <translation>Schwellwert</translation>
-    </message>
-    <message>
-        <source>apply</source>
-        <translation>Anwenden</translation>
-    </message>
-    <message>
-        <source>similarity</source>
-        <translation>Ähnlichkeit</translation>
-    </message>
-    <message>
-        <source>Any</source>
-        <translation>Irgendeiner</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation>Alle</translation>
-    </message>
-    <message>
-        <source>strategy</source>
-        <translation>Strategie</translation>
-    </message>
-    <message>
-        <source>normal</source>
-        <translation>Normale</translation>
     </message>
     <message>
         <source>No such item: %2</source>
@@ -1551,6 +1451,30 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>If this option is set, the target object (see &apos;object-path&apos; or &apos;object-name&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
         <translation>Wenn diese Option aktiv ist, dann muss das Zielobjekt (siehe &apos;object-path&apos; oder &apos;object-name&apos;-Option) eindeutig sein, es muss also genau ein passendes Objekt in der Szene geben. Die Applikation bricht ab falls diese Bedingung verletzt ist.</translation>
+    </message>
+    <message>
+        <source>The mode (%1|%2|%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MODE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>disable OpenGL.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1[%2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AddPointsCommand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RemovePointsCommand</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1847,10 +1771,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Boolean</source>
         <translation>Boolean</translation>
-    </message>
-    <message>
-        <source>SelectSimilarTool</source>
-        <translation>Ähnliche selektieren</translation>
     </message>
     <message>
         <source>LineObject</source>
@@ -3057,13 +2977,6 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>Fail.</source>
         <translation>Fehler.</translation>
-    </message>
-</context>
-<context>
-    <name>omm::Object</name>
-    <message>
-        <source>Subdivide Path</source>
-        <translation>Pfad unterteilen</translation>
     </message>
 </context>
 <context>

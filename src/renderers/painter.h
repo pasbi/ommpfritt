@@ -6,7 +6,6 @@
 #include "color/color.h"
 #include "common.h"
 #include "geometry/objecttransformation.h"
-#include "geometry/point.h"
 #include "renderers/imagecache.h"
 #include <QPainter>
 #include <QPainterPath>
@@ -18,6 +17,7 @@ namespace omm
 {
 
 class Object;
+class Point;
 class Rectangle;
 class Scene;
 class Style;

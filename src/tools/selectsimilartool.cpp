@@ -17,28 +17,28 @@ constexpr auto THRESHOLD_PROPERTY_KEY = "threshold";
 constexpr auto APPLY_PROPERTY_KEY = "apply";
 enum class Mode { Normal, X, Y, Distance };
 enum class MatchStrategy { Any, All };
-using It = omm::PathIterator;
+using namespace omm;
 
-double normal_distance(const It& a, const It& b)
+double normal_distance(const Point& a, const Point& b)
 {
   const auto normalize = [](double a, double b) {
-    return omm::M_180_PI * omm::PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
+    return M_180_PI * PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
   };
 
-  return std::min(normalize(a->left_tangent.argument, b->left_tangent.argument),
-                  normalize(a->right_tangent.argument, b->right_tangent.argument));
+  return std::min(normalize(a.left_tangent().argument, b.left_tangent().argument),
+                  normalize(a.right_tangent().argument, b.right_tangent().argument));
 }
 
-omm::Vec2f distance(const It& a, const It& b, omm::SelectSimilarTool::Alignment alignment)
+omm::Vec2f distance(const Path& path, const Point& a, const Point& b, omm::SelectSimilarTool::Alignment alignment)
 {
-  if (alignment == omm::SelectSimilarTool::Alignment::Global) {
-    const auto global_pos = [](const It& it) {
-      const auto t = it.path->global_transformation(omm::Space::Viewport);
-      return t.apply_to_position(it->position);
+  if (alignment == SelectSimilarTool::Alignment::Global) {
+    const auto global_pos = [&path](const Point& point) {
+      const auto t = path.global_transformation(omm::Space::Viewport);
+      return t.apply_to_position(point.position());
     };
     return global_pos(a) - global_pos(b);
   } else {
-    return a->position - b->position;
+    return a.position() - b.position();
   }
 }
 
@@ -100,21 +100,24 @@ void SelectSimilarTool::on_property_value_changed(Property* property)
 void SelectSimilarTool::update_selection()
 {
   const auto strategy = property(STRATEGY_PROPERTY_KEY)->value<MatchStrategy>();
-  for (auto&& path : scene()->item_selection<Path>()) {
-    for (auto&& it = path->begin(); it != path->end(); ++it) {
-      if (!::contains(m_base_selection, it)) {
-        it->is_selected = [this, strategy, &it] {
-          const auto is_similar = [&it, this](auto&& b) { return this->is_similar(it, b); };
-          switch (strategy) {
-          case MatchStrategy::All:
-            return std::all_of(m_base_selection.begin(), m_base_selection.end(), is_similar);
-          case MatchStrategy::Any:
-            return std::any_of(m_base_selection.begin(), m_base_selection.end(), is_similar);
-          default:
-            Q_UNREACHABLE();
-            return false;
-          }
-        }();
+  for (const auto* path : scene()->item_selection<Path>()) {
+    for (auto* point : path->points()) {
+      if (!::contains(m_base_selection, point)) {
+        const auto is_similar = [point, path, this](const Point* b) {
+          return this->is_similar(*path, *point, *b);
+        };
+        const auto& begin = m_base_selection.begin();
+        const auto& end = m_base_selection.end();
+        switch (strategy) {
+        case MatchStrategy::All:
+          point->set_selected(std::all_of(begin, end, is_similar));
+          break;
+        case MatchStrategy::Any:
+          point->set_selected(std::any_of(begin, end, is_similar));
+          break;
+        default:
+          Q_UNREACHABLE();
+        }
       }
     }
   }
@@ -124,35 +127,37 @@ void SelectSimilarTool::update_selection()
 void SelectSimilarTool::update_base_selection()
 {
   m_base_selection.clear();
-  for (auto&& path : scene()->item_selection<Path>()) {
-    for (auto it = path->begin(); it != path->end(); ++it) {
-      if (it->is_selected) {
-        m_base_selection.insert(it);
+  for (const auto* path : scene()->item_selection<Path>()) {
+    for (auto* point : path->points()) {
+      if (point->is_selected()) {
+        m_base_selection.insert(point);
       }
     }
   }
 }
 
-bool SelectSimilarTool::is_similar(const PathIterator& a, const PathIterator& b) const
+bool SelectSimilarTool::is_similar(const Path& path, const Point& a, const Point& b) const
 {
-  using It = PathIterator;
   const auto alignment = property(ALIGNMENT_PROPERTY_KEY)->value<Alignment>();
-  LINFO << (int)alignment << " " << (int)Alignment::Global << " " << (int)Alignment::Local;
-  const std::map<Mode, std::function<double(const It&, const It)>> mode_map{
-      {Mode::Normal, normal_distance},
-      {Mode::X,
-       [alignment](auto&& a, auto&& b) { return std::abs(::distance(a, b, alignment).x); }},
-      {Mode::Y,
-       [alignment](auto&& a, auto&& b) { return std::abs(::distance(a, b, alignment).y); }},
-      {
-          Mode::Distance,
-          [alignment](auto&& a, auto&& b) { return ::distance(a, b, alignment).euclidean_norm(); },
-      },
+  const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
+  const auto distance = [mode, &path, alignment](const Point& a, const Point& b) {
+    switch (mode) {
+    case Mode::Normal:
+      return normal_distance(a, b);
+    case Mode::X:
+      return std::abs(::distance(path, a, b, alignment).x);
+    case Mode::Y:
+      return std::abs(::distance(path, a, b, alignment).y);
+    case Mode::Distance:
+      return ::distance(path, a, b, alignment).euclidean_norm();
+    default:
+      Q_UNREACHABLE();
+      return 0.0;
+    }
   };
 
-  const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
   const auto threshold = property(THRESHOLD_PROPERTY_KEY)->value<double>();
-  return std::abs(mode_map.at(mode)(a, b)) < threshold;
+  return std::abs(distance(a, b)) < threshold;
 }
 
 void SelectSimilarTool::end()

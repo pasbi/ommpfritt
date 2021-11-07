@@ -46,8 +46,8 @@ bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
     }
     for (Object* object : scene()->item_selection<Object>()) {
       if (auto* path = type_cast<Path*>(object); path != nullptr) {
-        for (auto&& point : *path) {
-          point.is_selected = false;
+        for (auto&& point : path->points()) {
+          point->set_selected(false);
         }
       }
     }
@@ -75,15 +75,15 @@ void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& eve
   for (Object* object : scene()->item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
     if (path != nullptr) {
-      for (auto&& point : *path) {
+      for (auto* point : path->points()) {
         // we can't transform `pos` with path's inverse transformation because if it scales,
         // `radius` will be wrong.
         const auto gt = path->global_transformation(Space::Viewport);
-        const auto gpos = gt.apply_to_position(point.position);
+        const auto gpos = gt.apply_to_position(point->position());
         if ((gpos - pos).euclidean_norm() < radius) {
-          if (point.is_selected != extend_selection) {
+          if (point->is_selected() != extend_selection) {
             is_noop = false;
-            point.is_selected = extend_selection;
+            point->set_selected(extend_selection);
           }
         }
       }

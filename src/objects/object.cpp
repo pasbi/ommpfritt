@@ -3,6 +3,7 @@
 #include "common.h"
 #include "logging.h"
 #include "objects/path.h"
+#include "objects/segment.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -476,7 +477,7 @@ void Object::set_oriented_position(const Point& op, const bool align)
   if (align) {
     transformation.set_rotation(op.rotation());
   }
-  transformation.set_translation(op.position);
+  transformation.set_translation(op.position());
   set_global_transformation(transformation, Space::Scene);
 }
 
@@ -721,86 +722,6 @@ void Object::listen_to_children_changes()
   };
   connect(&scene()->mail_box(), &MailBox::transformation_changed, this, on_change);
   connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
-}
-
-Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
-{
-  const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
-  Segment segment;
-  segment.reserve(path.size_default() + 1);
-  const auto n = path.size();
-  for (std::size_t i = 0; i < n; ++i) {
-    const auto& c = dynamic_cast<const Geom::CubicBezier&>(path[i]);
-    const auto p0 = to_vec(c[0]);
-    if (segment.empty()) {
-      segment.push_back(Point(p0));
-    }
-    segment.back().right_tangent = PolarCoordinates(to_vec(c[1]) - p0);
-    const auto p1 = to_vec(c[3]);
-    auto& pref = [wrap = is_closed && i == n - 1, p1, &segment]() -> decltype(auto) {
-      if (wrap) {
-        return segment.front();
-      } else {
-        segment.push_back(Point(p1));
-        return segment.back();
-      }
-    }();
-    pref.left_tangent = PolarCoordinates(to_vec(c[2]) - p1);
-  }
-  if (is_closed) {
-    assert(path.size() == segment.size());
-  } else {
-    // path counts number of curves, segments counts number of points
-    assert(path.size() + 1 == segment.size());
-  }
-  return segment;
-}
-
-Geom::Path Object::segment_to_path(Segment segment, bool is_closed, InterpolationMode interpolation)
-{
-  const auto pts = [](const std::array<Vec2f, 4>& pts) {
-    return ::transform<Geom::Point, std::vector>(pts, [](const auto& p) {
-      return Geom::Point(p.x, p.y);
-    });
-  };
-
-  std::vector<Geom::CubicBezier> bzs;
-  const std::size_t n = segment.size();
-  const std::size_t m = is_closed ? n : n - 1;
-  bzs.reserve(m);
-
-  if (interpolation == InterpolationMode::Smooth) {
-    segment = [&segment, is_closed]() {
-      Segment new_segment;
-      new_segment.reserve(segment.size());
-      for (std::size_t i = 0; i < segment.size(); ++i) {
-        new_segment.push_back(Path::smoothen_point(segment, is_closed, i));
-      }
-      return new_segment;
-    }();
-  }
-
-  for (std::size_t i = 0; i < m; ++i) {
-    const std::size_t j = (i + 1) % n;
-    static constexpr double t = 1.0 / 3.0;
-    switch (interpolation) {
-    case InterpolationMode::Bezier:
-      [[fallthrough]];
-    case InterpolationMode::Smooth:
-      bzs.emplace_back(pts({segment[i].position,
-                            segment[i].right_position(),
-                            segment[j].left_position(),
-                            segment[j].position}));
-      break;
-    case InterpolationMode::Linear:
-      bzs.emplace_back(pts({segment[i].position,
-                            (1.0 - t) * segment[i].position + t * segment[j].position,
-                            (1.0 - t) * segment[j].position + t * segment[i].position,
-                            segment[j].position}));
-      break;
-    }
-  }
-  return Geom::Path(bzs.begin(), bzs.end(), is_closed);
 }
 
 QPainterPath Object::CachedQPainterPathGetter::compute() const

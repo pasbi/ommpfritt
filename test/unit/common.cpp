@@ -275,3 +275,38 @@ TEST(common, modern_cpp_for_loop_qt_cow_container)
     EXPECT_TRUE(const_end_was_called);
   }
 }
+
+TEST(common, coherent_ranges)
+{
+  const std::vector values{0, 1, 2, 3, 4, 5, 6, 7, 8};
+
+  EXPECT_TRUE(omm::find_coherent_ranges(std::vector<int>{}, [](auto&&) { return true; }).empty());
+
+  static constexpr auto is_even = [](int i) { return i % 2 == 0; };
+  const auto even_ranges = omm::find_coherent_ranges(values, is_even);
+  ASSERT_EQ(even_ranges.size(), 5);
+  for (std::size_t i = 0; i < even_ranges.size(); ++i) {
+    EXPECT_EQ(even_ranges[i].start, 2 * i);
+    EXPECT_EQ(even_ranges[i].size, 1);
+  }
+
+  static constexpr auto is_small = [](int i) { return i < 5; };
+  const auto small_ranges = omm::find_coherent_ranges(values, is_small);
+  ASSERT_EQ(small_ranges.size(), 1);
+  EXPECT_EQ(small_ranges[0].start, 0);
+  EXPECT_EQ(small_ranges[0].size, 5);
+
+  static constexpr auto is_big = [](int i) { return i > 5; };
+  const auto big_ranges = omm::find_coherent_ranges(values, is_big);
+  ASSERT_EQ(big_ranges.size(), 1);
+  EXPECT_EQ(big_ranges[0].start, 6);
+  EXPECT_EQ(big_ranges[0].size, 3);
+
+  static constexpr auto is_prime_power = [](int i) { return std::set{2, 3, 4, 5, 7, 8}.contains(i); };
+  const auto prime_power_ranges = omm::find_coherent_ranges(values, is_prime_power);
+  ASSERT_EQ(prime_power_ranges.size(), 2);
+  EXPECT_EQ(prime_power_ranges[0].start, 2);
+  EXPECT_EQ(prime_power_ranges[0].size, 4);
+  EXPECT_EQ(prime_power_ranges[1].start, 7);
+  EXPECT_EQ(prime_power_ranges[1].size, 2);
+}

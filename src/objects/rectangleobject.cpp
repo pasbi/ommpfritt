@@ -1,4 +1,5 @@
 #include "objects/rectangleobject.h"
+#include "objects/segment.h"
 #include "properties/floatvectorproperty.h"
 
 namespace omm
@@ -32,7 +33,7 @@ QString RectangleObject::type() const
 
 Geom::PathVector RectangleObject::paths() const
 {
-  std::list<Point> points;
+  std::deque<std::unique_ptr<Point>> points;
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>() / 2.0;
   const auto r = property(RADIUS_PROPERTY_KEY)->value<Vec2f>();
   const auto t = property(TENSION_PROPERTY_KEY)->value<Vec2f>();
@@ -42,27 +43,28 @@ Geom::PathVector RectangleObject::paths() const
   const PolarCoordinates v(Vec2f(0.0, -ar.y * t.y));
   const PolarCoordinates h(Vec2f(ar.x * t.x, 0.0));
 
+  auto add = [&points](auto... args) {
+    points.push_back(std::make_unique<Point>(args...));
+  };
   const bool p = ar != Vec2f::o();
   if (p) {
-    points.emplace_back(Vec2f(-size.x + ar.x, -size.y), null, -h);
+    add(Vec2f(-size.x + ar.x, -size.y), null, -h);
   }
-  points.emplace_back(Vec2f(-size.x, -size.y + ar.y), v, null);
+  add(Vec2f(-size.x, -size.y + ar.y), v, null);
   if (p) {
-    points.emplace_back(Vec2f(-size.x, size.y - ar.y), null, -v);
+    add(Vec2f(-size.x, size.y - ar.y), null, -v);
   }
-  points.emplace_back(Vec2f(-size.x + ar.x, size.y), -h, null);
+  add(Vec2f(-size.x + ar.x, size.y), -h, null);
   if (p) {
-    points.emplace_back(Vec2f(size.x - ar.x, size.y), null, h);
+    add(Vec2f(size.x - ar.x, size.y), null, h);
   }
-  points.emplace_back(Vec2f(size.x, size.y - ar.y), -v, null);
+  add(Vec2f(size.x, size.y - ar.y), -v, null);
   if (p) {
-    points.emplace_back(Vec2f(size.x, -size.y + ar.y), null, v);
+    add(Vec2f(size.x, -size.y + ar.y), null, v);
   }
-  points.emplace_back(Vec2f(size.x - ar.x, -size.y), h, null);
+  add(Vec2f(size.x - ar.x, -size.y), h, null);
 
-  const Segment segment(points.begin(), points.end());
-  const auto path = segment_to_path(segment, is_closed());
-  return Geom::PathVector(path);
+  return Geom::PathVector{Segment{std::move(points)}.to_geom_path(is_closed())};
 }
 
 void RectangleObject::on_property_value_changed(Property* property)

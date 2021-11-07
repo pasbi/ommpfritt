@@ -1,4 +1,6 @@
 #pragma once
+
+#include <2geom/point.h>
 #include <QPointF>
 #include <QString>
 #include <algorithm>
@@ -22,6 +24,10 @@ public:
   }
 
   constexpr Vec2(const std::array<element_type, 2>& components) : Vec2(components[0], components[1])
+  {
+  }
+
+  explicit constexpr Vec2(const Geom::Point& p) : x(p.x()), y(p.y())
   {
   }
 
@@ -52,6 +58,11 @@ public:
   [[nodiscard]] QPoint to_point() const
   {
     return QPoint(static_cast<int>(x), static_cast<int>(y));
+  }
+
+  [[nodiscard]] Geom::Point to_geom_point() const
+  {
+    return Geom::Point{x, y};
   }
 
   element_type x;
@@ -109,10 +120,10 @@ public:
     return std::min(x, y);
   }
 
-  void swap(Vec2& other)
+  friend void swap(Vec2& a, Vec2& b)
   {
-    std::swap(x, other.x);
-    std::swap(y, other.y);
+    std::swap(a.x, b.x);
+    std::swap(a.y, b.y);
   }
 
   static Vec2<element_type> o()

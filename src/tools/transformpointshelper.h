@@ -1,8 +1,10 @@
 #pragma once
 
+#include "commands/modifypointscommand.h"
+#include "common.h"
 #include <QObject>
 #include <set>
-#include "commands/pointstransformationcommand.h"
+#include <list>
 
 namespace omm
 {
@@ -16,7 +18,7 @@ class TransformPointsHelper : public QObject
   Q_OBJECT
 public:
   explicit TransformPointsHelper(Scene& scene, Space space);
-  [[nodiscard]] std::unique_ptr<PointsTransformationCommand> make_command(const ObjectTransformation& t) const;
+  [[nodiscard]] std::unique_ptr<ModifyPointsCommand> make_command(const ObjectTransformation& t) const;
   void update(const std::set<Path*>& paths);
   void update();
   [[nodiscard]] bool is_empty() const { return m_initial_points.empty(); }
@@ -25,8 +27,8 @@ Q_SIGNALS:
   void initial_transformations_changed();
 
 private:
-  PointsTransformationCommand::Map m_initial_points;
   std::set<Path*> m_paths;
+  ModifyPointsCommand::Map m_initial_points;
   Scene& m_scene;
   const Space m_space;
 };

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "commands/pointstransformationcommand.h"
 #include "tools/handles/moveaxishandle.h"
 #include "tools/handles/particlehandle.h"
 #include "tools/handles/rotatehandle.h"
 #include "tools/handles/scaleaxishandle.h"
 #include "tools/handles/scalebandhandle.h"
+#include "objects/path.h"
 #include "tools/selecttool.h"
 #include <memory>
 
@@ -46,9 +46,9 @@ public:
     tool.handles.push_back(std::make_unique<MoveParticleHandle<ToolT>>(tool));
 
     for (auto* path : tool.scene()->template item_selection<Path>()) {
-      tool.handles.reserve(tool.handles.size() + path->count());
-      for (auto it = path->begin(); it != path->end(); ++it) {
-        auto handle = std::make_unique<PointSelectHandle>(tool, it);
+      tool.handles.reserve(tool.handles.size() + path->point_count());
+      for (auto* point : path->points()) {
+        auto handle = std::make_unique<PointSelectHandle>(tool, *path, *point);
         handle->force_draw_subhandles = force_subhandles;
         tool.handles.push_back(std::move(handle));
       }
