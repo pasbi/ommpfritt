@@ -142,9 +142,15 @@ QString KnifeTool::type() const
 {
   return TYPE;
 }
-void KnifeTool::cancel()
+
+bool KnifeTool::cancel()
 {
-  m_is_cutting = false;
+  if (m_is_cutting) {
+    m_is_cutting = false;
+    return true;
+  } else {
+    return false;
+  }
 }
 
 SceneMode KnifeTool::scene_mode() const

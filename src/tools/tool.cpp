@@ -92,11 +92,12 @@ bool Tool::key_press(const QKeyEvent& event)
   }
 }
 
-void Tool::cancel()
+bool Tool::cancel()
 {
   for (auto&& handle : handles) {
     handle->deactivate();
   }
+  return false;
 }
 
 void Tool::end()

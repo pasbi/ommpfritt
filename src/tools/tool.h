@@ -41,7 +41,13 @@ public:
   {
     return false;
   }
-  virtual void cancel();
+
+  /**
+   * @brief cancel cancels the current tool application and restores the status before.
+   * @return true if something was canceled, false otherwise (i.e., if there was nothing to cancel).
+   *  Immediately canceling the tool again should eventually return false.
+   */
+  virtual bool cancel();
   virtual void end();
   virtual void start()
   {
