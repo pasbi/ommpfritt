@@ -20,8 +20,9 @@
 #include "logging.h"
 #include "main/application.h"
 #include "mainwindow/gpl3.h"
-#include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/iconprovider.h"
+#include "mainwindow/pathactions.h"
+#include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/viewport/viewport.h"
 #include "managers/manager.h"
 #include "managers/timeline/timeline.h"
@@ -153,6 +154,7 @@ std::vector<QString> MainWindow::main_menu_entries()
       QT_TRANSLATE_NOOP("menu_name", "scene") "/evaluate",
       "scene/reset viewport",
       QT_TRANSLATE_NOOP("menu_name", "window") "/" QT_TRANSLATE_NOOP("menu_name", "show") "/",
+      QT_TRANSLATE_NOOP("menu_name", "actions") "/",
   };
 
   const auto merge = [&es = entries](auto&& ls) { es.insert(es.end(), ls.begin(), ls.end()); };
@@ -175,6 +177,9 @@ std::vector<QString> MainWindow::main_menu_entries()
   merge(path_menu_entries());
   for (const QString& key : Tool::keys()) {
     entries.push_back("tool/" + key);
+  }
+  for (const QString& key : path_actions::available_actions()) {
+    entries.push_back("actions/" + key);
   }
 
   return {entries.begin(), entries.end()};
@@ -293,8 +298,7 @@ bool omm::MainWindow::eventFilter(QObject* o, QEvent* e)
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
   const bool is_modifier = ::contains(Application::keyboard_modifiers, e->key());
-  const bool is_dispatched
-      = !is_modifier && !Application::instance().dispatch_key(e->key(), e->modifiers());
+  const bool is_dispatched = !is_modifier && !Application::instance().dispatch_key(e->key(), e->modifiers());
   if (is_modifier || is_dispatched) {
     QMainWindow::keyPressEvent(e);
   }
