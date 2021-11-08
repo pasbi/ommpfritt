@@ -64,8 +64,11 @@ private:
   [[nodiscard]] std::vector<QDockWidget*> dock_widgets() const;
   void update_recent_scenes_menu();
   [[nodiscard]] static QString get_last_layout_filename();
-
   void handle_corrupted_config_file(const QSettings& s, const QString& what);
+  void save_managers(QSettings& settings);
+  void save_toolbars(QSettings& settings);
+  void restore_managers(QSettings& settings);
+  void restore_toolbars(QSettings& settings);
 
 private:
   void update_window_title();
