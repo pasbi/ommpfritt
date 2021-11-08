@@ -71,6 +71,11 @@ void Tool::draw(Painter& renderer) const
   }
 }
 
+bool Tool::has_transformation() const
+{
+  return false;
+}
+
 std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent)
 {
   Q_UNUSED(parent);
@@ -84,12 +89,7 @@ bool Tool::integer_transformation()
 
 bool Tool::key_press(const QKeyEvent& event)
 {
-  if (event.key() == Qt::Key_Escape) {
-    cancel();
-    return true;
-  } else {
-    return false;
-  }
+  return event.key() == Qt::Key_Escape && cancel();
 }
 
 bool Tool::cancel()
@@ -101,6 +101,10 @@ bool Tool::cancel()
 }
 
 void Tool::end()
+{
+}
+
+void Tool::start()
 {
 }
 
