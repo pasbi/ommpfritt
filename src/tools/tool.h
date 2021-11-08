@@ -37,10 +37,7 @@ public:
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
   virtual void draw(Painter& renderer) const;
-  virtual bool has_transformation() const
-  {
-    return false;
-  }
+  virtual bool has_transformation() const;
 
   /**
    * @brief cancel cancels the current tool application and restores the status before.
@@ -49,9 +46,8 @@ public:
    */
   virtual bool cancel();
   virtual void end();
-  virtual void start()
-  {
-  }
+  virtual void start();
+
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;
   Flag flags() const override
