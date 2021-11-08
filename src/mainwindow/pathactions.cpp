@@ -38,7 +38,6 @@ template<typename F> void foreach_segment(Application& app, F&& f)
 
 void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
 {
-  using namespace omm;
   std::map<Path*, std::map<Point*, Point>> map;
   const auto paths = app.scene->item_selection<Path>();
   for (Path* path : paths) {
@@ -163,7 +162,6 @@ void remove_selected_points(Application& app)
   }
 }
 
-using namespace omm;
 
 const std::map<QString, std::function<void(Application& app)>> actions{
     {"make linear", [](Application& app) { modify_tangents(InterpolationMode::Linear, app); }},
