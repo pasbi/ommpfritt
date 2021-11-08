@@ -192,10 +192,10 @@ function(git_describe _var)
 
     # TODO sanitize
     #if((${ARGN}" MATCHES "&&") OR
-    #	(ARGN MATCHES "||") OR
-    #	(ARGN MATCHES "\\;"))
-    #	message("Please report the following error to the project!")
-    #	message(FATAL_ERROR "Looks like someone's doing something nefarious with git_describe! Passed arguments ${ARGN}")
+    # (ARGN MATCHES "||") OR
+    # (ARGN MATCHES "\\;"))
+    # message("Please report the following error to the project!")
+    # message(FATAL_ERROR "Looks like someone's doing something nefarious with git_describe! Passed arguments ${ARGN}")
     #endif()
 
     #message(STATUS "Arguments to execute_process: ${ARGN}")

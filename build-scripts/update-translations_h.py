@@ -57,4 +57,3 @@ if __name__ == "__main__":
         for line in lines:
             f.write(line + "\n")
         print("done.")
-
