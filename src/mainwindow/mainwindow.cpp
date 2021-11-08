@@ -353,20 +353,8 @@ void MainWindow::save_layout()
   }
 }
 
-void MainWindow::load_layout(QSettings& settings)
+void MainWindow::restore_toolbars(QSettings& settings)
 {
-  const auto managers = findChildren<Manager*>();
-  for (const Manager* manager : managers) {
-    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
-    delete manager;
-  }
-
-  const auto toolbars = findChildren<QToolBar*>();
-  for (const QToolBar* toolbar : toolbars) {
-    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
-    delete toolbar;
-  }
-
   try {
     const auto size = settings.beginReadArray(QString::fromStdString(TOOLBAR_SETTINGS_KEY));
     for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
@@ -387,9 +375,10 @@ void MainWindow::load_layout(QSettings& settings)
   } catch (const ToolBarItemModel::BadConfigurationError& e) {
     handle_corrupted_config_file(settings, e.what());
   }
+}
 
-  restoreState(settings.value(WINDOWSTATE_SETTINGS_KEY).toByteArray());
-
+void MainWindow::restore_managers(QSettings& settings)
+{
   try {
     const auto size = settings.beginReadArray(QString::fromStdString(MANAGER_SETTINGS_KEY));
     for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
@@ -417,41 +406,64 @@ void MainWindow::load_layout(QSettings& settings)
   }
 }
 
+void MainWindow::load_layout(QSettings& settings)
+{
+  const auto managers = findChildren<Manager*>();
+  for (const Manager* manager : managers) {
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+    delete manager;
+  }
+
+  const auto toolbars = findChildren<QToolBar*>();
+  for (const QToolBar* toolbar : toolbars) {
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+    delete toolbar;
+  }
+
+  restore_toolbars(settings);
+  restoreState(settings.value(WINDOWSTATE_SETTINGS_KEY).toByteArray());
+  restore_managers(settings);
+}
+
+void MainWindow::save_managers(QSettings& settings)
+{
+  std::set<QString> names;
+  settings.beginWriteArray(MANAGER_SETTINGS_KEY);
+  const auto managers = findChildren<Manager*>();
+  for (const Manager* manager : managers) {
+    if (const QString name = manager->objectName(); !::contains(names, name)) {
+      settings.setArrayIndex(static_cast<int>(names.size()));
+      settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
+      settings.setValue(MANAGER_NAME_SETTINGS_KEY, name);
+      names.insert(name);
+    }
+  }
+  settings.endArray();
+}
+
+void MainWindow::save_toolbars(QSettings& settings)
+{
+  std::set<QString> names;
+  settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
+  const auto tools = findChildren<ToolBar*>();
+  for (const ToolBar* toolbar : tools) {
+    if (const QString name = toolbar->objectName(); !::contains(names, name)) {
+      settings.setArrayIndex(static_cast<int>(names.size()));
+      settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
+      settings.setValue(TOOLBAR_NAME_SETTINGS_KEY, name);
+      const auto configuration = toolbar->configuration();
+      settings.setValue(TOOLBAR_TOOLS_SETTINGS_KEY, configuration);
+      names.insert(name);
+    }
+  }
+  settings.endArray();
+}
+
 void MainWindow::save_layout(QSettings& settings)
 {
   settings.setValue(WINDOWSTATE_SETTINGS_KEY, saveState());
-
-  {
-    std::set<QString> names;
-    settings.beginWriteArray(MANAGER_SETTINGS_KEY);
-    const auto managers = findChildren<Manager*>();
-    for (const Manager* manager : managers) {
-      if (const QString name = manager->objectName(); !::contains(names, name)) {
-        settings.setArrayIndex(names.size());
-        settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
-        settings.setValue(MANAGER_NAME_SETTINGS_KEY, name);
-        names.insert(name);
-      }
-    }
-    settings.endArray();
-  }
-
-  {
-    std::set<QString> names;
-    settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
-    const auto tools = findChildren<ToolBar*>();
-    for (const ToolBar* toolbar : tools) {
-      if (const QString name = toolbar->objectName(); !::contains(names, name)) {
-        settings.setArrayIndex(names.size());
-        settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
-        settings.setValue(TOOLBAR_NAME_SETTINGS_KEY, name);
-        const auto configuration = toolbar->configuration();
-        settings.setValue(TOOLBAR_TOOLS_SETTINGS_KEY, configuration);
-        names.insert(name);
-      }
-    }
-    settings.endArray();
-  }
+  save_managers(settings);
+  save_toolbars(settings);
 }
 
 void MainWindow::update_recent_scenes_menu()
