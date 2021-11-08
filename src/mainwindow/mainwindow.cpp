@@ -35,6 +35,16 @@
 
 namespace
 {
+
+void append_qsettings_stringlist(const QString& key, const QString& value)
+{
+  QSettings settings;
+  auto fns = settings.value(key, QStringList()).toStringList();
+  fns.removeAll(value);
+  fns.append(value);
+  settings.setValue(key, fns);
+}
+
 QMenu* find_menu(QMenu* menu, const QString& object_name)
 {
   if (menu == nullptr) {
@@ -98,7 +108,7 @@ std::vector<QString> MainWindow::object_menu_entries()
     entries.push_back("object/attach/" + key);
   }
 
-  return std::vector(entries.begin(), entries.end());
+  return {entries.begin(), entries.end()};
 }
 
 std::vector<QString> MainWindow::path_menu_entries()
@@ -167,7 +177,7 @@ std::vector<QString> MainWindow::main_menu_entries()
     entries.push_back("tool/" + key);
   }
 
-  return std::vector(entries.begin(), entries.end());
+  return {entries.begin(), entries.end()};
 }
 
 void MainWindow::update_window_title()
@@ -207,16 +217,10 @@ MainWindow::MainWindow(Application& app) : m_app(app)
   update_recent_scenes_menu();
 
   connect(&app.mail_box(), &MailBox::filename_changed, this, &MainWindow::update_window_title);
-  connect(&app.mail_box(), &MailBox::filename_changed, [&app, this] {
+  connect(&app.mail_box(), &MailBox::filename_changed, this, [&app, this] {
     if (QString fn = app.scene->filename(); !fn.isEmpty()) {
-      QSettings settings;
-      auto fns = settings.value(RECENT_SCENES_SETTINGS_KEY, QStringList()).toStringList();
       fn = QDir::cleanPath(QDir::current().absoluteFilePath(fn));
-      if (!fn.isEmpty()) {
-        fns.removeAll(fn);
-        fns.append(QFileInfo(fn).absoluteFilePath());
-      }
-      settings.setValue(RECENT_SCENES_SETTINGS_KEY, fns);
+      append_qsettings_stringlist(RECENT_SCENES_SETTINGS_KEY, fn);
       update_recent_scenes_menu();
     }
   });
@@ -228,7 +232,7 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
 {
   auto menu = std::make_unique<QMenu>(tr("About"));
 
-  connect(menu->addAction(tr("About")), &QAction::triggered, [this]() {
+  connect(menu->addAction(tr("About")), &QAction::triggered, this, [this]() {
     QDialog about_dialog(this);
     ::Ui::AboutDialog ui;
     ui.setupUi(&about_dialog);
