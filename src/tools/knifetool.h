@@ -18,7 +18,7 @@ public:
   QString type() const override;
   void draw(Painter& renderer) const override;
   QString name() const override;
-  void cancel() override;
+  bool cancel() override;
   SceneMode scene_mode() const override;
 
 protected:

@@ -104,7 +104,7 @@ void AbstractSelectTool::draw(Painter& renderer) const
   }
 }
 
-void AbstractSelectTool::cancel()
+bool AbstractSelectTool::cancel()
 {
   transform_objects(ObjectTransformation());
 
@@ -114,6 +114,7 @@ void AbstractSelectTool::cancel()
     QSignalBlocker blocker(&scene()->history());
     scene()->history().undo();
   }
+  return false;
 }
 
 }  // namespace omm
