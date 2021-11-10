@@ -36,7 +36,11 @@ void ModifyPointsCommand::exchange()
       swap(*ptr, point);
     }
   }
-  for (auto& [path, _] : m_data) {
+  for (auto& [path, points_map] : m_data) {
+    const std::set<Point*> points = ::transform<Point*, std::set>(points_map, [](const auto& value) {
+      return value.first;
+    });
+    path->update_point(points);
     path->update();
   }
 }

@@ -1,5 +1,6 @@
 #include "mainwindow/pathactions.h"
 #include "commands/addcommand.h"
+#include "commands/joinpointscommand.h"
 #include "commands/modifypointscommand.h"
 #include "commands/movecommand.h"
 #include "commands/objectselectioncommand.h"
@@ -26,6 +27,20 @@
 namespace
 {
 using namespace omm;
+
+auto path_selection(Application& app)
+{
+  std::map<Path*, std::set<Point*>> points;
+  for (auto* path : app.scene->item_selection<Path>()) {
+    auto& set = points[path];
+    for (auto* p : path->points()) {
+      if (p->is_selected()) {
+        set.insert(p);
+      }
+    }
+  }
+  return points;
+}
 
 template<typename F> void foreach_segment(Application& app, F&& f)
 {
@@ -342,6 +357,16 @@ void shrink_selection(Application& app)
   Q_EMIT app.mail_box().scene_appearance_changed();
 }
 
+void join_points(Application& app)
+{
+  app.scene->submit<JoinPointsCommand>(path_selection(app));
+}
+
+void disjoin_points(Application& app)
+{
+  app.scene->submit<DisjoinPointsCommand>(path_selection(app));
+}
+
 const std::map<QString, std::function<void(Application& app)>> actions{
   {"make linear", modify_tangents_linear},
   {"make smooth", modify_tangents_smooth},
@@ -355,6 +380,8 @@ const std::map<QString, std::function<void(Application& app)>> actions{
   {"fill selection", fill_selection},
   {"extend selection", extend_selection},
   {"shrink selection", shrink_selection},
+  {"disjoin points", disjoin_points},
+  {"join points", join_points},
 };
 
 }  // namespace
