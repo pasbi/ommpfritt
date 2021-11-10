@@ -1,5 +1,6 @@
 #include "common.h"
 #include "logging.h"
+#include "disjointset.h"
 #include "gtest/gtest.h"
 #include <QDebug>
 #include <map>
@@ -309,4 +310,43 @@ TEST(common, coherent_ranges)
   EXPECT_EQ(prime_power_ranges[0].size, 4);
   EXPECT_EQ(prime_power_ranges[1].start, 7);
   EXPECT_EQ(prime_power_ranges[1].size, 2);
+}
+
+TEST(common, disjoint_set_forest)
+{
+  EXPECT_TRUE(omm::DisjointSetForest<int>::sets_disjoint({1, 2, 3}, {4, 5, 6}));
+  EXPECT_FALSE(omm::DisjointSetForest<int>::sets_disjoint({1, 2, 3}, {3, 5, 6}));
+  EXPECT_TRUE(omm::DisjointSetForest<int>::sets_disjoint({}, {3, 5, 6}));
+  EXPECT_TRUE(omm::DisjointSetForest<int>::sets_disjoint({3, 5, 6}, {}));
+
+  omm::DisjointSetForest<int> cluster;
+  EXPECT_EQ(cluster.get(42), std::set<int>{});
+  cluster.insert({1, 2 ,3});
+  EXPECT_EQ(cluster.get(1), std::set({1, 2, 3}));
+  EXPECT_EQ(cluster.get(2), std::set({1, 2, 3}));
+  EXPECT_EQ(cluster.get(0), std::set<int>{});
+
+  cluster.insert({4, 5});
+  EXPECT_EQ(cluster.get(1), std::set({1, 2, 3}));
+  EXPECT_EQ(cluster.get(0), std::set<int>{});
+  EXPECT_EQ(cluster.get(4), std::set({4, 5}));
+
+  cluster.remove({4});
+  EXPECT_EQ(cluster.get(1), std::set({1, 2, 3}));
+  EXPECT_EQ(cluster.get(4), std::set<int>{});
+  EXPECT_EQ(cluster.get(5), std::set<int>{});
+
+  cluster.insert({4, 5});
+  cluster.insert({1, 6, 7});
+  EXPECT_EQ(cluster.get(1), std::set({1, 2, 3, 6, 7}));
+  EXPECT_EQ(cluster.get(6), std::set({1, 2, 3, 6, 7}));
+
+  cluster.insert({1, 4});
+  EXPECT_EQ(cluster.get(1), std::set({1, 2, 3, 4, 5, 6, 7}));
+  EXPECT_EQ(cluster.get(3), std::set({1, 2, 3, 4, 5, 6, 7}));
+
+  cluster.remove({4});
+  EXPECT_EQ(cluster.get(1), std::set<int>{});
+  EXPECT_EQ(cluster.get(4), std::set<int>{});
+  EXPECT_EQ(cluster.get(5), std::set<int>{});
 }
