@@ -184,4 +184,23 @@ std::deque<Point*> Path::selected_points() const
   return ::filter_if(points(), std::mem_fn(&Point::is_selected));
 }
 
+std::set<Point*> Path::join_points(const std::set<Point*>& points)
+{
+  return m_joined_points.insert(points);
+}
+
+void Path::disjoin_points(Point* point)
+{
+  m_joined_points.remove({point});
+}
+
+void Path::update_point(const std::set<Point*>& points)
+{
+  for (Point* p : points) {
+    for (Point* q : m_joined_points.get(p)) {
+      q->set_position(p->position());
+    }
+  }
+}
+
 }  // namespace omm
