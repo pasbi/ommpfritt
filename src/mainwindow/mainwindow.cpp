@@ -20,8 +20,9 @@
 #include "logging.h"
 #include "main/application.h"
 #include "mainwindow/gpl3.h"
-#include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/iconprovider.h"
+#include "mainwindow/pathactions.h"
+#include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/viewport/viewport.h"
 #include "managers/manager.h"
 #include "managers/timeline/timeline.h"
@@ -35,6 +36,16 @@
 
 namespace
 {
+
+void append_qsettings_stringlist(const QString& key, const QString& value)
+{
+  QSettings settings;
+  auto fns = settings.value(key, QStringList()).toStringList();
+  fns.removeAll(value);
+  fns.append(value);
+  settings.setValue(key, fns);
+}
+
 QMenu* find_menu(QMenu* menu, const QString& object_name)
 {
   if (menu == nullptr) {
@@ -98,7 +109,7 @@ std::vector<QString> MainWindow::object_menu_entries()
     entries.push_back("object/attach/" + key);
   }
 
-  return std::vector(entries.begin(), entries.end());
+  return {entries.begin(), entries.end()};
 }
 
 std::vector<QString> MainWindow::path_menu_entries()
@@ -143,6 +154,7 @@ std::vector<QString> MainWindow::main_menu_entries()
       QT_TRANSLATE_NOOP("menu_name", "scene") "/evaluate",
       "scene/reset viewport",
       QT_TRANSLATE_NOOP("menu_name", "window") "/" QT_TRANSLATE_NOOP("menu_name", "show") "/",
+      QT_TRANSLATE_NOOP("menu_name", "actions") "/",
   };
 
   const auto merge = [&es = entries](auto&& ls) { es.insert(es.end(), ls.begin(), ls.end()); };
@@ -166,8 +178,11 @@ std::vector<QString> MainWindow::main_menu_entries()
   for (const QString& key : Tool::keys()) {
     entries.push_back("tool/" + key);
   }
+  for (const QString& key : path_actions::available_actions()) {
+    entries.push_back("actions/" + key);
+  }
 
-  return std::vector(entries.begin(), entries.end());
+  return {entries.begin(), entries.end()};
 }
 
 void MainWindow::update_window_title()
@@ -207,16 +222,10 @@ MainWindow::MainWindow(Application& app) : m_app(app)
   update_recent_scenes_menu();
 
   connect(&app.mail_box(), &MailBox::filename_changed, this, &MainWindow::update_window_title);
-  connect(&app.mail_box(), &MailBox::filename_changed, [&app, this] {
+  connect(&app.mail_box(), &MailBox::filename_changed, this, [&app, this] {
     if (QString fn = app.scene->filename(); !fn.isEmpty()) {
-      QSettings settings;
-      auto fns = settings.value(RECENT_SCENES_SETTINGS_KEY, QStringList()).toStringList();
       fn = QDir::cleanPath(QDir::current().absoluteFilePath(fn));
-      if (!fn.isEmpty()) {
-        fns.removeAll(fn);
-        fns.append(QFileInfo(fn).absoluteFilePath());
-      }
-      settings.setValue(RECENT_SCENES_SETTINGS_KEY, fns);
+      append_qsettings_stringlist(RECENT_SCENES_SETTINGS_KEY, fn);
       update_recent_scenes_menu();
     }
   });
@@ -228,7 +237,7 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
 {
   auto menu = std::make_unique<QMenu>(tr("About"));
 
-  connect(menu->addAction(tr("About")), &QAction::triggered, [this]() {
+  connect(menu->addAction(tr("About")), &QAction::triggered, this, [this]() {
     QDialog about_dialog(this);
     ::Ui::AboutDialog ui;
     ui.setupUi(&about_dialog);
@@ -289,8 +298,7 @@ bool omm::MainWindow::eventFilter(QObject* o, QEvent* e)
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
   const bool is_modifier = ::contains(Application::keyboard_modifiers, e->key());
-  const bool is_dispatched
-      = !is_modifier && !Application::instance().dispatch_key(e->key(), e->modifiers());
+  const bool is_dispatched = !is_modifier && !Application::instance().dispatch_key(e->key(), e->modifiers());
   if (is_modifier || is_dispatched) {
     QMainWindow::keyPressEvent(e);
   }
@@ -349,20 +357,8 @@ void MainWindow::save_layout()
   }
 }
 
-void MainWindow::load_layout(QSettings& settings)
+void MainWindow::restore_toolbars(QSettings& settings)
 {
-  const auto managers = findChildren<Manager*>();
-  for (const Manager* manager : managers) {
-    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
-    delete manager;
-  }
-
-  const auto toolbars = findChildren<QToolBar*>();
-  for (const QToolBar* toolbar : toolbars) {
-    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
-    delete toolbar;
-  }
-
   try {
     const auto size = settings.beginReadArray(QString::fromStdString(TOOLBAR_SETTINGS_KEY));
     for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
@@ -383,9 +379,10 @@ void MainWindow::load_layout(QSettings& settings)
   } catch (const ToolBarItemModel::BadConfigurationError& e) {
     handle_corrupted_config_file(settings, e.what());
   }
+}
 
-  restoreState(settings.value(WINDOWSTATE_SETTINGS_KEY).toByteArray());
-
+void MainWindow::restore_managers(QSettings& settings)
+{
   try {
     const auto size = settings.beginReadArray(QString::fromStdString(MANAGER_SETTINGS_KEY));
     for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
@@ -413,41 +410,64 @@ void MainWindow::load_layout(QSettings& settings)
   }
 }
 
+void MainWindow::load_layout(QSettings& settings)
+{
+  const auto managers = findChildren<Manager*>();
+  for (const Manager* manager : managers) {
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+    delete manager;
+  }
+
+  const auto toolbars = findChildren<QToolBar*>();
+  for (const QToolBar* toolbar : toolbars) {
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
+    delete toolbar;
+  }
+
+  restore_toolbars(settings);
+  restoreState(settings.value(WINDOWSTATE_SETTINGS_KEY).toByteArray());
+  restore_managers(settings);
+}
+
+void MainWindow::save_managers(QSettings& settings)
+{
+  std::set<QString> names;
+  settings.beginWriteArray(MANAGER_SETTINGS_KEY);
+  const auto managers = findChildren<Manager*>();
+  for (const Manager* manager : managers) {
+    if (const QString name = manager->objectName(); !::contains(names, name)) {
+      settings.setArrayIndex(static_cast<int>(names.size()));
+      settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
+      settings.setValue(MANAGER_NAME_SETTINGS_KEY, name);
+      names.insert(name);
+    }
+  }
+  settings.endArray();
+}
+
+void MainWindow::save_toolbars(QSettings& settings)
+{
+  std::set<QString> names;
+  settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
+  const auto tools = findChildren<ToolBar*>();
+  for (const ToolBar* toolbar : tools) {
+    if (const QString name = toolbar->objectName(); !::contains(names, name)) {
+      settings.setArrayIndex(static_cast<int>(names.size()));
+      settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
+      settings.setValue(TOOLBAR_NAME_SETTINGS_KEY, name);
+      const auto configuration = toolbar->configuration();
+      settings.setValue(TOOLBAR_TOOLS_SETTINGS_KEY, configuration);
+      names.insert(name);
+    }
+  }
+  settings.endArray();
+}
+
 void MainWindow::save_layout(QSettings& settings)
 {
   settings.setValue(WINDOWSTATE_SETTINGS_KEY, saveState());
-
-  {
-    std::set<QString> names;
-    settings.beginWriteArray(MANAGER_SETTINGS_KEY);
-    const auto managers = findChildren<Manager*>();
-    for (const Manager* manager : managers) {
-      if (const QString name = manager->objectName(); !::contains(names, name)) {
-        settings.setArrayIndex(names.size());
-        settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
-        settings.setValue(MANAGER_NAME_SETTINGS_KEY, name);
-        names.insert(name);
-      }
-    }
-    settings.endArray();
-  }
-
-  {
-    std::set<QString> names;
-    settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
-    const auto tools = findChildren<ToolBar*>();
-    for (const ToolBar* toolbar : tools) {
-      if (const QString name = toolbar->objectName(); !::contains(names, name)) {
-        settings.setArrayIndex(names.size());
-        settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
-        settings.setValue(TOOLBAR_NAME_SETTINGS_KEY, name);
-        const auto configuration = toolbar->configuration();
-        settings.setValue(TOOLBAR_TOOLS_SETTINGS_KEY, configuration);
-        names.insert(name);
-      }
-    }
-    settings.endArray();
-  }
+  save_managers(settings);
+  save_toolbars(settings);
 }
 
 void MainWindow::update_recent_scenes_menu()

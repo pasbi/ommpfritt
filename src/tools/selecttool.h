@@ -16,7 +16,7 @@ public:
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
   static constexpr auto SYMMETRIC_PROPERTY_KEY = "symmetric";
   virtual void transform_objects(ObjectTransformation t) = 0;
-  void cancel() override;
+  bool cancel() override;
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& e) override;
   void draw(Painter& renderer) const override;

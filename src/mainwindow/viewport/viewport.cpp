@@ -287,7 +287,9 @@ void Viewport::set_transformation(const ObjectTransformation& transformation)
 
 void Viewport::keyPressEvent(QKeyEvent* event)
 {
-  if (!m_scene.tool_box().active_tool().key_press(*event)) {
+  if (m_scene.tool_box().active_tool().key_press(*event)) {
+    update();
+  } else {
     QWidget::keyPressEvent(event);
   }
 }

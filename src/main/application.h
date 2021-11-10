@@ -77,11 +77,11 @@ public:
   MainWindow* main_window() const;
 
   enum class InsertionMode { Default, AsParent, AsChild };
-  Object& insert_object(const QString& key, InsertionMode mode);
+  Object& insert_object(const QString& key, InsertionMode mode) const;
 
   static const std::set<int> keyboard_modifiers;
 
-  Manager& spawn_manager(const QString& type);
+  Manager& spawn_manager(const QString& type) const;
   ToolBar& spawn_toolbar() const;
 
   /**

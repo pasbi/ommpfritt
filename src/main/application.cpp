@@ -452,7 +452,7 @@ MainWindow* Application::main_window() const
   return m_main_window;
 }
 
-Object& Application::insert_object(const QString& key, InsertionMode mode)
+Object& Application::insert_object(const QString& key, InsertionMode mode) const
 {
   const auto translated_key = QApplication::translate("any-context", key.toUtf8().constData());
   auto macro = scene->history().start_macro(tr("Create %1").arg(translated_key));
@@ -514,7 +514,7 @@ Object& Application::insert_object(const QString& key, InsertionMode mode)
   return ref;
 }
 
-Manager& Application::spawn_manager(const QString& type)
+Manager& Application::spawn_manager(const QString& type) const
 {
   auto manager = Manager::make(type, *scene);
   main_window()->assign_unique_objectname(*manager);

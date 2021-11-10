@@ -97,14 +97,14 @@ void AbstractSelectTool::draw(Painter& renderer) const
     const auto current_position = transformation().null();
     renderer.toast(current_position + TOAST_OFFSET, tool_info);
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "line"));
-    renderer.painter->drawLine(m_init_position.x,
-                               m_init_position.y,
-                               current_position.x,
-                               current_position.y);
+    renderer.painter->drawLine(static_cast<int>(m_init_position.x),
+                               static_cast<int>(m_init_position.y),
+                               static_cast<int>(current_position.x),
+                               static_cast<int>(current_position.y));
   }
 }
 
-void AbstractSelectTool::cancel()
+bool AbstractSelectTool::cancel()
 {
   transform_objects(ObjectTransformation());
 
@@ -114,6 +114,7 @@ void AbstractSelectTool::cancel()
     QSignalBlocker blocker(&scene()->history());
     scene()->history().undo();
   }
+  return false;
 }
 
 }  // namespace omm
