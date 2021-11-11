@@ -2,6 +2,7 @@
 
 #include "cachedgetter.h"
 #include "objects/object.h"
+#include "disjointset.h"
 #include <deque>
 #include <list>
 #include <type_traits>
@@ -47,9 +48,15 @@ public:
   std::unique_ptr<Segment> remove_segment(const Segment& segment);
   std::deque<Point*> points() const;
   std::deque<Point*> selected_points() const;
+  std::set<Point*> join_points(const std::set<Point*>& points);
+  void disjoin_points(Point* point);
+  void update_point(const std::set<Point*>& points);
 
 private:
   std::deque<std::unique_ptr<Segment>> m_segments;
+  DisjointSetForest<Point*> m_joined_points;
+  friend class JoinPointsCommand;
+  friend class DisjoinPointsCommand;
 };
 
 }  // namespace omm

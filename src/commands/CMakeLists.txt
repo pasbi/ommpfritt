@@ -8,6 +8,8 @@ target_sources(libommpfritt PRIVATE
   copycommand.h
   cutpathcommand.cpp
   cutpathcommand.h
+  joinpointscommand.cpp
+  joinpointscommand.h
   keyframecommand.cpp
   keyframecommand.h
   modifypointscommand.cpp
