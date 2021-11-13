@@ -15,12 +15,6 @@ namespace
 {
 using namespace omm;
 
-Geom::Point transform_point(const Geom::Point& point, const omm::ObjectTransformation& t)
-{
-  const auto tp = t.apply_to_position(Vec2f{point.x(), point.y()});
-  return Geom::Point{tp.x, tp.y};
-}
-
 ObjectTransformation get_mirror_t(Mirror::Direction direction)
 {
   switch (direction) {
@@ -41,8 +35,8 @@ transform_path(const ObjectTransformation& t, const Geom::Path& path, bool rever
 {
   return ::transform<Geom::CubicBezier, std::list>(path, [t, reverse](const auto& curve) {
     const auto& cubic = dynamic_cast<const Geom::CubicBezier&>(curve);
-    auto control_points = ::transform<Geom::Point>(cubic.controlPoints(), [t](auto&& point) {
-      return transform_point(point, t);
+    auto control_points = ::transform<Geom::Point>(cubic.controlPoints(), [t](const auto& point) {
+      return t.apply(point);
     });
     if (reverse) {
       std::reverse(control_points.begin(), control_points.end());
@@ -68,8 +62,8 @@ Geom::PathVector reflect(bool& wants_to_be_closed,
       const std::list<Geom::CubicBezier> reflected_path = transform_path(mt, path, true);
       std::list<Geom::CubicBezier> original_path = transform_path(ObjectTransformation{}, path, false);
 
-      const bool close_ends = are_close(path.finalPoint(),  transform_point(path.finalPoint(), mt));
-      const bool close_mids = are_close(path.initialPoint(), transform_point(path.initialPoint(), mt));
+      const bool close_ends = are_close(path.finalPoint(),  mt.apply(path.finalPoint()));
+      const bool close_mids = are_close(path.initialPoint(), mt.apply(path.initialPoint()));
       if (!child_is_closed && (!close_ends || !close_mids)) {
         wants_to_be_closed = false;
       }
@@ -186,7 +180,7 @@ Geom::PathVector Mirror::paths() const
   }
 }
 
-void Mirror::perform_update_object_mode()
+void Mirror::update_object_mode()
 {
   const auto n_children = this->n_children();
   if (n_children > 0) {
@@ -211,16 +205,7 @@ void Mirror::perform_update_object_mode()
   }
 }
 
-Geom::PathVector transform(const Geom::PathVector& pv, const ObjectTransformation& t)
-{
-  auto transformed_pv = ::transform<Geom::Path, std::vector>(pv, [&t](const auto& p) {
-    const auto cubics = transform_path(t, p, false);
-    return Geom::Path{cubics.begin(), cubics.end()};
-  });
-  return {std::move_iterator{transformed_pv.begin()}, std::move_iterator{transformed_pv.end()}};
-}
-
-void Mirror::perform_update_path_mode()
+void Mirror::update_path_mode()
 {
   const auto n_children = this->n_children();
   if (n_children != 1) {
@@ -236,13 +221,13 @@ void Mirror::perform_update_path_mode()
     if (const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
         direction == Direction::Both)
     {
-      auto r = omm::transform(pv, child.transformation());
+      auto r = child.transformation().apply(pv);
       r = reflect(wants_to_be_closed, r, Direction::Horizontal, child_is_closed, eps);
       wants_to_be_closed = !wants_to_be_closed;
       r = reflect(wants_to_be_closed, r, Direction::Vertical, child_is_closed, eps);
       reflection->set(r);
     } else {
-      auto r = omm::transform(pv, child.transformation());
+      auto r = child.transformation().apply(pv);
       r = reflect(wants_to_be_closed, r, direction, child_is_closed, eps);
       reflection->set(r);
     }
@@ -267,11 +252,11 @@ void Mirror::update()
   if (is_active()) {
     switch (property(AS_PATH_PROPERTY_KEY)->value<Mode>()) {
     case Mode::Path:
-      perform_update_path_mode();
+      update_path_mode();
       m_draw_children = false;
       break;
     case Mode::Object:
-      perform_update_object_mode();
+      update_object_mode();
       m_draw_children = true;
       break;
     default:

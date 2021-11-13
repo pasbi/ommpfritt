@@ -44,8 +44,8 @@ protected:
 private:
   std::unique_ptr<Object> m_reflection;
   void polish();
-  void perform_update_object_mode();
-  void perform_update_path_mode();
+  void update_object_mode();
+  void update_path_mode();
   void update_property_visibility();
 };
 
