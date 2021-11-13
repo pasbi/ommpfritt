@@ -71,6 +71,7 @@ public:
 
   [[nodiscard]] Geom::PathVector apply(const Geom::PathVector& pv) const;
   [[nodiscard]] Geom::Path apply(const Geom::Path& path) const;
+  [[nodiscard]] Geom::Point apply(const Geom::Point& point) const;
   [[nodiscard]] std::unique_ptr<Geom::Curve> apply(const Geom::Curve& curve) const;
   operator Geom::Affine() const;
 
