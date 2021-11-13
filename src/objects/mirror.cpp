@@ -161,7 +161,7 @@ void Mirror::perform_update_object_mode()
     };
     if (direction == Direction::Both) {
       m_reflection = std::make_unique<Empty>(this->scene());
-      m_reflection->set_virtual_parent(this);
+//      m_reflection->set_virtual_parent(this);
       m_reflection->adopt(make_reflection(m_reflection.get(), Direction::Horizontal));
       m_reflection->adopt(make_reflection(m_reflection.get(), Direction::Vertical));
       m_reflection->adopt(make_reflection(m_reflection.get(), Direction::Both));
