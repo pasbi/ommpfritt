@@ -12,6 +12,7 @@
 #include <2geom/line.h>
 #include <2geom/path-intersection.h>
 #include <QCoreApplication>
+#include <QMouseEvent>
 
 namespace
 {

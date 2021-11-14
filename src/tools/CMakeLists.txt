@@ -7,6 +7,8 @@ target_sources(libommpfritt PRIVATE
   pathtool.h
   selectobjectstool.cpp
   selectobjectstool.h
+  selectpointsbasetool.cpp
+  selectpointsbasetool.h
   selectpointstool.cpp
   selectpointstool.h
   selecttool.cpp
