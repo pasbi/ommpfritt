@@ -93,11 +93,6 @@ BoundingBox SelectObjectsTool::bounding_box() const
   }
 }
 
-bool SelectObjectsTool::has_transformation() const
-{
-  return !scene()->item_selection<Object>().empty();
-}
-
 Vec2f SelectObjectsTool::selection_center() const
 {
   const auto objects = scene()->item_selection<Object>();

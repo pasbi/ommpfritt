@@ -31,7 +31,6 @@ public:
   }
 
 protected:
-  bool has_transformation() const override;
   Vec2f selection_center() const override;
   std::unique_ptr<TransformObjectsHelper> m_transform_objects_helper;
 };

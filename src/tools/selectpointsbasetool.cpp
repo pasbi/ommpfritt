@@ -84,16 +84,6 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
   }
 }
 
-bool SelectPointsBaseTool::has_transformation() const
-{
-  return false;
-  const auto paths = type_casts<Path*>(scene()->template item_selection<Object>());
-  return std::any_of(paths.begin(), paths.end(), [](const auto* path) {
-    const auto points = path->points();
-    return std::any_of(points.begin(), points.end(), std::mem_fn(&Point::is_selected));
-  });
-}
-
 BoundingBox SelectPointsBaseTool::bounding_box() const
 {
   static const auto remove_tangents = [](const Point& point) { return point.nibbed(); };

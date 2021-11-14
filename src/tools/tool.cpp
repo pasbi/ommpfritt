@@ -76,10 +76,6 @@ void Tool::draw(Painter& renderer) const
   }
 }
 
-bool Tool::has_transformation() const
-{
-  return false;
-}
 
 bool Tool::is_active() const
 {

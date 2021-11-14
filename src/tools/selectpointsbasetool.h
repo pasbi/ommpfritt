@@ -25,8 +25,6 @@ public:
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool allow_clear);
 
-  bool has_transformation() const override;
-
   template<typename ToolT> static void make_handles(ToolT& tool, bool force_subhandles = false)
   {
     for (auto* path : tool.scene()->template item_selection<Path>()) {
