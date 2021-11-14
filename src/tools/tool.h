@@ -38,6 +38,7 @@ public:
   virtual bool key_press(const QKeyEvent& event);
   virtual void draw(Painter& renderer) const;
   virtual bool has_transformation() const;
+  [[nodiscard]] bool is_active() const;
 
   /**
    * @brief cancel cancels the current tool application and restores the status before.

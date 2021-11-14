@@ -76,6 +76,16 @@ bool Tool::has_transformation() const
   return false;
 }
 
+bool Tool::is_active() const
+{
+  for (const auto& handle : handles) {
+    std::cout << "handle " << handle.get() << ": " << int(handle->status()) << std::endl;
+  }
+  return std::any_of(handles.begin(), handles.end(), [](const auto& handle) {
+    return handle->status() == HandleStatus::Active;
+  });
+}
+
 std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent)
 {
   Q_UNUSED(parent);

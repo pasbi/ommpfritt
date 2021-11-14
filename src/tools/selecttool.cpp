@@ -106,14 +106,17 @@ void AbstractSelectTool::draw(Painter& renderer) const
 
 bool AbstractSelectTool::cancel()
 {
-  transform_objects(ObjectTransformation());
-
-  Tool::cancel();
-  if (auto&& h = scene()->history(); h.last_command_is_noop()) {
-    h.make_last_command_obsolete();
-    QSignalBlocker blocker(&scene()->history());
-    scene()->history().undo();
+  if (is_active()) {
+    transform_objects(ObjectTransformation{});
+    Tool::cancel();
+    if (auto&& h = scene()->history(); h.last_command_is_noop()) {
+      h.make_last_command_obsolete();
+      scene()->history().undo();
+    }
+  } else {
+    Tool::cancel();
   }
+
   return false;
 }
 

@@ -52,6 +52,18 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
   return ::get_keys(m_data) == ::get_keys(mtc.m_data);
 }
 
+bool ModifyPointsCommand::is_noop() const
+{
+  for (const auto& [path, points] : m_data) {
+    for (const auto& [ptr, new_value] : points) {
+      if (*ptr != new_value) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 AbstractPointsCommand::AbstractPointsCommand(const QString& label,
                                              Path& path,
                                              std::deque<OwnedLocatedSegment>&& points_to_add)

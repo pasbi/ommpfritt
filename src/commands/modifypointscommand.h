@@ -21,6 +21,7 @@ public:
   void undo() override;
   [[nodiscard]] int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
+  [[nodiscard]] bool is_noop() const override;
 
 private:
   Map m_data;
