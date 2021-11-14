@@ -88,9 +88,9 @@ void ObjectSelectHandle::draw(QPainter& painter) const
   const auto pos = transformation().null();
   const auto r = draw_epsilon();
 
-  painter.setPen(is_selected ? ui_color(HandleStatus::Active, "object") : ui_color("object"));
-  painter.setBrush(is_selected ? ui_color(HandleStatus::Active, "object fill")
-                               : ui_color("object fill"));
+  const auto status = is_selected ? HandleStatus::Active : this->status();
+  painter.setPen(ui_color(status, "object"));
+  painter.setBrush(ui_color(status, "object fill"));
   painter.drawRect(Tool::centered_rectangle(pos, r));
 }
 
@@ -194,14 +194,12 @@ void PointSelectHandle::draw(QPainter& painter) const
   }
 
   painter.translate(pos.to_pointf());
-  const auto color = m_point.is_selected() ? ui_color(HandleStatus::Active, "point")
-                                           : ui_color("point");
-
+  const auto status = m_point.is_selected() ? HandleStatus::Active : this->status();
   const auto r = draw_epsilon();
   const QRectF rect{-r, -r, 2 * r, 2 * r};
-  painter.setPen(color);
+  painter.setPen(ui_color(status, "point"));
+  painter.setBrush(ui_color(status, "point fill"));
   painter.drawRect(rect);
-  painter.fillRect(rect, color);
 }
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent)
