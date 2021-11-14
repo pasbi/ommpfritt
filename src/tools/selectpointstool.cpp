@@ -106,7 +106,7 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   case BoundingBoxMode::None:
     [[fallthrough]];
   default:
-    return BoundingBox();
+    return {};
   }
 }
 
