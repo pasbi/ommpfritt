@@ -172,10 +172,10 @@ Vec2f ObjectTransformation::null() const
 
 QString ObjectTransformation::to_string() const
 {
-  return QString{"[t=%1, s=%2, sh=%3, r=%4°]"}.arg(translation().to_string())
-                                              .arg(scaling().to_string())
-                                              .arg(shearing())
-                                              .arg(M_180_PI * rotation());
+  return QStringLiteral("[") + translation().to_string()
+      + QStringLiteral(", s=") + scaling().to_string()
+      + QStringLiteral(", sh=%1, ").arg(shearing())
+      + QStringLiteral(", r=%1°").arg(M_180_PI * rotation());
 }
 
 bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
@@ -299,7 +299,7 @@ bool ObjectTransformation::has_nan() const
 ObjectTransformation::operator Geom::Affine() const
 {
   const auto m = to_mat().m;
-  return Geom::Affine(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
+  return {m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]};
 }
 
 ObjectTransformation ObjectTransformation::transformed(const ObjectTransformation& other) const
@@ -318,6 +318,12 @@ Geom::Path ObjectTransformation::apply(const Geom::Path& path) const
   return transform(path, *this);
 }
 
+Geom::Point ObjectTransformation::apply(const Geom::Point& point) const
+{
+  const auto tp = apply_to_position(Vec2f{point.x(), point.y()});
+  return Geom::Point{tp.x, tp.y};
+}
+
 std::unique_ptr<Geom::Curve> ObjectTransformation::apply(const Geom::Curve& curve) const
 {
   return transform(curve, *this);
@@ -331,7 +337,7 @@ Geom::PathVector ObjectTransformation::transform(const Geom::PathVector& pv,
   std::transform(pv.begin(), pv.end(), std::back_inserter(transformed), [affine](auto&& path) {
     return transform(path, affine);
   });
-  return Geom::PathVector(transformed.begin(), transformed.end());
+  return {transformed.begin(), transformed.end()};
 }
 
 Geom::Path ObjectTransformation::transform(const Geom::Path& path, const Geom::Affine& affine)
