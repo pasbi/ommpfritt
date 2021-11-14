@@ -1,6 +1,7 @@
 #include "tools/pathtool.h"
 #include "commands/addcommand.h"
 #include "commands/modifypointscommand.h"
+#include "commands/joinpointscommand.h"
 #include "main/application.h"
 #include "objects/path.h"
 #include "objects/segment.h"
@@ -51,14 +52,29 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
       const auto gpos = transformation.apply_to_position(pos);
 
       std::deque<std::unique_ptr<Point>> points;
+      JoinPointsCommand::Map join_points_map;
       m_current_point = points.emplace_back(std::make_unique<Point>(gpos)).get();
       std::deque<AddPointsCommand::OwnedLocatedSegment> located_segments;
       if (m_current_segment == nullptr) {
+        // no segment is selected: add the point to a newly created segment
         located_segments.emplace_back(std::make_unique<Segment>(std::move(points)));
-      } else {
+      } else if (m_current_segment->size() == 0 || m_current_segment->points().back() == m_last_point) {
+        // segment is empty or last point of the segmet is selected: append point at end
         located_segments.emplace_back(m_current_segment, m_current_segment->size(), std::move(points));
+      } else if (m_current_segment->points().front() == m_last_point) {
+        // first point of segment is selected: append point at begin
+        located_segments.emplace_back(m_current_segment, 0, std::move(points));
+      } else {
+        // other point of segment is selected: add point to a newly created segment and join points
+        auto& copy = *points.emplace_front(std::make_unique<Point>(*m_last_point));
+        located_segments.emplace_back(std::make_unique<Segment>(std::move(points)));
+        join_points_map[m_current_path].insert({m_last_point, &copy});
       }
       scene()->submit<AddPointsCommand>(*m_current_path, std::move(located_segments));
+      if (!join_points_map.empty()) {
+        scene()->submit<JoinPointsCommand>(join_points_map);
+      }
+      m_current_path->deselect_all_points();
       m_current_point->set_selected(true);
       m_current_path->update();
       return true;

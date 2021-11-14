@@ -203,4 +203,11 @@ void Path::update_point(const std::set<Point*>& points)
   }
 }
 
+void Path::deselect_all_points()
+{
+  for (auto* point : points()) {
+    point->set_selected(false);
+  }
+}
+
 }  // namespace omm

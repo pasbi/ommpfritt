@@ -51,6 +51,7 @@ public:
   std::set<Point*> join_points(const std::set<Point*>& points);
   void disjoin_points(Point* point);
   void update_point(const std::set<Point*>& points);
+  void deselect_all_points();
 
 private:
   std::deque<std::unique_ptr<Segment>> m_segments;
