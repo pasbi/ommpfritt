@@ -13,10 +13,7 @@ protected:
   Command(const QString& label);
 
 public:
-  [[nodiscard]] virtual bool is_noop() const
-  {
-    return false;
-  }
+  [[nodiscard]] virtual bool is_noop() const;
 
 protected:
   static constexpr int PROPERTY_COMMAND_ID = 1;

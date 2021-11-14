@@ -51,10 +51,7 @@ public:
 
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;
-  Flag flags() const override
-  {
-    return Flag::None;
-  }
+  Flag flags() const override;
   ObjectTransformation viewport_transformation;
   static bool integer_transformation();
   QString name() const override;
@@ -62,9 +59,7 @@ public:
   static QRectF centered_rectangle(const Vec2f& center, double radius);
 
 public:
-  virtual void reset()
-  {
-  }
+  virtual void reset();
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;

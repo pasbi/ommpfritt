@@ -19,6 +19,11 @@ ObjectTransformation Tool::transformation() const
   return ObjectTransformation();
 }
 
+Flag Tool::flags() const
+{
+  return Flag::None;
+}
+
 bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
@@ -126,6 +131,10 @@ QString Tool::name() const
 QRectF Tool::centered_rectangle(const Vec2f& center, double radius)
 {
   return QRectF{QPointF{center.x - radius, center.y - radius}, 2.0 * QSizeF{radius, radius}};
+}
+
+void Tool::reset()
+{
 }
 
 }  // namespace omm
