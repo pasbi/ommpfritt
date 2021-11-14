@@ -7,6 +7,7 @@
 
 namespace
 {
+
 auto make_tool_map(omm::Scene& scene)
 {
   std::map<QString, std::unique_ptr<omm::Tool>> map;
@@ -29,20 +30,19 @@ template<typename T> void remove_duplicates(std::list<T>& ls)
   });
 }
 
-template<typename Map> auto collect_default_tools(Map&& tool_map)
-{
-  return std::map<omm::SceneMode, omm::Tool*>{
-      {omm::SceneMode::Object, tool_map.at(omm::SelectObjectsTool::TYPE).get()},
-      {omm::SceneMode::Vertex, tool_map.at(omm::SelectPointsTool::TYPE).get()},
-  };
-}
-
 }  // namespace
 
 namespace omm
 {
+
+const decltype(ToolBox::m_default_tools) ToolBox::m_default_tools {
+  {omm::SceneMode::Object, omm::SelectObjectsTool::TYPE},
+  {omm::SceneMode::Vertex, omm::SelectPointsTool::TYPE},
+};
+
 ToolBox::ToolBox(Scene& scene)
-    : m_tools(make_tool_map(scene)), m_default_tools(collect_default_tools(m_tools)), m_scene(scene)
+    : m_tools(make_tool_map(scene))
+    , m_scene(scene)
 {
   if (!m_tools.empty()) {
     m_active_tool = m_tools.begin()->second.get();
@@ -77,7 +77,7 @@ void ToolBox::set_active_tool(Tool& tool)
   m_active_tool->start();
 }
 
-void ToolBox::set_previous_tool()
+void ToolBox::activate_previous_tool()
 {
   if (m_history.size() > 1) {
     auto& name = **std::next(m_history.begin());
@@ -88,13 +88,18 @@ void ToolBox::set_previous_tool()
 void ToolBox::set_scene_mode(SceneMode mode)
 {
   if ((m_active_tool == nullptr) || m_active_tool->scene_mode() != mode) {
-    set_active_tool(*m_default_tools.at(mode));
+    set_active_tool(m_default_tools.at(mode));
   }
 }
 
 std::set<Tool*> ToolBox::tools() const
 {
   return ::transform<Tool*, std::set>(m_tools, [](auto&& pair) { return pair.second.get(); });
+}
+
+void ToolBox::activate_default_tool()
+{
+  set_active_tool(m_default_tools.at(m_scene.current_mode()));
 }
 
 }  // namespace omm

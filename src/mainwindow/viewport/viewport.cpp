@@ -12,6 +12,8 @@
 #include "scene/scene.h"
 #include "tools/toolbox.h"
 #include "tools/tool.h"
+#include "tools/selectobjectstool.h"
+#include "tools/selectpointstool.h"
 
 #include <QMouseEvent>
 #include <QPainter>
@@ -19,6 +21,9 @@
 
 namespace
 {
+
+using namespace omm;
+
 void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 {
   auto cursor = widget.cursor();
@@ -289,6 +294,8 @@ void Viewport::keyPressEvent(QKeyEvent* event)
 {
   if (m_scene.tool_box().active_tool().key_press(*event)) {
     update();
+  } else if (event->key() == Qt::Key_Escape) {
+    m_scene.tool_box().activate_default_tool();
   } else {
     QWidget::keyPressEvent(event);
   }
