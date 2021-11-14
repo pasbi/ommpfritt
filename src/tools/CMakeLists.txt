@@ -19,6 +19,8 @@ target_sources(libommpfritt PRIVATE
   transformobjectshelper.h
   transformpointshelper.cpp
   transformpointshelper.h
+  transformpointstool.cpp
+  transformpointstool.h
   toolbox.cpp
   toolbox.h
   tool.cpp
