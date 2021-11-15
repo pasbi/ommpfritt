@@ -72,7 +72,7 @@ private:
   Point& m_point;
   std::unique_ptr<TangentHandle> m_left_tangent_handle;
   std::unique_ptr<TangentHandle> m_right_tangent_handle;
-  [[nodiscard]] bool tangents_active() const;
+  [[nodiscard]] std::pair<bool, bool> tangents_active() const;
 
   void transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent tangent);
 };

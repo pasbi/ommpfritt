@@ -4,6 +4,7 @@
 #include "geometry/rectangle.h"
 #include "geometry/vec2.h"
 #include "objects/path.h"
+#include "objects/segment.h"
 #include "renderers/painter.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
@@ -147,24 +148,33 @@ bool PointSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
   if (AbstractSelectHandle::mouse_press(pos, event)) {
     return true;
-  } else if (tangents_active()) {
-    return m_left_tangent_handle->mouse_press(pos, event)
-           || m_right_tangent_handle->mouse_press(pos, event);
-  } else {
-    return false;
   }
+
+  const auto [left_tangent_active, right_tangent_active] = tangents_active();
+  if (left_tangent_active && m_left_tangent_handle->mouse_press(pos, event)) {
+    return true;
+  }
+  if (right_tangent_active && m_right_tangent_handle->mouse_press(pos, event)) {
+    return true;
+  }
+  return false;
 }
 
 bool PointSelectHandle ::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event)
 {
   if (AbstractSelectHandle::mouse_move(delta, pos, event)) {
     return true;
-  } else if (tangents_active()) {
-    return m_left_tangent_handle->mouse_move(delta, pos, event)
-           || m_right_tangent_handle->mouse_move(delta, pos, event);
-  } else {
-    return false;
   }
+
+  const auto [left_tangent_active, right_tangent_active] = tangents_active();
+  if (left_tangent_active && m_left_tangent_handle->mouse_move(delta, pos, event)) {
+    return true;
+  }
+  if (right_tangent_active && m_right_tangent_handle->mouse_move(delta, pos, event)) {
+    return true;
+  }
+
+  return false;
 }
 
 void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event)
@@ -177,8 +187,6 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
 void PointSelectHandle::draw(QPainter& painter) const
 {
   const auto pos = transformation().apply_to_position(m_point.position());
-  const auto left_pos = transformation().apply_to_position(m_point.left_position());
-  const auto right_pos = transformation().apply_to_position(m_point.right_position());
 
   const auto treat_sub_handle = [&painter, pos, this](auto& sub_handle, const auto& other_pos) {
     sub_handle.position = other_pos;
@@ -188,9 +196,14 @@ void PointSelectHandle::draw(QPainter& painter) const
     sub_handle.draw(painter);
   };
 
-  if (tangents_active()) {
-    treat_sub_handle(*m_right_tangent_handle, right_pos);
+  const auto [left_tangent_active, right_tangent_active] = tangents_active();
+  if (left_tangent_active) {
+    const auto left_pos = transformation().apply_to_position(m_point.left_position());
     treat_sub_handle(*m_left_tangent_handle, left_pos);
+  }
+  if (right_tangent_active) {
+    const auto right_pos = transformation().apply_to_position(m_point.right_position());
+    treat_sub_handle(*m_right_tangent_handle, right_pos);
   }
 
   painter.translate(pos.to_pointf());
@@ -242,12 +255,17 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
   tool.scene()->submit<ModifyPointsCommand>(map);
 }
 
-bool PointSelectHandle::tangents_active() const
+std::pair<bool, bool> PointSelectHandle::tangents_active() const
 {
-  const auto& imode_property = m_path.property(Path::INTERPOLATION_PROPERTY_KEY);
-  const auto interpolation_mode = imode_property->value<InterpolationMode>();
-  const bool is_bezier = interpolation_mode == InterpolationMode::Bezier;
-  return (is_bezier && m_point.is_selected()) || force_draw_subhandles;
+  const auto interpolation_mode = m_path.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
+  if ((interpolation_mode == InterpolationMode::Bezier && m_point.is_selected()) || force_draw_subhandles) {
+    const auto points = m_path.find_segment(m_point)->points();
+    assert(!points.empty());
+    return {m_path.is_closed() || points.front() != &m_point,
+            m_path.is_closed() || points.back() != &m_point};
+  } else {
+    return {false, false};
+  }
 }
 
 void PointSelectHandle::set_selected(bool selected)
