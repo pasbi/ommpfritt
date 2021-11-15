@@ -49,7 +49,15 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
 {
   // merging happens automatically!
   const auto& mtc = dynamic_cast<const ModifyPointsCommand&>(*command);
-  return ::get_keys(m_data) == ::get_keys(mtc.m_data);
+
+  const auto keys = ::get_keys(m_data);
+  if (::get_keys(mtc.m_data) == keys) {
+    return std::all_of(begin(keys), end(keys), [this, &mtc](auto* path) {
+      return ::get_keys(m_data.at(path)) == ::get_keys(mtc.m_data.at(path));
+    });
+  } else {
+    return false;
+  }
 }
 
 bool ModifyPointsCommand::is_noop() const
