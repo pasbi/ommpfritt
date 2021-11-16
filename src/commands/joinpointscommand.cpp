@@ -1,4 +1,5 @@
 #include "commands/joinpointscommand.h"
+#include "objects/pathpoint.h"
 
 namespace omm
 {
@@ -13,8 +14,8 @@ void JoinPointsCommand::undo()
 {
   for (auto&& [path, points] : m_points) {
     path->m_joined_points = m_old_forest[path];
-    for (auto it : points) {
-      *it = m_old_positions[it];
+    for (auto* point : points) {
+      point->geometry() = m_old_positions[point];
     }
     path->update();
   }
@@ -22,23 +23,23 @@ void JoinPointsCommand::undo()
 
 void JoinPointsCommand::redo()
 {
-  for (auto&& [path, point_iterators] : m_points) {
+  for (auto&& [path, points] : m_points) {
     m_old_forest[path] = path->m_joined_points;
-    const auto joined = path->join_points(point_iterators);
+    const auto joined = path->join_points(points);
     const auto new_pos = compute_position(joined);
-    for (const auto& it : point_iterators) {
-      m_old_positions[it] = *it;
-      it->set_position(new_pos);
+    for (auto* point : points) {
+      m_old_positions[point] = point->geometry();
+      point->geometry().set_position(new_pos);
     }
     path->update();
   }
 }
 
-Vec2f JoinPointsCommand::compute_position(const std::set<Point*>& points)
+Vec2f JoinPointsCommand::compute_position(const std::set<PathPoint*>& points)
 {
   Vec2f pos{0.F, 0.F};
   for (const auto* p : points) {
-    pos += p->position();
+    pos += p->geometry().position();
   }
   return pos / static_cast<double>(points.size());
 }

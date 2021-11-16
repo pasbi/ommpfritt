@@ -1,6 +1,7 @@
 #include "objects/ellipse.h"
 
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
@@ -53,16 +54,16 @@ Geom::PathVector Ellipse::paths() const
   const auto n = static_cast<std::size_t>(std::max(3, n_raw));
   const auto r = property(RADIUS_PROPERTY_KEY)->value<Vec2f>();
   const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
-  std::deque<std::unique_ptr<Point>> points;
+  std::deque<std::unique_ptr<PathPoint>> points;
   for (std::size_t i = 0; i < n; ++i) {
     const double theta = i * 2.0 / n * M_PI;
     const double x = std::cos(theta) * r.x;
     const double y = std::sin(theta) * r.y;
     if (smooth) {
       const Vec2f d(std::sin(theta) * r.x, -std::cos(theta) * r.y);
-      points.emplace_back(std::make_unique<Point>(Vec2f{x, y}, d.arg(), 2.0 * d.euclidean_norm() / n));
+      points.emplace_back(std::make_unique<PathPoint>(Point{Vec2f{x, y}, d.arg(), 2.0 * d.euclidean_norm() / n}));
     } else {
-      points.emplace_back(std::make_unique<Point>(Vec2f{x, y}));
+      points.emplace_back(std::make_unique<PathPoint>(Point{Vec2f{x, y}}));
     }
   }
   return Geom::PathVector{Segment(std::move(points)).to_geom_path(true)};

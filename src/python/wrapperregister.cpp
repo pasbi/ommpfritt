@@ -1,6 +1,7 @@
 #include "python/objectwrapper.h"
 #include "python/pathwrapper.h"
 #include "python/pointwrapper.h"
+#include "python/pathpointwrapper.h"
 #include "python/propertyownerwrapper.h"
 #include "python/scenewrapper.h"
 #include "python/scripttagwrapper.h"
@@ -25,6 +26,7 @@ void register_wrappers(py::object& module)
 
   SceneWrapper::define_python_interface(module);
   PointWrapper::define_python_interface(module);
+  PathPointWrapper::define_python_interface(module);
   SplineWrapper::define_python_interface(module);
 }
 

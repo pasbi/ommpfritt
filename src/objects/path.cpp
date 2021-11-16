@@ -6,6 +6,7 @@
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include <QObject>
 
@@ -143,7 +144,7 @@ std::deque<Segment*> Path::segments() const
   return ::transform<Segment*>(m_segments, std::mem_fn(&std::unique_ptr<Segment>::get));
 }
 
-Segment* Path::find_segment(const Point& point) const
+Segment* Path::find_segment(const PathPoint& point) const
 {
   for (auto&& segment : m_segments) {
     if (segment->contains(point)) {
@@ -169,9 +170,9 @@ std::unique_ptr<Segment> Path::remove_segment(const Segment& segment)
   return extracted_segment;
 }
 
-std::deque<Point*> Path::points() const
+std::deque<PathPoint*> Path::points() const
 {
-  std::deque<Point*> points;
+  std::deque<PathPoint*> points;
   for (const auto& segment : m_segments) {
     const auto& ps = segment->points();
     points.insert(points.end(), ps.begin(), ps.end());
@@ -179,26 +180,27 @@ std::deque<Point*> Path::points() const
   return points;
 }
 
-std::deque<Point*> Path::selected_points() const
+std::deque<PathPoint*> Path::selected_points() const
 {
-  return ::filter_if(points(), std::mem_fn(&Point::is_selected));
+  return ::filter_if(points(), std::mem_fn(&PathPoint::is_selected));
 }
 
-std::set<Point*> Path::join_points(const std::set<Point*>& points)
+std::set<PathPoint*> Path::join_points(const std::set<PathPoint*>& points)
 {
   return m_joined_points.insert(points);
 }
 
-void Path::disjoin_points(Point* point)
+void Path::disjoin_points(PathPoint* point)
 {
   m_joined_points.remove({point});
 }
 
-void Path::update_point(const std::set<Point*>& points)
+void Path::update_point(const std::set<PathPoint*>& points)
 {
-  for (Point* p : points) {
-    for (Point* q : m_joined_points.get(p)) {
-      q->set_position(p->position());
+  // TODO move to PathPoint
+  for (PathPoint* p : points) {
+    for (PathPoint* q : m_joined_points.get(p)) {
+      q->geometry().set_position(p->geometry().position());
     }
   }
 }

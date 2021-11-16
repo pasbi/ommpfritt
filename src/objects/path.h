@@ -10,6 +10,7 @@
 namespace omm
 {
 
+class PathPoint;
 class Scene;
 class Segment;
 
@@ -43,19 +44,19 @@ public:
 
   std::size_t point_count() const;
   std::deque<Segment*> segments() const;
-  Segment* find_segment(const Point& point) const;
+  Segment* find_segment(const PathPoint& point) const;
   Segment& add_segment(std::unique_ptr<Segment>&& segment);
   std::unique_ptr<Segment> remove_segment(const Segment& segment);
-  std::deque<Point*> points() const;
-  std::deque<Point*> selected_points() const;
-  std::set<Point*> join_points(const std::set<Point*>& points);
-  void disjoin_points(Point* point);
-  void update_point(const std::set<Point*>& points);
+  std::deque<PathPoint*> points() const;
+  std::deque<PathPoint*> selected_points() const;
+  std::set<PathPoint*> join_points(const std::set<PathPoint*>& points);
+  void disjoin_points(PathPoint* point);
+  void update_point(const std::set<PathPoint*>& points);
   void deselect_all_points();
 
 private:
   std::deque<std::unique_ptr<Segment>> m_segments;
-  DisjointSetForest<Point*> m_joined_points;
+  DisjointSetForest<PathPoint*> m_joined_points;
   friend class JoinPointsCommand;
   friend class DisjoinPointsCommand;
 };

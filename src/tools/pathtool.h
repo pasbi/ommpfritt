@@ -23,8 +23,8 @@ public:
 
 private:
   Path* m_current_path = nullptr;
-  Point* m_last_point = nullptr;
-  Point* m_current_point = nullptr;
+  PathPoint* m_last_point = nullptr;
+  PathPoint* m_current_point = nullptr;
   Segment* m_current_segment = nullptr;
   void find_tie();
 };

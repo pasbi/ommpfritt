@@ -4,6 +4,7 @@
 #include "geometry/rectangle.h"
 #include "geometry/vec2.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include "renderers/painter.h"
 #include "scene/mailbox.h"
@@ -121,7 +122,7 @@ bool ObjectSelectHandle::is_selected() const
   return ::contains(m_scene.item_selection<Object>(), &m_object);
 }
 
-PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)
+PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, PathPoint& point)
     : AbstractSelectHandle(tool)
     , m_path(path)
     , m_point(point)
@@ -139,7 +140,7 @@ ObjectTransformation PointSelectHandle::transformation() const
 
 bool PointSelectHandle::contains_global(const Vec2f& point) const
 {
-  const auto tpoint = transformation().apply_to_position(m_point.position());
+  const auto tpoint = transformation().apply_to_position(m_point.geometry().position());
   const auto d = (point - tpoint).euclidean_norm();
   return d < interact_epsilon();
 }
@@ -186,7 +187,7 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
 
 void PointSelectHandle::draw(QPainter& painter) const
 {
-  const auto pos = transformation().apply_to_position(m_point.position());
+  const auto pos = transformation().apply_to_position(m_point.geometry().position());
 
   const auto treat_sub_handle = [&painter, pos, this](auto& sub_handle, const auto& other_pos) {
     sub_handle.position = other_pos;
@@ -198,11 +199,11 @@ void PointSelectHandle::draw(QPainter& painter) const
 
   const auto [left_tangent_active, right_tangent_active] = tangents_active();
   if (left_tangent_active) {
-    const auto left_pos = transformation().apply_to_position(m_point.left_position());
+    const auto left_pos = transformation().apply_to_position(m_point.geometry().left_position());
     treat_sub_handle(*m_left_tangent_handle, left_pos);
   }
   if (right_tangent_active) {
-    const auto right_pos = transformation().apply_to_position(m_point.right_position());
+    const auto right_pos = transformation().apply_to_position(m_point.geometry().right_position());
     treat_sub_handle(*m_right_tangent_handle, right_pos);
   }
 
@@ -224,7 +225,7 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
                                           TangentMode mode,
                                           TangentHandle::Tangent tangent)
 {
-  auto new_point = m_point;
+  auto new_point = m_point.geometry();
   PolarCoordinates primary_pos;
   PolarCoordinates secondary_pos;
   if (tangent == TangentHandle::Tangent::Right) {

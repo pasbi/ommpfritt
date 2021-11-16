@@ -1,5 +1,6 @@
 #include "objects/rectangleobject.h"
 #include "objects/segment.h"
+#include "objects/pathpoint.h"
 #include "properties/floatvectorproperty.h"
 
 namespace omm
@@ -33,7 +34,7 @@ QString RectangleObject::type() const
 
 Geom::PathVector RectangleObject::paths() const
 {
-  std::deque<std::unique_ptr<Point>> points;
+  std::deque<std::unique_ptr<PathPoint>> points;
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>() / 2.0;
   const auto r = property(RADIUS_PROPERTY_KEY)->value<Vec2f>();
   const auto t = property(TENSION_PROPERTY_KEY)->value<Vec2f>();
@@ -44,7 +45,7 @@ Geom::PathVector RectangleObject::paths() const
   const PolarCoordinates h(Vec2f(ar.x * t.x, 0.0));
 
   auto add = [&points](auto... args) {
-    points.push_back(std::make_unique<Point>(args...));
+    points.push_back(std::make_unique<PathPoint>(Point{args...}));
   };
   const bool p = ar != Vec2f::o();
   if (p) {

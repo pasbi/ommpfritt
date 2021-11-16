@@ -10,6 +10,7 @@ namespace omm
 
 class Scene;
 class Path;
+class PathPoint;
 
 class AbstractSelectHandle : public Handle
 {
@@ -51,7 +52,7 @@ class PointSelectHandle : public AbstractSelectHandle
 {
 public:
   enum class TangentMode { Mirror, Individual };
-  explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
+  explicit PointSelectHandle(Tool& tool, Path& path, PathPoint& point);
   [[nodiscard]] bool contains_global(const Vec2f& point) const override;
   void draw(QPainter& painter) const override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
@@ -69,7 +70,7 @@ protected:
 
 private:
   Path& m_path;
-  Point& m_point;
+  PathPoint& m_point;
   std::unique_ptr<TangentHandle> m_left_tangent_handle;
   std::unique_ptr<TangentHandle> m_right_tangent_handle;
   [[nodiscard]] std::pair<bool, bool> tangents_active() const;

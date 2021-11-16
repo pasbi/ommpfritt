@@ -9,6 +9,7 @@ namespace omm
 class CoordinateEdit;
 class Path;
 class Point;
+class PathPoint;
 struct PolarCoordinates;
 enum class DisplayMode;
 
@@ -16,7 +17,7 @@ class PointEdit : public QWidget
 {
   Q_OBJECT
 public:
-  PointEdit(Path& path, Point& point, QWidget* parent = nullptr);
+  PointEdit(Path& path, PathPoint& point, QWidget* parent = nullptr);
   void set_display_mode(const DisplayMode& display_mode);
 
 private:
@@ -28,7 +29,7 @@ private:
   CoordinateEdit* m_left_tangent_edit = nullptr;
   CoordinateEdit* m_right_tangent_edit = nullptr;
   CoordinateEdit* m_position_edit;
-  Point& m_point;
+  PathPoint& m_point;
   Path* m_path{};
 
 private:

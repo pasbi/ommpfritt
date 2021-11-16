@@ -4,6 +4,7 @@
 #include "commands/joinpointscommand.h"
 #include "main/application.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include "scene/scene.h"
 #include "scene/history/historymodel.h"
@@ -25,9 +26,9 @@ bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEven
   } else if (m_current_path == nullptr || m_current_point ==  nullptr) {
     return false;
   } else {
-    const auto lt = PolarCoordinates(m_current_point->left_tangent().to_cartesian() + delta);
-    m_current_point->set_left_tangent(lt);
-    m_current_point->set_right_tangent(-lt);
+    const auto lt = PolarCoordinates(m_current_point->geometry().left_tangent().to_cartesian() + delta);
+    m_current_point->geometry().set_left_tangent(lt);
+    m_current_point->geometry().set_right_tangent(-lt);
     m_current_path->update();
     return true;
   }
@@ -51,9 +52,9 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
       const auto transformation = m_current_path->global_transformation(Space::Viewport).inverted();
       const auto gpos = transformation.apply_to_position(pos);
 
-      std::deque<std::unique_ptr<Point>> points;
+      std::deque<std::unique_ptr<PathPoint>> points;
       JoinPointsCommand::Map join_points_map;
-      m_current_point = points.emplace_back(std::make_unique<Point>(gpos)).get();
+      m_current_point = points.emplace_back(std::make_unique<PathPoint>(Point{gpos})).get();
       std::deque<AddPointsCommand::OwnedLocatedSegment> located_segments;
       if (m_current_segment == nullptr) {
         // no segment is selected: add the point to a newly created segment
@@ -66,7 +67,7 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
         located_segments.emplace_back(m_current_segment, 0, std::move(points));
       } else {
         // other point of segment is selected: add point to a newly created segment and join points
-        auto& copy = *points.emplace_front(std::make_unique<Point>(*m_last_point));
+        auto& copy = *points.emplace_front(std::make_unique<PathPoint>(m_last_point->geometry()));
         located_segments.emplace_back(std::make_unique<Segment>(std::move(points)));
         join_points_map[m_current_path].insert({m_last_point, &copy});
       }

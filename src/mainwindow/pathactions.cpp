@@ -13,6 +13,7 @@
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
@@ -30,7 +31,7 @@ using namespace omm;
 
 auto path_selection(Application& app)
 {
-  std::map<Path*, std::set<Point*>> points;
+  std::map<Path*, std::set<PathPoint*>> points;
   for (auto* path : app.scene->item_selection<Path>()) {
     auto& set = points[path];
     for (auto* p : path->points()) {
@@ -53,14 +54,14 @@ template<typename F> void foreach_segment(Application& app, F&& f)
 
 void modify_tangents(InterpolationMode mode, Application& app)
 {
-  std::map<Path*, std::map<Point*, Point>> map;
+  std::map<Path*, std::map<PathPoint*, Point>> map;
   const auto paths = app.scene->item_selection<Path>();
   for (Path* path : paths) {
     const bool is_closed = path->is_closed();
     for (const Segment* segment : path->segments()) {
       const auto points = segment->points();
       for (std::size_t i = 0; i < points.size(); ++i) {
-        Point* point = points[i];
+        PathPoint* point = points[i];
         if (point->is_selected()) {
           switch (mode) {
           case InterpolationMode::Bezier:
@@ -69,7 +70,7 @@ void modify_tangents(InterpolationMode mode, Application& app)
             map[path][point] = segment->smoothen_point(i, is_closed);
             break;
           case InterpolationMode::Linear:
-            map[path][point] = point->nibbed();
+            map[path][point] = point->geometry().nibbed();
           }
         }
       }
@@ -168,7 +169,7 @@ void remove_selected_points(Application& app)
     std::deque<SegmentView> removed_points;
     for (Segment* segment : path->segments()) {
       const auto selected_ranges = find_coherent_ranges(segment->points(),
-                                                        std::mem_fn(&Point::is_selected));
+                                                        std::mem_fn(&PathPoint::is_selected));
       for (const auto& range : selected_ranges) {
         removed_points.emplace_back(*segment, range.start, range.size);
       }
@@ -302,7 +303,7 @@ void select_connected_points(Application& app)
 {
   foreach_segment(app, [](const auto* segment) {
     const auto points = segment->points();
-    if (std::any_of(points.begin(), points.end(), std::mem_fn(&Point::is_selected))) {
+    if (std::any_of(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected))) {
       std::for_each(points.begin(), points.end(), [](auto* point) { point->set_selected(true); });
     }
   });
@@ -313,8 +314,8 @@ void fill_selection(Application& app)
 {
   foreach_segment(app, [](const auto* segment) {
     const auto points = segment->points();
-    auto first_it = std::find_if(points.begin(), points.end(), std::mem_fn(&Point::is_selected));
-    auto last_it = std::find_if(points.rbegin(), points.rend(), std::mem_fn(&Point::is_selected));
+    auto first_it = std::find_if(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected));
+    auto last_it = std::find_if(points.rbegin(), points.rend(), std::mem_fn(&PathPoint::is_selected));
     if (first_it != points.end() && last_it != points.rend()) {
       std::for_each(first_it, last_it.base(), [](auto* point) { point->set_selected(true); });
     }

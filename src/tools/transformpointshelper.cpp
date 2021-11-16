@@ -3,6 +3,7 @@
 #include "cachedgetter.h"
 #include "geometry/objecttransformation.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 
@@ -72,8 +73,8 @@ void TransformPointsHelper::update()
 {
   m_initial_points.clear();
   for (auto* path : m_paths) {
-    for (Point* point : path->selected_points()) {
-      m_initial_points[path][point] = *point;
+    for (PathPoint* point : path->selected_points()) {
+      m_initial_points[path][point] = point->geometry();
     }
   }
   Q_EMIT initial_transformations_changed();

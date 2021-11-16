@@ -1,9 +1,10 @@
 #include "python/pathwrapper.h"
-#include "python/pointwrapper.h"
+#include "python/pathpointwrapper.h"
 #include "objects/path.h"
 
 namespace omm
 {
+
 void PathWrapper::define_python_interface(py::object& module)
 {
   ObjectWrapper::register_wrapper<PathWrapper>();
@@ -14,9 +15,9 @@ void PathWrapper::define_python_interface(py::object& module)
 py::object PathWrapper::points()
 {
   auto& path = dynamic_cast<wrapped_type&>(wrapped);
-  std::vector<PointWrapper> point_wrappers;
+  std::vector<PathPointWrapper> point_wrappers;
   point_wrappers.reserve(path.point_count());
-  for (Point* point : path.points()) {
+  for (PathPoint* point : path.points()) {
     point_wrappers.emplace_back(*point);
   }
   return py::cast(point_wrappers);

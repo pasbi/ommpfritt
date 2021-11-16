@@ -2,6 +2,7 @@
 #include "common.h"
 #include "scene/scene.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 
 namespace omm
@@ -33,13 +34,11 @@ void ModifyPointsCommand::exchange()
   std::set<Path*> paths;
   for (auto& [path, points] : m_data) {
     for (auto& [ptr, point] : points) {
-      swap(*ptr, point);
+      swap(ptr->geometry(), point);
     }
   }
   for (auto& [path, points_map] : m_data) {
-    const std::set<Point*> points = ::transform<Point*, std::set>(points_map, [](const auto& value) {
-      return value.first;
-    });
+    const std::set<PathPoint*> points = ::get_keys(points_map);
     path->update_point(points);
     path->update();
   }
@@ -64,7 +63,7 @@ bool ModifyPointsCommand::is_noop() const
 {
   for (const auto& [path, points] : m_data) {
     for (const auto& [ptr, new_value] : points) {
-      if (*ptr != new_value) {
+      if (ptr->geometry() != new_value) {
         return false;
       }
     }
@@ -162,7 +161,7 @@ void RemovePointsCommand::undo()
 }
 
 AbstractPointsCommand::OwnedLocatedSegment::
-OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point> >&& points)
+OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<PathPoint> >&& points)
   : m_segment(segment), m_index(index), m_points(std::move(points))
 {
   assert(m_segment != nullptr);

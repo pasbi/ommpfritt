@@ -1,5 +1,6 @@
 #include "commands/subdividepathcommand.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 
 namespace

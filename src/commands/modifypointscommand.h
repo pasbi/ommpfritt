@@ -9,13 +9,14 @@ namespace omm
 
 class Path;
 class Point;
+class PathPoint;
 class Segment;
 struct SegmentView;
 
 class ModifyPointsCommand : public Command
 {
 public:
-  using Map = std::map<Path*, std::map<Point*, Point>>;
+  using Map = std::map<Path*, std::map<PathPoint*, Point>>;
   ModifyPointsCommand(const Map& points);
   void redo() override;
   void undo() override;
@@ -34,7 +35,7 @@ public:
   class OwnedLocatedSegment
   {
   public:
-    explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point>>&& points);
+    explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<PathPoint>>&& points);
     explicit OwnedLocatedSegment(std::unique_ptr<Segment> segment);
     SegmentView insert_into(Path& path);
     friend bool operator<(const OwnedLocatedSegment& a, const OwnedLocatedSegment& b);
@@ -43,7 +44,7 @@ public:
     Segment* m_segment = nullptr;
     std::unique_ptr<Segment> m_owned_segment{};
     std::size_t m_index;
-    std::deque<std::unique_ptr<Point>> m_points;
+    std::deque<std::unique_ptr<PathPoint>> m_points;
   };
 
 protected:
