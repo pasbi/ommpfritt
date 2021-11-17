@@ -3,14 +3,14 @@
 namespace omm
 {
 
-PathPoint::PathPoint(const Point& geometry, Segment* segment)
+PathPoint::PathPoint(const Point& geometry, Segment& segment)
   : m_geometry(geometry)
   , m_segment(segment)
 {
 
 }
 
-PathPoint::PathPoint(Segment* segment)
+PathPoint::PathPoint(Segment& segment)
   : m_segment(segment)
 {
 }
@@ -32,29 +32,23 @@ Point& PathPoint::geometry()
 
 PathPoint PathPoint::copy(Segment& segment) const
 {
-  return PathPoint(m_geometry, &segment);
+  return PathPoint(m_geometry, segment);
 }
 
 Segment& PathPoint::segment() const
 {
-  return *m_segment;
+  return m_segment;
 }
 
 bool PathPoint::is_selected() const
 {
+  Q_UNUSED(m_is_selected);
   return geometry().is_selected();  // TODO
 }
 
 void PathPoint::set_selected(bool selected)
 {
   geometry().set_selected(selected);  // TODO
-}
-
-void swap(PathPoint& a, PathPoint& b)
-{
-  std::swap(a.m_geometry, b.m_geometry);
-  std::swap(a.m_is_selected, b.m_is_selected);
-  std::swap(a.m_segment, b.m_segment);
 }
 
 }  // namespace omm

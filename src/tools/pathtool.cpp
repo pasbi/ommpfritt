@@ -58,7 +58,7 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 
       const auto add_point = [point, &located_segments, this](const std::size_t pos) {
         std::deque<std::unique_ptr<PathPoint>> points;
-        auto* current_point = points.emplace_back(std::make_unique<PathPoint>(point, m_current_segment)).get();
+        auto* current_point = points.emplace_back(std::make_unique<PathPoint>(point, *m_current_segment)).get();
         located_segments.emplace_back(m_current_segment, pos, std::move(points));
         return current_point;
       };

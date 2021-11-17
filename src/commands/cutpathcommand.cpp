@@ -51,7 +51,7 @@ std::deque<std::unique_ptr<PathPoint>> cut(PathPoint& a, PathPoint& b,
     Point point{Vec2f{new_curves[i-1]->controlPoint(3)}};
     point.set_left_position(Vec2f{new_curves[i-1]->controlPoint(2)});
     point.set_right_position(Vec2f{new_curves[i]->controlPoint(1)});
-    new_points.push_back(std::make_unique<PathPoint>(point));
+    new_points.push_back(std::make_unique<PathPoint>(point, a.segment()));
   }
 
   assert(new_points.size() ==  positions.size());

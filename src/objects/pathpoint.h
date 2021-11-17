@@ -10,8 +10,8 @@ class Segment;
 class PathPoint
 {
 public:
-  explicit PathPoint(const Point& geometry, Segment* segment = nullptr);
-  explicit PathPoint(Segment* segment = nullptr);
+  explicit PathPoint(const Point& geometry, Segment& segment);
+  explicit PathPoint(Segment& segment);
   void set_geometry(const Point& point);
   const Point& geometry() const;
   Point& geometry();
@@ -21,7 +21,6 @@ public:
 
   void set_selected(bool is_selected);
   bool is_selected() const;
-  friend void swap(PathPoint& a, PathPoint& b);
 
   // The PathPoint is identified by it's memory address, which hence must not change during its
   // lifetime.
@@ -34,7 +33,7 @@ public:
 
 private:
   Point m_geometry;
-  Segment* m_segment;
+  Segment& m_segment;
   bool m_is_selected = false;
 };
 

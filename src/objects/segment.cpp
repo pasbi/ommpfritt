@@ -9,26 +9,26 @@ namespace
 
 using namespace omm;
 
-auto copy(const std::deque<std::unique_ptr<PathPoint>>& vs)
+auto copy(const std::deque<std::unique_ptr<PathPoint>>& vs, Segment& segment)
 {
   std::decay_t<decltype(vs)> copy;
   for (auto&& v : vs) {
-    copy.emplace_back(std::make_unique<PathPoint>(v->geometry()));
+    copy.emplace_back(std::make_unique<PathPoint>(v->geometry(), segment));
   }
   return copy;
 }
 
-auto to_path_points(std::vector<Point>&& points)
+auto to_path_points(std::vector<Point>&& points, Segment& segment)
 {
-  return ::transform<std::unique_ptr<PathPoint>, std::deque>(std::move(points), [](auto&& point) {
-    return std::make_unique<PathPoint>(point);
+  return ::transform<std::unique_ptr<PathPoint>, std::deque>(std::move(points), [&segment](auto&& point) {
+    return std::make_unique<PathPoint>(point, segment);
   });
 }
 
-auto to_path_points(std::deque<Point>&& points)
+auto to_path_points(std::deque<Point>&& points, Segment& segment)
 {
-  return ::transform<std::unique_ptr<PathPoint>>(std::move(points), [](auto&& point) {
-    return std::make_unique<PathPoint>(point);
+  return ::transform<std::unique_ptr<PathPoint>>(std::move(points), [&segment](auto&& point) {
+    return std::make_unique<PathPoint>(point, segment);
   });
 }
 
@@ -40,12 +40,12 @@ namespace omm
 Segment::Segment() = default;
 
 Segment::Segment(std::deque<Point>&& points)
-  : m_points(to_path_points(std::move(points)))
+  : m_points(to_path_points(std::move(points), *this))
 {
 }
 
 Segment::Segment(std::vector<Point>&& points)
-  : m_points(to_path_points(std::move(points)))
+  : m_points(to_path_points(std::move(points), *this))
 {
 }
 
@@ -56,7 +56,7 @@ Segment::Segment(const Geom::Path& path, bool is_closed)
     const auto& c = dynamic_cast<const Geom::CubicBezier&>(path[i]);
     const auto p0 = Vec2f(c[0]);
     if (m_points.empty()) {
-      m_points.push_back(std::make_unique<PathPoint>(Point{p0}));
+      m_points.push_back(std::make_unique<PathPoint>(Point{p0}, *this));
     }
     m_points.back()->geometry().set_right_tangent(PolarCoordinates(Vec2f(c[1]) - p0));
     const auto p1 = Vec2f(c[3]);
@@ -64,7 +64,7 @@ Segment::Segment(const Geom::Path& path, bool is_closed)
       if (wrap) {
         return m_points.front();
       } else {
-        return m_points.emplace_back(std::make_unique<PathPoint>(Point{p1}));
+        return m_points.emplace_back(std::make_unique<PathPoint>(Point{p1}, *this));
       }
     }();
     pref.geometry().set_left_tangent(PolarCoordinates(Vec2f(c[2]) - p1));
@@ -78,7 +78,7 @@ Segment::Segment(const Geom::Path& path, bool is_closed)
 }
 
 Segment::Segment(const Segment& other)
-  : m_points(copy(other.m_points))
+  : m_points(copy(other.m_points, *this))
 {
 }
 
@@ -115,7 +115,7 @@ std::size_t Segment::find(const PathPoint& point) const
 
 PathPoint& Segment::add_point(const Vec2f& pos)
 {
-  return *m_points.emplace_back(std::make_unique<PathPoint>(Point{pos}));
+  return *m_points.emplace_back(std::make_unique<PathPoint>(Point{pos}, *this));
 }
 
 Geom::Path Segment::to_geom_path(bool is_closed, InterpolationMode interpolation) const
@@ -238,7 +238,7 @@ void Segment::deserialize(AbstractDeserializer& deserializer, const Pointer& roo
   const auto points_ptr = make_pointer(root, POINTS_POINTER);
   const auto size = deserializer.array_size(points_ptr);
   for (std::size_t i = 0; i < size; ++i) {
-    PathPoint& point = *m_points.emplace_back(std::make_unique<PathPoint>());
+    PathPoint& point = *m_points.emplace_back(std::make_unique<PathPoint>(*this));
     point.geometry().deserialize(deserializer, make_pointer(points_ptr, i));
   }
 }
