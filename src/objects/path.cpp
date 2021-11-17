@@ -202,7 +202,9 @@ void Path::update_point(const std::set<PathPoint*>& points)
   // TODO move to PathPoint
   for (PathPoint* p : points) {
     for (PathPoint* q : m_joined_points.get(p)) {
-      q->geometry().set_position(p->geometry().position());
+      auto geometry = q->geometry();
+      geometry.set_position(p->geometry().position());
+      q->set_geometry(geometry);
     }
   }
 }

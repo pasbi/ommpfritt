@@ -34,7 +34,9 @@ void ModifyPointsCommand::exchange()
   std::set<Path*> paths;
   for (auto& [path, points] : m_data) {
     for (auto& [ptr, point] : points) {
-      swap(ptr->geometry(), point);
+      const auto geometry = ptr->geometry();
+      ptr->set_geometry(point);
+      point = geometry;
     }
   }
   for (auto& [path, points_map] : m_data) {

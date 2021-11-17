@@ -140,9 +140,11 @@ void PointEdit::set_right_maybe(const PolarCoordinates& old_left, const PolarCoo
 void PointEdit::update_point()
 {
   if (m_path == nullptr || m_path->scene() == nullptr) {
-    m_point.geometry().set_left_tangent(m_left_tangent_edit->to_polar());
-    m_point.geometry().set_position(m_position_edit->to_cartesian());
-    m_point.geometry().set_right_tangent(m_right_tangent_edit->to_polar());
+    auto geometry = m_point.geometry();
+    geometry.set_left_tangent(m_left_tangent_edit->to_polar());
+    geometry.set_position(m_position_edit->to_cartesian());
+    geometry.set_right_tangent(m_right_tangent_edit->to_polar());
+    m_point.set_geometry(geometry);
   } else {
     ModifyPointsCommand::Map map;
     Point new_point(m_position_edit->to_cartesian(),

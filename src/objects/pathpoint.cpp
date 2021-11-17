@@ -25,11 +25,6 @@ const Point& PathPoint::geometry() const
   return m_geometry;
 }
 
-Point& PathPoint::geometry()
-{
-  return m_geometry;
-}
-
 PathPoint PathPoint::copy(Segment& segment) const
 {
   return PathPoint(m_geometry, segment);

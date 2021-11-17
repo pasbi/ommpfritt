@@ -14,7 +14,6 @@ public:
   explicit PathPoint(Segment& segment);
   void set_geometry(const Point& point);
   const Point& geometry() const;
-  Point& geometry();
   PathPoint copy(Segment& segment) const;
   Segment& segment() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PathPoint", "PathPoint");

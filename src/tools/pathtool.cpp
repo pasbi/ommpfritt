@@ -27,8 +27,10 @@ bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEven
     return false;
   } else {
     const auto lt = PolarCoordinates(m_current_point->geometry().left_tangent().to_cartesian() + delta);
-    m_current_point->geometry().set_left_tangent(lt);
-    m_current_point->geometry().set_right_tangent(-lt);
+    auto geometry = m_current_point->geometry();
+    geometry.set_left_tangent(lt);
+    geometry.set_right_tangent(-lt);
+    m_current_point->set_geometry(geometry);
     m_current_path->update();
     return true;
   }

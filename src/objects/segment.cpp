@@ -63,7 +63,9 @@ Segment::Segment(const Geom::Path& geom_path, bool is_closed, Path* path)
     if (m_points.empty()) {
       m_points.push_back(std::make_unique<PathPoint>(Point{p0}, *this));
     }
-    m_points.back()->geometry().set_right_tangent(PolarCoordinates(Vec2f(c[1]) - p0));
+    auto geometry = m_points.back()->geometry();
+    geometry.set_right_tangent(PolarCoordinates(Vec2f(c[1]) - p0));
+    m_points.back()->set_geometry(geometry);
     const auto p1 = Vec2f(c[3]);
     auto& pref = *[wrap = is_closed && i == n - 1, p1, this]() -> decltype(auto) {
       if (wrap) {
@@ -72,7 +74,9 @@ Segment::Segment(const Geom::Path& geom_path, bool is_closed, Path* path)
         return m_points.emplace_back(std::make_unique<PathPoint>(Point{p1}, *this));
       }
     }();
-    pref.geometry().set_left_tangent(PolarCoordinates(Vec2f(c[2]) - p1));
+    geometry = pref.geometry();
+    geometry.set_left_tangent(PolarCoordinates(Vec2f(c[2]) - p1));
+    pref.set_geometry(geometry);
   }
   if (is_closed) {
     assert(geom_path.size() == m_points.size());
@@ -179,7 +183,7 @@ void Segment::smoothen(bool is_closed) const
   std::deque<std::unique_ptr<PathPoint>> points;
   for (std::size_t i = 0; i < m_points.size(); ++i) {
     Point smoothened_point = smoothen_point(i, is_closed);
-    m_points[i]->geometry() =  smoothened_point;
+    m_points[i]->set_geometry(smoothened_point);
   }
 }
 
@@ -244,8 +248,9 @@ void Segment::deserialize(AbstractDeserializer& deserializer, const Pointer& roo
   const auto points_ptr = make_pointer(root, POINTS_POINTER);
   const auto size = deserializer.array_size(points_ptr);
   for (std::size_t i = 0; i < size; ++i) {
-    PathPoint& point = *m_points.emplace_back(std::make_unique<PathPoint>(*this));
-    point.geometry().deserialize(deserializer, make_pointer(points_ptr, i));
+    Point geometry;
+    geometry.deserialize(deserializer, make_pointer(points_ptr, i));
+    m_points.emplace_back(std::make_unique<PathPoint>(geometry, *this));
   }
 }
 

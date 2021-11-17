@@ -15,7 +15,7 @@ void JoinPointsCommand::undo()
   for (auto&& [path, points] : m_points) {
     path->m_joined_points = m_old_forest[path];
     for (auto* point : points) {
-      point->geometry() = m_old_positions[point];
+      point->set_geometry(m_old_positions[point]);
     }
     path->update();
   }
@@ -29,7 +29,9 @@ void JoinPointsCommand::redo()
     const auto new_pos = compute_position(joined);
     for (auto* point : points) {
       m_old_positions[point] = point->geometry();
-      point->geometry().set_position(new_pos);
+      auto geometry = point->geometry();
+      geometry.set_position(new_pos);
+      point->set_geometry(geometry);
     }
     path->update();
   }
