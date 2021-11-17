@@ -37,23 +37,28 @@ auto to_path_points(std::deque<Point>&& points, Segment& segment)
 namespace omm
 {
 
-Segment::Segment() = default;
-
-Segment::Segment(std::deque<Point>&& points)
-  : m_points(to_path_points(std::move(points), *this))
+Segment::Segment(Path*)
 {
 }
 
-Segment::Segment(std::vector<Point>&& points)
+Segment::Segment(std::deque<Point>&& points, Path* path)
   : m_points(to_path_points(std::move(points), *this))
+  , m_path(path)
 {
 }
 
-Segment::Segment(const Geom::Path& path, bool is_closed)
+Segment::Segment(std::vector<Point>&& points, Path* path)
+  : m_points(to_path_points(std::move(points), *this))
+  , m_path(path)
 {
-  const auto n = path.size();
+}
+
+Segment::Segment(const Geom::Path& geom_path, bool is_closed, Path* path)
+  : m_path(path)
+{
+  const auto n = geom_path.size();
   for (std::size_t i = 0; i < n; ++i) {
-    const auto& c = dynamic_cast<const Geom::CubicBezier&>(path[i]);
+    const auto& c = dynamic_cast<const Geom::CubicBezier&>(geom_path[i]);
     const auto p0 = Vec2f(c[0]);
     if (m_points.empty()) {
       m_points.push_back(std::make_unique<PathPoint>(Point{p0}, *this));
@@ -70,15 +75,16 @@ Segment::Segment(const Geom::Path& path, bool is_closed)
     pref.geometry().set_left_tangent(PolarCoordinates(Vec2f(c[2]) - p1));
   }
   if (is_closed) {
-    assert(path.size() == m_points.size());
+    assert(geom_path.size() == m_points.size());
   } else {
     // path counts number of curves, segments counts number of points
-    assert(path.size() + 1 == m_points.size());
+    assert(geom_path.size() + 1 == m_points.size());
   }
 }
 
-Segment::Segment(const Segment& other)
+Segment::Segment(const Segment& other, Path* path)
   : m_points(copy(other.m_points, *this))
+  , m_path(path)
 {
 }
 

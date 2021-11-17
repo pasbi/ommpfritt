@@ -65,7 +65,7 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 
       if (m_current_segment == nullptr) {
         // no segment is selected: add the point to a newly created segment
-        auto new_segment = std::make_unique<Segment>(std::deque{point});
+        auto new_segment = std::make_unique<Segment>(std::deque{point}, m_current_path);
         m_current_point = &new_segment->at(0);
         located_segments.emplace_back(std::move(new_segment));
       } else if (m_current_segment->size() == 0 || m_current_segment->points().back() == m_last_point) {
@@ -76,7 +76,7 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
         m_current_point = add_point(0);
       } else {
         // other point of segment is selected: add point to a newly created segment and join points
-        auto new_segment = std::make_unique<Segment>(std::deque{m_last_point->geometry(), point});
+        auto new_segment = std::make_unique<Segment>(std::deque{m_last_point->geometry(), point}, m_current_path);
         m_current_point = &new_segment->at(1);
         join_points_map[m_current_path].insert({&new_segment->at(0), m_last_point});
         located_segments.emplace_back(std::move(new_segment));

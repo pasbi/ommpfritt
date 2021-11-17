@@ -13,11 +13,13 @@
 namespace
 {
 
-auto copy(const std::deque<std::unique_ptr<omm::Segment>>& vs)
+using namespace omm;
+
+auto copy(const std::deque<std::unique_ptr<Segment>>& vs, Path* path)
 {
   std::decay_t<decltype(vs)> copy;
   for (auto&& v : vs) {
-    copy.emplace_back(std::make_unique<omm::Segment>(*v));
+    copy.emplace_back(std::make_unique<omm::Segment>(*v, path));
   }
   return copy;
 }
@@ -45,7 +47,7 @@ Path::Path(Scene* scene) : Object(scene)
 
 Path::Path(const Path& other)
   : Object(other)
-  , m_segments(copy(other.m_segments))
+  , m_segments(copy(other.m_segments, this))
 {
 }
 
@@ -80,7 +82,7 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   const std::size_t n_paths = deserializer.array_size(segments_pointer);
   m_segments.clear();
   for (std::size_t i = 0; i < n_paths; ++i) {
-    Segment& segment = *m_segments.emplace_back(std::make_unique<Segment>());
+    Segment& segment = *m_segments.emplace_back(std::make_unique<Segment>(this));
     segment.deserialize(deserializer, make_pointer(segments_pointer, i));
   }
   update();
@@ -103,7 +105,7 @@ void Path::set(const Geom::PathVector& paths)
   update();
   const auto is_closed = this->is_closed();
   for (const auto& path : paths) {
-    m_segments.push_back(std::make_unique<Segment>(path, is_closed));
+    m_segments.push_back(std::make_unique<Segment>(path, is_closed, this));
   }
 }
 

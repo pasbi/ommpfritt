@@ -29,16 +29,16 @@ public:
   std::size_t size;
 };
 
+class Path;
 
 class Segment : public Serializable
 {
-
 public:
-  explicit Segment();
-  explicit Segment(const Segment& other);
-  explicit Segment(std::deque<Point>&& points);
-  explicit Segment(std::vector<Point>&& points);
-  explicit Segment(const Geom::Path& path, bool is_closed);
+  explicit Segment(Path* path = nullptr);
+  explicit Segment(const Segment& other, Path* path = nullptr);
+  explicit Segment(std::deque<Point>&& points, Path* path = nullptr);
+  explicit Segment(std::vector<Point>&& points, Path* path = nullptr);
+  explicit Segment(const Geom::Path& geom_path, bool is_closed, Path* path = nullptr);
   ~Segment();
 
   static constexpr auto POINTS_POINTER = "points";
@@ -61,6 +61,7 @@ public:
 
 private:
   std::deque<std::unique_ptr<PathPoint>> m_points;
+  Path* m_path;
 };
 
 }  // namespace
