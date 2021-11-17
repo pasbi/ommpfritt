@@ -19,6 +19,7 @@
 
 namespace omm
 {
+
 enum class Kind {
   None = 0x0,
   Tag = 0x1,
@@ -48,6 +49,9 @@ enum class SceneMode { Object, Vertex };
 }  // namespace omm
 
 enum class Stream { stdout_, stderr_ };
+
+template<typename T> struct is_vector : std::false_type {};
+template<typename T> struct is_vector<std::vector<T>> : std::true_type {};
 
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
@@ -88,7 +92,9 @@ auto make_container(const Container<S>&)
 template<typename T, typename ContainerS, typename F> auto transform(ContainerS&& ss, F&& mapper)
 {
   auto ts = make_container<T>(ss);
-  reserve(ts, ss.size());
+  if constexpr (is_vector<std::decay_t<decltype(ts)>>::value) {
+    reserve(ts, ss.size());
+  }
   std::transform(std::begin(ss),
                  std::end(ss),
                  std::inserter(ts, std::end(ts)),
@@ -105,7 +111,9 @@ template<typename T, template<typename...> class ContainerT, typename ContainerS
 auto transform(ContainerS&& ss, F&& mapper = ::identity)
 {
   ContainerT<T> ts;
-  reserve(ts, ss.size());
+  if constexpr (is_vector<std::decay_t<decltype(ts)>>::value) {
+    reserve(ts, ss.size());
+  }
   std::transform(std::begin(ss),
                  std::end(ss),
                  std::inserter(ts, std::end(ts)),

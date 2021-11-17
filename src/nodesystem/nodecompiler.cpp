@@ -7,6 +7,7 @@
 
 namespace omm
 {
+
 bool NodeCompilerTypes::is_integral(const QString& type)
 {
   return type == BOOL_TYPE || type == INTEGER_TYPE || type == OPTION_TYPE;
