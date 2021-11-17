@@ -36,7 +36,8 @@ class Segment : public Serializable
 public:
   explicit Segment();
   explicit Segment(const Segment& other);
-  explicit Segment(std::deque<std::unique_ptr<PathPoint> >&& points);
+  explicit Segment(std::deque<Point>&& points);
+  explicit Segment(std::vector<Point>&& points);
   explicit Segment(const Geom::Path& path, bool is_closed);
   ~Segment();
 

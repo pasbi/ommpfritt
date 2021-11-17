@@ -52,24 +52,34 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
       const auto transformation = m_current_path->global_transformation(Space::Viewport).inverted();
       const auto gpos = transformation.apply_to_position(pos);
 
-      std::deque<std::unique_ptr<PathPoint>> points;
       JoinPointsCommand::Map join_points_map;
-      m_current_point = points.emplace_back(std::make_unique<PathPoint>(Point{gpos})).get();
+      const Point point{gpos};
       std::deque<AddPointsCommand::OwnedLocatedSegment> located_segments;
+
+      const auto add_point = [point, &located_segments, this](const std::size_t pos) {
+        std::deque<std::unique_ptr<PathPoint>> points;
+        auto* current_point = points.emplace_back(std::make_unique<PathPoint>(point, m_current_segment)).get();
+        located_segments.emplace_back(m_current_segment, pos, std::move(points));
+        return current_point;
+      };
+
       if (m_current_segment == nullptr) {
         // no segment is selected: add the point to a newly created segment
-        located_segments.emplace_back(std::make_unique<Segment>(std::move(points)));
+        auto new_segment = std::make_unique<Segment>(std::deque{point});
+        m_current_point = &new_segment->at(0);
+        located_segments.emplace_back(std::move(new_segment));
       } else if (m_current_segment->size() == 0 || m_current_segment->points().back() == m_last_point) {
         // segment is empty or last point of the segmet is selected: append point at end
-        located_segments.emplace_back(m_current_segment, m_current_segment->size(), std::move(points));
+        m_current_point = add_point(m_current_segment->size());
       } else if (m_current_segment->points().front() == m_last_point) {
         // first point of segment is selected: append point at begin
-        located_segments.emplace_back(m_current_segment, 0, std::move(points));
+        m_current_point = add_point(0);
       } else {
         // other point of segment is selected: add point to a newly created segment and join points
-        auto& copy = *points.emplace_front(std::make_unique<PathPoint>(m_last_point->geometry()));
-        located_segments.emplace_back(std::make_unique<Segment>(std::move(points)));
-        join_points_map[m_current_path].insert({m_last_point, &copy});
+        auto new_segment = std::make_unique<Segment>(std::deque{m_last_point->geometry(), point});
+        m_current_point = &new_segment->at(1);
+        join_points_map[m_current_path].insert({&new_segment->at(0), m_last_point});
+        located_segments.emplace_back(std::move(new_segment));
       }
       if (!join_points_map.empty() && !macro) {
         macro = scene()->history().start_macro(AddPointsCommand::static_label());

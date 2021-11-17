@@ -7,13 +7,29 @@
 namespace
 {
 
-auto copy(const std::deque<std::unique_ptr<omm::PathPoint>>& vs)
+using namespace omm;
+
+auto copy(const std::deque<std::unique_ptr<PathPoint>>& vs)
 {
   std::decay_t<decltype(vs)> copy;
   for (auto&& v : vs) {
-    copy.emplace_back(std::make_unique<omm::PathPoint>(v->geometry()));
+    copy.emplace_back(std::make_unique<PathPoint>(v->geometry()));
   }
   return copy;
+}
+
+auto to_path_points(std::vector<Point>&& points)
+{
+  return ::transform<std::unique_ptr<PathPoint>, std::deque>(std::move(points), [](auto&& point) {
+    return std::make_unique<PathPoint>(point);
+  });
+}
+
+auto to_path_points(std::deque<Point>&& points)
+{
+  return ::transform<std::unique_ptr<PathPoint>>(std::move(points), [](auto&& point) {
+    return std::make_unique<PathPoint>(point);
+  });
 }
 
 }  // namespace
@@ -23,8 +39,13 @@ namespace omm
 
 Segment::Segment() = default;
 
-Segment::Segment(std::deque<std::unique_ptr<PathPoint> >&& points)
-  : m_points(std::move(points))
+Segment::Segment(std::deque<Point>&& points)
+  : m_points(to_path_points(std::move(points)))
+{
+}
+
+Segment::Segment(std::vector<Point>&& points)
+  : m_points(to_path_points(std::move(points)))
 {
 }
 

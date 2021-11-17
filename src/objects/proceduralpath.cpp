@@ -83,10 +83,7 @@ void ProceduralPath::update()
 
 Geom::PathVector ProceduralPath::paths() const
 {
-  std::deque<std::unique_ptr<PathPoint>> points;
-  for (const auto& point : m_points) {
-    points.push_back(std::make_unique<PathPoint>(point));
-  }
+  std::deque<Point> points(m_points.begin(), m_points.end());
   return Segment{std::move(points)}.to_geom_path(is_closed());
 }
 

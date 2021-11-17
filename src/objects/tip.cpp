@@ -40,11 +40,8 @@ void Tip::on_property_value_changed(Property* property)
 
 Geom::PathVector Tip::paths() const
 {
-  std::deque<std::unique_ptr<PathPoint>> points;
-  for (const auto& point : m_marker_properties.shape(1.0)) {
-    points.push_back(std::make_unique<PathPoint>(point));
-  }
-  return Geom::PathVector{Segment{std::move(points)}.to_geom_path(is_closed())};
+  std::deque<PathPoint> points;
+  return Geom::PathVector{Segment{m_marker_properties.shape(1.0)}.to_geom_path(is_closed())};
 }
 
 }  // namespace omm
