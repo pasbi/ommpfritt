@@ -50,7 +50,6 @@ TransformPointsHelper::make_command(const ObjectTransformation& t) const
     const ObjectTransformation premul = cache.get(path);
     for (auto&& [ptr, initial_value] : points) {
       auto p = premul.apply(initial_value);
-      p.set_selected(true);
       is_noop = false;
       map[path][ptr] = p;
     }

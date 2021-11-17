@@ -42,13 +42,12 @@ Segment& PathPoint::segment() const
 
 bool PathPoint::is_selected() const
 {
-  Q_UNUSED(m_is_selected);
-  return geometry().is_selected();  // TODO
+  return m_is_selected;
 }
 
 void PathPoint::set_selected(bool selected)
 {
-  geometry().set_selected(selected);  // TODO
+  m_is_selected = selected;
 }
 
 }  // namespace omm

@@ -35,9 +35,6 @@ public:
   [[nodiscard]] Point rotated(double rad) const;
   [[nodiscard]] Point nibbed() const;
 
-  bool is_selected() const;
-  void set_selected(bool selected);
-
   static constexpr auto POSITION_POINTER = "position";
   static constexpr auto LEFT_TANGENT_POINTER = "left";
   static constexpr auto RIGHT_TANGENT_POINTER = "right";
@@ -83,7 +80,6 @@ private:
   Vec2f m_position;
   PolarCoordinates m_left_tangent;
   PolarCoordinates m_right_tangent;
-  bool m_is_selected = false;
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);

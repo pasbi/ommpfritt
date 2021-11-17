@@ -48,6 +48,11 @@ void Ellipse::on_property_value_changed(Property* property)
   }
 }
 
+bool Ellipse::is_closed() const
+{
+  return true;
+}
+
 Geom::PathVector Ellipse::paths() const
 {
   const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
