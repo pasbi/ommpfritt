@@ -71,6 +71,9 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
         located_segments.emplace_back(std::make_unique<Segment>(std::move(points)));
         join_points_map[m_current_path].insert({m_last_point, &copy});
       }
+      if (!join_points_map.empty() && !macro) {
+        macro = scene()->history().start_macro(AddPointsCommand::static_label());
+      }
       scene()->submit<AddPointsCommand>(*m_current_path, std::move(located_segments));
       if (!join_points_map.empty()) {
         scene()->submit<JoinPointsCommand>(join_points_map);
