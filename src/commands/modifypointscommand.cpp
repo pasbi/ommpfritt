@@ -38,10 +38,6 @@ void ModifyPointsCommand::exchange()
       ptr->set_geometry(point);
       point = geometry;
     }
-  }
-  for (auto& [path, points_map] : m_data) {
-    const std::set<PathPoint*> points = ::get_keys(points_map);
-    path->update_point(points);
     path->update();
   }
 }

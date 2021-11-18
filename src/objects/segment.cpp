@@ -37,7 +37,8 @@ auto to_path_points(std::deque<Point>&& points, Segment& segment)
 namespace omm
 {
 
-Segment::Segment(Path*)
+Segment::Segment(Path* path)
+  : m_path(path)
 {
 }
 
@@ -176,6 +177,11 @@ Segment::compute_control_points(const Point& a, const Point& b, InterpolationMod
   }
   Q_UNREACHABLE();
   return {};
+}
+
+Path* Segment::path() const
+{
+  return m_path;
 }
 
 void Segment::smoothen(bool is_closed) const

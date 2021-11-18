@@ -192,21 +192,14 @@ std::set<PathPoint*> Path::join_points(const std::set<PathPoint*>& points)
   return m_joined_points.insert(points);
 }
 
+std::set<PathPoint*> Path::joined_points(const PathPoint* key) const
+{
+  return m_joined_points.get(key);
+}
+
 void Path::disjoin_points(PathPoint* point)
 {
   m_joined_points.remove({point});
-}
-
-void Path::update_point(const std::set<PathPoint*>& points)
-{
-  // TODO move to PathPoint
-  for (PathPoint* p : points) {
-    for (PathPoint* q : m_joined_points.get(p)) {
-      auto geometry = q->geometry();
-      geometry.set_position(p->geometry().position());
-      q->set_geometry(geometry);
-    }
-  }
 }
 
 void Path::deselect_all_points()

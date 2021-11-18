@@ -50,8 +50,8 @@ public:
   std::deque<PathPoint*> points() const;
   std::deque<PathPoint*> selected_points() const;
   std::set<PathPoint*> join_points(const std::set<PathPoint*>& points);
+  std::set<PathPoint*> joined_points(const PathPoint* key) const;
   void disjoin_points(PathPoint* point);
-  void update_point(const std::set<PathPoint*>& points);
   void deselect_all_points();
 
 private:

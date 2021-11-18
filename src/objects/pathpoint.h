@@ -5,6 +5,7 @@
 namespace omm
 {
 
+class Path;
 class Segment;
 
 class PathPoint
@@ -30,10 +31,16 @@ public:
   PathPoint& operator=(const PathPoint& other) = delete;
   PathPoint& operator=(PathPoint&& other) = delete;
 
+  std::set<PathPoint*> joined_points() const;
+  void join(std::set<PathPoint*> buddies);
+  void disjoin();
+  Path* path() const;
+
 private:
   Point m_geometry;
   Segment& m_segment;
   bool m_is_selected = false;
+  bool m_block_joined_points_update = false;
 };
 
 }  // namespace omm

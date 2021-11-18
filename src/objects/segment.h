@@ -58,10 +58,11 @@ public:
   std::deque<std::unique_ptr<PathPoint>> extract(std::size_t i, std::size_t n);
   static std::vector<Geom::Point> compute_control_points(const Point& a, const Point& b,
                                                          InterpolationMode interpolation);
+  Path* path() const;
 
 private:
   std::deque<std::unique_ptr<PathPoint>> m_points;
-  Path* m_path;
+  Path* const m_path;
 };
 
 }  // namespace

@@ -59,7 +59,7 @@ public:
   /**
    * @brief get returns the set that contains `key` or the empty set if there is no such.
    */
-  std::set<T> get(const T& key)
+  template<typename K> std::set<T> get(K&& key) const
   {
     for (const auto& set : m_forest) {
       if (::contains(set, key)) {
