@@ -146,11 +146,11 @@ void PointEdit::update_point()
     geometry.set_right_tangent(m_right_tangent_edit->to_polar());
     m_point.set_geometry(geometry);
   } else {
-    ModifyPointsCommand::Map map;
+    std::map<PathPoint*, Point> map;
     Point new_point(m_position_edit->to_cartesian(),
                     m_left_tangent_edit->to_polar(),
                     m_right_tangent_edit->to_polar());
-    map[m_path][&m_point] = new_point;
+    map[&m_point] = new_point;
     m_path->scene()->submit<ModifyPointsCommand>(map);
     m_path->update();
   }

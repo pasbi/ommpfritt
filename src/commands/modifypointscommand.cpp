@@ -8,7 +8,7 @@
 namespace omm
 {
 
-ModifyPointsCommand ::ModifyPointsCommand(const Map& points)
+ModifyPointsCommand ::ModifyPointsCommand(const std::map<PathPoint*, Point>& points)
     : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
 {
   assert(!points.empty());
@@ -32,15 +32,13 @@ int ModifyPointsCommand::id() const
 void ModifyPointsCommand::exchange()
 {
   std::set<Path*> paths;
-  for (auto& [path, points] : m_data) {
-    for (auto& [ptr, point] : points) {
-      const auto geometry = ptr->geometry();
-      ptr->set_geometry(point);
-      point = geometry;
-      paths.insert(path);
-      for (auto* buddy : ptr->joined_points()) {
-        paths.insert(buddy->path());
-      }
+  for (auto& [ptr, point] : m_data) {
+    const auto geometry = ptr->geometry();
+    ptr->set_geometry(point);
+    point = geometry;
+    paths.insert(ptr->path());
+    for (auto* buddy : ptr->joined_points()) {
+      paths.insert(buddy->path());
     }
   }
   for (auto* path : paths) {
@@ -52,26 +50,15 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
 {
   // merging happens automatically!
   const auto& mtc = dynamic_cast<const ModifyPointsCommand&>(*command);
-
-  const auto keys = ::get_keys(m_data);
-  if (::get_keys(mtc.m_data) == keys) {
-    return std::all_of(begin(keys), end(keys), [this, &mtc](auto* path) {
-      return ::get_keys(m_data.at(path)) == ::get_keys(mtc.m_data.at(path));
-    });
-  } else {
-    return false;
-  }
+  return ::get_keys(m_data) == ::get_keys(mtc.m_data);
 }
 
 bool ModifyPointsCommand::is_noop() const
 {
-  for (const auto& [path, points] : m_data) {
-    for (const auto& [ptr, new_value] : points) {
-      if (ptr->geometry() != new_value) {
-        return false;
-      }
-    }
-  }
+  return std::all_of(m_data.begin(), m_data.end(), [](const auto& arg) {
+    const auto& [ptr, new_value] = arg;
+    return ptr->geometry() == new_value;
+  });
   return true;
 }
 

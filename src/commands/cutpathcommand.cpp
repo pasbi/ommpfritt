@@ -83,7 +83,7 @@ void cut(Segment& segment,
 void cut(Path& path,
          const std::vector<Geom::PathVectorTime>& positions,
          std::deque<omm::AddPointsCommand::OwnedLocatedSegment>& new_points,
-         ModifyPointsCommand::Map& modified_points)
+         std::map<PathPoint*, Point>& modified_points)
 {
   const auto segments = path.segments();
   std::map<Segment*, std::vector<Geom::PathTime>> path_positions;
@@ -93,7 +93,7 @@ void cut(Path& path,
 
   const auto interpolation = path.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
   for (auto&& [segment, positions] : path_positions) {
-    cut(*segment, std::move(positions), interpolation, new_points, modified_points[&path]);
+    cut(*segment, std::move(positions), interpolation, new_points, modified_points);
   }
 }
 
@@ -113,7 +113,7 @@ CutPathCommand::CutPathCommand(const QString& label,
     : ComposeCommand(label)
 {
   std::deque<omm::AddPointsCommand::OwnedLocatedSegment> new_points;
-  ModifyPointsCommand::Map modified_points;
+  std::map<PathPoint*, Point> modified_points;
   cut(path, cuts, new_points, modified_points);
   std::vector<std::unique_ptr<Command>> commands;
   commands.push_back(std::make_unique<ModifyPointsCommand>(modified_points));

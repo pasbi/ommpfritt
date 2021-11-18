@@ -42,7 +42,7 @@ template<typename F> void foreach_segment(Application& app, F&& f)
 
 void modify_tangents(InterpolationMode mode, Application& app)
 {
-  std::map<Path*, std::map<PathPoint*, Point>> map;
+  std::map<PathPoint*, Point> map;
   const auto paths = app.scene->item_selection<Path>();
   for (Path* path : paths) {
     const bool is_closed = path->is_closed();
@@ -55,10 +55,10 @@ void modify_tangents(InterpolationMode mode, Application& app)
           case InterpolationMode::Bezier:
             break;  // do nothing.
           case InterpolationMode::Smooth:
-            map[path][point] = segment->smoothen_point(i, is_closed);
+            map[point] = segment->smoothen_point(i, is_closed);
             break;
           case InterpolationMode::Linear:
-            map[path][point] = point->geometry().nibbed();
+            map[point] = point->geometry().nibbed();
           }
         }
       }

@@ -28,7 +28,7 @@ Q_SIGNALS:
 
 private:
   std::set<Path*> m_paths;
-  ModifyPointsCommand::Map m_initial_points;
+  std::map<PathPoint*, Point> m_initial_points;
   Scene& m_scene;
   const Space m_space;
 };

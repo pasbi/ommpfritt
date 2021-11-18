@@ -251,8 +251,8 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
     new_point.set_right_tangent(secondary_pos);
   }
 
-  ModifyPointsCommand::Map map;
-  map[&m_path][&m_point] = new_point;
+  std::map<PathPoint*, Point> map;
+  map[&m_point] = new_point;
   tool.scene()->submit<ModifyPointsCommand>(map);
 }
 

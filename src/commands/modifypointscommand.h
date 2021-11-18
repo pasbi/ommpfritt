@@ -16,8 +16,7 @@ struct SegmentView;
 class ModifyPointsCommand : public Command
 {
 public:
-  using Map = std::map<Path*, std::map<PathPoint*, Point>>;
-  ModifyPointsCommand(const Map& points);
+  ModifyPointsCommand(const std::map<PathPoint*, Point>& points);
   void redo() override;
   void undo() override;
   [[nodiscard]] int id() const override;
@@ -25,7 +24,7 @@ public:
   [[nodiscard]] bool is_noop() const override;
 
 private:
-  Map m_data;
+  std::map<PathPoint*, Point> m_data;
   void exchange();
 };
 
