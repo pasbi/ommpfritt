@@ -37,7 +37,13 @@ void ModifyPointsCommand::exchange()
       const auto geometry = ptr->geometry();
       ptr->set_geometry(point);
       point = geometry;
+      paths.insert(path);
+      for (auto* buddy : ptr->joined_points()) {
+        paths.insert(buddy->path());
+      }
     }
+  }
+  for (auto* path : paths) {
     path->update();
   }
 }

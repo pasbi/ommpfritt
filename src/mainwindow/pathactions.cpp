@@ -18,6 +18,7 @@
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
+#include "scene/pointselection.h"
 #include "scene/scene.h"
 #include "tools/toolbox.h"
 #include <QUndoStack>
@@ -27,21 +28,8 @@
 
 namespace
 {
-using namespace omm;
 
-auto path_selection(Application& app)
-{
-  std::map<Path*, std::set<PathPoint*>> points;
-  for (auto* path : app.scene->item_selection<Path>()) {
-    auto& set = points[path];
-    for (auto* p : path->points()) {
-      if (p->is_selected()) {
-        set.insert(p);
-      }
-    }
-  }
-  return points;
-}
+using namespace omm;
 
 template<typename F> void foreach_segment(Application& app, F&& f)
 {
@@ -360,12 +348,12 @@ void shrink_selection(Application& app)
 
 void join_points(Application& app)
 {
-  app.scene->submit<JoinPointsCommand>(path_selection(app));
+  app.scene->submit<JoinPointsCommand>(*app.scene, app.scene->point_selection->points());
 }
 
 void disjoin_points(Application& app)
 {
-  app.scene->submit<DisjoinPointsCommand>(path_selection(app));
+  app.scene->submit<DisjoinPointsCommand>(*app.scene, app.scene->point_selection->points());
 }
 
 const std::map<QString, std::function<void(Application& app)>> actions{

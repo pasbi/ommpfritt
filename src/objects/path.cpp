@@ -187,21 +187,6 @@ std::deque<PathPoint*> Path::selected_points() const
   return ::filter_if(points(), std::mem_fn(&PathPoint::is_selected));
 }
 
-std::set<PathPoint*> Path::join_points(const std::set<PathPoint*>& points)
-{
-  return m_joined_points.insert(points);
-}
-
-std::set<PathPoint*> Path::joined_points(const PathPoint* key) const
-{
-  return m_joined_points.get(key);
-}
-
-void Path::disjoin_points(PathPoint* point)
-{
-  m_joined_points.remove({point});
-}
-
 void Path::deselect_all_points()
 {
   for (auto* point : points()) {

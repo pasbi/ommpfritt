@@ -54,7 +54,7 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
       const auto transformation = m_current_path->global_transformation(Space::Viewport).inverted();
       const auto gpos = transformation.apply_to_position(pos);
 
-      JoinPointsCommand::Map join_points_map;
+      std::set<PathPoint*> points_to_join;
       const Point point{gpos};
       std::deque<AddPointsCommand::OwnedLocatedSegment> located_segments;
 
@@ -80,15 +80,15 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
         // other point of segment is selected: add point to a newly created segment and join points
         auto new_segment = std::make_unique<Segment>(std::deque{m_last_point->geometry(), point}, m_current_path);
         m_current_point = &new_segment->at(1);
-        join_points_map[m_current_path].insert({&new_segment->at(0), m_last_point});
+        points_to_join = {&new_segment->at(0), m_last_point};
         located_segments.emplace_back(std::move(new_segment));
       }
-      if (!join_points_map.empty() && !macro) {
+      if (!points_to_join.empty() && !macro) {
         macro = scene()->history().start_macro(AddPointsCommand::static_label());
       }
       scene()->submit<AddPointsCommand>(*m_current_path, std::move(located_segments));
-      if (!join_points_map.empty()) {
-        scene()->submit<JoinPointsCommand>(join_points_map);
+      if (!points_to_join.empty()) {
+        scene()->submit<JoinPointsCommand>(*scene(), points_to_join);
       }
       m_current_path->deselect_all_points();
       m_current_point->set_selected(true);

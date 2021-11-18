@@ -10,6 +10,7 @@
 #include "commands/command.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
+#include "disjointset.h"
 #include "external/json.hpp"
 #include "logging.h"
 #include "mainwindow/exportoptions.h"
@@ -118,6 +119,7 @@ Scene::Scene(PythonEngine& python_engine)
     , m_animator(new Animator(*this))
     , m_named_colors(new NamedColors())
     , m_export_options(new ExportOptions())
+    , m_joined_points(new DisjointSetForest<PathPoint*>())
 {
   object_tree().root().set_object_tree(object_tree());
   for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, Node::KIND}) {
@@ -218,6 +220,11 @@ void Scene::set_export_options(const ExportOptions& export_options)
     m_has_pending_changes = true;
     Q_EMIT mail_box().filename_changed();
   }
+}
+
+DisjointSetForest<PathPoint*>& Scene::joined_points() const
+{
+  return *m_joined_points;
 }
 
 bool Scene::save_as(const QString& filename)

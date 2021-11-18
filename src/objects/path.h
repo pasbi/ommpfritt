@@ -49,14 +49,10 @@ public:
   std::unique_ptr<Segment> remove_segment(const Segment& segment);
   std::deque<PathPoint*> points() const;
   std::deque<PathPoint*> selected_points() const;
-  std::set<PathPoint*> join_points(const std::set<PathPoint*>& points);
-  std::set<PathPoint*> joined_points(const PathPoint* key) const;
-  void disjoin_points(PathPoint* point);
   void deselect_all_points();
 
 private:
   std::deque<std::unique_ptr<Segment>> m_segments;
-  DisjointSetForest<PathPoint*> m_joined_points;
   friend class JoinPointsCommand;
   friend class DisjoinPointsCommand;
 };

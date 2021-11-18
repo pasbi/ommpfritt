@@ -9,33 +9,44 @@
 namespace omm
 {
 
-class JoinPointsCommand : public Command
+class AbstractJoinPointsCommand : public Command
 {
 public:
-  using Map = std::map<Path*, std::set<PathPoint*>>;
-  explicit JoinPointsCommand(const Map& map);
+  explicit AbstractJoinPointsCommand(const QString& label, Scene& scene, const std::set<PathPoint*>& points);
+
+protected:
+  std::set<PathPoint*> points() const;
+  Scene& scene() const;
+  void update_affected_paths() const;
+
+private:
+  Scene& m_scene;
+  const std::set<PathPoint*> m_points;
+};
+
+class JoinPointsCommand : public AbstractJoinPointsCommand
+{
+public:
+  explicit JoinPointsCommand(Scene& scene, const std::set<PathPoint*>& map);
   void undo() override;
   void redo() override;
 
 private:
-  const std::map<Path*, std::set<PathPoint*>> m_points;
-  std::map<Path*, DisjointSetForest<PathPoint*>> m_old_forest;
+  DisjointSetForest<PathPoint*> m_old_forest;
   std::map<PathPoint*, Point> m_old_positions;
 
   static Vec2f compute_position(const std::set<PathPoint*>& points);
 };
 
-class DisjoinPointsCommand : public Command
+class DisjoinPointsCommand : public AbstractJoinPointsCommand
 {
 public:
-  using Map = std::map<Path*, std::set<PathPoint*>>;
-  explicit DisjoinPointsCommand(const Map& map);
+  explicit DisjoinPointsCommand(Scene& scene, const std::set<PathPoint*>& map);
   void undo() override;
   void redo() override;
 
 private:
-  const std::map<Path*, std::set<PathPoint*>> m_points;
-  std::map<Path*, DisjointSetForest<PathPoint*>> m_old_forest;
+  DisjointSetForest<PathPoint*> m_old_forest;
 };
 
 }  // namespace omm

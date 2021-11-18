@@ -1,6 +1,7 @@
 #include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include "objects/path.h"
+#include "scene/scene.h"
 
 namespace
 {
@@ -36,18 +37,18 @@ PathPoint::PathPoint(Segment& segment)
 
 std::set<PathPoint*> PathPoint::joined_points() const
 {
-  return path()->joined_points(this);
+  return path()->scene()->joined_points().get(this);
 }
 
 void PathPoint::join(std::set<PathPoint*> buddies)
 {
   buddies.insert(this);
-  path()->join_points(buddies);
+  path()->scene()->joined_points().insert(buddies);
 }
 
 void PathPoint::disjoin()
 {
-  path()->disjoin_points(this);
+  path()->scene()->joined_points().remove({this});
 }
 
 Path* PathPoint::path() const
@@ -59,7 +60,7 @@ void PathPoint::set_geometry(const Point& point)
 {
   m_geometry = point;
   if (!m_block_joined_points_update) {
-    for (PathPoint* q : path()->joined_points(this)) {
+    for (PathPoint* q : path()->scene()->joined_points().get(this)) {
       auto geometry = q->geometry();
       geometry.set_position(this->geometry().position());
       BlockJoinedPointsUpdateGuard blocker{q->m_block_joined_points_update};
