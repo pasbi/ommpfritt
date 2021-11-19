@@ -132,7 +132,7 @@ public:
   [[nodiscard]] virtual SplineType get_spline(const Pointer& pointer) = 0;
 
   void register_reference(std::size_t id, AbstractPropertyOwner& reference);
-  void register_reference_polisher(ReferencePolisher& polisher);
+  void register_reference_polisher(std::unique_ptr<ReferencePolisher> polisher);
 
   template<typename T> std::enable_if_t<!std::is_enum_v<T>, T> get(const Pointer&);
   template<typename T> std::enable_if_t<std::is_enum_v<T>, T> get(const Pointer& pointer)
@@ -189,7 +189,7 @@ public:
 private:
   // maps old stored hash to new ref
   std::map<std::size_t, AbstractPropertyOwner*> m_id_to_reference;
-  std::set<ReferencePolisher*> m_reference_polishers;
+  std::set<std::unique_ptr<ReferencePolisher>> m_reference_polishers;
 };
 
 }  // namespace omm

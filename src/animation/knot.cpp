@@ -2,11 +2,35 @@
 
 namespace omm
 {
+
+class Knot::ReferencePolisher : public omm::ReferencePolisher
+{
+public:
+  explicit ReferencePolisher(std::size_t reference_id, Knot& knot)
+    : m_reference_id(reference_id)
+    , m_knot(knot)
+  {
+  }
+
+private:
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
+  {
+    if (m_reference_id == 0) {
+      m_knot.value = nullptr;
+    } else {
+      m_knot.value = map.at(m_reference_id);
+    }
+  }
+
+  const std::size_t m_reference_id = 0;
+  Knot& m_knot;
+};
+
 Knot::Knot(AbstractDeserializer& deserializer, const Serializable::Pointer& pointer, const QString& type)
 {
   if (type == "Reference") {
-    m_reference_id = deserializer.get<std::size_t>(pointer);
-    deserializer.register_reference_polisher(*this);
+    const auto reference_id = deserializer.get<std::size_t>(pointer);
+    deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(reference_id, *this));
     value = nullptr;
   } else {
     value = deserializer.get(pointer, type);
@@ -24,21 +48,11 @@ void Knot::swap(Knot& other)
   std::swap(other.value, value);
   std::swap(other.left_offset, left_offset);
   std::swap(other.right_offset, right_offset);
-  std::swap(other.m_reference_id, m_reference_id);
 }
 
 std::unique_ptr<Knot> Knot::clone() const
 {
   return std::unique_ptr<Knot>(new Knot(*this));
-}
-
-void Knot::update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
-{
-  if (m_reference_id == 0) {
-    value = nullptr;
-  } else {
-    value = map.at(m_reference_id);
-  }
 }
 
 bool Knot::operator==(const Knot& other) const
@@ -79,4 +93,5 @@ void Knot::polish()
       },
       value);
 }
+
 }  // namespace omm

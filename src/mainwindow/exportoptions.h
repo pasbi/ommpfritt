@@ -9,7 +9,7 @@ class View;
 
 struct ExportOptions
     : Serializable
-    , ReferencePolisher {
+{
   bool operator==(const ExportOptions& other) const;
   bool operator!=(const ExportOptions& other) const;
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
@@ -36,10 +36,7 @@ struct ExportOptions
   double scale;
 
 private:
-  std::size_t m_view_id;  // required for deserialization only
-
-protected:
-  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
+  class ReferencePolisher;
 };
 
 }  // namespace omm

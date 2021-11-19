@@ -38,9 +38,10 @@ void AbstractDeserializer::add_references(const std::set<AbstractPropertyOwner*>
 void AbstractDeserializer::polish()
 {
   // polish reference properties
-  for (ReferencePolisher* polisher : m_reference_polishers) {
+  for (const auto& polisher : m_reference_polishers) {
     polisher->update_references(m_id_to_reference);
   }
+  m_reference_polishers.clear();
 }
 
 void AbstractDeserializer::register_reference(const std::size_t id,
@@ -60,9 +61,9 @@ void AbstractDeserializer::register_reference(const std::size_t id,
   }
 }
 
-void AbstractDeserializer::register_reference_polisher(ReferencePolisher& polisher)
+void AbstractDeserializer::register_reference_polisher(std::unique_ptr<ReferencePolisher> polisher)
 {
-  m_reference_polishers.insert(&polisher);
+  m_reference_polishers.insert(std::move(polisher));
 }
 
 void AbstractDeserializer::get(Serializable& serializable,

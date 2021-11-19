@@ -4,7 +4,8 @@
 
 namespace omm
 {
-struct Knot : public ReferencePolisher
+
+struct Knot
 {
   enum class Side { Left, Right };
   Knot(AbstractDeserializer& deserializer, const Serializable::Pointer& pointer, const QString& type);
@@ -12,7 +13,7 @@ struct Knot : public ReferencePolisher
   Knot(Knot&&) = delete;
   Knot& operator=(Knot&&) = delete;
   Knot& operator=(const Knot&) = delete;
-  ~Knot() override = default;
+  ~Knot() = default;
   void swap(Knot& other);
   [[nodiscard]] std::unique_ptr<Knot> clone() const;
 
@@ -30,9 +31,7 @@ private:
   // Use Knot::clone explicitely, if you know what you do.
   Knot(const Knot& other) = default;
   void polish();
-
-  // only required for deserialization.
-  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
-  std::size_t m_reference_id = 0;
+  class ReferencePolisher;
 };
+
 }  // namespace omm

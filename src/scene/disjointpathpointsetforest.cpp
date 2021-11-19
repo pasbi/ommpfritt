@@ -7,12 +7,56 @@ static constexpr auto FOREST_POINTER = "forest";
 static constexpr auto PATH_ID_POINTER = "path-id";
 static constexpr auto INDEX_POINTER = "index";
 
+namespace
+{
+
+struct PathPointId
+{
+  constexpr explicit PathPointId(const std::size_t path_id, const std::size_t point_index)
+    : path_id(path_id)
+    , point_index(point_index)
+  {
+  }
+  std::size_t path_id;
+  std::size_t point_index;
+};
+
+}  // namespace
+
 namespace omm
 {
 
+class DisjointPathPointSetForest::ReferencePolisher : public omm::ReferencePolisher
+{
+public:
+  explicit ReferencePolisher(const std::deque<std::list<PathPointId>>& joined_point_indices,
+                             DisjointPathPointSetForest& ref)
+    : m_ref(ref)
+    , m_joined_point_indices(joined_point_indices)
+  {
+  }
+
+private:
+  omm::DisjointPathPointSetForest& m_ref;
+  std::deque<std::list<PathPointId>> m_joined_point_indices;
+
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override
+  {
+    m_ref.m_forest.clear();
+    for (const auto& set : m_joined_point_indices) {
+      auto& forest_set = m_ref.m_forest.emplace_back();
+      for (const auto& [path_id, point_index] : set) {
+        auto* path = dynamic_cast<Path*>(map.at(path_id));
+        auto& path_point = path->point_at_index(point_index);
+        forest_set.insert(&path_point);
+      }
+    }
+  }
+};
+
 void DisjointPathPointSetForest::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
-  m_joined_point_indices.clear();
+  std::deque<std::list<PathPointId>> joined_point_indices;
   const auto forest_ptr = make_pointer(root, FOREST_POINTER);
   const auto forest_size = deserializer.array_size(forest_ptr);
   for (std::size_t i = 0; i < forest_size; ++i) {
@@ -25,9 +69,9 @@ void DisjointPathPointSetForest::deserialize(AbstractDeserializer& deserializer,
       const auto path_id = deserializer.get_size_t(make_pointer(ptr, PATH_ID_POINTER));
       point_set.emplace_back(path_id, point_index);
     }
-    m_joined_point_indices.push_back(point_set);
+    joined_point_indices.push_back(point_set);
   }
-  deserializer.register_reference_polisher(*this);
+  deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(joined_point_indices, *this));
 }
 
 void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer, const Pointer& root) const
@@ -47,19 +91,6 @@ void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer, const
     serializer.end_array();
   }
   serializer.end_array();
-}
-
-void DisjointPathPointSetForest::update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
-{
-  m_forest.clear();
-  for (const auto& set : m_joined_point_indices) {
-    auto& forest_set = m_forest.emplace_back();
-    for (const auto& [path_id, point_index] : set) {
-      auto* path = dynamic_cast<Path*>(map.at(path_id));
-      auto& path_point = path->point_at_index(point_index);
-      forest_set.insert(&path_point);
-    }
-  }
 }
 
 }  // namespace omm
