@@ -79,7 +79,7 @@ jobs:
           if [ -z "$files" ]; then
             echo "Skip clang-tidy: No relevant files have changed."
           else
-            clang-tidy -p omm-build $(omm/build-scripts/files.py --mode changed) $files
+            clang-tidy -p omm-build $files
           fi
   unit-tests:
     runs-on: ubuntu-latest
