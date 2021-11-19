@@ -1,6 +1,7 @@
 #include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include "objects/path.h"
+#include "scene/disjointpathpointsetforest.h"
 #include "scene/scene.h"
 
 namespace
@@ -54,6 +55,20 @@ void PathPoint::disjoin()
 Path* PathPoint::path() const
 {
   return m_segment.path();
+}
+
+std::size_t PathPoint::index() const
+{
+  assert(path() != nullptr);
+  std::size_t offset = 0;
+  for (auto* segment : path()->segments()) {
+    if (segment->contains(*this)) {
+      return offset + segment->find(*this);
+    } else {
+      offset += segment->size();
+    }
+  }
+  throw std::runtime_error("Point is not part of a path.");
 }
 
 void PathPoint::set_geometry(const Point& point)

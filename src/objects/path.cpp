@@ -109,6 +109,18 @@ void Path::set(const Geom::PathVector& paths)
   }
 }
 
+PathPoint& Path::point_at_index(std::size_t index) const
+{
+  for (Segment* segment : segments()) {
+    if (index < segment->size()) {
+      return segment->at(index);
+    } else {
+      index -= segment->size();
+    }
+  }
+  throw std::runtime_error{"Index out of bounds."};
+}
+
 std::size_t Path::point_count() const
 {
   return std::accumulate(cbegin(m_segments), cend(m_segments), 0, [](std::size_t n, auto&& segment) {

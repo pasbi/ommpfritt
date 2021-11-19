@@ -36,7 +36,7 @@ public:
   void update() override;
   bool is_closed() const override;
   void set(const Geom::PathVector& paths);
-
+  PathPoint& point_at_index(std::size_t index) const;
 
   void on_property_value_changed(Property* property) override;
   Geom::PathVector paths() const override;

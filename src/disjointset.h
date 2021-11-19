@@ -79,7 +79,7 @@ public:
     m_forest.erase(it, m_forest.end());
   }
 
-private:
+protected:
   std::deque<std::set<T>> m_forest;
 };
 

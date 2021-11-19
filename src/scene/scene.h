@@ -31,8 +31,7 @@ class PythonEngine;
 class StyleList;
 class ToolBox;
 struct ExportOptions;
-template<typename> class DisjointSetForest;
-class PathPoint;
+class DisjointPathPointSetForest;
 
 template<typename> struct SceneStructure;
 template<> struct SceneStructure<Object> {
@@ -244,9 +243,9 @@ private:
 
   // === Joined Points ===
 private:
-  std::unique_ptr<DisjointSetForest<PathPoint*>> m_joined_points;
+  std::unique_ptr<DisjointPathPointSetForest> m_joined_points;
 public:
-  DisjointSetForest<PathPoint*>& joined_points() const;
+  DisjointPathPointSetForest& joined_points() const;
 };
 
 }  // namespace omm

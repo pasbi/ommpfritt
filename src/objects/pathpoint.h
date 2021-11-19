@@ -36,6 +36,13 @@ public:
   void disjoin();
   Path* path() const;
 
+  /**
+   * @brief index returns the index of the point in the path.
+   *  It can be used to persistently identify points for serialization.
+   *  The index may change when the path is modified.
+   */
+  std::size_t index() const;
+
 private:
   Point m_geometry;
   Segment& m_segment;

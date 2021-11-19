@@ -2,6 +2,7 @@
 
 #include "commands/command.h"
 #include "objects/path.h"
+#include "scene/disjointpathpointsetforest.h"
 
 #include <vector>
 #include <map>
@@ -32,7 +33,7 @@ public:
   void redo() override;
 
 private:
-  DisjointSetForest<PathPoint*> m_old_forest;
+  DisjointPathPointSetForest m_old_forest;
   std::map<PathPoint*, Point> m_old_positions;
 
   static Vec2f compute_position(const std::set<PathPoint*>& points);
@@ -46,7 +47,7 @@ public:
   void redo() override;
 
 private:
-  DisjointSetForest<PathPoint*> m_old_forest;
+  DisjointPathPointSetForest m_old_forest;
 };
 
 }  // namespace omm

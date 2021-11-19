@@ -84,9 +84,6 @@ protected:
   void register_serialzied_reference(AbstractPropertyOwner* reference);
 };
 
-template<class T> struct always_false : std::false_type {
-};
-
 class ReferencePolisher
 {
 public:
