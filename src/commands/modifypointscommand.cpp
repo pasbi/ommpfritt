@@ -59,7 +59,6 @@ bool ModifyPointsCommand::is_noop() const
     const auto& [ptr, new_value] = arg;
     return ptr->geometry() == new_value;
   });
-  return true;
 }
 
 AbstractPointsCommand::AbstractPointsCommand(const QString& label,

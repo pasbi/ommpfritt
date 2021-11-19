@@ -13,7 +13,7 @@ public:
   }
 
 private:
-  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override
   {
     if (m_reference_id == 0) {
       m_knot.value = nullptr;
@@ -22,7 +22,7 @@ private:
     }
   }
 
-  const std::size_t m_reference_id = 0;
+  const std::size_t m_reference_id;
   Knot& m_knot;
 };
 
