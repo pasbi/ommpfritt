@@ -50,16 +50,19 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: omm
+          fetch-depth: 0
+      - run: cd omm; current=$(git branch --show-current); git checkout main; git checkout $current;
       - uses: actions/download-artifact@v2
         with:
           name: configure
           path: omm-build
       - run: |
-          files="$(omm/build-scripts/files.py --mode changed)"
+          cd omm
+          files="$(build-scripts/files.py --mode changed)"
           if [ -z "$files" ]; then
             echo "Skip clazy: No relevant files have changed."
           else
-            clazy --standalone -p omm-build --ignore-included-files $files
+            clazy --standalone -p ../omm-build --ignore-included-files $files
           fi
   clang-tidy:
     runs-on: ubuntu-latest
@@ -70,16 +73,19 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: omm
+          fetch-depth: 0
+      - run: cd omm; current=$(git branch --show-current); git checkout main; git checkout $current;
       - uses: actions/download-artifact@v2
         with:
           name: configure
           path: omm-build
       - run: |
-          files="$(omm/build-scripts/files.py --mode changed)"
+          cd omm
+          files="$(build-scripts/files.py --mode changed)"
           if [ -z "$files" ]; then
             echo "Skip clang-tidy: No relevant files have changed."
           else
-            clang-tidy -p omm-build $files
+            clang-tidy -p ../omm-build $files
           fi
   unit-tests:
     runs-on: ubuntu-latest
