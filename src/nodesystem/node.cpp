@@ -29,7 +29,7 @@ public:
   }
 
 private:
-  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override
   {
     QSignalBlocker blocker(m_node.model());
     for (const ConnectionIds& cids : m_connection_ids) {

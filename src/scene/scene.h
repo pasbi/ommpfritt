@@ -235,7 +235,7 @@ public:
 
   // === ExportOptions ===
 public:
-  const ExportOptions& export_options() const;
+  [[nodiscard]] const ExportOptions& export_options() const;
   void set_export_options(const ExportOptions& export_options);
 
 private:
@@ -245,7 +245,7 @@ private:
 private:
   std::unique_ptr<DisjointPathPointSetForest> m_joined_points;
 public:
-  DisjointPathPointSetForest& joined_points() const;
+  [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
 };
 
 }  // namespace omm

@@ -7,7 +7,6 @@
 namespace omm
 {
 
-class Path;
 class PathPoint;
 class Point;
 class Scene;
@@ -16,7 +15,7 @@ class PointSelection
 {
 public:
   PointSelection(Scene& scene);
-  std::set<PathPoint*> points() const;
+  [[nodiscard]] std::set<PathPoint*> points() const;
   [[nodiscard]] std::set<Point> points(Space space) const;
   [[nodiscard]] Vec2f center(Space space) const;
 

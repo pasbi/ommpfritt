@@ -149,7 +149,7 @@ Geom::Path Segment::to_geom_path(bool is_closed, InterpolationMode interpolation
 
   for (std::size_t i = 0; i < m; ++i) {
     const std::size_t j = (i + 1) % n;
-    bzs.push_back(compute_control_points(self->at(i).geometry(), self->at(j).geometry(), interpolation));
+    bzs.emplace_back(compute_control_points(self->at(i).geometry(), self->at(j).geometry(), interpolation));
   }
 
   return {bzs.begin(), bzs.end(), is_closed};
@@ -196,8 +196,8 @@ void Segment::smoothen(bool is_closed) const
 Point Segment::smoothen_point(std::size_t i, bool is_closed) const
 {
   const std::size_t n = m_points.size();
-  PathPoint* left;
-  PathPoint* right;
+  PathPoint* left = nullptr;
+  PathPoint* right = nullptr;
   if (i == 0) {
     left = is_closed ? m_points.at(n - 1).get() : m_points.at(0).get();
     right = m_points.at(1).get();

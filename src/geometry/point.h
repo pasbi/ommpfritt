@@ -22,9 +22,9 @@ public:
   void set_left_position(const Vec2f& position);
   [[nodiscard]] Vec2f right_position() const;
   void set_right_position(const Vec2f& position);
-  PolarCoordinates left_tangent() const;
+  [[nodiscard]] PolarCoordinates left_tangent() const;
   void set_left_tangent(const PolarCoordinates& vector);
-  PolarCoordinates right_tangent() const;
+  [[nodiscard]] PolarCoordinates right_tangent() const;
   void set_right_tangent(const PolarCoordinates& vector);
   [[nodiscard]] double rotation() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
@@ -60,7 +60,7 @@ public:
 
   Point offset(double t, const Point* left_neighbor, const Point* right_neighbor) const;
   static std::vector<Point> offset(double t, const std::vector<Point>& points, bool is_closed);
-  QString to_string() const;
+  [[nodiscard]] QString to_string() const;
 
   /**
    * @brief When a tangent is at `old_pos` and it is mirror-coupled with its sibling which moves

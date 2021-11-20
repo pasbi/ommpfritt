@@ -16,8 +16,8 @@ public:
   explicit AbstractJoinPointsCommand(const QString& label, Scene& scene, const std::set<PathPoint*>& points);
 
 protected:
-  std::set<PathPoint*> points() const;
-  Scene& scene() const;
+  [[nodiscard]] std::set<PathPoint*> points() const;
+  [[nodiscard]] Scene& scene() const;
   void update_affected_paths() const;
 
 private:
@@ -28,7 +28,7 @@ private:
 class JoinPointsCommand : public AbstractJoinPointsCommand
 {
 public:
-  explicit JoinPointsCommand(Scene& scene, const std::set<PathPoint*>& map);
+  explicit JoinPointsCommand(Scene& scene, const std::set<PathPoint*>& points);
   void undo() override;
   void redo() override;
 
@@ -42,7 +42,7 @@ private:
 class DisjoinPointsCommand : public AbstractJoinPointsCommand
 {
 public:
-  explicit DisjoinPointsCommand(Scene& scene, const std::set<PathPoint*>& map);
+  explicit DisjoinPointsCommand(Scene& scene, const std::set<PathPoint*>& points);
   void undo() override;
   void redo() override;
 

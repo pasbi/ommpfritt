@@ -14,13 +14,13 @@ public:
   explicit PathPoint(const Point& geometry, Segment& segment);
   explicit PathPoint(Segment& segment);
   void set_geometry(const Point& point);
-  const Point& geometry() const;
+  [[nodiscard]] const Point& geometry() const;
   PathPoint copy(Segment& segment) const;
-  Segment& segment() const;
+  [[nodiscard]] Segment& segment() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PathPoint", "PathPoint");
 
   void set_selected(bool is_selected);
-  bool is_selected() const;
+  [[nodiscard]] bool is_selected() const;
 
   // The PathPoint is identified by it's memory address, which hence must not change during its
   // lifetime.
@@ -30,18 +30,19 @@ public:
   PathPoint(PathPoint&& other) = delete;
   PathPoint& operator=(const PathPoint& other) = delete;
   PathPoint& operator=(PathPoint&& other) = delete;
+  ~PathPoint() = default;
 
-  std::set<PathPoint*> joined_points() const;
+  [[nodiscard]] std::set<PathPoint*> joined_points() const;
   void join(std::set<PathPoint*> buddies);
   void disjoin();
-  Path* path() const;
+  [[nodiscard]] Path* path() const;
 
   /**
    * @brief index returns the index of the point in the path.
    *  It can be used to persistently identify points for serialization.
    *  The index may change when the path is modified.
    */
-  std::size_t index() const;
+  [[nodiscard]] std::size_t index() const;
 
 private:
   Point m_geometry;

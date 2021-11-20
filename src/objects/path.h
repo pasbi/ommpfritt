@@ -22,7 +22,7 @@ public:
   Path(Path&&) = delete;
   Path& operator=(Path&&) = delete;
   Path& operator=(const Path&) = delete;
-  ~Path();
+  ~Path() override;
   QString type() const override;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
@@ -49,7 +49,7 @@ public:
   std::unique_ptr<Segment> remove_segment(const Segment& segment);
   std::deque<PathPoint*> points() const;
   std::deque<PathPoint*> selected_points() const;
-  void deselect_all_points();
+  void deselect_all_points() const;
 
 private:
   std::deque<std::unique_ptr<Segment>> m_segments;

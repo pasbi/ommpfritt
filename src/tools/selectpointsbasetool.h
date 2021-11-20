@@ -15,6 +15,10 @@ class SelectPointsBaseTool : public AbstractSelectTool
 public:
   explicit SelectPointsBaseTool(Scene& scene);
   ~SelectPointsBaseTool() override;
+  SelectPointsBaseTool(const  SelectPointsBaseTool&) = delete;
+  SelectPointsBaseTool(SelectPointsBaseTool&&) = delete;
+  SelectPointsBaseTool& operator=(const  SelectPointsBaseTool&) = delete;
+  SelectPointsBaseTool& operator=(SelectPointsBaseTool&&) = delete;
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   static constexpr auto BOUNDING_BOX_MODE_PROPERTY_KEY = "bounding_box_mode";
   enum class BoundingBoxMode { IncludeTangents, ExcludeTangents, None };

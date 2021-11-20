@@ -533,7 +533,7 @@ ToolBar& Application::spawn_toolbar() const
   return ref;
 }
 
-Manager& Application::get_active_manager(const QString& type)
+Manager& Application::get_active_manager(const QString& type) const
 {
   for (Manager* m : Application::instance().managers(type)) {
     if (m->is_visible() && !m->is_locked()) {

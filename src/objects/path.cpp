@@ -199,7 +199,7 @@ std::deque<PathPoint*> Path::selected_points() const
   return ::filter_if(points(), std::mem_fn(&PathPoint::is_selected));
 }
 
-void Path::deselect_all_points()
+void Path::deselect_all_points() const
 {
   for (auto* point : points()) {
     point->set_selected(false);
