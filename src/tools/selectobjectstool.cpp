@@ -5,6 +5,7 @@
 #include "scene/scene.h"
 #include "tools/handles/boundingboxhandle.h"
 #include "tools/handles/moveaxishandle.h"
+#include "tools/handles/objectselecthandle.h"
 #include "tools/handles/particlehandle.h"
 #include "tools/handles/rotatehandle.h"
 #include "tools/handles/scaleaxishandle.h"

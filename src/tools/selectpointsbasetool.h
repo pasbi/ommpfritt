@@ -3,6 +3,7 @@
 #include "tools/handles/particlehandle.h"
 #include "objects/path.h"
 #include "tools/selecttool.h"
+#include "tools/handles/pointselecthandle.h"
 #include <memory>
 
 namespace omm

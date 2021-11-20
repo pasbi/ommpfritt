@@ -74,9 +74,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
     return true;
   } else if (allow_clear && event.buttons() == Qt::LeftButton) {
     for (auto* path : paths) {
-      for (auto* point : path->points()) {
-        point->set_selected(false);
-      }
+      path->deselect_all_points();
     }
     Q_EMIT scene()->mail_box().point_selection_changed();
     return false;
