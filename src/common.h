@@ -212,8 +212,8 @@ template<typename T, typename Predicate> void erase_if(std::vector<T>& ts, const
   ts.erase(std::remove_if(ts.begin(), ts.end(), p), ts.end());
 }
 
-template<template<typename...> typename Container, typename S, typename... Ts>
-bool contains(const Container<Ts...>& set, S&& key)
+template<typename Container, typename S>
+bool contains(const Container& set, S&& key)
 {
   if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)

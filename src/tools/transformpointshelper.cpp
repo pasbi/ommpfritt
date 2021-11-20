@@ -9,6 +9,7 @@
 
 namespace omm
 {
+
 TransformPointsHelper::TransformPointsHelper(Scene& scene, Space space)
     : m_scene(scene), m_space(space)
 {
@@ -72,6 +73,11 @@ void TransformPointsHelper::update()
   for (auto* path : m_paths) {
     for (PathPoint* point : path->selected_points()) {
       m_initial_points[point] = point->geometry();
+      for (PathPoint* buddy : point->joined_points()) {
+        auto geometry = buddy->geometry();
+        geometry.set_position(point->geometry().position());
+        m_initial_points[buddy] = geometry;
+      }
     }
   }
   Q_EMIT initial_transformations_changed();

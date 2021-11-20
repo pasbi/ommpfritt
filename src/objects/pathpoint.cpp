@@ -4,24 +4,6 @@
 #include "scene/disjointpathpointsetforest.h"
 #include "scene/scene.h"
 
-namespace
-{
-
-class BlockJoinedPointsUpdateGuard
-{
-public:
-  explicit BlockJoinedPointsUpdateGuard(bool& flag) noexcept : m_flag(flag) { m_flag = true; }
-  BlockJoinedPointsUpdateGuard(const BlockJoinedPointsUpdateGuard&) = delete;
-  BlockJoinedPointsUpdateGuard(BlockJoinedPointsUpdateGuard&&) = delete;
-  BlockJoinedPointsUpdateGuard& operator=(const BlockJoinedPointsUpdateGuard&) = delete;
-  BlockJoinedPointsUpdateGuard& operator=(BlockJoinedPointsUpdateGuard&&) = delete;
-  ~BlockJoinedPointsUpdateGuard() { m_flag = false; }
-private:
-  bool& m_flag;
-};
-
-}  // namespace
-
 namespace omm
 {
 
@@ -74,14 +56,6 @@ std::size_t PathPoint::index() const
 void PathPoint::set_geometry(const Point& point)
 {
   m_geometry = point;
-  if (!m_block_joined_points_update) {
-    for (PathPoint* q : path()->scene()->joined_points().get(this)) {
-      auto geometry = q->geometry();
-      geometry.set_position(this->geometry().position());
-      BlockJoinedPointsUpdateGuard blocker{q->m_block_joined_points_update};
-      q->set_geometry(geometry);
-    }
-  }
 }
 
 const Point& PathPoint::geometry() const
@@ -104,9 +78,14 @@ bool PathPoint::is_selected() const
   return m_is_selected;
 }
 
-void PathPoint::set_selected(bool selected)
+void PathPoint::set_selected(bool selected, bool update_buddies)
 {
   m_is_selected = selected;
+  if (update_buddies) {
+    for (auto* buddy : joined_points()) {
+      buddy->set_selected(selected, false);
+    }
+  }
 }
 
 }  // namespace omm

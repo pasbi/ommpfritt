@@ -19,7 +19,7 @@ public:
   [[nodiscard]] Segment& segment() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PathPoint", "PathPoint");
 
-  void set_selected(bool is_selected);
+  void set_selected(bool is_selected, bool update_buddies = true);
   [[nodiscard]] bool is_selected() const;
 
   // The PathPoint is identified by it's memory address, which hence must not change during its
@@ -48,7 +48,6 @@ private:
   Point m_geometry;
   Segment& m_segment;
   bool m_is_selected = false;
-  bool m_block_joined_points_update = false;
 };
 
 }  // namespace omm
