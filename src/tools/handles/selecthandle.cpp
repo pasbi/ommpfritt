@@ -210,10 +210,14 @@ void PointSelectHandle::draw(QPainter& painter) const
   painter.translate(pos.to_pointf());
   const auto status = m_point.is_selected() ? HandleStatus::Active : this->status();
   const auto r = draw_epsilon();
-  const QRectF rect{-r, -r, 2 * r, 2 * r};
+  const auto rect = Tool::centered_rectangle({}, r);
   painter.setPen(ui_color(status, "point"));
   painter.setBrush(ui_color(status, "point fill"));
-  painter.drawRect(rect);
+  if (m_point.joined_points().size() > 1) {
+    painter.drawRect(rect);
+  } else {
+    painter.drawEllipse(rect);
+  }
 }
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent)
