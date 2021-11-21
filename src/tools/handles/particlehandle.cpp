@@ -20,7 +20,9 @@ void ParticleHandle::draw(QPainter& painter) const
   const auto pos = tool.transformation().null();
   const auto r = draw_epsilon();
 
-  painter.fillRect(Tool::centered_rectangle(pos, r), ui_color(HandleStatus::Active, "particle"));
+  painter.setBrush(ui_color(HandleStatus::Active, "particle fill"));
+  painter.setPen(ui_color(HandleStatus::Active, "particle"));
+  painter.drawRect(Tool::centered_rectangle(pos, r));
 }
 
 }  // namespace omm

@@ -3,10 +3,49 @@
 #include "nodesystem/nodemodel.h"
 #include <QApplication>
 
+namespace
+{
+
+struct ConnectionIds {
+  std::size_t input_port;
+  std::size_t output_port;
+  std::size_t node_id;
+};
+
+}  // namespace
+
 namespace omm
 {
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::map<QString, const Node::Detail*> Node::m_details;
+
+class Node::ReferencePolisher : public omm::ReferencePolisher
+{
+public:
+  explicit ReferencePolisher(std::list<ConnectionIds>&& connection_ids, Node& node)
+    : m_connection_ids(connection_ids)
+    , m_node(node)
+  {
+  }
+
+private:
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override
+  {
+    QSignalBlocker blocker(m_node.model());
+    for (const ConnectionIds& cids : m_connection_ids) {
+      Node& node = dynamic_cast<Node&>(*map.at(cids.node_id));
+      assert(&node.model() == &m_node.model());
+      auto* input = m_node.find_port<InputPort>(cids.input_port);
+      auto* output = node.find_port<OutputPort>(cids.output_port);
+      if (input != nullptr && output != nullptr) {
+        input->connect(output);
+      }
+    }
+  }
+
+  std::list<ConnectionIds> m_connection_ids;
+  Node &m_node;
+};
 
 Node::Node(NodeModel& model) : PropertyOwner(&model.scene()), m_model(model)
 {
@@ -54,15 +93,16 @@ void Node::deserialize(AbstractDeserializer& deserializer, const Serializable::P
 
   const auto connections_ptr = make_pointer(root, CONNECTIONS_PTR);
   const std::size_t n = deserializer.array_size(connections_ptr);
+  std::list<ConnectionIds> connection_idss;
   for (std::size_t i = 0; i < n; ++i) {
     const auto iptr = make_pointer(connections_ptr, i);
     ConnectionIds connection_ids{};
     connection_ids.input_port = deserializer.get_size_t(make_pointer(iptr, INPUT_PORT_PTR));
     connection_ids.output_port = deserializer.get_size_t(make_pointer(iptr, OUTPUT_PORT_PTR));
     connection_ids.node_id = deserializer.get_size_t(make_pointer(iptr, CONNECTED_NODE_PTR));
-    m_connection_ids.push_back(connection_ids);
+    connection_idss.push_back(connection_ids);
   }
-  deserializer.register_reference_polisher(*this);
+  deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(std::move(connection_idss), *this));
 }
 
 void Node::set_pos(const QPointF& pos)
@@ -214,20 +254,6 @@ std::unique_ptr<Property> Node::extract_property(const QString& key)
     remove_port(*op);
   }
   return property;
-}
-
-void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
-{
-  QSignalBlocker blocker(model());
-  for (const ConnectionIds& cids : m_connection_ids) {
-    Node& node = dynamic_cast<Node&>(*map.at(cids.node_id));
-    assert(&node.model() == &model());
-    auto* input = find_port<InputPort>(cids.input_port);
-    auto* output = node.find_port<OutputPort>(cids.output_port);
-    if (input != nullptr && output != nullptr) {
-      input->connect(output);
-    }
-  }
 }
 
 QString Node::fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t)

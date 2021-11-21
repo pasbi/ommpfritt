@@ -1,6 +1,8 @@
 target_sources(libommpfritt PRIVATE
   cycleguard.cpp
   cycleguard.h
+  disjointpathpointsetforest.cpp
+  disjointpathpointsetforest.h
   itemmodeladapter.cpp
   contextes_fwd.h
   contextes.h

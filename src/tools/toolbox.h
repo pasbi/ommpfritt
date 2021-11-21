@@ -23,9 +23,10 @@ public:
   [[nodiscard]] Tool& tool(const QString& key) const;
   void set_active_tool(const QString& key);
   void set_active_tool(Tool& tool);
-  void set_previous_tool();
+  void activate_previous_tool();
   void set_scene_mode(SceneMode mode);
   [[nodiscard]] std::set<Tool*> tools() const;
+  void activate_default_tool();
 
 Q_SIGNALS:
   void active_tool_changed(const omm::Tool& active_tool);
@@ -33,7 +34,7 @@ Q_SIGNALS:
 private:
   Tool* m_active_tool = nullptr;
   const std::map<QString, std::unique_ptr<Tool>> m_tools;
-  const std::map<SceneMode, Tool*> m_default_tools;
+  static const std::map<SceneMode, QString> m_default_tools;
   Scene& m_scene;
   std::list<Tool*> m_history;
 };

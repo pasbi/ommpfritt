@@ -9,6 +9,31 @@ const Property::PropertyDetail ReferenceProperty::detail{nullptr};
 using Flag = Flag;
 using Kind = Kind;
 
+class ReferenceProperty::ReferencePolisher : public omm::ReferencePolisher
+{
+public:
+  explicit ReferencePolisher(const std::size_t reference_value_id, ReferenceProperty& reference_property)
+    : m_reference_value_id(reference_value_id)
+    , m_reference_property(reference_property)
+  {
+  }
+
+private:
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& references) override
+  {
+    if (m_reference_value_id != 0) {
+      try {
+        m_reference_property.set(references.at(m_reference_value_id));
+      } catch (const std::out_of_range&) {
+        LWARNING << "Failed to restore reference for property " << m_reference_property.label();
+      }
+    }
+  }
+
+  std::size_t m_reference_value_id;
+  ReferenceProperty& m_reference_property;
+};
+
 ReferenceProperty::ReferenceProperty() : TypedProperty(nullptr)
 {
   configuration.set(FILTER_POINTER, PropertyFilter::accept_anything());
@@ -45,13 +70,13 @@ void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Po
   // not all objects are restored yet, hence not all pointers are known.
   // remember the property to set `m_value` later.
   const auto ref_pointer = make_pointer(root, TypedPropertyDetail::VALUE_POINTER);
-  m_reference_value_id = deserializer.get_size_t(ref_pointer);
+  const auto reference_value_id = deserializer.get_size_t(ref_pointer);
   {
     PropertyFilter filter;
     deserializer.get(filter, make_pointer(root, ReferenceProperty::FILTER_POINTER));
     set_filter(filter);
   }
-  deserializer.register_reference_polisher(*this);
+  deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(reference_value_id, *this));
 }
 
 ReferenceProperty& ReferenceProperty::set_filter(const PropertyFilter& filter)
@@ -75,18 +100,6 @@ bool ReferenceProperty::is_compatible(const Property& other) const
            == configuration.get(FILTER_POINTER);
   } else {
     return false;
-  }
-}
-
-void ReferenceProperty ::update_references(
-    const std::map<std::size_t, AbstractPropertyOwner*>& references)
-{
-  if (m_reference_value_id != 0) {
-    try {
-      set(references.at(m_reference_value_id));
-    } catch (const std::out_of_range&) {
-      LWARNING << "Failed to restore reference for property " << label();
-    }
   }
 }
 

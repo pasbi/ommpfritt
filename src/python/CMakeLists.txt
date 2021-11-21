@@ -3,6 +3,8 @@ target_sources(libommpfritt PRIVATE
   objectwrapper.h
   pathwrapper.cpp
   pathwrapper.h
+  pathpointwrapper.cpp
+  pathpointwrapper.h
   pointwrapper.cpp
   pointwrapper.h
   propertyownerwrapper.cpp

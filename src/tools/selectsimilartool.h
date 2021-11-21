@@ -26,7 +26,7 @@ private:
   void apply();
   void update_base_selection();
   bool is_similar(const Path& path, const Point& a, const Point& b) const;
-  std::set<Point*> m_base_selection;
+  std::set<PathPoint*> m_base_selection;
   void end() override;
   void start() override;
   void update_property_appearance();

@@ -37,7 +37,7 @@ public:
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
   virtual void draw(Painter& renderer) const;
-  virtual bool has_transformation() const;
+  [[nodiscard]] bool is_active() const;
 
   /**
    * @brief cancel cancels the current tool application and restores the status before.
@@ -50,24 +50,21 @@ public:
 
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;
-  Flag flags() const override
-  {
-    return Flag::None;
-  }
+  Flag flags() const override;
   ObjectTransformation viewport_transformation;
   static bool integer_transformation();
   QString name() const override;
   virtual SceneMode scene_mode() const = 0;
   static QRectF centered_rectangle(const Vec2f& center, double radius);
-
-public:
-  virtual void reset()
-  {
-  }
+  virtual void reset();
+  void clear();
+  std::deque<Handle*> handles() const;
 
 protected:
-  std::vector<std::unique_ptr<Handle>> handles;
   static constexpr double epsilon = 10.0;
+  void push_handle(std::unique_ptr<Handle> handle);
+private:
+  std::deque<std::unique_ptr<Handle>> m_handles;
 };
 
 }  // namespace omm

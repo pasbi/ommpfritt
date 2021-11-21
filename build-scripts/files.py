@@ -17,7 +17,7 @@ def all_build_files():
     return [fn for fn in files if not is_blacklisted(fn)]
 
 def changed_build_files():
-    command = ["git", "diff", "--name-only", "--diff-filter=d", "origin/main..HEAD"]
+    command = ["git", "diff", "--name-only", "--diff-filter=d", "main..HEAD"]
     proc = subprocess.run(command, capture_output=True)
     files = proc.stdout.decode('utf-8').split('\n')
     def is_considered(fn):

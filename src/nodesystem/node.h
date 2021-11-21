@@ -17,7 +17,6 @@ class NodeModel;
 class Node
     : public PropertyOwner<Kind::Node>
     , public AbstractFactory<QString, false, Node, NodeModel&>
-    , public ReferencePolisher
 {
   Q_OBJECT
 public:
@@ -151,15 +150,8 @@ private:
   QPointF m_pos;
   std::set<std::unique_ptr<AbstractPort>> m_ports;
 
-  // Only required during deserialization.
-  struct ConnectionIds {
-    std::size_t input_port;
-    std::size_t output_port;
-    std::size_t node_id;
-  };
-  std::list<ConnectionIds> m_connection_ids;
-  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
   NodeModel& m_model;
+  class ReferencePolisher;
 
 public:
   struct Detail {

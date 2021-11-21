@@ -17,6 +17,8 @@ target_sources(libommpfritt PRIVATE
   object.h
   path.cpp
   path.h
+  pathpoint.cpp
+  pathpoint.h
   proceduralpath.cpp
   proceduralpath.h
   rectangleobject.cpp

@@ -2,12 +2,13 @@
 #include "common.h"
 #include "scene/scene.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 
 namespace omm
 {
 
-ModifyPointsCommand ::ModifyPointsCommand(const Map& points)
+ModifyPointsCommand ::ModifyPointsCommand(const std::map<PathPoint*, Point>& points)
     : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
 {
   assert(!points.empty());
@@ -31,16 +32,16 @@ int ModifyPointsCommand::id() const
 void ModifyPointsCommand::exchange()
 {
   std::set<Path*> paths;
-  for (auto& [path, points] : m_data) {
-    for (auto& [ptr, point] : points) {
-      swap(*ptr, point);
+  for (auto& [ptr, point] : m_data) {
+    const auto geometry = ptr->geometry();
+    ptr->set_geometry(point);
+    point = geometry;
+    paths.insert(ptr->path());
+    for (auto* buddy : ptr->joined_points()) {
+      paths.insert(buddy->path());
     }
   }
-  for (auto& [path, points_map] : m_data) {
-    const std::set<Point*> points = ::transform<Point*, std::set>(points_map, [](const auto& value) {
-      return value.first;
-    });
-    path->update_point(points);
+  for (auto* path : paths) {
     path->update();
   }
 }
@@ -50,6 +51,14 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
   // merging happens automatically!
   const auto& mtc = dynamic_cast<const ModifyPointsCommand&>(*command);
   return ::get_keys(m_data) == ::get_keys(mtc.m_data);
+}
+
+bool ModifyPointsCommand::is_noop() const
+{
+  return std::all_of(m_data.begin(), m_data.end(), [](const auto& arg) {
+    const auto& [ptr, new_value] = arg;
+    return ptr->geometry() == new_value;
+  });
 }
 
 AbstractPointsCommand::AbstractPointsCommand(const QString& label,
@@ -142,7 +151,7 @@ void RemovePointsCommand::undo()
 }
 
 AbstractPointsCommand::OwnedLocatedSegment::
-OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point> >&& points)
+OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<PathPoint> >&& points)
   : m_segment(segment), m_index(index), m_points(std::move(points))
 {
   assert(m_segment != nullptr);

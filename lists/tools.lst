@@ -7,7 +7,8 @@
     "PathTool",
     "SelectObjectsTool",
     "SelectPointsTool",
-    "SelectSimilarTool"
+    "SelectSimilarTool",
+    "TransformPointsTool"
   ],
   "register": "{clazz}::register_type<{item}>(\"{item}\");",
   "include": "#include \"tools/{lc_item}.h\""

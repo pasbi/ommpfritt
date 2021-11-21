@@ -12,6 +12,7 @@
 #include <2geom/line.h>
 #include <2geom/path-intersection.h>
 #include <QCoreApplication>
+#include <QMouseEvent>
 
 namespace
 {
@@ -49,8 +50,6 @@ namespace omm
 KnifeTool::KnifeTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
 }
-
-KnifeTool::~KnifeTool() = default;
 
 bool KnifeTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
@@ -117,10 +116,10 @@ void KnifeTool::draw(Painter& renderer) const
   SelectPointsBaseTool::draw(renderer);
   if (m_is_cutting) {
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "foreground"));
-    renderer.painter->drawLine(m_mouse_press_pos.x,
-                               m_mouse_press_pos.y,
-                               m_mouse_move_pos.x,
-                               m_mouse_move_pos.y);
+    renderer.painter->drawLine(static_cast<int>(m_mouse_press_pos.x),
+                               static_cast<int>(m_mouse_press_pos.y),
+                               static_cast<int>(m_mouse_move_pos.x),
+                               static_cast<int>(m_mouse_move_pos.y));
     for (const Point& p : m_points) {
       QPen pen;
       pen.setColor(Qt::white);
@@ -156,12 +155,6 @@ bool KnifeTool::cancel()
 SceneMode KnifeTool::scene_mode() const
 {
   return SceneMode::Vertex;
-}
-
-void KnifeTool::reset()
-{
-  handles.clear();
-  SelectPointsTool::make_handles(*this, false);
 }
 
 }  // namespace omm

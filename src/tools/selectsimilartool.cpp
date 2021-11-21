@@ -2,6 +2,7 @@
 #include "common.h"
 #include "logging.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 #include "properties/triggerproperty.h"
@@ -80,9 +81,8 @@ SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
 void SelectSimilarTool::reset()
 {
   update_base_selection();
-  handles.clear();
-  make_handles(*this, false);
-  handles.push_back(std::make_unique<BoundingBoxHandle<SelectSimilarTool>>(*this));
+  SelectPointsBaseTool::reset();
+  push_handle(std::make_unique<BoundingBoxHandle<SelectSimilarTool>>(*this));
 }
 
 void SelectSimilarTool::on_property_value_changed(Property* property)
@@ -103,8 +103,8 @@ void SelectSimilarTool::update_selection()
   for (const auto* path : scene()->item_selection<Path>()) {
     for (auto* point : path->points()) {
       if (!::contains(m_base_selection, point)) {
-        const auto is_similar = [point, path, this](const Point* b) {
-          return this->is_similar(*path, *point, *b);
+        const auto is_similar = [point, path, this](const PathPoint* b) {
+          return this->is_similar(*path, point->geometry(), b->geometry());
         };
         const auto& begin = m_base_selection.begin();
         const auto& end = m_base_selection.end();

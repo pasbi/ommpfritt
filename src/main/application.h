@@ -58,12 +58,12 @@ public:
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
   void evaluate() const;
-  QKeySequence default_key_sequence(const QString& name) const;
+  [[nodiscard]] QKeySequence default_key_sequence(const QString& name) const;
   static Application& instance();
-  SceneMode scene_mode() const;
+  [[nodiscard]] SceneMode scene_mode() const;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Application");
-  QString type() const override;
+  [[nodiscard]] QString type() const override;
 
   std::unique_ptr<KeyBindings> key_bindings;
   std::unique_ptr<UiColors> ui_colors;
@@ -73,15 +73,20 @@ public:
 
   std::unique_ptr<PythonEngine> python_engine;
   std::unique_ptr<Scene> scene;
-  MailBox& mail_box() const;
-  MainWindow* main_window() const;
+  [[nodiscard]] MailBox& mail_box() const;
+  [[nodiscard]] MainWindow* main_window() const;
 
   enum class InsertionMode { Default, AsParent, AsChild };
+
+  // NOLINTNEXTLINE(modernize-use-nodiscard)
   Object& insert_object(const QString& key, InsertionMode mode) const;
 
   static const std::set<int> keyboard_modifiers;
 
+  // NOLINTNEXTLINE(modernize-use-nodiscard)
   Manager& spawn_manager(const QString& type) const;
+
+  // NOLINTNEXTLINE(modernize-use-nodiscard)
   ToolBar& spawn_toolbar() const;
 
   /**
@@ -91,7 +96,7 @@ public:
    * @param type the type of the manager, e.g., PropertyManager::TYPE
    * @return
    */
-  Manager& get_active_manager(const QString& type);
+  [[nodiscard]] Manager& get_active_manager(const QString& type) const;
 
 private:
   QCoreApplication& m_app;
@@ -135,7 +140,7 @@ public:
   void register_manager(Manager& manager);
   void unregister_manager(Manager& manager);
 
-  std::set<Manager*> managers(const QString& type) const;
+  [[nodiscard]] std::set<Manager*> managers(const QString& type) const;
 
   bool perform_action(const QString& name) override;
 

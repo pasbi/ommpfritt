@@ -2,18 +2,19 @@
 #include "objects/segment.h"
 #include "commands/modifypointscommand.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 
 namespace
 {
 
 using namespace omm;
 
-std::deque<std::unique_ptr<Point>> cut(Point& a, Point& b,
-                                       std::deque<double>&& positions,
-                                       InterpolationMode interpolation,
-                                       std::map<Point*, Point>& modified_points)
+std::deque<std::unique_ptr<PathPoint>> cut(PathPoint& a, PathPoint& b,
+                                           std::deque<double>&& positions,
+                                           InterpolationMode interpolation,
+                                           std::map<PathPoint*, Point>& modified_points)
 {
-  const auto control_points = Segment::compute_control_points(a, b, interpolation);
+  const auto control_points = Segment::compute_control_points(a.geometry(), b.geometry(), interpolation);
   const auto curve = std::unique_ptr<Geom::BezierCurve>(Geom::BezierCurve::create(control_points));
   assert(std::is_sorted(positions.begin(), positions.end()));
   assert(!positions.empty());
@@ -35,22 +36,22 @@ std::deque<std::unique_ptr<Point>> cut(Point& a, Point& b,
   }
   new_curves.emplace_back(dynamic_cast<Geom::BezierCurve*>(curve->portion(positions.back(), 1.0)));
 
-  Point left_point = a;
+  Point left_point = a.geometry();
   left_point.set_right_position(Vec2f{new_curves.front()->controlPoint(1)});
   modified_points[&a] = left_point;
 
-  Point right_point = b;
+  Point right_point = b.geometry();
   right_point.set_left_position(Vec2f{new_curves.back()->controlPoint(2)});
   modified_points[&b] = right_point;
 
-  std::deque<std::unique_ptr<Point>> new_points;
+  std::deque<std::unique_ptr<PathPoint>> new_points;
   for (std::size_t i = 1; i < new_curves.size(); ++i) {
     // the last point of the previous curve must match the first point of the current one
     assert(new_curves[i-1]->controlPoint(3) == new_curves[i]->controlPoint(0));
-    auto point = std::make_unique<Point>(Vec2f{new_curves[i-1]->controlPoint(3)});
-    point->set_left_position(Vec2f{new_curves[i-1]->controlPoint(2)});
-    point->set_right_position(Vec2f{new_curves[i]->controlPoint(1)});
-    new_points.push_back(std::move(point));
+    Point point{Vec2f{new_curves[i-1]->controlPoint(3)}};
+    point.set_left_position(Vec2f{new_curves[i-1]->controlPoint(2)});
+    point.set_right_position(Vec2f{new_curves[i]->controlPoint(1)});
+    new_points.push_back(std::make_unique<PathPoint>(point, a.segment()));
   }
 
   assert(new_points.size() ==  positions.size());
@@ -61,7 +62,7 @@ void cut(Segment& segment,
          std::vector<Geom::PathTime>&& positions,
          const InterpolationMode interpolation,
          std::deque<omm::AddPointsCommand::OwnedLocatedSegment>& new_point_sequences,
-         std::map<Point*, Point>& modified_points)
+         std::map<PathPoint*, Point>& modified_points)
 {
   assert(std::is_sorted(positions.begin(), positions.end()));
 
@@ -82,7 +83,7 @@ void cut(Segment& segment,
 void cut(Path& path,
          const std::vector<Geom::PathVectorTime>& positions,
          std::deque<omm::AddPointsCommand::OwnedLocatedSegment>& new_points,
-         ModifyPointsCommand::Map& modified_points)
+         std::map<PathPoint*, Point>& modified_points)
 {
   const auto segments = path.segments();
   std::map<Segment*, std::vector<Geom::PathTime>> path_positions;
@@ -92,7 +93,7 @@ void cut(Path& path,
 
   const auto interpolation = path.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
   for (auto&& [segment, positions] : path_positions) {
-    cut(*segment, std::move(positions), interpolation, new_points, modified_points[&path]);
+    cut(*segment, std::move(positions), interpolation, new_points, modified_points);
   }
 }
 
@@ -112,7 +113,7 @@ CutPathCommand::CutPathCommand(const QString& label,
     : ComposeCommand(label)
 {
   std::deque<omm::AddPointsCommand::OwnedLocatedSegment> new_points;
-  ModifyPointsCommand::Map modified_points;
+  std::map<PathPoint*, Point> modified_points;
   cut(path, cuts, new_points, modified_points);
   std::vector<std::unique_ptr<Command>> commands;
   commands.push_back(std::make_unique<ModifyPointsCommand>(modified_points));

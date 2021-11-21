@@ -12,6 +12,8 @@
 #include "scene/scene.h"
 #include "tools/toolbox.h"
 #include "tools/tool.h"
+#include "tools/selectobjectstool.h"
+#include "tools/selectpointstool.h"
 
 #include <QMouseEvent>
 #include <QPainter>
@@ -19,6 +21,9 @@
 
 namespace
 {
+
+using namespace omm;
+
 void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 {
   auto cursor = widget.cursor();
@@ -103,10 +108,10 @@ void Viewport::draw_grid(QPainter& painter,
       painter.setPen(pen);
       const auto base_step = (max - min) / Vec2f(width(), height()) * go.base;
       for (std::size_t d : {0, 1}) {
-        double step = discretize(base_step[d]);
-        std::size_t n = (max[d] - min[d]) / step + 1;
+        const double step = discretize(base_step[d]);
+        const auto n = static_cast<std::size_t>((max[d] - min[d]) / step) + 1;
         for (std::size_t i = 0; i < n + 1; ++i) {
-          const double t = min[d] + i * step;
+          const auto t = static_cast<double>(min[d] + static_cast<double>(i) * step);
           const double tt = t - std::fmod(t, step);
           Vec2f a = min;
           Vec2f b = max;
@@ -289,6 +294,8 @@ void Viewport::keyPressEvent(QKeyEvent* event)
 {
   if (m_scene.tool_box().active_tool().key_press(*event)) {
     update();
+  } else if (event->key() == Qt::Key_Escape) {
+    m_scene.tool_box().activate_default_tool();
   } else {
     QWidget::keyPressEvent(event);
   }

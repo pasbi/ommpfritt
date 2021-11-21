@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tools/handles/selecthandle.h"
+#include "tools/handles/abstractselecthandle.h"
 #include "tools/tool.h"
 #include <Qt>
 

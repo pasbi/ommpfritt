@@ -9,21 +9,22 @@ namespace omm
 
 class Path;
 class Point;
+class PathPoint;
 class Segment;
 struct SegmentView;
 
 class ModifyPointsCommand : public Command
 {
 public:
-  using Map = std::map<Path*, std::map<Point*, Point>>;
-  ModifyPointsCommand(const Map& points);
+  ModifyPointsCommand(const std::map<PathPoint*, Point>& points);
   void redo() override;
   void undo() override;
   [[nodiscard]] int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
+  [[nodiscard]] bool is_noop() const override;
 
 private:
-  Map m_data;
+  std::map<PathPoint*, Point> m_data;
   void exchange();
 };
 
@@ -33,7 +34,7 @@ public:
   class OwnedLocatedSegment
   {
   public:
-    explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<Point>>&& points);
+    explicit OwnedLocatedSegment(Segment* segment, std::size_t index, std::deque<std::unique_ptr<PathPoint>>&& points);
     explicit OwnedLocatedSegment(std::unique_ptr<Segment> segment);
     SegmentView insert_into(Path& path);
     friend bool operator<(const OwnedLocatedSegment& a, const OwnedLocatedSegment& b);
@@ -42,7 +43,7 @@ public:
     Segment* m_segment = nullptr;
     std::unique_ptr<Segment> m_owned_segment{};
     std::size_t m_index;
-    std::deque<std::unique_ptr<Point>> m_points;
+    std::deque<std::unique_ptr<PathPoint>> m_points;
   };
 
 protected:

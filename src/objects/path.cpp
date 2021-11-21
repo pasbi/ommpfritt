@@ -6,17 +6,21 @@
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
+#include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include <QObject>
+#include "scene/mailbox.h"
 
 namespace
 {
 
-auto copy(const std::deque<std::unique_ptr<omm::Segment>>& vs)
+using namespace omm;
+
+auto copy(const std::deque<std::unique_ptr<Segment>>& vs, Path* path)
 {
   std::decay_t<decltype(vs)> copy;
   for (auto&& v : vs) {
-    copy.emplace_back(std::make_unique<omm::Segment>(*v));
+    copy.emplace_back(std::make_unique<omm::Segment>(*v, path));
   }
   return copy;
 }
@@ -40,11 +44,17 @@ Path::Path(Scene* scene) : Object(scene)
       .set_label(QObject::tr("interpolation"))
       .set_category(category);
   Path::update();
+
+  connect(&scene->mail_box(), &MailBox::transformation_changed, this, [this](const Object& o) {
+    if (&o == this) {
+      update_joined_points_geometry();
+    }
+  });
 }
 
 Path::Path(const Path& other)
   : Object(other)
-  , m_segments(copy(other.m_segments))
+  , m_segments(copy(other.m_segments, this))
 {
 }
 
@@ -79,7 +89,7 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   const std::size_t n_paths = deserializer.array_size(segments_pointer);
   m_segments.clear();
   for (std::size_t i = 0; i < n_paths; ++i) {
-    Segment& segment = *m_segments.emplace_back(std::make_unique<Segment>());
+    Segment& segment = *m_segments.emplace_back(std::make_unique<Segment>(this));
     segment.deserialize(deserializer, make_pointer(segments_pointer, i));
   }
   update();
@@ -102,8 +112,20 @@ void Path::set(const Geom::PathVector& paths)
   update();
   const auto is_closed = this->is_closed();
   for (const auto& path : paths) {
-    m_segments.push_back(std::make_unique<Segment>(path, is_closed));
+    m_segments.push_back(std::make_unique<Segment>(path, is_closed, this));
   }
+}
+
+PathPoint& Path::point_at_index(std::size_t index) const
+{
+  for (Segment* segment : segments()) {
+    if (index < segment->size()) {
+      return segment->at(index);
+    } else {
+      index -= segment->size();
+    }
+  }
+  throw std::runtime_error{"Index out of bounds."};
 }
 
 std::size_t Path::point_count() const
@@ -143,7 +165,7 @@ std::deque<Segment*> Path::segments() const
   return ::transform<Segment*>(m_segments, std::mem_fn(&std::unique_ptr<Segment>::get));
 }
 
-Segment* Path::find_segment(const Point& point) const
+Segment* Path::find_segment(const PathPoint& point) const
 {
   for (auto&& segment : m_segments) {
     if (segment->contains(point)) {
@@ -169,9 +191,9 @@ std::unique_ptr<Segment> Path::remove_segment(const Segment& segment)
   return extracted_segment;
 }
 
-std::deque<Point*> Path::points() const
+std::deque<PathPoint*> Path::points() const
 {
-  std::deque<Point*> points;
+  std::deque<PathPoint*> points;
   for (const auto& segment : m_segments) {
     const auto& ps = segment->points();
     points.insert(points.end(), ps.begin(), ps.end());
@@ -179,27 +201,31 @@ std::deque<Point*> Path::points() const
   return points;
 }
 
-std::deque<Point*> Path::selected_points() const
+std::deque<PathPoint*> Path::selected_points() const
 {
-  return ::filter_if(points(), std::mem_fn(&Point::is_selected));
+  return ::filter_if(points(), std::mem_fn(&PathPoint::is_selected));
 }
 
-std::set<Point*> Path::join_points(const std::set<Point*>& points)
+void Path::deselect_all_points() const
 {
-  return m_joined_points.insert(points);
+  for (auto* point : points()) {
+    point->set_selected(false);
+  }
 }
 
-void Path::disjoin_points(Point* point)
+void Path::update_joined_points_geometry() const
 {
-  m_joined_points.remove({point});
-}
-
-void Path::update_point(const std::set<Point*>& points)
-{
-  for (Point* p : points) {
-    for (Point* q : m_joined_points.get(p)) {
-      q->set_position(p->position());
+  std::set<Path*> updated_paths;
+  for (auto* point : points()) {
+    for (auto* buddy : point->joined_points()) {
+      if (buddy != point && buddy->path() != this) {
+        updated_paths.insert(buddy->path());
+        buddy->set_geometry(point->compute_joined_point_geometry(*buddy));
+      }
     }
+  }
+  for (auto* path : updated_paths) {
+    path->update();
   }
 }
 

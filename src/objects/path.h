@@ -10,6 +10,7 @@
 namespace omm
 {
 
+class PathPoint;
 class Scene;
 class Segment;
 
@@ -21,7 +22,7 @@ public:
   Path(Path&&) = delete;
   Path& operator=(Path&&) = delete;
   Path& operator=(const Path&) = delete;
-  ~Path();
+  ~Path() override;
   QString type() const override;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
@@ -35,7 +36,7 @@ public:
   void update() override;
   bool is_closed() const override;
   void set(const Geom::PathVector& paths);
-
+  PathPoint& point_at_index(std::size_t index) const;
 
   void on_property_value_changed(Property* property) override;
   Geom::PathVector paths() const override;
@@ -43,18 +44,16 @@ public:
 
   std::size_t point_count() const;
   std::deque<Segment*> segments() const;
-  Segment* find_segment(const Point& point) const;
+  Segment* find_segment(const PathPoint& point) const;
   Segment& add_segment(std::unique_ptr<Segment>&& segment);
   std::unique_ptr<Segment> remove_segment(const Segment& segment);
-  std::deque<Point*> points() const;
-  std::deque<Point*> selected_points() const;
-  std::set<Point*> join_points(const std::set<Point*>& points);
-  void disjoin_points(Point* point);
-  void update_point(const std::set<Point*>& points);
+  std::deque<PathPoint*> points() const;
+  std::deque<PathPoint*> selected_points() const;
+  void deselect_all_points() const;
+  void update_joined_points_geometry() const;
 
 private:
   std::deque<std::unique_ptr<Segment>> m_segments;
-  DisjointSetForest<Point*> m_joined_points;
   friend class JoinPointsCommand;
   friend class DisjoinPointsCommand;
 };

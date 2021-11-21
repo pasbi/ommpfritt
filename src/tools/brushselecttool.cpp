@@ -1,5 +1,6 @@
 #include "tools/brushselecttool.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "preferences/uicolors.h"
 #include "properties/floatproperty.h"
 #include "renderers/painter.h"
@@ -79,7 +80,7 @@ void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& eve
         // we can't transform `pos` with path's inverse transformation because if it scales,
         // `radius` will be wrong.
         const auto gt = path->global_transformation(Space::Viewport);
-        const auto gpos = gt.apply_to_position(point->position());
+        const auto gpos = gt.apply_to_position(point->geometry().position());
         if ((gpos - pos).euclidean_norm() < radius) {
           if (point->is_selected() != extend_selection) {
             is_noop = false;
@@ -92,12 +93,6 @@ void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& eve
   if (!is_noop) {
     Q_EMIT scene()->mail_box().point_selection_changed();
   }
-}
-
-void BrushSelectTool::reset()
-{
-  handles.clear();
-  SelectPointsTool::make_handles(*this, false);
 }
 
 QString BrushSelectTool::type() const

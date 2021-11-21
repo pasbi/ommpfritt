@@ -10,9 +10,7 @@ namespace omm
 class AbstractPropertyOwner;
 class ReferenceProperty;
 
-class ReferenceProperty
-    : public TypedProperty<AbstractPropertyOwner*>
-    , ReferencePolisher
+class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
 {
   Q_OBJECT
 public:
@@ -40,7 +38,6 @@ public:
 
   static const std::map<Kind, QString> KIND_KEYS;
   static const std::map<Flag, QString> FLAG_KEYS;
-  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& references) override;
 
   static const PropertyDetail detail;
   [[nodiscard]] PropertyFilter filter() const;
@@ -51,9 +48,7 @@ Q_SIGNALS:
 private:
   // default is always nullptr
   void set_default_value(const value_type& value) override;
-
-  // this field is only required temporarily during deserialization
-  std::size_t m_reference_value_id{};
+  class ReferencePolisher;
 };
 
 }  // namespace omm

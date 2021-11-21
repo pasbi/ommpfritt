@@ -32,6 +32,7 @@
 #include "main/application.h"
 #include "nodesystem/node.h"
 #include "nodesystem/nodemodel.h"
+#include "scene/disjointpathpointsetforest.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
@@ -77,6 +78,7 @@ constexpr auto STYLES_POINTER = "styles";
 constexpr auto ANIMATOR_POINTER = "animation";
 constexpr auto NAMED_COLORS_POINTER = "colors";
 constexpr auto EXPORT_OPTIONS_POINTER = "export_options";
+constexpr auto JOINED_POINTS_POINTER =  "joined_points";
 
 auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
@@ -118,6 +120,7 @@ Scene::Scene(PythonEngine& python_engine)
     , m_animator(new Animator(*this))
     , m_named_colors(new NamedColors())
     , m_export_options(new ExportOptions())
+    , m_joined_points(new DisjointPathPointSetForest())
 {
   object_tree().root().set_object_tree(object_tree());
   for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, Node::KIND}) {
@@ -220,6 +223,11 @@ void Scene::set_export_options(const ExportOptions& export_options)
   }
 }
 
+DisjointPathPointSetForest& Scene::joined_points() const
+{
+  return *m_joined_points;
+}
+
 bool Scene::save_as(const QString& filename)
 {
   std::ofstream ofstream(filename.toStdString());
@@ -240,6 +248,7 @@ bool Scene::save_as(const QString& filename)
   animator().serialize(serializer, ANIMATOR_POINTER);
   named_colors().serialize(serializer, NAMED_COLORS_POINTER);
   export_options().serialize(serializer, EXPORT_OPTIONS_POINTER);
+  m_joined_points->serialize(serializer, JOINED_POINTS_POINTER);
 
   LINFO << "Saved current scene to '" << filename << "'.";
   history().set_saved_index();
@@ -294,6 +303,7 @@ bool Scene::load_from(const QString& filename)
     animator().deserialize(deserializer, ANIMATOR_POINTER);
     named_colors().deserialize(deserializer, NAMED_COLORS_POINTER);
     m_export_options->deserialize(deserializer, EXPORT_OPTIONS_POINTER);
+    m_joined_points->deserialize(deserializer, JOINED_POINTS_POINTER);
     deserializer.polish();
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
@@ -367,23 +377,24 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   m_selection = selection;
 
   static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
-    Q_EMIT mail_box().kind_selection_changed(selection, kind);
+    auto& mail_box = this->mail_box();
+    Q_EMIT mail_box.kind_selection_changed(selection, kind);
 
     switch (kind) {
     case Kind::Style:
-      Q_EMIT mail_box().style_selection_changed(kind_cast<Style>(selection));
+      Q_EMIT mail_box.style_selection_changed(kind_cast<Style>(selection));
       break;
     case Kind::Object:
-      Q_EMIT mail_box().object_selection_changed(kind_cast<Object>(selection));
+      Q_EMIT mail_box.object_selection_changed(kind_cast<Object>(selection));
       break;
     case Kind::Tag:
-      Q_EMIT mail_box().tag_selection_changed(kind_cast<Tag>(selection));
+      Q_EMIT mail_box.tag_selection_changed(kind_cast<Tag>(selection));
       break;
     case Kind::Tool:
-      Q_EMIT mail_box().tool_selection_changed(kind_cast<Tool>(selection));
+      Q_EMIT mail_box.tool_selection_changed(kind_cast<Tool>(selection));
       break;
     case Kind::Node:
-      Q_EMIT mail_box().node_selection_changed(kind_cast<Node>(selection));
+      Q_EMIT mail_box.node_selection_changed(kind_cast<Node>(selection));
       break;
     default:
       break;

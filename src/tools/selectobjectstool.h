@@ -12,6 +12,10 @@ class SelectObjectsTool : public AbstractSelectTool
 public:
   explicit SelectObjectsTool(Scene& scene);
   ~SelectObjectsTool() override;
+  SelectObjectsTool(const SelectObjectsTool&) = delete;
+  SelectObjectsTool(SelectObjectsTool&&) = delete;
+  SelectObjectsTool operator=(const SelectObjectsTool&) = delete;
+  SelectObjectsTool operator=(SelectObjectsTool&&) = delete;
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
 
@@ -31,7 +35,6 @@ public:
   }
 
 protected:
-  bool has_transformation() const override;
   Vec2f selection_center() const override;
   std::unique_ptr<TransformObjectsHelper> m_transform_objects_helper;
 };

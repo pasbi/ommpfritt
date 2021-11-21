@@ -10,13 +10,13 @@
 namespace
 {
 using namespace omm::NodeCompilerTypes;
-const std::set<QString> supported_glsl_types{FLOATVECTOR_TYPE,
-                                             INTEGER_TYPE,
-                                             FLOAT_TYPE,
-                                             COLOR_TYPE,
-                                             INTEGERVECTOR_TYPE};
+constexpr std::array<std::string_view, 5> supported_glsl_types{FLOATVECTOR_TYPE,
+                                                               INTEGER_TYPE,
+                                                               FLOAT_TYPE,
+                                                               COLOR_TYPE,
+                                                               INTEGERVECTOR_TYPE};
 
-const QString glsl_definition_template(R"(
+constexpr auto glsl_definition_template = R"(
 %1 %2_0(int op, %1 a, %1 b) {
   if (op == 0) {
     return a + b;
@@ -30,7 +30,7 @@ const QString glsl_definition_template(R"(
     // unreachable
     return %1(0.0);
   }
-})");
+})";
 
 }  // namespace
 
@@ -70,9 +70,9 @@ def %1(op, a, b):
           .arg(MathNode::TYPE)},
      {AbstractNodeCompiler::Language::GLSL,
       ::transform<QString, QList>(supported_glsl_types,
-                                  [](const QString& type) {
-                                    return glsl_definition_template.arg(
-                                        NodeCompilerGLSL::translate_type(type));
+                                  [](std::string_view type) {
+                                    return QString{glsl_definition_template}.arg(
+                                        NodeCompilerGLSL::translate_type(QString{type.data()}));
                                   })
           .join("\n")
           .arg(MathNode::TYPE)}},
@@ -99,6 +99,7 @@ MathNode::MathNode(NodeModel& model) : Node(model)
 
 QString MathNode::output_data_type(const OutputPort& port) const
 {
+  using NodeCompilerTypes::is_vector;
   if (&port == m_output) {
     QString type_a = find_port<InputPort>(A_VALUE_KEY)->data_type();
     const QString type_b = find_port<InputPort>(B_VALUE_KEY)->data_type();
@@ -150,10 +151,11 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
     if (other_port.is_connected()) {
       return type == other_port.data_type();
     } else {
-      return ::contains(supported_glsl_types, type);
+      return ::contains(supported_glsl_types, std::string_view{type.toStdString().c_str()});
     }
   };
 
+  using NodeCompilerTypes::is_vector;
   assert(&port.node == this);
   if (&port == m_operation_input) {
     return port.data_type() == type;

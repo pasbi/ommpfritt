@@ -322,7 +322,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "new toolbar") {
     spawn_toolbar();
   } else if (action_name == "previous tool") {
-    scene->tool_box().set_previous_tool();
+    scene->tool_box().activate_previous_tool();
   } else if (action_name == "new style") {
     using command_type = AddCommand<List<Style>>;
     auto style = scene->default_style().clone();
@@ -533,7 +533,7 @@ ToolBar& Application::spawn_toolbar() const
   return ref;
 }
 
-Manager& Application::get_active_manager(const QString& type)
+Manager& Application::get_active_manager(const QString& type) const
 {
   for (Manager* m : Application::instance().managers(type)) {
     if (m->is_visible() && !m->is_locked()) {

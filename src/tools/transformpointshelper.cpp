@@ -3,11 +3,13 @@
 #include "cachedgetter.h"
 #include "geometry/objecttransformation.h"
 #include "objects/path.h"
+#include "objects/pathpoint.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 
 namespace omm
 {
+
 TransformPointsHelper::TransformPointsHelper(Scene& scene, Space space)
     : m_scene(scene), m_space(space)
 {
@@ -43,16 +45,13 @@ TransformPointsHelper::make_command(const ObjectTransformation& t) const
   assert(!t.to_mat().has_nan());
   TransformationCache cache(t.to_mat(), m_space);
 
-  ModifyPointsCommand::Map map;
+  std::map<PathPoint*, Point> map;
   bool is_noop = true;
-  for (auto&& [path, points] : m_initial_points) {
-    const ObjectTransformation premul = cache.get(path);
-    for (auto&& [ptr, initial_value] : points) {
-      auto p = premul.apply(initial_value);
-      p.set_selected(true);
-      is_noop = false;
-      map[path][ptr] = p;
-    }
+  for (auto&& [ptr, initial_value] : m_initial_points) {
+    const ObjectTransformation premul = cache.get(ptr->path());
+    auto p = premul.apply(initial_value);
+    is_noop = false;
+    map[ptr] = p;
   }
 
   if (!is_noop) {
@@ -72,8 +71,11 @@ void TransformPointsHelper::update()
 {
   m_initial_points.clear();
   for (auto* path : m_paths) {
-    for (Point* point : path->selected_points()) {
-      m_initial_points[path][point] = *point;
+    for (PathPoint* point : path->selected_points()) {
+      m_initial_points[point] = point->geometry();
+      for (PathPoint* buddy : point->joined_points()) {
+        m_initial_points[buddy] = point->compute_joined_point_geometry(*buddy);
+      }
     }
   }
   Q_EMIT initial_transformations_changed();

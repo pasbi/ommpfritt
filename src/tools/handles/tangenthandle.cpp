@@ -1,6 +1,8 @@
 #include "tools/handles/tangenthandle.h"
 #include "renderers/painter.h"
-#include "tools/handles/selecthandle.h"
+#include "tools/handles/abstractselecthandle.h"
+#include "tools/handles/pointselecthandle.h"
+#include "tools/tool.h"
 
 namespace omm
 {
