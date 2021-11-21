@@ -9,7 +9,6 @@ class KnifeTool : public SelectPointsBaseTool
 {
 public:
   explicit KnifeTool(Scene& scene);
-  ~KnifeTool() override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "KnifeTool");
 
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&) override;

@@ -5,6 +5,7 @@
 namespace omm
 {
 
+// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path;
 class Segment;
 

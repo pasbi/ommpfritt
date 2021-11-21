@@ -23,7 +23,7 @@ public:
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
   void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
-  PathPoint& point() const;
+  [[nodiscard]] PathPoint& point() const;
   void transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent);
   bool force_draw_subhandles = false;
 
