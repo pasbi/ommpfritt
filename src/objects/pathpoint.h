@@ -36,6 +36,7 @@ public:
   void join(std::set<PathPoint*> buddies);
   void disjoin();
   [[nodiscard]] Path* path() const;
+  [[nodiscard]] Point compute_joined_point_geometry(PathPoint& joined) const;
 
   /**
    * @brief index returns the index of the point in the path.

@@ -39,6 +39,19 @@ Path* PathPoint::path() const
   return m_segment.path();
 }
 
+Point PathPoint::compute_joined_point_geometry(PathPoint& joined) const
+{
+  const auto controller_t = path()->global_transformation(Space::Scene);
+  const auto agent_t = joined.path()->global_transformation(Space::Scene);
+  const auto t = agent_t.inverted().apply(controller_t);
+  auto geometry = joined.geometry();
+  geometry.set_position(t.apply(this->geometry()).position());
+
+  // TODO handle tangents
+
+  return geometry;
+}
+
 std::size_t PathPoint::index() const
 {
   assert(path() != nullptr);

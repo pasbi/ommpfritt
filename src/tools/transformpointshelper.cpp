@@ -74,9 +74,7 @@ void TransformPointsHelper::update()
     for (PathPoint* point : path->selected_points()) {
       m_initial_points[point] = point->geometry();
       for (PathPoint* buddy : point->joined_points()) {
-        auto geometry = buddy->geometry();
-        geometry.set_position(point->geometry().position());
-        m_initial_points[buddy] = geometry;
+        m_initial_points[buddy] = point->compute_joined_point_geometry(*buddy);
       }
     }
   }
