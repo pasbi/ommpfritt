@@ -25,7 +25,6 @@ public:
   void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   [[nodiscard]] PathPoint& point() const;
   void transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent);
-  bool force_draw_subhandles = false;
 
 protected:
   [[nodiscard]] ObjectTransformation transformation() const;

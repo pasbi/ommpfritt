@@ -123,37 +123,63 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tan
   transform_tangent(delta, dynamic_cast<SelectPointsBaseTool&>(tool).tangent_mode(), tangent);
 }
 
+auto get_primary_secondary_tangent(const Point& point, const TangentHandle::Tangent tangent)
+{
+  switch (tangent) {
+  case TangentHandle::Tangent::Right:
+    return std::pair{point.right_tangent(), point.left_tangent()};
+  case TangentHandle::Tangent::Left:
+    return std::pair{point.left_tangent(), point.right_tangent()};
+  }
+  Q_UNREACHABLE();
+}
+
+void set_primary_secondary_tangent(Point& point,
+                                   const PolarCoordinates& primary,
+                                   const PolarCoordinates& secondary,
+                                   const TangentHandle::Tangent tangent)
+{
+  switch (tangent) {
+  case TangentHandle::Tangent::Left:
+    point.set_left_tangent(primary);
+    point.set_right_tangent(secondary);
+    return;
+  case TangentHandle::Tangent::Right:
+    point.set_left_tangent(secondary);
+    point.set_right_tangent(primary);
+    return;
+  }
+  Q_UNREACHABLE();
+}
+
 void PointSelectHandle::transform_tangent(const Vec2f& delta,
                                           TangentMode mode,
                                           TangentHandle::Tangent tangent)
 {
   auto new_point = m_point.geometry();
-  PolarCoordinates primary_pos;
-  PolarCoordinates secondary_pos;
-  if (tangent == TangentHandle::Tangent::Right) {
-    primary_pos = new_point.right_tangent();
-    secondary_pos = new_point.left_tangent();
-  } else {
-    primary_pos = new_point.left_tangent();
-    secondary_pos = new_point.right_tangent();
-  }
+  const auto [primary, secondary] = get_primary_secondary_tangent(new_point, tangent);
 
-  const auto old_primary_pos = primary_pos;
   const auto transformation = ObjectTransformation().translated(delta);
-  primary_pos = transformation.transformed(this->transformation()).apply_to_position(primary_pos);
-  if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
-    secondary_pos = Point::mirror_tangent(secondary_pos, old_primary_pos, primary_pos);
-  }
-
-  if (tangent == TangentHandle::Tangent::Right) {
-    new_point.set_right_tangent(primary_pos);
-    new_point.set_left_tangent(secondary_pos);
-  } else {
-    new_point.set_left_tangent(primary_pos);
-    new_point.set_right_tangent(secondary_pos);
-  }
+  const auto new_primary = transformation.transformed(this->transformation()).apply_to_position(primary);
+  auto new_secondary = secondary;
 
   std::map<PathPoint*, Point> map;
+  if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
+    new_secondary = Point::mirror_tangent(secondary, primary, new_primary);
+    for (auto* buddy : m_point.joined_points()) {
+      if (buddy != &m_point) {
+        auto geometry = buddy->geometry();
+        const auto left = Point::mirror_tangent(geometry.left_tangent(), primary, new_primary);
+        const auto right = Point::mirror_tangent(geometry.right_tangent(), primary, new_primary);
+        geometry.set_left_tangent(left);
+        geometry.set_right_tangent(right);
+        map[buddy] = geometry;
+      }
+    }
+  }
+
+  set_primary_secondary_tangent(new_point, new_primary, new_secondary, tangent);
+
   map[&m_point] = new_point;
   tool.scene()->submit<ModifyPointsCommand>(map);
 }
@@ -161,7 +187,7 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
 std::pair<bool, bool> PointSelectHandle::tangents_active() const
 {
   const auto interpolation_mode = m_path.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
-  if ((interpolation_mode == InterpolationMode::Bezier && m_point.is_selected()) || force_draw_subhandles) {
+  if ((interpolation_mode == InterpolationMode::Bezier && m_point.is_selected())) {
     const auto points = m_path.find_segment(m_point)->points();
     assert(!points.empty());
     return {m_path.is_closed() || points.front() != &m_point,
