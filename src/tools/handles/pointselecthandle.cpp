@@ -78,6 +78,11 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
   m_right_tangent_handle->mouse_release(pos, event);
 }
 
+PathPoint& PointSelectHandle::point() const
+{
+  return m_point;
+}
+
 void PointSelectHandle::draw(QPainter& painter) const
 {
   const auto pos = transformation().apply_to_position(m_point.geometry().position());

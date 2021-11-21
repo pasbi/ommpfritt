@@ -10,6 +10,7 @@
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "tools/selecttool.h"
+#include "tools/handles/handle.h"
 #include <QMouseEvent>
 
 namespace omm
@@ -36,14 +37,31 @@ bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEven
   }
 }
 
+PathPoint* PathTool::find_point(const Vec2f& pos)
+{
+  for (const auto& handle : handles) {
+    const auto* point_select_handle = dynamic_cast<PointSelectHandle*>(handle.get());
+    if (point_select_handle != nullptr && point_select_handle->contains_global(pos)) {
+      return &point_select_handle->point();
+    }
+  }
+  return nullptr;
+}
+
 bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
-  if (SelectPointsBaseTool::mouse_press(pos, event, false)) {
+  const auto control_modifier = static_cast<bool>(event.modifiers() & Qt::ControlModifier);
+  if (!control_modifier && SelectPointsBaseTool::mouse_press(pos, event, false)) {
     return true;
   } else {
     find_tie();
     if (event.button() == Qt::LeftButton) {
+      PathPoint* target_point = nullptr;
+      if (control_modifier) {
+        target_point = find_point(pos);
+      }
       std::unique_ptr<Macro> macro;
+
       if (m_current_path == nullptr) {
         macro = scene()->history().start_macro(AddPointsCommand::static_label());
         static constexpr auto insert_mode = Application::InsertionMode::Default;
@@ -73,9 +91,15 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
       } else if (m_current_segment->size() == 0 || m_current_segment->points().back() == m_last_point) {
         // segment is empty or last point of the segmet is selected: append point at end
         m_current_point = add_point(m_current_segment->size());
+        if (target_point != nullptr) {
+          points_to_join.insert({m_current_point, target_point});
+        }
       } else if (m_current_segment->points().front() == m_last_point) {
         // first point of segment is selected: append point at begin
         m_current_point = add_point(0);
+        if (target_point != nullptr) {
+          points_to_join.insert({m_current_point, target_point});
+        }
       } else {
         // other point of segment is selected: add point to a newly created segment and join points
         auto new_segment = std::make_unique<Segment>(std::deque{m_last_point->geometry(), point}, m_current_path);

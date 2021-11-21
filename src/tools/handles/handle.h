@@ -32,9 +32,9 @@ public:
   virtual void deactivate();
   [[nodiscard]] virtual double draw_epsilon() const;
   [[nodiscard]] virtual double interact_epsilon() const;
+  [[nodiscard]] virtual bool contains_global(const Vec2f& global_point) const = 0;
 
 protected:
-  [[nodiscard]] virtual bool contains_global(const Vec2f& global_point) const = 0;
   Tool& tool;
   [[nodiscard]] Vec2f press_pos() const;
 

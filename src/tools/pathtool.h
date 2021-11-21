@@ -27,6 +27,7 @@ private:
   PathPoint* m_current_point = nullptr;
   Segment* m_current_segment = nullptr;
   void find_tie();
+  PathPoint* find_point(const Vec2f& pos);
 };
 
 }  // namespace omm
