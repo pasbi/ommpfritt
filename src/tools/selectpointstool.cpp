@@ -17,10 +17,4 @@ QString SelectPointsTool::type() const
   return TYPE;
 }
 
-void SelectPointsTool::reset()
-{
-  handles.clear();
-  make_handles(*this, false);
-}
-
 }  // namespace omm

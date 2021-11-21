@@ -159,10 +159,4 @@ SceneMode KnifeTool::scene_mode() const
   return SceneMode::Vertex;
 }
 
-void KnifeTool::reset()
-{
-  handles.clear();
-  SelectPointsTool::make_handles(*this, false);
-}
-
 }  // namespace omm

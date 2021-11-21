@@ -81,9 +81,8 @@ SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
 void SelectSimilarTool::reset()
 {
   update_base_selection();
-  handles.clear();
-  make_handles(*this, false);
-  handles.push_back(std::make_unique<BoundingBoxHandle<SelectSimilarTool>>(*this));
+  SelectPointsBaseTool::reset();
+  push_handle(std::make_unique<BoundingBoxHandle<SelectSimilarTool>>(*this));
 }
 
 void SelectSimilarTool::on_property_value_changed(Property* property)

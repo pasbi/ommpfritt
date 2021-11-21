@@ -95,12 +95,6 @@ void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& eve
   }
 }
 
-void BrushSelectTool::reset()
-{
-  handles.clear();
-  SelectPointsTool::make_handles(*this, false);
-}
-
 QString BrushSelectTool::type() const
 {
   return TYPE;

@@ -83,6 +83,16 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
   }
 }
 
+void SelectPointsBaseTool::make_handles()
+{
+  for (auto* path : scene()->item_selection<Path>()) {
+    for (auto* point : path->points()) {
+      auto handle = std::make_unique<PointSelectHandle>(*this, *path, *point);
+      push_handle(std::move(handle));
+    }
+  }
+}
+
 BoundingBox SelectPointsBaseTool::bounding_box() const
 {
   static const auto remove_tangents = [](const Point& point) { return point.nibbed(); };
@@ -105,6 +115,12 @@ void SelectPointsBaseTool::on_property_value_changed(Property* property)
     Q_EMIT scene()->mail_box().tool_appearance_changed(*this);
   }
   AbstractSelectTool::on_property_value_changed(property);
+}
+
+void SelectPointsBaseTool::reset()
+{
+  clear();
+  make_handles();
 }
 
 Vec2f SelectPointsBaseTool::selection_center() const

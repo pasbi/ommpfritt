@@ -14,8 +14,6 @@ public:
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectPointsTool");
 
-protected:
-  void reset() override;
 };
 
 }  // namespace omm

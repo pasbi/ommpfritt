@@ -26,7 +26,7 @@ Flag Tool::flags() const
 
 bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
-  for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
+  for (auto it = m_handles.rbegin(); it != m_handles.rend(); ++it) {
     auto& handle = **it;
     handle.mouse_move(delta, pos, e);
     switch (handle.status()) {
@@ -44,7 +44,7 @@ bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e)
 {
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
-  for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
+  for (auto it = m_handles.rbegin(); it != m_handles.rend(); ++it) {
     if ((*it)->mouse_press(pos, e)) {
       return true;
     }
@@ -54,7 +54,7 @@ bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e)
 
 void Tool::mouse_release(const Vec2f& pos, const QMouseEvent& e)
 {
-  for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
+  for (auto it = m_handles.rbegin(); it != m_handles.rend(); ++it) {
     (*it)->mouse_release(pos, e);
   }
 }
@@ -65,7 +65,7 @@ void Tool::draw(Painter& renderer) const
     QPainter& painter = *renderer.painter;
     painter.save();
     painter.setRenderHint(QPainter::Antialiasing);
-    for (auto&& handle : handles) {
+    for (const auto* handle : handles()) {
       painter.save();
       painter.setBrush(Qt::NoBrush);
       painter.setPen(Qt::NoPen);
@@ -79,10 +79,10 @@ void Tool::draw(Painter& renderer) const
 
 bool Tool::is_active() const
 {
-  for (const auto& handle : handles) {
-    std::cout << "handle " << handle.get() << ": " << int(handle->status()) << std::endl;
+  for (const auto* handle : handles()) {
+    std::cout << "handle " << handle << ": " << int(handle->status()) << std::endl;
   }
-  return std::any_of(handles.begin(), handles.end(), [](const auto& handle) {
+  return std::any_of(m_handles.begin(), m_handles.end(), [](const auto& handle) {
     return handle->status() == HandleStatus::Active;
   });
 }
@@ -105,7 +105,7 @@ bool Tool::key_press(const QKeyEvent& event)
 
 bool Tool::cancel()
 {
-  for (auto&& handle : handles) {
+  for (auto* handle : handles()) {
     handle->deactivate();
   }
   return false;
@@ -131,6 +131,21 @@ QRectF Tool::centered_rectangle(const Vec2f& center, double radius)
 
 void Tool::reset()
 {
+}
+
+void Tool::clear()
+{
+  m_handles.clear();
+}
+
+std::deque<Handle*> Tool::handles() const
+{
+  return ::transform<Handle*>(m_handles, [](const auto& handle) { return handle.get(); });
+}
+
+void Tool::push_handle(std::unique_ptr<Handle> handle)
+{
+  m_handles.push_back(std::move(handle));
 }
 
 }  // namespace omm

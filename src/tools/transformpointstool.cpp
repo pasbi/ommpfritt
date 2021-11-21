@@ -16,18 +16,18 @@ QString TransformPointsTool::type() const
 
 void TransformPointsTool::reset()
 {
-  make_handles(*this, false);
-  handles.push_back(std::make_unique<ScaleBandHandle<TransformPointsTool>>(*this));
-  handles.push_back(std::make_unique<RotateHandle<TransformPointsTool>>(*this));
+  SelectPointsBaseTool::reset();
+  push_handle(std::make_unique<ScaleBandHandle<TransformPointsTool>>(*this));
+  push_handle(std::make_unique<RotateHandle<TransformPointsTool>>(*this));
 
   static constexpr auto X = AxisHandleDirection::X;
   static constexpr auto Y = AxisHandleDirection::Y;
-  handles.push_back(std::make_unique<MoveAxisHandle<TransformPointsTool, X>>(*this));
-  handles.push_back(std::make_unique<MoveAxisHandle<TransformPointsTool, Y>>(*this));
-  handles.push_back(std::make_unique<ScaleAxisHandle<TransformPointsTool, X>>(*this));
-  handles.push_back(std::make_unique<ScaleAxisHandle<TransformPointsTool, Y>>(*this));
-  handles.push_back(std::make_unique<MoveParticleHandle<TransformPointsTool>>(*this));
-  handles.push_back(std::make_unique<BoundingBoxHandle<TransformPointsTool>>(*this));
+  push_handle(std::make_unique<MoveAxisHandle<TransformPointsTool, X>>(*this));
+  push_handle(std::make_unique<MoveAxisHandle<TransformPointsTool, Y>>(*this));
+  push_handle(std::make_unique<ScaleAxisHandle<TransformPointsTool, X>>(*this));
+  push_handle(std::make_unique<ScaleAxisHandle<TransformPointsTool, Y>>(*this));
+  push_handle(std::make_unique<MoveParticleHandle<TransformPointsTool>>(*this));
+  push_handle(std::make_unique<BoundingBoxHandle<TransformPointsTool>>(*this));
 }
 
 }  // namespace omm

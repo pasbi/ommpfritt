@@ -45,26 +45,24 @@ void SelectObjectsTool::transform_objects(ObjectTransformation t)
 
 void SelectObjectsTool::reset()
 {
-  handles.clear();
+  clear();
   using tool_t = std::remove_pointer_t<decltype(this)>;
-  handles.push_back(std::make_unique<ScaleBandHandle<tool_t>>(*this));
-  handles.push_back(std::make_unique<RotateHandle<tool_t>>(*this));
-  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, AxisHandleDirection::X>>(*this));
-  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, AxisHandleDirection::Y>>(*this));
-  handles.push_back(std::make_unique<ScaleAxisHandle<tool_t, AxisHandleDirection::X>>(*this));
-  handles.push_back(std::make_unique<ScaleAxisHandle<tool_t, AxisHandleDirection::Y>>(*this));
-  handles.push_back(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
+  push_handle(std::make_unique<ScaleBandHandle<tool_t>>(*this));
+  push_handle(std::make_unique<RotateHandle<tool_t>>(*this));
+  push_handle(std::make_unique<MoveAxisHandle<tool_t, AxisHandleDirection::X>>(*this));
+  push_handle(std::make_unique<MoveAxisHandle<tool_t, AxisHandleDirection::Y>>(*this));
+  push_handle(std::make_unique<ScaleAxisHandle<tool_t, AxisHandleDirection::X>>(*this));
+  push_handle(std::make_unique<ScaleAxisHandle<tool_t, AxisHandleDirection::Y>>(*this));
+  push_handle(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
 
   // ignore object selection. Return a handle for each visible object.
   const auto objects = ::filter_if(scene()->object_tree().items(),
                                    [](Object* object) { return object->is_visible(true); });
 
-  handles.reserve(objects.size());
-  auto inserter = std::back_inserter(handles);
-  std::transform(objects.begin(), objects.end(), inserter, [this](Object* o) {
-    return std::make_unique<ObjectSelectHandle>(*this, *scene(), *o);
-  });
-  handles.push_back(std::make_unique<MoveParticleHandle<tool_t>>(*this));
+  for (const auto& object : objects) {
+    push_handle(std::make_unique<ObjectSelectHandle>(*this, *scene(), *object));
+  }
+  push_handle(std::make_unique<MoveParticleHandle<tool_t>>(*this));
 }
 
 bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)

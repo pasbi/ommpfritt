@@ -39,8 +39,8 @@ bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEven
 
 PathPoint* PathTool::find_point(const Vec2f& pos)
 {
-  for (const auto& handle : handles) {
-    const auto* point_select_handle = dynamic_cast<PointSelectHandle*>(handle.get());
+  for (auto* handle : handles()) {
+    const auto* point_select_handle = dynamic_cast<PointSelectHandle*>(handle);
     if (point_select_handle != nullptr && point_select_handle->contains_global(pos)) {
       return &point_select_handle->point();
     }
@@ -145,8 +145,7 @@ void PathTool::end()
 void PathTool::reset()
 {
   find_tie();
-  handles.clear();
-  SelectPointsTool::make_handles(*this, true);
+  SelectPointsBaseTool::reset();
 }
 
 void PathTool::find_tie()

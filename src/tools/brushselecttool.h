@@ -22,7 +22,6 @@ public:
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   QString type() const override;
-  void reset() override;
   void draw(Painter& renderer) const override;
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   QString name() const override;

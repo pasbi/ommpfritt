@@ -56,13 +56,15 @@ public:
   QString name() const override;
   virtual SceneMode scene_mode() const = 0;
   static QRectF centered_rectangle(const Vec2f& center, double radius);
-
-public:
   virtual void reset();
+  void clear();
+  std::deque<Handle*> handles() const;
 
 protected:
-  std::vector<std::unique_ptr<Handle>> handles;
   static constexpr double epsilon = 10.0;
+  void push_handle(std::unique_ptr<Handle> handle);
+private:
+  std::deque<std::unique_ptr<Handle>> m_handles;
 };
 
 }  // namespace omm

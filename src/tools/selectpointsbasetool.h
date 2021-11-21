@@ -30,17 +30,6 @@ public:
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool allow_clear);
 
-  template<typename ToolT> static void make_handles(ToolT& tool, bool force_subhandles = false)
-  {
-    for (auto* path : tool.scene()->template item_selection<Path>()) {
-      tool.handles.reserve(tool.handles.size() + path->point_count());
-      for (auto* point : path->points()) {
-        auto handle = std::make_unique<PointSelectHandle>(tool, *path, *point);
-        handle->force_draw_subhandles = force_subhandles;
-        tool.handles.push_back(std::move(handle));
-      }
-    }
-  }
 
   BoundingBox bounding_box() const;
   void transform_objects_absolute(ObjectTransformation t);
@@ -50,10 +39,13 @@ public:
     return SceneMode::Vertex;
   }
 
+  void reset() override;
+
 protected:
   Vec2f selection_center() const override;
 
 private:
+  void make_handles();
   std::unique_ptr<TransformPointsHelper> m_transform_points_helper;
 };
 
