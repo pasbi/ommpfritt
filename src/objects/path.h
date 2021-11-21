@@ -50,6 +50,7 @@ public:
   std::deque<PathPoint*> points() const;
   std::deque<PathPoint*> selected_points() const;
   void deselect_all_points() const;
+  void update_joined_points_geometry() const;
 
 private:
   std::deque<std::unique_ptr<Segment>> m_segments;

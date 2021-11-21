@@ -9,6 +9,7 @@
 #include "objects/pathpoint.h"
 #include "objects/segment.h"
 #include <QObject>
+#include "scene/mailbox.h"
 
 namespace
 {
@@ -43,6 +44,12 @@ Path::Path(Scene* scene) : Object(scene)
       .set_label(QObject::tr("interpolation"))
       .set_category(category);
   Path::update();
+
+  connect(&scene->mail_box(), &MailBox::transformation_changed, this, [this](const Object& o) {
+    if (&o == this) {
+      update_joined_points_geometry();
+    }
+  });
 }
 
 Path::Path(const Path& other)
@@ -203,6 +210,22 @@ void Path::deselect_all_points() const
 {
   for (auto* point : points()) {
     point->set_selected(false);
+  }
+}
+
+void Path::update_joined_points_geometry() const
+{
+  std::set<Path*> updated_paths;
+  for (auto* point : points()) {
+    for (auto* buddy : point->joined_points()) {
+      if (buddy != point && buddy->path() != this) {
+        updated_paths.insert(buddy->path());
+        buddy->set_geometry(point->compute_joined_point_geometry(*buddy));
+      }
+    }
+  }
+  for (auto* path : updated_paths) {
+    path->update();
   }
 }
 
