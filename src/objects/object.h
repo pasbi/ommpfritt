@@ -100,21 +100,18 @@ public:
   Geom::PathVectorTime
   compute_path_vector_time(int path_index, double t, Interpolation = Interpolation::Natural) const;
 
-  struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Object> {
-    using CachedGetter::CachedGetter;
+private:
+  class CachedQPainterPathGetter;
+  std::unique_ptr<CachedQPainterPathGetter> m_cached_painter_path_getter;
+public:
+  QPainterPath painter_path() const;
 
-  private:
-    QPainterPath compute() const override;
-  } painter_path;
+private:
+  class CachedGeomPathVectorGetter;
+  std::unique_ptr<CachedGeomPathVectorGetter> m_cached_geom_path_vector_getter;
+public:
+  Geom::PathVector geom_paths() const;
 
-  struct CachedGeomPathVectorGetter : CachedGetter<Geom::PathVector, Object> {
-    using CachedGetter::CachedGetter;
-
-  private:
-    Geom::PathVector compute() const override;
-  } geom_paths;
-
-  friend struct CachedQPainterPathGetter;
   TagList tags;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP(ANY_TR_CONTEXT, "Object");

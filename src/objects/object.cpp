@@ -95,11 +95,30 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
 
 namespace omm
 {
+class Object::CachedQPainterPathGetter : public CachedGetter<QPainterPath, Object>
+{
+public:
+  using CachedGetter::CachedGetter;
+private:
+  QPainterPath compute() const override;
+};
+
+class Object::CachedGeomPathVectorGetter : public CachedGetter<Geom::PathVector, Object>
+{
+public:
+  using CachedGetter::CachedGetter;
+private:
+  Geom::PathVector compute() const override;
+};
+
 const QPen Object::m_bounding_box_pen = make_bounding_box_pen();
 const QBrush Object::m_bounding_box_brush = Qt::NoBrush;
 
 Object::Object(Scene* scene)
-    : PropertyOwner(scene), painter_path(*this), geom_paths(*this), tags(*this)
+    : PropertyOwner(scene)
+    , m_cached_painter_path_getter(std::make_unique<CachedQPainterPathGetter>(*this))
+    , m_cached_geom_path_vector_getter(std::make_unique<CachedGeomPathVectorGetter>(*this))
+    , tags(*this)
 {
   static constexpr double STEP = 0.1;
   static constexpr double SHEAR_STEP = 0.01;
@@ -143,9 +162,13 @@ Object::Object(Scene* scene)
 }
 
 Object::Object(const Object& other)
-    : PropertyOwner(other), TreeElement(other), painter_path(*this), geom_paths(*this),
-      tags(other.tags, *this), m_draw_children(other.m_draw_children),
-      m_object_tree(other.m_object_tree)
+    : PropertyOwner(other)
+    , TreeElement(other)
+    , m_cached_painter_path_getter(std::make_unique<CachedQPainterPathGetter>(*this))
+    , m_cached_geom_path_vector_getter(std::make_unique<CachedGeomPathVectorGetter>(*this))
+    , tags(other.tags, *this)
+    , m_draw_children(other.m_draw_children)
+    , m_object_tree(other.m_object_tree)
 {
   for (Tag* tag : tags.items()) {
     tag->owner = this;
@@ -446,8 +469,8 @@ void Object::post_create_hook()
 
 void Object::update()
 {
-  painter_path.invalidate();
-  geom_paths.invalidate();
+  m_cached_painter_path_getter->invalidate();
+  m_cached_geom_path_vector_getter->invalidate();
   if (Scene* scene = this->scene(); scene != nullptr) {
     Q_EMIT scene->mail_box().object_appearance_changed(*this);
   }
@@ -724,6 +747,11 @@ void Object::listen_to_children_changes()
   connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
 }
 
+QPainterPath Object::painter_path() const
+{
+  return m_cached_painter_path_getter->operator()();
+}
+
 QPainterPath Object::CachedQPainterPathGetter::compute() const
 {
   static const auto qpoint = [](const Geom::Point& point) { return QPointF{point[0], point[1]}; };
@@ -742,6 +770,11 @@ QPainterPath Object::CachedQPainterPathGetter::compute() const
 Geom::PathVector Object::CachedGeomPathVectorGetter::compute() const
 {
   return m_self.paths();
+}
+
+Geom::PathVector Object::geom_paths() const
+{
+  return m_cached_geom_path_vector_getter->operator()();
 }
 
 }  // namespace omm

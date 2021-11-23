@@ -37,6 +37,9 @@ public:
   explicit CachedGetter(const Self& self) : m_self(self)
   {
   }
+
+  virtual ~CachedGetter() = default;
+
   const T& operator()() const
   {
     if (m_is_dirty) {
