@@ -45,10 +45,8 @@ transform_path(const ObjectTransformation& t, const Geom::Path& path, bool rever
   });
 }
 
-Geom::PathVector reflect(bool& wants_to_be_closed,
-                         const Geom::PathVector& pv,
+Geom::PathVector reflect(const Geom::PathVector& pv,
                          const Mirror::Direction direction,
-                         const bool child_is_closed,
                          const double eps)
 {
   const auto mt = get_mirror_t(direction);
@@ -64,14 +62,11 @@ Geom::PathVector reflect(bool& wants_to_be_closed,
 
       const bool close_ends = are_close(path.finalPoint(),  mt.apply(path.finalPoint()));
       const bool close_mids = are_close(path.initialPoint(), mt.apply(path.initialPoint()));
-      if (!child_is_closed && (!close_ends || !close_mids)) {
-        wants_to_be_closed = false;
-      }
 
-      if (close_mids && !child_is_closed) {
+      if (close_mids) {
         original_path.insert(original_path.begin(), reflected_path.rbegin(), reflected_path.rend());
         paths.emplace_back(original_path.begin(), original_path.end());
-      } else if (close_ends && !child_is_closed) {
+      } else if (close_ends) {
         original_path.insert(original_path.end(), reflected_path.rbegin(), reflected_path.rend());
         paths.emplace_back(original_path.begin(), original_path.end());
       } else {
@@ -213,26 +208,22 @@ void Mirror::update_path_mode()
   } else {
     Object& child = this->tree_child(0);
     const auto pv = child.geom_paths();
-    bool wants_to_be_closed = true;
 
-    const bool child_is_closed = child.is_closed();
     const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
     auto reflection = std::make_unique<Path>(scene());
     if (const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
         direction == Direction::Both)
     {
       auto r = child.transformation().apply(pv);
-      r = reflect(wants_to_be_closed, r, Direction::Horizontal, child_is_closed, eps);
-      wants_to_be_closed = !wants_to_be_closed;
-      r = reflect(wants_to_be_closed, r, Direction::Vertical, child_is_closed, eps);
+      r = reflect(r, Direction::Horizontal, eps);
+      r = reflect(r, Direction::Vertical, eps);
       reflection->set(r);
     } else {
       auto r = child.transformation().apply(pv);
-      r = reflect(wants_to_be_closed, r, direction, child_is_closed, eps);
+      r = reflect(r, direction, eps);
       reflection->set(r);
     }
 
-    reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(wants_to_be_closed);
     const auto interpolation = child.has_property(Path::INTERPOLATION_PROPERTY_KEY)
                              ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
                              : InterpolationMode::Bezier;

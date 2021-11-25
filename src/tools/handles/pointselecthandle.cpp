@@ -190,8 +190,7 @@ std::pair<bool, bool> PointSelectHandle::tangents_active() const
   if ((interpolation_mode == InterpolationMode::Bezier && m_point.is_selected())) {
     const auto points = m_path.find_segment(m_point)->points();
     assert(!points.empty());
-    return {m_path.is_closed() || points.front() != &m_point,
-            m_path.is_closed() || points.back() != &m_point};
+    return {points.front() != &m_point, points.back() != &m_point};
   } else {
     return {false, false};
   }

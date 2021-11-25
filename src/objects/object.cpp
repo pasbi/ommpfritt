@@ -95,6 +95,7 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
 
 namespace omm
 {
+
 class Object::CachedQPainterPathGetter : public CachedGetter<QPainterPath, Object>
 {
 public:
@@ -349,7 +350,6 @@ void Object::draw_recursive(Painter& renderer, PainterOptions options) const
 
     if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
       renderer.painter->save();
-      renderer.painter->setBrush(Qt::NoBrush);
       renderer.painter->setPen(m_bounding_box_pen);
       renderer.painter->drawRect(bounding_box(ObjectTransformation()));
       renderer.painter->restore();
@@ -410,7 +410,6 @@ Object::ConvertedObject Object::convert() const
   auto converted = std::make_unique<Path>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
-  converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
   converted->set(geom_paths());
   converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
   return {std::unique_ptr<Object>(converted.release()), true};
@@ -574,11 +573,6 @@ Point Object::pos(const Geom::PathVectorTime& t) const
   }
 }
 
-bool Object::is_closed() const
-{
-  return false;
-}
-
 bool Object::contains(const Vec2f& point) const
 {
   const auto path_vector = geom_paths();
@@ -670,9 +664,7 @@ void Object::draw_object(Painter& renderer,
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     if (const auto painter_path = this->painter_path(); !painter_path.isEmpty()) {
       renderer.set_style(style, *this, options);
-      if (!is_closed()) {
-        renderer.painter->setBrush(Qt::NoBrush);
-      }
+      renderer.painter->setBrush(Qt::NoBrush);
       painter->drawPath(painter_path);
       const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
       const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();

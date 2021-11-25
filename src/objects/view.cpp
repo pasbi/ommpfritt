@@ -62,7 +62,7 @@ BoundingBox View::bounding_box(const ObjectTransformation& transformation) const
                                     Point(Vec2f(l, b)),
                                     Point(Vec2f(r, b)),
                                     Point(Vec2f(r, t))};
-    const QPainterPath painter_path = Painter::path(points, is_closed());
+    const QPainterPath painter_path = Painter::path(points);
     return BoundingBox((painter_path * transformation.to_qtransform()).boundingRect());
   } else {
     return BoundingBox();

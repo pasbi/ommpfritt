@@ -45,7 +45,6 @@ void modify_tangents(InterpolationMode mode, Application& app)
   std::map<PathPoint*, Point> map;
   const auto paths = app.scene->item_selection<Path>();
   for (Path* path : paths) {
-    const bool is_closed = path->is_closed();
     for (const Segment* segment : path->segments()) {
       const auto points = segment->points();
       for (std::size_t i = 0; i < points.size(); ++i) {
@@ -55,7 +54,7 @@ void modify_tangents(InterpolationMode mode, Application& app)
           case InterpolationMode::Bezier:
             break;  // do nothing.
           case InterpolationMode::Smooth:
-            map[point] = segment->smoothen_point(i, is_closed);
+            map[point] = segment->smoothen_point(i);
             break;
           case InterpolationMode::Linear:
             map[point] = point->geometry().nibbed();

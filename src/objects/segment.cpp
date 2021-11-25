@@ -54,7 +54,7 @@ Segment::Segment(std::vector<Point>&& points, Path* path)
 {
 }
 
-Segment::Segment(const Geom::Path& geom_path, bool is_closed, Path* path)
+Segment::Segment(const Geom::Path& geom_path, Path* path)
   : m_path(path)
 {
   const auto n = geom_path.size();
@@ -68,23 +68,14 @@ Segment::Segment(const Geom::Path& geom_path, bool is_closed, Path* path)
     geometry.set_right_tangent(PolarCoordinates(Vec2f(c[1]) - p0));
     m_points.back()->set_geometry(geometry);
     const auto p1 = Vec2f(c[3]);
-    auto& pref = *[wrap = is_closed && i == n - 1, p1, this]() -> decltype(auto) {
-      if (wrap) {
-        return m_points.front();
-      } else {
-        return m_points.emplace_back(std::make_unique<PathPoint>(Point{p1}, *this));
-      }
-    }();
+    auto& pref = *m_points.emplace_back(std::make_unique<PathPoint>(Point{p1}, *this));
     geometry = pref.geometry();
     geometry.set_left_tangent(PolarCoordinates(Vec2f(c[2]) - p1));
     pref.set_geometry(geometry);
   }
-  if (is_closed) {
-    assert(geom_path.size() == m_points.size());
-  } else {
-    // path counts number of curves, segments counts number of points
-    assert(geom_path.size() + 1 == m_points.size());
-  }
+
+  // path counts number of curves, segments counts number of points
+  assert(geom_path.size() + 1 == m_points.size());
 }
 
 Segment::Segment(const Segment& other, Path* path)
@@ -129,30 +120,29 @@ PathPoint& Segment::add_point(const Vec2f& pos)
   return *m_points.emplace_back(std::make_unique<PathPoint>(Point{pos}, *this));
 }
 
-Geom::Path Segment::to_geom_path(bool is_closed, InterpolationMode interpolation) const
+Geom::Path Segment::to_geom_path(InterpolationMode interpolation) const
 {
   std::vector<Geom::CubicBezier> bzs;
   const std::size_t n = m_points.size();
   if (n == 0) {
     return Geom::Path{};
   }
-  const std::size_t m = is_closed ? n : n - 1;
-  bzs.reserve(m);
+
+  bzs.reserve(n - 1);
 
   std::unique_ptr<Segment> smoothened;
   const Segment* self = this;
   if (interpolation == InterpolationMode::Smooth) {
     smoothened = std::make_unique<Segment>(*this);
-    smoothened->smoothen(is_closed);
+    smoothened->smoothen();
     self = smoothened.get();
   }
 
-  for (std::size_t i = 0; i < m; ++i) {
-    const std::size_t j = (i + 1) % n;
-    bzs.emplace_back(compute_control_points(self->at(i).geometry(), self->at(j).geometry(), interpolation));
+  for (std::size_t i = 0; i < n - 1; ++i) {
+    bzs.emplace_back(compute_control_points(self->at(i).geometry(), self->at(i + 1).geometry(), interpolation));
   }
 
-  return {bzs.begin(), bzs.end(), is_closed};
+  return {bzs.begin(), bzs.end()};
 }
 
 std::vector<Geom::Point>
@@ -184,26 +174,26 @@ Path* Segment::path() const
   return m_path;
 }
 
-void Segment::smoothen(bool is_closed) const
+void Segment::smoothen() const
 {
   std::deque<std::unique_ptr<PathPoint>> points;
   for (std::size_t i = 0; i < m_points.size(); ++i) {
-    Point smoothened_point = smoothen_point(i, is_closed);
+    Point smoothened_point = smoothen_point(i);
     m_points[i]->set_geometry(smoothened_point);
   }
 }
 
-Point Segment::smoothen_point(std::size_t i, bool is_closed) const
+Point Segment::smoothen_point(std::size_t i) const
 {
   const std::size_t n = m_points.size();
   PathPoint* left = nullptr;
   PathPoint* right = nullptr;
   if (i == 0) {
-    left = is_closed ? m_points.at(n - 1).get() : m_points.at(0).get();
+    left = m_points.at(0).get();
     right = m_points.at(1).get();
   } else if (i == n - 1) {
     left = m_points.at(n - 2).get();
-    right = is_closed ? m_points.at(0).get() : m_points.at(n - 1).get();
+    right = m_points.at(n - 1).get();
   } else {
     left = m_points.at(i - 1).get();
     right = m_points.at(i + 1).get();

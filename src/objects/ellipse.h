@@ -18,7 +18,6 @@ public:
   static constexpr auto CORNER_COUNT_PROPERTY_KEY = "n";
   static constexpr auto SMOOTH_PROPERTY_KEY = "smooth";
   void on_property_value_changed(Property* property) override;
-  bool is_closed() const override;
 
 private:
   Geom::PathVector paths() const override;

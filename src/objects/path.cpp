@@ -35,10 +35,6 @@ Path::Path(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("path");
 
-  create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
-      .set_label(QObject::tr("closed"))
-      .set_category(category);
-
   create_property<OptionProperty>(INTERPOLATION_PROPERTY_KEY)
       .set_options({QObject::tr("linear"), QObject::tr("smooth"), QObject::tr("bezier")})
       .set_label(QObject::tr("interpolation"))
@@ -95,24 +91,11 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   update();
 }
 
-void Path::update()
-{
-  painter_path.invalidate();
-  geom_paths.invalidate();
-  Object::update();
-}
-
-bool Path::is_closed() const
-{
-  return property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
-}
-
 void Path::set(const Geom::PathVector& paths)
 {
   update();
-  const auto is_closed = this->is_closed();
   for (const auto& path : paths) {
-    m_segments.push_back(std::make_unique<Segment>(path, is_closed, this));
+    m_segments.push_back(std::make_unique<Segment>(path, this));
   }
 }
 
@@ -137,7 +120,7 @@ std::size_t Path::point_count() const
 
 void Path::on_property_value_changed(Property* property)
 {
-  if (pmatch(property, {INTERPOLATION_PROPERTY_KEY, IS_CLOSED_PROPERTY_KEY})) {
+  if (pmatch(property, {INTERPOLATION_PROPERTY_KEY})) {
     update();
   }
   Object::on_property_value_changed(property);
@@ -146,11 +129,10 @@ void Path::on_property_value_changed(Property* property)
 Geom::PathVector Path::paths() const
 {
   const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
-  const auto is_closed = this->is_closed();
 
   Geom::PathVector paths;
   for (auto&& segment : m_segments) {
-    paths.push_back(segment->to_geom_path(is_closed, interpolation));
+    paths.push_back(segment->to_geom_path(interpolation));
   }
   return paths;
 }

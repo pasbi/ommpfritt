@@ -65,7 +65,7 @@ Geom::PathVector RectangleObject::paths() const
   }
   add(Vec2f(size.x - ar.x, -size.y), h, null);
 
-  return Geom::PathVector{Segment{std::move(points)}.to_geom_path(is_closed())};
+  return Geom::PathVector{Segment{std::move(points)}.to_geom_path()};
 }
 
 void RectangleObject::on_property_value_changed(Property* property)

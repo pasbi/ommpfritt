@@ -26,15 +26,12 @@ public:
   QString type() const override;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
-  static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
   static constexpr auto SEGMENTS_POINTER = "segments";
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
-  void update() override;
-  bool is_closed() const override;
   void set(const Geom::PathVector& paths);
   PathPoint& point_at_index(std::size_t index) const;
 

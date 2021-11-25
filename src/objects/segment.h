@@ -38,7 +38,7 @@ public:
   explicit Segment(const Segment& other, Path* path = nullptr);
   explicit Segment(std::deque<Point>&& points, Path* path = nullptr);
   explicit Segment(std::vector<Point>&& points, Path* path = nullptr);
-  explicit Segment(const Geom::Path& geom_path, bool is_closed, Path* path = nullptr);
+  explicit Segment(const Geom::Path& geom_path, Path* path = nullptr);
   ~Segment() override;
   Segment(Segment&&) = delete;
   Segment& operator=(const Segment&) = delete;
@@ -53,10 +53,9 @@ public:
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::size_t find(const PathPoint& point) const;
   [[nodiscard]] PathPoint& add_point(const Vec2f& pos);
-  [[nodiscard]] Geom::Path to_geom_path(bool is_closed,
-                                        InterpolationMode interpolation = InterpolationMode::Bezier) const;
-  void smoothen(bool is_closed) const;
-  [[nodiscard]] Point smoothen_point(std::size_t i, bool is_closed) const;
+  [[nodiscard]] Geom::Path to_geom_path(InterpolationMode interpolation = InterpolationMode::Bezier) const;
+  void smoothen() const;
+  [[nodiscard]] Point smoothen_point(std::size_t i) const;
   [[nodiscard]] std::deque<PathPoint*> points() const;
   void insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint> >&& points);
   [[nodiscard]] std::deque<std::unique_ptr<PathPoint>> extract(std::size_t start, std::size_t size);

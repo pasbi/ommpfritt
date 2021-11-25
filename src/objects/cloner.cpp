@@ -378,9 +378,9 @@ std::vector<std::unique_ptr<Object>> Cloner::copy_children(const std::size_t cou
   return clones;
 }
 
-double Cloner::get_t(std::size_t i, const bool inclusive) const
+double Cloner::get_t(std::size_t i) const
 {
-  const auto n = property(COUNT_PROPERTY_KEY)->value<int>() + (inclusive ? 0 : 1);
+  const auto n = property(COUNT_PROPERTY_KEY)->value<int>() + 1;
   const auto start = property(START_PROPERTY_KEY)->value<double>();
   const auto end = property(END_PROPERTY_KEY)->value<double>();
   const auto border = property(BORDER_PROPERTY_KEY)->value<Border>();
@@ -413,7 +413,7 @@ void Cloner::set_grid(Object& object, std::size_t i)
 
 void Cloner::set_radial(Object& object, std::size_t i)
 {
-  const double angle = 2 * M_PI * get_t(i, false);
+  const double angle = 2 * M_PI * get_t(i);
   const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
   const Point op({std::cos(angle) * r, std::sin(angle) * r}, angle + M_PI / 2.0);
   object.set_oriented_position(op, property(PathProperties::ALIGN_PROPERTY_KEY)->value<bool>());
@@ -424,7 +424,7 @@ void Cloner::set_path(Object& object, std::size_t i)
   if (const auto* const o = path_object_reference(); o == nullptr) {
     return;
   } else {
-    const double t = get_t(i, !o->is_closed());
+    const double t = get_t(i);
     const auto transformation = (property(ANCHOR_PROPERTY_KEY)->value<Anchor>() == Anchor::Path)
                                     ? o->global_transformation(Space::Scene)
                                           .apply(global_transformation(Space::Scene).inverted())

@@ -58,11 +58,6 @@ void Boolean::polish()
   listen_to_children_changes();
 }
 
-bool Boolean::is_closed() const
-{
-  return true;
-}
-
 Geom::PathVector Boolean::paths() const
 {
   const auto children = tree_children();

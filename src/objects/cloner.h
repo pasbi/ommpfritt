@@ -60,7 +60,7 @@ private:
   std::vector<std::unique_ptr<Object>> make_clones();
   std::vector<std::unique_ptr<Object>> copy_children(std::size_t count);
 
-  double get_t(std::size_t i, bool inclusive) const;
+  double get_t(std::size_t i) const;
   void set_linear(Object& object, std::size_t i);
   void set_grid(Object& object, std::size_t i);
   void set_radial(Object& object, std::size_t i);

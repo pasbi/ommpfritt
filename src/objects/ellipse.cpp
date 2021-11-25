@@ -48,11 +48,6 @@ void Ellipse::on_property_value_changed(Property* property)
   }
 }
 
-bool Ellipse::is_closed() const
-{
-  return true;
-}
-
 Geom::PathVector Ellipse::paths() const
 {
   const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
@@ -60,7 +55,7 @@ Geom::PathVector Ellipse::paths() const
   const auto r = property(RADIUS_PROPERTY_KEY)->value<Vec2f>();
   const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
   std::deque<Point> points;
-  for (std::size_t i = 0; i < n; ++i) {
+  for (std::size_t i = 0; i <= n; ++i) {
     const double theta = i * 2.0 / n * M_PI;
     const double x = std::cos(theta) * r.x;
     const double y = std::sin(theta) * r.y;
@@ -71,7 +66,7 @@ Geom::PathVector Ellipse::paths() const
       points.emplace_back(Vec2f{x, y});
     }
   }
-  return Geom::PathVector{Segment(std::move(points)).to_geom_path(true)};
+  return Geom::PathVector{Segment(std::move(points)).to_geom_path()};
 }
 
 }  // namespace omm

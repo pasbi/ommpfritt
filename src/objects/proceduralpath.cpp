@@ -47,9 +47,6 @@ ProceduralPath::ProceduralPath(Scene* scene) : Object(scene)
       .set_range(0, std::numeric_limits<int>::max())
       .set_label(QObject::tr("count"))
       .set_category(category);
-  create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
-      .set_label(QObject::tr("closed"))
-      .set_category(category);
   ProceduralPath::update();
 }
 
@@ -84,19 +81,14 @@ void ProceduralPath::update()
 Geom::PathVector ProceduralPath::paths() const
 {
   std::deque<Point> points(m_points.begin(), m_points.end());
-  return Segment{std::move(points)}.to_geom_path(is_closed());
-}
-
-bool ProceduralPath::is_closed() const
-{
-  return property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
+  return Segment{std::move(points)}.to_geom_path();
 }
 
 void ProceduralPath::on_property_value_changed(Property* property)
 {
   if (property == this->property(CODE_PROPERTY_KEY)
-      || property == this->property(COUNT_PROPERTY_KEY)
-      || property == this->property(IS_CLOSED_PROPERTY_KEY)) {
+      || property == this->property(COUNT_PROPERTY_KEY))
+  {
     update();
   } else {
     Object::on_property_value_changed(property);
