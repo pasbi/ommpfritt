@@ -10,7 +10,6 @@ if [[ "$1" =~ (-h|--help) ]]; then
     echo "$usage"
     exit 0
 fi
-
 if [ ! "$2" ]; then
     1>&2 echo "$usage"
     exit 1
