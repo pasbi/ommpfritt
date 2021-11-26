@@ -38,4 +38,4 @@ cmake --build "$build" --target icons -j$ncores
 cmake -S "$source" -B "$build"
 cmake --build "$build" --target install --config "$config" -j$ncores
 
-echo "Finished building omm. Run $build/install/bin/ommpfritt"
+echo "Finished building omm. Run $install/bin/ommpfritt"
