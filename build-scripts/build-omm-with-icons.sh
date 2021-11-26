@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 
-usage="
-This script builds ommpfritt with icons.
-Please give the path to ommpfritt source as the first argument
-and the build type as the second argument. Valid build types:
-
-Release
-Debug
-
-You can also pass additional arguments to CMake.
+usage="Usage: $0 SOURCE CONFIG [CMAKE_ARGUMENTS ...]
+This script builds ommpfritt with icons from SOURCE (root of this repository).
+CONFIG can be 'Release' or 'Debug'.
+Builds and installs the application into '/tmp', see output for details.
+Additional CMAKE_ARGUMENTS are passed verbatim to the cmake configuration call.
 "
-
-if [ ! "$2" ]; then
+if [[ "$1" =~ (-h|--help) ]]; then
     echo "$usage"
+    exit 0
+fi
+if [ ! "$2" ]; then
+    1>&2 echo "$usage"
     exit 1
 fi
 
