@@ -2,10 +2,16 @@
 
 usage="
 This script builds ommpfritt with icons.
-Please give the path to ommpfritt source as an argument.
+Please give the path to ommpfritt source as the first argument
+and the build type as the second argument. Valid build types:
+
+Release
+Debug
+
+You can also pass additional arguments to CMake.
 "
 
-if [ ! "$1" ]; then
+if [ ! "$2" ]; then
     echo "$usage"
     exit 1
 fi
@@ -13,9 +19,7 @@ fi
 set -e
 
 source=$1
-shift
-config=${1:-Release}
-shift || true
+config=$2
 
 build=$(mktemp -d -t build-omm-XXXX)
 install=$build/install
