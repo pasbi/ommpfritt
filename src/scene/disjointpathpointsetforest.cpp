@@ -2,6 +2,7 @@
 #include "serializers/abstractserializer.h"
 #include "objects/pathpoint.h"
 #include "objects/path.h"
+#include "scene/scene.h"
 
 static constexpr auto FOREST_POINTER = "forest";
 static constexpr auto PATH_ID_POINTER = "path-id";
@@ -75,6 +76,35 @@ void DisjointPathPointSetForest::deserialize(AbstractDeserializer& deserializer,
 }
 
 void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer, const Pointer& root) const
+{
+  auto copy = *this;
+  copy.remove_dangling_points();
+  copy.serialize_impl(serializer, root);
+}
+
+void DisjointPathPointSetForest::remove_dangling_points()
+{
+  for (auto& set : m_forest) {
+    std::erase_if(set, [](const PathPoint* point) {
+      if (point == nullptr) {
+        return true;
+      }
+      if (point->path() == nullptr) {
+        return true;
+      }
+      if (point->path()->scene() == nullptr) {
+        return true;
+      }
+      return !point->path()->scene()->contains(point->path());
+    });
+  }
+
+  m_forest.erase(std::remove_if(m_forest.begin(), m_forest.end(), [](const auto& set) {
+    return set.empty();
+  }), m_forest.end());
+}
+
+void DisjointPathPointSetForest::serialize_impl(AbstractSerializer& serializer, const Pointer& root) const
 {
   const auto forest_ptr = make_pointer(root, FOREST_POINTER);
   serializer.start_array(m_forest.size(), forest_ptr);
