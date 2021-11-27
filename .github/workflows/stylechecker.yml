@@ -1,5 +1,5 @@
 name: Style Checker
-on: [push]
+on: [push, pull_request]
 jobs:
   Check-Style:
     runs-on: ubuntu-latest
