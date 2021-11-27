@@ -1,6 +1,7 @@
 #include "objects/lineobject.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
+#include "objects/segment.h"
 #include "objects/enhancedpathvector.h"
 #include <QObject>
 
@@ -37,14 +38,14 @@ Flag LineObject::flags() const
 
 EnhancedPathVector LineObject::paths() const
 {
-  return Geom::PathVector{};
-//  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
-//  const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
-//  const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
-//  const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
-//  const PolarCoordinates b(angle, centered ? length / 2.0 : length);
-//  std::vector<Point> segment = {Point(a.to_cartesian()), Point(b.to_cartesian())};
-//  return segments_to_path_vector({segment}, false);
+  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
+  const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
+  const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
+  const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
+  const PolarCoordinates b(angle, centered ? length / 2.0 : length);
+  const Segment segment{std::vector{Point(a.to_cartesian()), Point(b.to_cartesian())}};
+  auto geom_path = segment.to_geom_path(InterpolationMode::Linear);
+  return {geom_path};
 }
 
 void LineObject::on_property_value_changed(Property* property)
