@@ -5,16 +5,43 @@
 #include <2geom/intersection-graph.h>
 #include <2geom/pathvector.h>
 #include <2geom/utils.h>
+#include <QApplication>
 
 namespace
 {
-using F = std::function<Geom::PathVector(Geom::PathIntersectionGraph&)>;
-const std::vector<std::pair<QString, F>> dispatcher = {
-    {QObject::tr("Union"), [](auto& pig) { return pig.getUnion(); }},
-    {QObject::tr("Intersection"), [](auto& pig) { return pig.getIntersection(); }},
-    {QObject::tr("Exclusive Or"), [](auto& pig) { return pig.getXOR(); }},
-    {QObject::tr("Difference"), [](auto& pig) { return pig.getAminusB(); }},
-    {QObject::tr("Inverse Difference"), [](auto& pig) { return pig.getBminusA(); }},
+
+using F = Geom::PathVector(Geom::PathIntersectionGraph::*)();
+
+class BooleanOperation
+{
+public:
+  constexpr explicit BooleanOperation(std::string_view name, F f)
+    : m_name(name)
+    , m_f(f)
+  {
+  }
+
+  Geom::PathVector compute(Geom::PathIntersectionGraph& pig) const
+  {
+    return std::invoke(m_f, pig);
+  }
+
+  QString label() const
+  {
+    return QApplication::translate("QObject", m_name.data());
+  }
+
+private:
+  const std::string_view m_name;
+  const F m_f;
+};
+
+const auto dispatcher = std::array {
+    BooleanOperation{"Union", &Geom::PathIntersectionGraph::getUnion},
+    BooleanOperation{"Intersection", &Geom::PathIntersectionGraph::getIntersection},
+    BooleanOperation{"Exclusive Or", &Geom::PathIntersectionGraph::getXOR},
+    BooleanOperation{"Difference", &Geom::PathIntersectionGraph::getAminusB},
+    BooleanOperation{"Inverse Difference", &Geom::PathIntersectionGraph::getBminusA},
 };
 
 }  // namespace
@@ -24,7 +51,7 @@ namespace omm
 Boolean::Boolean(Scene* scene) : Object(scene)
 {
   create_property<OptionProperty>(MODE_PROPERTY_KEY)
-      .set_options(::transform<QString>(dispatcher, [](auto&& p) { return p.first; }))
+      .set_options(::transform<QString, std::vector>(dispatcher, std::mem_fn(&BooleanOperation::label)))
       .set_label(QObject::tr("mode"))
       .set_category(QObject::tr("Boolean"));
   polish();
@@ -70,7 +97,7 @@ EnhancedPathVector Boolean::paths() const
     Geom::PathIntersectionGraph pig{get_path_vector(*children[0]), get_path_vector(*children[1])};
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
-      return dispatcher[i].second(pig);
+      return dispatcher[i].compute(pig);
     } else {
       return {};
     }
