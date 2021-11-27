@@ -6,6 +6,7 @@
 
 namespace omm
 {
+
 RectangleObject::RectangleObject(Scene* scene) : Object(scene)
 {
   static constexpr double DEFAULT_SIZE = 200.0;
@@ -66,7 +67,9 @@ EnhancedPathVector RectangleObject::paths() const
   }
   add(Vec2f(size.x - ar.x, -size.y), h, null);
 
-  return Geom::PathVector{Segment{std::move(points)}.to_geom_path()};
+  points.emplace_back(points.front());
+  EnhancedPathVector::JoinedPointIndices joined_points{{{0, points.size() - 1}}};
+  return {Geom::PathVector{Segment{std::move(points)}.to_geom_path()}, joined_points};
 }
 
 void RectangleObject::on_property_value_changed(Property* property)

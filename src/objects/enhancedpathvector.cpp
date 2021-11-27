@@ -32,7 +32,7 @@ EnhancedPathVector& EnhancedPathVector::operator=(EnhancedPathVector&& other) no
   return *this;
 }
 
-EnhancedPathVector::EnhancedPathVector(const Geom::PathVector& path_vector, const DisjointSetForest<std::size_t>& joined_points)
+EnhancedPathVector::EnhancedPathVector(const Geom::PathVector& path_vector, const JoinedPointIndices& joined_points)
   : m_path_vector(path_vector)
   , m_joined_points(joined_points)
 {

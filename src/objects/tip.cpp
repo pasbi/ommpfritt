@@ -41,8 +41,9 @@ void Tip::on_property_value_changed(Property* property)
 
 EnhancedPathVector Tip::paths() const
 {
-  std::deque<PathPoint> points;
-  return {Geom::PathVector{Segment{m_marker_properties.shape(1.0)}.to_geom_path()}};
+  auto points = m_marker_properties.shape(1.0);
+  EnhancedPathVector::JoinedPointIndices joined_points{{{0, points.size() - 1}}};
+  return {Geom::PathVector{Segment{std::move(points)}.to_geom_path()}, joined_points};
 }
 
 }  // namespace omm

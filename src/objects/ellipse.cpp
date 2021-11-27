@@ -67,7 +67,8 @@ EnhancedPathVector Ellipse::paths() const
       points.emplace_back(Vec2f{x, y});
     }
   }
-  return Geom::PathVector{Segment(std::move(points)).to_geom_path()};
+  EnhancedPathVector::JoinedPointIndices joined_points{{{0, n}}};
+  return {Segment(std::move(points)).to_geom_path(), joined_points};
 }
 
 }  // namespace omm

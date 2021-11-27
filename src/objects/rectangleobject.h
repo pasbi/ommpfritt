@@ -4,6 +4,7 @@
 
 namespace omm
 {
+
 class RectangleObject : public Object
 {
 public:
