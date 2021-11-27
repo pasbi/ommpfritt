@@ -25,7 +25,7 @@ private:
   static constexpr auto MODE_PROPERTY_KEY = "mode";
   void on_property_value_changed(Property* property) override;
   void polish();
-  Geom::PathVector paths() const override;
+  EnhancedPathVector paths() const override;
 };
 
 }  // namespace omm

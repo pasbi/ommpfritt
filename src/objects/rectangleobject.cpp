@@ -1,4 +1,5 @@
 #include "objects/rectangleobject.h"
+#include "objects/enhancedpathvector.h"
 #include "objects/segment.h"
 #include "objects/pathpoint.h"
 #include "properties/floatvectorproperty.h"
@@ -32,7 +33,7 @@ QString RectangleObject::type() const
   return TYPE;
 }
 
-Geom::PathVector RectangleObject::paths() const
+EnhancedPathVector RectangleObject::paths() const
 {
   std::deque<Point> points;
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>() / 2.0;

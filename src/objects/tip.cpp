@@ -1,6 +1,7 @@
 #include "objects/tip.h"
 #include "objects/segment.h"
 #include "objects/pathpoint.h"
+#include "objects/enhancedpathvector.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 
@@ -38,10 +39,10 @@ void Tip::on_property_value_changed(Property* property)
   }
 }
 
-Geom::PathVector Tip::paths() const
+EnhancedPathVector Tip::paths() const
 {
   std::deque<PathPoint> points;
-  return Geom::PathVector{Segment{m_marker_properties.shape(1.0)}.to_geom_path()};
+  return {Geom::PathVector{Segment{m_marker_properties.shape(1.0)}.to_geom_path()}};
 }
 
 }  // namespace omm

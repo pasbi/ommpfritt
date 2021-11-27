@@ -20,7 +20,7 @@ public:
   void on_property_value_changed(Property* property) override;
 
 private:
-  Geom::PathVector paths() const override;
+  EnhancedPathVector paths() const override;
 };
 
 }  // namespace omm

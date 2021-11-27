@@ -21,7 +21,7 @@ public:
   }
   void on_property_value_changed(Property* property) override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Tip");
-  Geom::PathVector paths() const override;
+  EnhancedPathVector paths() const override;
 
 private:
   MarkerProperties m_marker_properties;

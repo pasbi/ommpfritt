@@ -1,6 +1,7 @@
 #include "objects/lineobject.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
+#include "objects/enhancedpathvector.h"
 #include <QObject>
 
 namespace omm
@@ -34,7 +35,7 @@ Flag LineObject::flags() const
   return Object::flags() | Flag::Convertible;
 }
 
-Geom::PathVector LineObject::paths() const
+EnhancedPathVector LineObject::paths() const
 {
   return Geom::PathVector{};
 //  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();

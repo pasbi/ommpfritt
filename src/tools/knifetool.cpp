@@ -4,6 +4,7 @@
 #include "common.h"
 #include "geometry/point.h"
 #include "objects/path.h"
+#include "objects/enhancedpathvector.h"
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
 #include "scene/history/historymodel.h"
@@ -60,7 +61,7 @@ bool KnifeTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEve
     m_points.clear();
     for (auto&& path : ::type_casts<Path*>(scene()->item_selection<Object>())) {
       const auto path_vector
-          = path->global_transformation(Space::Viewport).apply(path->geom_paths());
+          = path->global_transformation(Space::Viewport).apply(path->geom_paths().path_vector());
       const auto cut_points
           = compute_cut_points<Vec2f>(path_vector, m_mouse_press_pos, m_mouse_move_pos);
       m_points.insert(m_points.end(), cut_points.begin(), cut_points.end());
@@ -93,7 +94,7 @@ void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
       std::unique_ptr<Macro> macro;
       for (auto&& path : paths) {
         const auto path_vector
-            = path->global_transformation(Space::Viewport).apply(path->geom_paths());
+            = path->global_transformation(Space::Viewport).apply(path->geom_paths().path_vector());
         const auto cut_points = compute_cut_points<Geom::PathVectorTime>(path_vector,
                                                                          m_mouse_press_pos,
                                                                          m_mouse_move_pos);
@@ -123,7 +124,6 @@ void KnifeTool::draw(Painter& renderer) const
     for (const Point& p : m_points) {
       QPen pen;
       pen.setColor(Qt::white);
-      ;
       pen.setWidthF(3);
       renderer.painter->setPen(pen);
       static constexpr double r = 6.0 / 2.0;

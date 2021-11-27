@@ -3,6 +3,7 @@
 #include "objects/path.h"
 #include "objects/pathpoint.h"
 #include "objects/segment.h"
+#include "objects/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -48,7 +49,7 @@ void Ellipse::on_property_value_changed(Property* property)
   }
 }
 
-Geom::PathVector Ellipse::paths() const
+EnhancedPathVector Ellipse::paths() const
 {
   const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
   const auto n = static_cast<std::size_t>(std::max(3, n_raw));

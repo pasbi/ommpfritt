@@ -3,10 +3,14 @@ target_sources(libommpfritt PRIVATE
   boolean.h
   cloner.cpp
   cloner.h
+  convertedobject.cpp
+  convertedobject.h
   ellipse.cpp
   ellipse.h
   empty.cpp
   empty.h
+  enhancedpathvector.cpp
+  enhancedpathvector.h
   instance.cpp
   instance.h
   lineobject.cpp

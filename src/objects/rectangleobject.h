@@ -10,7 +10,7 @@ public:
   explicit RectangleObject(Scene* scene);
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "RectangleObject");
-  Geom::PathVector paths() const override;
+  EnhancedPathVector paths() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

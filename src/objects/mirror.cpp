@@ -1,7 +1,9 @@
 #include "objects/mirror.h"
 
 #include "geometry/vec2.h"
+#include "objects/convertedobject.h"
 #include "objects/empty.h"
+#include "objects/enhancedpathvector.h"
 #include "objects/path.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
@@ -153,7 +155,7 @@ QString Mirror::type() const
   return TYPE;
 }
 
-Object::ConvertedObject Mirror::convert() const
+ConvertedObject Mirror::convert() const
 {
   if (m_draw_children) {
     std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
@@ -166,7 +168,7 @@ Object::ConvertedObject Mirror::convert() const
   }
 }
 
-Geom::PathVector Mirror::paths() const
+EnhancedPathVector Mirror::paths() const
 {
   if (m_reflection && is_active()) {
     return m_reflection->geom_paths();
@@ -207,7 +209,7 @@ void Mirror::update_path_mode()
     m_reflection.reset();
   } else {
     Object& child = this->tree_child(0);
-    const auto pv = child.geom_paths();
+    const auto pv = child.geom_paths().path_vector();
 
     const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
     auto reflection = std::make_unique<Path>(scene());

@@ -1,6 +1,7 @@
 #include "objects/text.h"
 #include "mainwindow/viewport/viewport.h"
 #include "objects/path.h"
+#include "objects/enhancedpathvector.h"
 #include "properties/floatproperty.h"
 #include "properties/stringproperty.h"
 #include "renderers/painter.h"
@@ -117,9 +118,9 @@ QRectF Text::rect(Qt::Alignment alignment) const
   return QRectF(QPointF(left, top), QSizeF(width, height));
 }
 
-Geom::PathVector Text::paths() const
+EnhancedPathVector Text::paths() const
 {
-  return Geom::PathVector();
+  return {};
 }
 
 void Text::on_property_value_changed(Property* property)

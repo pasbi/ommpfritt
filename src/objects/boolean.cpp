@@ -1,4 +1,5 @@
 #include "objects/boolean.h"
+#include "objects/enhancedpathvector.h"
 #include "properties/optionproperty.h"
 #include <2geom/2geom.h>
 #include <2geom/intersection-graph.h>
@@ -58,12 +59,15 @@ void Boolean::polish()
   listen_to_children_changes();
 }
 
-Geom::PathVector Boolean::paths() const
+EnhancedPathVector Boolean::paths() const
 {
   const auto children = tree_children();
   if (is_active() && children.size() == 2) {
-    Geom::PathIntersectionGraph pig(children[0]->transformation().apply(children[0]->geom_paths()),
-                                    children[1]->transformation().apply(children[1]->geom_paths()));
+    static constexpr auto get_path_vector = [](const Object& object) {
+      const auto t = object.transformation();
+      return t.apply(object.geom_paths().path_vector());
+    };
+    Geom::PathIntersectionGraph pig{get_path_vector(*children[0]), get_path_vector(*children[1])};
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
       return dispatcher[i].second(pig);

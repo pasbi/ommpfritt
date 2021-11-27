@@ -7,6 +7,9 @@
 namespace omm
 {
 
+template<typename> class DisjointSetForest;
+template<typename T> void swap(DisjointSetForest<T>& a, DisjointSetForest<T>& b) noexcept;
+
 /**
  * @brief The DisjointSetForest class implements the disjoint set data structure.
  *  It does not follow the standard implementation because we typically want to lookup all
@@ -79,8 +82,15 @@ public:
     m_forest.erase(it, m_forest.end());
   }
 
+  friend void swap<>(DisjointSetForest<T>& a, DisjointSetForest<T>& b) noexcept;
+
 protected:
   std::deque<std::set<T>> m_forest;
 };
+
+template<typename T> void swap(DisjointSetForest<T>& a, DisjointSetForest<T>& b) noexcept
+{
+  swap(a.m_forest, b.m_forest);
+}
 
 }  // namespace omm

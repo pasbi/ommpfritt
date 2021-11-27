@@ -8,6 +8,7 @@
 #include "scene/scene.h"
 #include "objects/pathpoint.h"
 #include "objects/segment.h"
+#include "objects/enhancedpathvector.h"
 #include <QObject>
 #include "scene/mailbox.h"
 
@@ -91,10 +92,10 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   update();
 }
 
-void Path::set(const Geom::PathVector& paths)
+void Path::set(const EnhancedPathVector& paths)
 {
   update();
-  for (const auto& path : paths) {
+  for (const auto& path : paths.path_vector()) {
     m_segments.push_back(std::make_unique<Segment>(path, this));
   }
 }
@@ -126,7 +127,7 @@ void Path::on_property_value_changed(Property* property)
   Object::on_property_value_changed(property);
 }
 
-Geom::PathVector Path::paths() const
+EnhancedPathVector Path::paths() const
 {
   const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
 

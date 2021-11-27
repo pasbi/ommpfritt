@@ -3,6 +3,7 @@
 #include "objects/path.h"
 #include "objects/pathpoint.h"
 #include "objects/segment.h"
+#include "objects/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/stringproperty.h"
@@ -33,6 +34,7 @@ for i, p in enumerate(points):
 
 namespace omm
 {
+
 class Style;
 
 ProceduralPath::ProceduralPath(Scene* scene) : Object(scene)
@@ -78,10 +80,10 @@ void ProceduralPath::update()
   Object::update();
 }
 
-Geom::PathVector ProceduralPath::paths() const
+EnhancedPathVector ProceduralPath::paths() const
 {
   std::deque<Point> points(m_points.begin(), m_points.end());
-  return Segment{std::move(points)}.to_geom_path();
+  return Geom::PathVector{Segment{std::move(points)}.to_geom_path()};
 }
 
 void ProceduralPath::on_property_value_changed(Property* property)

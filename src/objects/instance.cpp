@@ -1,7 +1,9 @@
 #include "objects/instance.h"
 
 #include "commands/propertycommand.h"
+#include "objects/convertedobject.h"
 #include "objects/empty.h"
+#include "objects/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
 #include "renderers/painteroptions.h"
@@ -96,7 +98,7 @@ Object* Instance::illustrated_object() const
   }
 }
 
-Object::ConvertedObject Instance::convert() const
+ConvertedObject Instance::convert() const
 {
   std::unique_ptr<Object> clone;
   if (is_active()) {
@@ -156,7 +158,7 @@ void Instance::update()
   Object::update();
 }
 
-Geom::PathVector Instance::paths() const
+EnhancedPathVector Instance::paths() const
 {
   if (m_reference) {
     return m_reference->geom_paths();

@@ -21,7 +21,9 @@ class Painter;
 class Point;
 class Property;
 class Scene;
+struct ConvertedObject;
 struct PainterOptions;
+class EnhancedPathVector;
 
 class Object
     : public PropertyOwner<Kind::Object>
@@ -69,10 +71,6 @@ public:
   Object& adopt(std::unique_ptr<Object> adoptee, std::size_t pos) override;
   using TreeElement::adopt;
 
-  struct ConvertedObject {
-    std::unique_ptr<Object> object;
-    bool keep_children;
-  };
   virtual ConvertedObject convert() const;
 
   Flag flags() const override;
@@ -90,7 +88,7 @@ private:
    * @note use `Object::geom_paths` or `Object::painter_path` to access the paths.
    * @return the paths.
    */
-  virtual Geom::PathVector paths() const;
+  virtual EnhancedPathVector paths() const;
 
 public:
   enum class Interpolation { Natural, Distance };
@@ -100,16 +98,10 @@ public:
   compute_path_vector_time(int path_index, double t, Interpolation = Interpolation::Natural) const;
 
 private:
-  class CachedQPainterPathGetter;
-  std::unique_ptr<CachedQPainterPathGetter> m_cached_painter_path_getter;
-public:
-  QPainterPath painter_path() const;
-
-private:
   class CachedGeomPathVectorGetter;
   std::unique_ptr<CachedGeomPathVectorGetter> m_cached_geom_path_vector_getter;
 public:
-  Geom::PathVector geom_paths() const;
+  EnhancedPathVector geom_paths() const;
 
   TagList tags;
 
@@ -171,7 +163,7 @@ protected:
   {
     Geom::PathVector paths;
     for (auto&& item : items) {
-      const auto cps = item->paths();
+      const auto cps = item->paths().path_vector();
       paths.insert(paths.end(), cps.begin(), cps.end());
     }
     return paths;

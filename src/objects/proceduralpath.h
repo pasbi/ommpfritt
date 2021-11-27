@@ -19,7 +19,7 @@ public:
   static constexpr auto COUNT_PROPERTY_KEY = "count";
 
   void update() override;
-  Geom::PathVector paths() const override;
+  EnhancedPathVector paths() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

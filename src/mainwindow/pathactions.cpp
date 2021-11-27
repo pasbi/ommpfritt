@@ -15,6 +15,7 @@
 #include "objects/path.h"
 #include "objects/pathpoint.h"
 #include "objects/segment.h"
+#include "objects/convertedobject.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
@@ -108,7 +109,9 @@ std::set<Object*> convert_objects_recursively(Application& app, std::set<Object*
   if (!convertibles.empty()) {
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertibles) {
-      auto [converted, move_children] = c->convert();
+      auto [converted, joined_points, move_children] = c->convert();
+
+      Q_UNUSED(joined_points)
 
       converted->set_object_tree(app.scene->object_tree());
       assert(!c->is_root());

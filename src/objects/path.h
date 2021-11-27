@@ -32,11 +32,11 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
-  void set(const Geom::PathVector& paths);
+  void set(const EnhancedPathVector& paths);
   PathPoint& point_at_index(std::size_t index) const;
 
   void on_property_value_changed(Property* property) override;
-  Geom::PathVector paths() const override;
+  EnhancedPathVector paths() const override;
   Flag flags() const override;
 
   std::size_t point_count() const;

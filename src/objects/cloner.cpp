@@ -2,7 +2,9 @@
 
 #include <QObject>
 
+#include "objects/convertedobject.h"
 #include "objects/empty.h"
+#include "objects/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -191,7 +193,7 @@ void Cloner::update()
   Object::update();
 }
 
-Geom::PathVector Cloner::paths() const
+EnhancedPathVector Cloner::paths() const
 {
   return join(m_clones);
 }
@@ -290,7 +292,7 @@ Flag Cloner::flags() const
   return Object::flags() | Flag::HasScript;
 }
 
-Object::ConvertedObject Cloner::convert() const
+ConvertedObject Cloner::convert() const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
