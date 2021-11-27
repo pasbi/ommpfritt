@@ -111,8 +111,6 @@ std::set<Object*> convert_objects_recursively(Application& app, std::set<Object*
     for (auto&& c : convertibles) {
       auto [converted, joined_points, move_children] = c->convert();
 
-      Q_UNUSED(joined_points)
-
       converted->set_object_tree(app.scene->object_tree());
       assert(!c->is_root());
       ObjectTreeOwningContext context(*converted, c->tree_parent(), c);
@@ -123,6 +121,7 @@ std::set<Object*> convert_objects_recursively(Application& app, std::set<Object*
       auto& converted_ref = *converted;
       context.subject.capture(std::move(converted));
       app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
+      app.scene->submit<JoinPointsCommand>(*app.scene, std::move(*joined_points));
       converted_ref.set_transformation(c->transformation());
       converted_objects.insert(&converted_ref);
 
@@ -350,12 +349,12 @@ void shrink_selection(Application& app)
 
 void join_points(Application& app)
 {
-  app.scene->submit<JoinPointsCommand>(*app.scene, app.scene->point_selection->points());
+  app.scene->submit<JoinPointsCommand>(*app.scene, std::deque{app.scene->point_selection->points()});
 }
 
 void disjoin_points(Application& app)
 {
-  app.scene->submit<DisjoinPointsCommand>(*app.scene, app.scene->point_selection->points());
+  app.scene->submit<DisjoinPointsCommand>(*app.scene, std::deque{app.scene->point_selection->points()});
 }
 
 const std::map<QString, std::function<void(Application& app)>> actions{

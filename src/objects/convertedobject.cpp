@@ -6,7 +6,8 @@ namespace omm
 {
 
 ConvertedObject::ConvertedObject(std::unique_ptr<Object>&& object, bool keep_children)
-  : ConvertedObject(std::move(object), {}, keep_children)
+  : object(std::move(object))
+  , keep_children(keep_children)
 {
 
 }

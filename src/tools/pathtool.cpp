@@ -108,7 +108,7 @@ public:
     }
     m_scene.submit<AddPointsCommand>(current_path, std::move(m_located_segments));
     if (!m_points_to_join.empty()) {
-      m_scene.submit<JoinPointsCommand>(m_scene, m_points_to_join);
+      m_scene.submit<JoinPointsCommand>(m_scene, std::deque{m_points_to_join});
     }
     current_path.deselect_all_points();
     m_current.point->set_selected(true);

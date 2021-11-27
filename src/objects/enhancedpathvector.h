@@ -24,6 +24,7 @@ public:
   const Geom::PathVector& path_vector() const;
   const QPainterPath& qpainter_path() const;
   friend void swap(EnhancedPathVector& a, EnhancedPathVector& b) noexcept;
+  DisjointPathPointSetForest joined_points(const Path& path) const;
 
 private:
   Geom::PathVector m_path_vector;

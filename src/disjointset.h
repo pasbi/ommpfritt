@@ -18,6 +18,12 @@ template<typename T> void swap(DisjointSetForest<T>& a, DisjointSetForest<T>& b)
  */
 template<typename T> class DisjointSetForest
 {
+public:
+  DisjointSetForest(std::deque<std::set<T>>&& forest = {})
+    : m_forest(forest)
+  {
+  }
+
 private:
   void join(const std::set<T>& items_to_join, std::set<T>& join_target)
   {
@@ -83,6 +89,8 @@ public:
   }
 
   friend void swap<>(DisjointSetForest<T>& a, DisjointSetForest<T>& b) noexcept;
+
+  const std::deque<std::set<T>>& sets() const { return m_forest; }
 
 protected:
   std::deque<std::set<T>> m_forest;

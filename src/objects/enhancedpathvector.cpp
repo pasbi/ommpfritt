@@ -1,5 +1,5 @@
 #include "objects/enhancedpathvector.h"
-
+#include "objects/path.h"
 #include <QPainterPath>
 
 namespace omm
@@ -57,6 +57,19 @@ const QPainterPath& EnhancedPathVector::qpainter_path() const
     }
   }
   return *m_qpainter_path;
+}
+
+DisjointPathPointSetForest EnhancedPathVector::joined_points(const Path& path) const
+{
+  DisjointPathPointSetForest forest;
+  for (const auto& set : m_joined_points.sets()) {
+    std::set<PathPoint*> joined_points;
+    for (const auto& index : set) {
+      joined_points.insert(&path.point_at_index(index));
+    }
+    forest.insert(joined_points);
+  }
+  return forest;
 }
 
 void swap(EnhancedPathVector& a, EnhancedPathVector& b) noexcept

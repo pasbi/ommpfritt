@@ -13,22 +13,22 @@ namespace omm
 class AbstractJoinPointsCommand : public Command
 {
 public:
-  explicit AbstractJoinPointsCommand(const QString& label, Scene& scene, const std::set<PathPoint*>& points);
+  explicit AbstractJoinPointsCommand(const QString& label, Scene& scene, const DisjointPathPointSetForest& forest);
 
 protected:
-  [[nodiscard]] std::set<PathPoint*> points() const;
+  [[nodiscard]] const DisjointPathPointSetForest& forest() const;
   [[nodiscard]] Scene& scene() const;
   void update_affected_paths() const;
 
 private:
   Scene& m_scene;
-  const std::set<PathPoint*> m_points;
+  const DisjointPathPointSetForest m_forest;
 };
 
 class JoinPointsCommand : public AbstractJoinPointsCommand
 {
 public:
-  explicit JoinPointsCommand(Scene& scene, const std::set<PathPoint*>& points);
+  explicit JoinPointsCommand(Scene& scene, const DisjointPathPointSetForest& forest);
   void undo() override;
   void redo() override;
 
@@ -42,7 +42,7 @@ private:
 class DisjoinPointsCommand : public AbstractJoinPointsCommand
 {
 public:
-  explicit DisjoinPointsCommand(Scene& scene, const std::set<PathPoint*>& points);
+  explicit DisjoinPointsCommand(Scene& scene, const DisjointPathPointSetForest& points);
   void undo() override;
   void redo() override;
 

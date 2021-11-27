@@ -402,9 +402,11 @@ ConvertedObject Object::convert() const
   auto converted = std::make_unique<Path>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
-  converted->set(geom_paths());
+  const auto enhanced_path_vector = geom_paths();
+  converted->set(enhanced_path_vector);
   converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
-  return {std::unique_ptr<Object>(converted.release()), true};
+  auto joined_points = enhanced_path_vector.joined_points(*converted);
+  return ConvertedObject{std::move(converted), std::move(joined_points), true};
 }
 
 Flag Object::flags() const
