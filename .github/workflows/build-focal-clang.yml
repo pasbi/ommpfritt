@@ -1,5 +1,5 @@
 name: build-focal-clang
-on: [push]
+on: [push, pull_request]
 jobs:
   configure:
     runs-on: ubuntu-latest

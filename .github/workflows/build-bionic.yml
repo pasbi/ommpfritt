@@ -1,5 +1,5 @@
 name: Create AppImage on Bionic
-on: [push]
+on: [push, pull_request]
 jobs:
   Create-AppImage-Bionic:
     runs-on: ubuntu-latest
