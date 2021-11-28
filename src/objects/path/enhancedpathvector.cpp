@@ -20,8 +20,8 @@ EnhancedPathVector::EnhancedPathVector() = default;
 EnhancedPathVector::EnhancedPathVector(const EnhancedPathVector& other)
   : m_path_vector(other.m_path_vector)
   , m_joined_points(other.m_joined_points)
-  , m_outline(other.m_outline ? std::make_unique<QPainterPath>(*other.m_outline) : nullptr)
-  , m_fill(other.m_fill ? std::make_unique<QPainterPath>(*other.m_fill) : nullptr)
+  , m_outline(copy_unique_ptr(other.m_outline))
+  , m_fill(copy_unique_ptr(other.m_fill))
 {
 }
 
