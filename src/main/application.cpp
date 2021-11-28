@@ -35,7 +35,7 @@
 #include "tools/tool.h"
 #include "tools/toolbox.h"
 #include "widgets/pointdialog.h"
-#include "objects/path.h"
+#include "objects/pathobject.h"
 
 namespace
 {
@@ -331,7 +331,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "reset viewport") {
     main_window()->viewport().reset();
   } else if (action_name == "show point dialog") {
-    if (const auto paths = scene->item_selection<Path>(); !paths.empty()) {
+    if (const auto paths = scene->item_selection<PathObject>(); !paths.empty()) {
       PointDialog(paths, main_window()).exec();
     }
   } else if (action_name == "preferences") {

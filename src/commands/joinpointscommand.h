@@ -1,8 +1,8 @@
 #pragma once
 
 #include "commands/command.h"
-#include "objects/path.h"
 #include "scene/disjointpathpointsetforest.h"
+#include "geometry/point.h"
 
 #include <vector>
 #include <map>

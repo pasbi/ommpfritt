@@ -16,33 +16,33 @@ namespace omm
 
 class Point;
 class PathPoint;
-class Segment;
+class Path;
 
-struct SegmentView
+struct PathView
 {
 public:
-  explicit SegmentView(Segment& segment, std::size_t index, std::size_t size);
-  friend bool operator<(const SegmentView& a, const SegmentView& b);
-  friend std::ostream& operator<<(std::ostream& ostream, const SegmentView& segment_view);
-  Segment* segment;
+  explicit PathView(Path& path, std::size_t index, std::size_t size);
+  friend bool operator<(const PathView& a, const PathView& b);
+  friend std::ostream& operator<<(std::ostream& ostream, const PathView& path_view);
+  Path* path;
   std::size_t index;
   std::size_t size;
 };
 
-class Path;
+class PathVector;
 
-class Segment : public Serializable
+class Path : public Serializable
 {
 public:
-  explicit Segment(Path* path = nullptr);
-  explicit Segment(const Segment& other, Path* path = nullptr);
-  explicit Segment(std::deque<Point>&& points, Path* path = nullptr);
-  explicit Segment(std::vector<Point>&& points, Path* path = nullptr);
-  explicit Segment(const Geom::Path& geom_path, Path* path = nullptr);
-  ~Segment() override;
-  Segment(Segment&&) = delete;
-  Segment& operator=(const Segment&) = delete;
-  Segment& operator=(Segment&&) = delete;
+  explicit Path(PathVector* path_vector = nullptr);
+  explicit Path(const Path& other, PathVector* path_vector = nullptr);
+  explicit Path(std::deque<Point>&& points, PathVector* path_vector = nullptr);
+  explicit Path(std::vector<Point>&& points, PathVector* path_vector = nullptr);
+  explicit Path(const Geom::Path& geom_path, PathVector* path_vector = nullptr);
+  ~Path() override;
+  Path(Path&&) = delete;
+  Path& operator=(const Path&) = delete;
+  Path& operator=(Path&&) = delete;
 
   static constexpr auto POINTS_POINTER = "points";
 
@@ -59,14 +59,14 @@ public:
   [[nodiscard]] std::deque<PathPoint*> points() const;
   void insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint> >&& points);
   [[nodiscard]] std::deque<std::unique_ptr<PathPoint>> extract(std::size_t start, std::size_t size);
-  [[nodiscard]] static std::vector<Geom::Point> compute_control_points(const Point& a,
-                                                                       const Point& b,
-                                                                       InterpolationMode interpolation);
-  [[nodiscard]] Path* path() const;
+  [[nodiscard]] static std::vector<Geom::Point>
+  compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation = InterpolationMode::Bezier);
+
+  [[nodiscard]] PathVector* path_vector() const;
 
 private:
   std::deque<std::unique_ptr<PathPoint>> m_points;
-  Path* const m_path;
+  PathVector* const m_path_vector;
 };
 
 }  // namespace

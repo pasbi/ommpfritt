@@ -1,9 +1,9 @@
 #include "objects/ellipse.h"
 
-#include "objects/path.h"
-#include "objects/path/pathpoint.h"
-#include "objects/path/segment.h"
-#include "objects/path/enhancedpathvector.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/path.h"
+#include "path/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -68,7 +68,7 @@ EnhancedPathVector Ellipse::paths() const
     }
   }
   EnhancedPathVector::JoinedPointIndices joined_points{{{0, n}}};
-  return {Segment(std::move(points)).to_geom_path(), joined_points};
+  return {Path(std::move(points)).to_geom_path(), joined_points};
 }
 
 }  // namespace omm

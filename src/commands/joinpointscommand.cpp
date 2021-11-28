@@ -1,5 +1,7 @@
 #include "commands/joinpointscommand.h"
-#include "objects/path/pathpoint.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "scene/scene.h"
 
 namespace omm
@@ -88,14 +90,14 @@ Scene& AbstractJoinPointsCommand::scene() const
 
 void AbstractJoinPointsCommand::update_affected_paths() const
 {
-  std::set<Path*> paths;
+  std::set<PathVector*> path_vectors;
   for (const auto& set : forest().sets()) {
     for (const auto* point : set) {
-      paths.insert(point->path());
+      path_vectors.insert(point->path_vector());
     }
   }
-  for (auto* path : paths) {
-    path->update();
+  for (auto* path_vector : path_vectors) {
+    path_vector->path_object()->update();
   }
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "objects/path/pathpoint.h"
+#include "path/pathpoint.h"
 #include "python/pywrapper.h"
 
 namespace omm

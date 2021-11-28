@@ -2,8 +2,9 @@
 #include "cache.h"
 #include "cachedgetter.h"
 #include "geometry/objecttransformation.h"
-#include "objects/path.h"
-#include "objects/path/pathpoint.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 
@@ -23,14 +24,14 @@ TransformPointsHelper::TransformPointsHelper(Scene& scene, Space space)
 std::unique_ptr<ModifyPointsCommand>
 TransformPointsHelper::make_command(const ObjectTransformation& t) const
 {
-  class TransformationCache : public Cache<Path*, ObjectTransformation>
+  class TransformationCache : public Cache<PathObject*, ObjectTransformation>
   {
   public:
     TransformationCache(const Matrix& mat, Space space) : m_mat(mat), m_space(space)
     {
     }
 
-    ObjectTransformation retrieve(Path* const& path) const override
+    ObjectTransformation retrieve(PathObject* const& path) const override
     {
       const Matrix gt = path->global_transformation(m_space).to_mat();
       return ObjectTransformation(gt.inverted() * m_mat * gt);
@@ -48,7 +49,7 @@ TransformPointsHelper::make_command(const ObjectTransformation& t) const
   std::map<PathPoint*, Point> map;
   bool is_noop = true;
   for (auto&& [ptr, initial_value] : m_initial_points) {
-    const ObjectTransformation premul = cache.get(ptr->path());
+    const ObjectTransformation premul = cache.get(ptr->path_vector()->path_object());
     auto p = premul.apply(initial_value);
     is_noop = false;
     map[ptr] = p;
@@ -61,17 +62,17 @@ TransformPointsHelper::make_command(const ObjectTransformation& t) const
   }
 }
 
-void TransformPointsHelper::update(const std::set<Path*>& paths)
+void TransformPointsHelper::update(const std::set<PathObject*>& path_objects)
 {
-  m_paths = paths;
+  m_path_objects = path_objects;
   update();
 }
 
 void TransformPointsHelper::update()
 {
   m_initial_points.clear();
-  for (auto* path : m_paths) {
-    for (PathPoint* point : path->selected_points()) {
+  for (auto* path_object : m_path_objects) {
+    for (PathPoint* point : path_object->geometry().selected_points()) {
       m_initial_points[point] = point->geometry();
       for (PathPoint* buddy : point->joined_points()) {
         m_initial_points[buddy] = point->compute_joined_point_geometry(*buddy);

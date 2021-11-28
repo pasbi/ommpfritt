@@ -1,48 +1,49 @@
-#include "objects/path/pathpoint.h"
-#include "objects/path/segment.h"
-#include "objects/path.h"
+#include "path/pathpoint.h"
+#include "path/path.h"
+#include "path/pathvector.h"
+#include "objects/pathobject.h"
 #include "scene/disjointpathpointsetforest.h"
 #include "scene/scene.h"
 
 namespace omm
 {
 
-PathPoint::PathPoint(const Point& geometry, Segment& segment)
+PathPoint::PathPoint(const Point& geometry, Path& path)
   : m_geometry(geometry)
-  , m_segment(segment)
+  , m_path(path)
 {
 }
 
-PathPoint::PathPoint(Segment& segment)
-  : m_segment(segment)
+PathPoint::PathPoint(Path& path)
+  : m_path(path)
 {
 }
 
 std::set<PathPoint*> PathPoint::joined_points() const
 {
-  return path()->scene()->joined_points().get(this);
+  return path_vector()->joined_points().get(this);
 }
 
 void PathPoint::join(std::set<PathPoint*> buddies)
 {
   buddies.insert(this);
-  path()->scene()->joined_points().insert(buddies);
+  path_vector()->joined_points().insert(buddies);
 }
 
 void PathPoint::disjoin()
 {
-  path()->scene()->joined_points().remove({this});
+  path_vector()->joined_points().remove({this});
 }
 
-Path* PathPoint::path() const
+PathVector* PathPoint::path_vector() const
 {
-  return m_segment.path();
+  return m_path.path_vector();
 }
 
 Point PathPoint::compute_joined_point_geometry(PathPoint& joined) const
 {
-  const auto controller_t = path()->global_transformation(Space::Scene);
-  const auto agent_t = joined.path()->global_transformation(Space::Scene);
+  const auto controller_t = path_vector()->path_object()->global_transformation(Space::Scene);
+  const auto agent_t = joined.path_vector()->path_object()->global_transformation(Space::Scene);
   const auto t = agent_t.inverted().apply(controller_t);
   auto geometry = joined.geometry();
   geometry.set_position(t.apply(this->geometry()).position());
@@ -54,13 +55,13 @@ Point PathPoint::compute_joined_point_geometry(PathPoint& joined) const
 
 std::size_t PathPoint::index() const
 {
-  assert(path() != nullptr);
+  assert(path_vector() != nullptr);
   std::size_t offset = 0;
-  for (auto* segment : path()->segments()) {
-    if (segment->contains(*this)) {
-      return offset + segment->find(*this);
+  for (auto* path : path_vector()->paths()) {
+    if (path->contains(*this)) {
+      return offset + path->find(*this);
     } else {
-      offset += segment->size();
+      offset += path->size();
     }
   }
   throw std::runtime_error("Point is not part of a path.");
@@ -76,14 +77,14 @@ const Point& PathPoint::geometry() const
   return m_geometry;
 }
 
-PathPoint PathPoint::copy(Segment& segment) const
+PathPoint PathPoint::copy(Path& path) const
 {
-  return PathPoint(m_geometry, segment);
+  return PathPoint(m_geometry, path);
 }
 
-Segment& PathPoint::segment() const
+Path& PathPoint::path() const
 {
-  return m_segment;
+  return m_path;
 }
 
 bool PathPoint::is_selected() const

@@ -9,7 +9,7 @@
     "Instance",
     "LineObject",
     "Mirror",
-    "Path",
+    "PathObject",
     "ProceduralPath",
     "RectangleObject",
     "Text",

@@ -10,7 +10,7 @@ class QPainterPath;
 namespace omm
 {
 
-class Path;
+class PathVector;
 
 class EnhancedPathVector
 {
@@ -26,7 +26,7 @@ public:
   const QPainterPath& fill() const;
   const QPainterPath& outline() const;
   friend void swap(EnhancedPathVector& a, EnhancedPathVector& b) noexcept;
-  DisjointPathPointSetForest joined_points(const Path& path) const;
+  DisjointPathPointSetForest joined_points(const PathVector& path) const;
 
 private:
   Geom::PathVector m_path_vector;

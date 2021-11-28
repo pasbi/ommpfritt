@@ -4,10 +4,11 @@
 
 namespace omm
 {
+
 class SubdividePathCommand : public CutPathCommand
 {
 public:
-  explicit SubdividePathCommand(Path& path);
+  explicit SubdividePathCommand(PathObject& path_object);
 };
 
 }  // namespace omm

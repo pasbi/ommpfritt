@@ -1,6 +1,6 @@
+#include "path/path.h"
 #include "geometry/point.h"
-#include "objects/path/pathpoint.h"
-#include "objects/path/segment.h"
+#include "path/pathpoint.h"
 #include "serializers/abstractserializer.h"
 #include <2geom/pathvector.h>
 
@@ -9,26 +9,26 @@ namespace
 
 using namespace omm;
 
-auto copy(const std::deque<std::unique_ptr<PathPoint>>& vs, Segment& segment)
+auto copy(const std::deque<std::unique_ptr<PathPoint>>& vs, Path& path)
 {
   std::decay_t<decltype(vs)> copy;
   for (auto&& v : vs) {
-    copy.emplace_back(std::make_unique<PathPoint>(v->geometry(), segment));
+    copy.emplace_back(std::make_unique<PathPoint>(v->geometry(), path));
   }
   return copy;
 }
 
-auto to_path_points(std::vector<Point>&& points, Segment& segment)
+auto to_path_points(std::vector<Point>&& points, Path& path)
 {
-  return ::transform<std::unique_ptr<PathPoint>, std::deque>(std::move(points), [&segment](auto&& point) {
-    return std::make_unique<PathPoint>(point, segment);
+  return ::transform<std::unique_ptr<PathPoint>, std::deque>(std::move(points), [&path](auto&& point) {
+    return std::make_unique<PathPoint>(point, path);
   });
 }
 
-auto to_path_points(std::deque<Point>&& points, Segment& segment)
+auto to_path_points(std::deque<Point>&& points, Path& path)
 {
-  return ::transform<std::unique_ptr<PathPoint>>(std::move(points), [&segment](auto&& point) {
-    return std::make_unique<PathPoint>(point, segment);
+  return ::transform<std::unique_ptr<PathPoint>>(std::move(points), [&path](auto&& point) {
+    return std::make_unique<PathPoint>(point, path);
   });
 }
 
@@ -37,25 +37,25 @@ auto to_path_points(std::deque<Point>&& points, Segment& segment)
 namespace omm
 {
 
-Segment::Segment(Path* path)
-  : m_path(path)
+Path::Path(PathVector* path_vector)
+  : m_path_vector(path_vector)
 {
 }
 
-Segment::Segment(std::deque<Point>&& points, Path* path)
+Path::Path(std::deque<Point>&& points, PathVector* path_vector)
   : m_points(to_path_points(std::move(points), *this))
-  , m_path(path)
+  , m_path_vector(path_vector)
 {
 }
 
-Segment::Segment(std::vector<Point>&& points, Path* path)
+Path::Path(std::vector<Point>&& points, PathVector* path_vector)
   : m_points(to_path_points(std::move(points), *this))
-  , m_path(path)
+  , m_path_vector(path_vector)
 {
 }
 
-Segment::Segment(const Geom::Path& geom_path, Path* path)
-  : m_path(path)
+Path::Path(const Geom::Path& geom_path, PathVector* path_vector)
+  : m_path_vector(path_vector)
 {
   const auto n = geom_path.size();
   for (std::size_t i = 0; i < n; ++i) {
@@ -74,53 +74,53 @@ Segment::Segment(const Geom::Path& geom_path, Path* path)
     pref.set_geometry(geometry);
   }
 
-  // path counts number of curves, segments counts number of points
+  // path_vector counts number of curves, path counts number of points
   assert(geom_path.size() + 1 == m_points.size());
 }
 
-Segment::Segment(const Segment& other, Path* path)
+Path::Path(const Path& other, PathVector* path_vector)
   : m_points(copy(other.m_points, *this))
-  , m_path(path)
+  , m_path_vector(path_vector)
 {
 }
 
-Segment::~Segment() = default;
+Path::~Path() = default;
 
-std::size_t Segment::size() const
+std::size_t Path::size() const
 {
   return m_points.size();
 }
 
-PathPoint& Segment::at(std::size_t i) const
+PathPoint& Path::at(std::size_t i) const
 {
   return *m_points.at(i);
 }
 
-bool Segment::contains(const PathPoint& point) const
+bool Path::contains(const PathPoint& point) const
 {
   return  std::any_of(m_points.begin(), m_points.end(), [&point](const auto& candidate) {
     return &point == candidate.get();
   });
 }
 
-std::size_t Segment::find(const PathPoint& point) const
+std::size_t Path::find(const PathPoint& point) const
 {
   const auto it = std::find_if(m_points.begin(), m_points.end(), [&point](const auto& candidate) {
     return &point == candidate.get();
   });
   if (it == m_points.end()) {
-    throw std::out_of_range("No such point in segment.");
+    throw std::out_of_range("No such point in path.");
   } else {
     return std::distance(m_points.begin(), it);
   }
 }
 
-PathPoint& Segment::add_point(const Vec2f& pos)
+PathPoint& Path::add_point(const Vec2f& pos)
 {
   return *m_points.emplace_back(std::make_unique<PathPoint>(Point{pos}, *this));
 }
 
-Geom::Path Segment::to_geom_path(InterpolationMode interpolation) const
+Geom::Path Path::to_geom_path(InterpolationMode interpolation) const
 {
   std::vector<Geom::CubicBezier> bzs;
   const std::size_t n = m_points.size();
@@ -130,10 +130,10 @@ Geom::Path Segment::to_geom_path(InterpolationMode interpolation) const
 
   bzs.reserve(n - 1);
 
-  std::unique_ptr<Segment> smoothened;
-  const Segment* self = this;
+  std::unique_ptr<Path> smoothened;
+  const Path* self = this;
   if (interpolation == InterpolationMode::Smooth) {
-    smoothened = std::make_unique<Segment>(*this);
+    smoothened = std::make_unique<Path>(*this);
     smoothened->smoothen();
     self = smoothened.get();
   }
@@ -146,7 +146,7 @@ Geom::Path Segment::to_geom_path(InterpolationMode interpolation) const
 }
 
 std::vector<Geom::Point>
-Segment::compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation)
+Path::compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation)
 {
   static constexpr double t = 1.0 / 3.0;
   switch (interpolation) {
@@ -169,12 +169,12 @@ Segment::compute_control_points(const Point& a, const Point& b, InterpolationMod
   return {};
 }
 
-Path* Segment::path() const
+PathVector* Path::path_vector() const
 {
-  return m_path;
+  return m_path_vector;
 }
 
-void Segment::smoothen() const
+void Path::smoothen() const
 {
   std::deque<std::unique_ptr<PathPoint>> points;
   for (std::size_t i = 0; i < m_points.size(); ++i) {
@@ -183,7 +183,7 @@ void Segment::smoothen() const
   }
 }
 
-Point Segment::smoothen_point(std::size_t i) const
+Point Path::smoothen_point(std::size_t i) const
 {
   const std::size_t n = m_points.size();
   PathPoint* left = nullptr;
@@ -205,19 +205,19 @@ Point Segment::smoothen_point(std::size_t i) const
   return copy;
 }
 
-std::deque<PathPoint*> Segment::points() const
+std::deque<PathPoint*> Path::points() const
 {
   return ::transform<PathPoint*>(m_points, [](const auto& pt) { return pt.get(); });
 }
 
-void Segment::insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint>>&& points)
+void Path::insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint>>&& points)
 {
   m_points.insert(m_points.begin() + i,
                   std::make_move_iterator(points.begin()),
                   std::make_move_iterator(points.end()));
 }
 
-std::deque<std::unique_ptr<PathPoint> > Segment::extract(std::size_t start, std::size_t size)
+std::deque<std::unique_ptr<PathPoint> > Path::extract(std::size_t start, std::size_t size)
 {
   std::deque<std::unique_ptr<PathPoint>> points(size);
   for (std::size_t i = 0; i < size; ++i) {
@@ -229,7 +229,7 @@ std::deque<std::unique_ptr<PathPoint> > Segment::extract(std::size_t start, std:
   return points;
 }
 
-void Segment::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   const auto points_ptr = make_pointer(root, POINTS_POINTER);
   serializer.start_array(m_points.size(), points_ptr);
@@ -239,7 +239,7 @@ void Segment::serialize(AbstractSerializer& serializer, const Pointer& root) con
   serializer.end_array();
 }
 
-void Segment::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   const auto points_ptr = make_pointer(root, POINTS_POINTER);
   const auto size = deserializer.array_size(points_ptr);
@@ -250,22 +250,22 @@ void Segment::deserialize(AbstractDeserializer& deserializer, const Pointer& roo
   }
 }
 
-SegmentView::SegmentView(Segment& segment, std::size_t index, std::size_t size)
-  : segment(&segment), index(index), size(size)
+PathView::PathView(Path& path, std::size_t index, std::size_t size)
+  : path(&path), index(index), size(size)
 {
 }
 
-bool operator<(const SegmentView& a, const SegmentView& b)
+bool operator<(const PathView& a, const PathView& b)
 {
-  static constexpr auto as_tuple = [](const SegmentView& a) {
-    return std::tuple{a.segment, a.index};
+  static constexpr auto as_tuple = [](const PathView& a) {
+    return std::tuple{a.path, a.index};
   };
   return as_tuple(a) < as_tuple(b);
 }
 
-std::ostream& operator<<(std::ostream& ostream, const SegmentView& segment_view)
+std::ostream& operator<<(std::ostream& ostream, const PathView& path_view)
 {
-  ostream << "Segment[" << segment_view.segment << " " << segment_view.index << " " << segment_view.size << "]";
+  ostream << "Path[" << path_view.path << " " << path_view.index << " " << path_view.size << "]";
   return ostream;
 }
 

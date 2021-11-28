@@ -3,9 +3,10 @@
 #include "common.h"
 #include "logging.h"
 #include "objects/convertedobject.h"
-#include "objects/path.h"
-#include "objects/path/enhancedpathvector.h"
-#include "objects/path/segment.h"
+#include "objects/pathobject.h"
+#include "path/enhancedpathvector.h"
+#include "path/path.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -399,13 +400,13 @@ Object& Object::adopt(std::unique_ptr<Object> adoptee, const std::size_t pos)
 
 ConvertedObject Object::convert() const
 {
-  auto converted = std::make_unique<Path>(scene());
+  auto converted = std::make_unique<PathObject>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
   const auto enhanced_path_vector = geom_paths();
-  converted->set(enhanced_path_vector);
-  converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
-  auto joined_points = enhanced_path_vector.joined_points(*converted);
+  converted->geometry().set(enhanced_path_vector.path_vector());
+  converted->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
+  auto joined_points = enhanced_path_vector.joined_points(converted->geometry());
   return ConvertedObject{std::move(converted), std::move(joined_points), true};
 }
 

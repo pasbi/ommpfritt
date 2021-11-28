@@ -3,7 +3,7 @@
 #include "main/options.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
-#include "objects/path.h"
+#include "objects/pathobject.h"
 #include "scene/mailbox.h"
 #include "scene/pointselection.h"
 #include "scene/scene.h"
@@ -97,7 +97,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
           [this](const std::set<Object*>&) { update_manager(); });
 
   connect(&scene.mail_box(), &MailBox::object_appearance_changed, this, [this](Object& o) {
-    Path* path = type_cast<Path*>(&o);
+    auto* path = type_cast<PathObject*>(&o);
     if (path != nullptr) {
       update_manager();
     }
@@ -235,7 +235,7 @@ void BoundingBoxManager::reset_transformation()
   m_old_bounding_box = update_manager();
   switch (m_current_mode) {
   case Mode::Points:
-    m_transform_points_helper.update(type_casts<Path*>(scene().item_selection<Object>()));
+    m_transform_points_helper.update(type_casts<PathObject*>(scene().item_selection<Object>()));
     break;
   case Mode::Objects:
     m_transform_objects_helper.update(scene().item_selection<Object>());

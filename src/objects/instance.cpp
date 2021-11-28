@@ -3,7 +3,7 @@
 #include "commands/propertycommand.h"
 #include "objects/convertedobject.h"
 #include "objects/empty.h"
-#include "objects/path/enhancedpathvector.h"
+#include "path/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
 #include "renderers/painteroptions.h"

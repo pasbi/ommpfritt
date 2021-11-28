@@ -1,7 +1,7 @@
 #include "objects/rectangleobject.h"
-#include "objects/path/enhancedpathvector.h"
-#include "objects/path/segment.h"
-#include "objects/path/pathpoint.h"
+#include "path/enhancedpathvector.h"
+#include "path/path.h"
+#include "path/pathpoint.h"
 #include "properties/floatvectorproperty.h"
 
 namespace omm
@@ -69,7 +69,7 @@ EnhancedPathVector RectangleObject::paths() const
 
   points.emplace_back(points.front());
   EnhancedPathVector::JoinedPointIndices joined_points{{{0, points.size() - 1}}};
-  return {Geom::PathVector{Segment{std::move(points)}.to_geom_path()}, joined_points};
+  return {Geom::PathVector{Path{std::move(points)}.to_geom_path()}, joined_points};
 }
 
 void RectangleObject::on_property_value_changed(Property* property)

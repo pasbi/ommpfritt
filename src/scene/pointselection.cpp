@@ -1,6 +1,7 @@
 #include "scene/pointselection.h"
-#include "objects/path.h"
-#include "objects/path/pathpoint.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "scene/scene.h"
 
 namespace omm
@@ -13,8 +14,8 @@ PointSelection::PointSelection(Scene& scene) : m_scene(scene)
 std::set<PathPoint*> PointSelection::points() const
 {
   std::set<PathPoint*> selected_points;
-  for (auto* path : type_casts<Path*>(m_scene.item_selection<Object>())) {
-    for (auto* point : path->selected_points()) {
+  for (auto* path_object : type_casts<PathObject*>(m_scene.item_selection<Object>())) {
+    for (auto* point : path_object->geometry().selected_points()) {
       selected_points.insert(point);
     }
   }
@@ -25,7 +26,7 @@ std::set<Point> PointSelection::points(Space space) const
 {
   std::set<Point> selected_points;
   for (auto* pp : points()) {
-    const auto transformation = pp->path()->global_transformation(space);
+    const auto transformation = pp->path_vector()->path_object()->global_transformation(space);
     selected_points.insert(transformation.apply(pp->geometry()));
   }
   return selected_points;

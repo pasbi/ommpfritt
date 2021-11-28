@@ -1,7 +1,6 @@
 #include "objects/text.h"
 #include "mainwindow/viewport/viewport.h"
-#include "objects/path.h"
-#include "objects/path/enhancedpathvector.h"
+#include "path/enhancedpathvector.h"
 #include "properties/floatproperty.h"
 #include "properties/stringproperty.h"
 #include "renderers/painter.h"

@@ -1,9 +1,10 @@
 #include "tools/handles/pointselecthandle.h"
 
 #include "commands/modifypointscommand.h"
-#include "objects/path.h"
-#include "objects/path/pathpoint.h"
-#include "objects/path/segment.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/path.h"
+#include "path/pathvector.h"
 #include "scene/scene.h"
 #include "scene/mailbox.h"
 #include "tools/tool.h"
@@ -15,9 +16,9 @@
 namespace omm
 {
 
-PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, PathPoint& point)
+PointSelectHandle::PointSelectHandle(Tool& tool, PathObject& path_object, PathPoint& point)
     : AbstractSelectHandle(tool)
-    , m_path(path)
+    , m_path_object(path_object)
     , m_point(point)
     , m_left_tangent_handle(
           std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left))
@@ -28,7 +29,7 @@ PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, PathPoint& point)
 
 ObjectTransformation PointSelectHandle::transformation() const
 {
-  return m_path.global_transformation(Space::Viewport);
+  return m_path_object.global_transformation(Space::Viewport);
 }
 
 bool PointSelectHandle::contains_global(const Vec2f& point) const
@@ -186,9 +187,9 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
 
 std::pair<bool, bool> PointSelectHandle::tangents_active() const
 {
-  const auto interpolation_mode = m_path.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
+  const auto interpolation_mode = m_path_object.property(PathObject::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
   if ((interpolation_mode == InterpolationMode::Bezier && m_point.is_selected())) {
-    const auto points = m_path.find_segment(m_point)->points();
+    const auto points = m_path_object.geometry().find_path(m_point)->points();
     assert(!points.empty());
     return {points.front() != &m_point, points.back() != &m_point};
   } else {
@@ -206,7 +207,7 @@ void PointSelectHandle::set_selected(bool selected)
 
 void PointSelectHandle::clear()
 {
-  for (auto* point : m_path.points()) {
+  for (auto* point : m_path_object.geometry().points()) {
     point->set_selected(false);
   }
 }

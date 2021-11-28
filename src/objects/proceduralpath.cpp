@@ -1,9 +1,9 @@
 #include "objects/proceduralpath.h"
 #include "external/pybind11/stl.h"
-#include "objects/path.h"
-#include "objects/path/pathpoint.h"
-#include "objects/path/segment.h"
-#include "objects/path/enhancedpathvector.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/path.h"
+#include "path/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/stringproperty.h"
@@ -83,7 +83,7 @@ void ProceduralPath::update()
 EnhancedPathVector ProceduralPath::paths() const
 {
   std::deque<Point> points(m_points.begin(), m_points.end());
-  return Geom::PathVector{Segment{std::move(points)}.to_geom_path()};
+  return Geom::PathVector{Path{std::move(points)}.to_geom_path()};
 }
 
 void ProceduralPath::on_property_value_changed(Property* property)

@@ -1,7 +1,9 @@
 #include "scene/disjointpathpointsetforest.h"
 #include "serializers/abstractserializer.h"
-#include "objects/path/pathpoint.h"
-#include "objects/path.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
+#include "path/path.h"
+#include "objects/pathobject.h"
 #include "scene/scene.h"
 
 static constexpr auto FOREST_POINTER = "forest";
@@ -47,8 +49,8 @@ private:
     for (const auto& set : m_joined_point_indices) {
       auto& forest_set = m_ref.m_forest.emplace_back();
       for (const auto& [path_id, point_index] : set) {
-        auto* path = dynamic_cast<Path*>(map.at(path_id));
-        auto& path_point = path->point_at_index(point_index);
+        auto* path_object = dynamic_cast<PathObject*>(map.at(path_id));
+        auto& path_point = path_object->geometry().point_at_index(point_index);
         forest_set.insert(&path_point);
       }
     }
@@ -89,13 +91,17 @@ void DisjointPathPointSetForest::remove_dangling_points()
       if (point == nullptr) {
         return true;
       }
-      if (point->path() == nullptr) {
+      if (point->path_vector() == nullptr) {
         return true;
       }
-      if (point->path()->scene() == nullptr) {
+      const auto* path_object = point->path_vector()->path_object();
+      if (path_object == nullptr) {
         return true;
       }
-      return !point->path()->scene()->contains(point->path());
+      if (path_object->scene() == nullptr) {
+        return true;
+      }
+      return !path_object->scene()->contains(path_object);
     });
   }
 
@@ -115,7 +121,7 @@ void DisjointPathPointSetForest::serialize_impl(AbstractSerializer& serializer, 
     for (auto* p : m_forest[i]) {
       const auto ptr = make_pointer(set_ptr, j);
       serializer.set_value(p->index(), make_pointer(ptr, INDEX_POINTER));
-      serializer.set_value(p->path()->id(), make_pointer(ptr, PATH_ID_POINTER));
+      serializer.set_value(p->path_vector()->path_object()->id(), make_pointer(ptr, PATH_ID_POINTER));
       j += 1;
     }
     serializer.end_array();

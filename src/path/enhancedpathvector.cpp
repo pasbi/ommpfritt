@@ -1,5 +1,5 @@
-#include "objects/path/enhancedpathvector.h"
-#include "objects/path.h"
+#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
 #include <QPainterPath>
 
 namespace
@@ -77,7 +77,7 @@ const QPainterPath& EnhancedPathVector::outline() const
   return *m_outline;
 }
 
-DisjointPathPointSetForest EnhancedPathVector::joined_points(const Path& path) const
+DisjointPathPointSetForest EnhancedPathVector::joined_points(const PathVector& path) const
 {
   DisjointPathPointSetForest forest;
   for (const auto& set : m_joined_points.sets()) {

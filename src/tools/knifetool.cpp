@@ -3,8 +3,8 @@
 #include "commands/modifypointscommand.h"
 #include "common.h"
 #include "geometry/point.h"
-#include "objects/path.h"
-#include "objects/path/enhancedpathvector.h"
+#include "objects/pathobject.h"
+#include "path/enhancedpathvector.h"
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
 #include "scene/history/historymodel.h"
@@ -59,9 +59,9 @@ bool KnifeTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEve
     return true;
   } else if (m_is_cutting) {
     m_points.clear();
-    for (auto&& path : ::type_casts<Path*>(scene()->item_selection<Object>())) {
+    for (auto&& path_object : ::type_casts<PathObject*>(scene()->item_selection<Object>())) {
       const auto path_vector
-          = path->global_transformation(Space::Viewport).apply(path->geom_paths().path_vector());
+          = path_object->global_transformation(Space::Viewport).apply(path_object->geom_paths().path_vector());
       const auto cut_points
           = compute_cut_points<Vec2f>(path_vector, m_mouse_press_pos, m_mouse_move_pos);
       m_points.insert(m_points.end(), cut_points.begin(), cut_points.end());
@@ -90,11 +90,11 @@ bool KnifeTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
   if (m_is_cutting) {
-    if (const auto paths = ::type_casts<Path*>(scene()->item_selection<Object>()); !paths.empty()) {
+    if (const auto path_objects = ::type_casts<PathObject*>(scene()->item_selection<Object>()); !path_objects.empty()) {
       std::unique_ptr<Macro> macro;
-      for (auto&& path : paths) {
+      for (auto&& path_object : path_objects) {
         const auto path_vector
-            = path->global_transformation(Space::Viewport).apply(path->geom_paths().path_vector());
+            = path_object->global_transformation(Space::Viewport).apply(path_object->geom_paths().path_vector());
         const auto cut_points = compute_cut_points<Geom::PathVectorTime>(path_vector,
                                                                          m_mouse_press_pos,
                                                                          m_mouse_move_pos);
@@ -102,7 +102,7 @@ void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
           if (!macro) {
             macro = scene()->history().start_macro(QObject::tr("Cut Path"));
           }
-          scene()->submit<CutPathCommand>(*path, cut_points);
+          scene()->submit<CutPathCommand>(*path_object, cut_points);
         }
       }
     }

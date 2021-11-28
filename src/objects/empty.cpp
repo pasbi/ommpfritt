@@ -1,5 +1,5 @@
 #include "objects/empty.h"
-#include "objects/path/enhancedpathvector.h"
+#include "path/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 
 namespace omm

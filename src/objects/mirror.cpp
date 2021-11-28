@@ -3,8 +3,9 @@
 #include "geometry/vec2.h"
 #include "objects/convertedobject.h"
 #include "objects/empty.h"
-#include "objects/path/enhancedpathvector.h"
-#include "objects/path.h"
+#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
+#include "objects/pathobject.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
@@ -212,24 +213,24 @@ void Mirror::update_path_mode()
     const auto pv = child.geom_paths().path_vector();
 
     const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
-    auto reflection = std::make_unique<Path>(scene());
+    auto reflection = std::make_unique<PathObject>(scene());
     if (const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
         direction == Direction::Both)
     {
       auto r = child.transformation().apply(pv);
       r = reflect(r, Direction::Horizontal, eps);
       r = reflect(r, Direction::Vertical, eps);
-      reflection->set(r);
+      reflection->geometry().set(r);
     } else {
       auto r = child.transformation().apply(pv);
       r = reflect(r, direction, eps);
-      reflection->set(r);
+      reflection->geometry().set(r);
     }
 
-    const auto interpolation = child.has_property(Path::INTERPOLATION_PROPERTY_KEY)
-                             ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
+    const auto interpolation = child.has_property(PathObject::INTERPOLATION_PROPERTY_KEY)
+                             ? child.property(PathObject::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
                              : InterpolationMode::Bezier;
-    reflection->property(Path::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
+    reflection->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
     m_reflection = std::move(reflection);
   }
 }

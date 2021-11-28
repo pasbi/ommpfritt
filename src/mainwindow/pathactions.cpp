@@ -12,9 +12,10 @@
 #include "mainwindow/mainwindow.h"
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
-#include "objects/path.h"
-#include "objects/path/pathpoint.h"
-#include "objects/path/segment.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/path.h"
+#include "path/pathvector.h"
 #include "objects/convertedobject.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
@@ -32,11 +33,11 @@ namespace
 
 using namespace omm;
 
-template<typename F> void foreach_segment(Application& app, F&& f)
+template<typename F> void foreach_subpath(Application& app, F&& f)
 {
-  for (auto* path : app.scene->item_selection<Path>()) {
-    for (auto* segment : path->segments()) {
-      f(segment);
+  for (auto* path_object : app.scene->item_selection<PathObject>()) {
+    for (auto* path : path_object->geometry().paths()) {
+      f(path);
     }
   }
 }
@@ -44,10 +45,10 @@ template<typename F> void foreach_segment(Application& app, F&& f)
 void modify_tangents(InterpolationMode mode, Application& app)
 {
   std::map<PathPoint*, Point> map;
-  const auto paths = app.scene->item_selection<Path>();
-  for (Path* path : paths) {
-    for (const Segment* segment : path->segments()) {
-      const auto points = segment->points();
+  const auto paths = app.scene->item_selection<PathObject>();
+  for (PathObject* path_object : paths) {
+    for (const Path* path : path_object->geometry().paths()) {
+      const auto points = path->points();
       for (std::size_t i = 0; i < points.size(); ++i) {
         PathPoint* point = points[i];
         if (point->is_selected()) {
@@ -55,7 +56,7 @@ void modify_tangents(InterpolationMode mode, Application& app)
           case InterpolationMode::Bezier:
             break;  // do nothing.
           case InterpolationMode::Smooth:
-            map[point] = segment->smoothen_point(i);
+            map[point] = path->smoothen_point(i);
             break;
           case InterpolationMode::Linear:
             map[point] = point->geometry().nibbed();
@@ -66,8 +67,8 @@ void modify_tangents(InterpolationMode mode, Application& app)
   }
 
   constexpr auto bezier_mode = static_cast<std::size_t>(InterpolationMode::Bezier);
-  const auto interpolation_properties = ::transform<Property*>(paths, [](Path* path) {
-    return path->property(Path::INTERPOLATION_PROPERTY_KEY);
+  const auto interpolation_properties = ::transform<Property*>(paths, [](PathObject* path) {
+    return path->property(PathObject::INTERPOLATION_PROPERTY_KEY);
   });
 
   if (!map.empty()) {
@@ -154,18 +155,18 @@ std::set<Object*> convert_objects_recursively(Application& app, std::set<Object*
 void remove_selected_points(Application& app)
 {
   std::unique_ptr<Macro> macro;
-  for (auto* path : app.scene->item_selection<Path>()) {
-    std::deque<SegmentView> removed_points;
-    for (Segment* segment : path->segments()) {
-      const auto selected_ranges = find_coherent_ranges(segment->points(),
+  for (auto* path_object : app.scene->item_selection<PathObject>()) {
+    std::deque<PathView> removed_points;
+    for (Path* path : path_object->geometry().paths()) {
+      const auto selected_ranges = find_coherent_ranges(path->points(),
                                                         std::mem_fn(&PathPoint::is_selected));
       for (const auto& range : selected_ranges) {
-        removed_points.emplace_back(*segment, range.start, range.size);
+        removed_points.emplace_back(*path, range.start, range.size);
       }
     }
 
     if (!removed_points.empty()) {
-      auto command = std::make_unique<RemovePointsCommand>(*path, std::move(removed_points));
+      auto command = std::make_unique<RemovePointsCommand>(*path_object, std::move(removed_points));
       if (!macro) {
         macro = app.scene->history().start_macro(command->actionText());
       }
@@ -186,7 +187,7 @@ void convert_objects(Application& app)
     scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
     const auto converted_objects = convert_objects_recursively(app, convertibles);
     scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
-    const auto is_path = [](auto&& object) { return object->type() == Path::TYPE; };
+    const auto is_path = [](auto&& object) { return object->type() == PathObject::TYPE; };
     if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
       scene.set_mode(SceneMode::Vertex);
     }
@@ -208,7 +209,7 @@ void remove_selected_items(Application& app)
 void subdivide(Application& app)
 {
   std::list<std::unique_ptr<SubdividePathCommand>> cmds;
-  for (auto* path : app.scene->item_selection<Path>()) {
+  for (auto* path : app.scene->item_selection<PathObject>()) {
     auto cmd = std::make_unique<SubdividePathCommand>(*path);
     if (!cmd->is_noop()) {
       cmds.push_back(std::move(cmd));
@@ -228,8 +229,8 @@ void select_all(Application& app)
 {
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
-    for (auto* path : app.scene->item_selection<Path>()) {
-      for (auto* point : path->points()) {
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (auto* point : path_object->geometry().points()) {
         point->set_selected(true);
       }
     }
@@ -246,8 +247,8 @@ void deselect_all(Application& app)
 {
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
-    for (auto* path : app.scene->item_selection<Path>()) {
-      for (auto* point : path->points()) {
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (auto* point : path_object->geometry().points()) {
         point->set_selected(false);
       }
     }
@@ -273,8 +274,8 @@ void invert_selection(Application& app)
 {
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
-    for (auto* path : app.scene->item_selection<Path>()) {
-      for (auto* point : path->points()) {
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (auto* point : path_object->geometry().points()) {
         point->set_selected(!point->is_selected());
       }
     }
@@ -290,7 +291,7 @@ void invert_selection(Application& app)
 
 void select_connected_points(Application& app)
 {
-  foreach_segment(app, [](const auto* segment) {
+  foreach_subpath(app, [](const auto* segment) {
     const auto points = segment->points();
     if (std::any_of(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected))) {
       std::for_each(points.begin(), points.end(), [](auto* point) { point->set_selected(true); });
@@ -301,7 +302,7 @@ void select_connected_points(Application& app)
 
 void fill_selection(Application& app)
 {
-  foreach_segment(app, [](const auto* segment) {
+  foreach_subpath(app, [](const auto* segment) {
     const auto points = segment->points();
     auto first_it = std::find_if(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected));
     auto last_it = std::find_if(points.rbegin(), points.rend(), std::mem_fn(&PathPoint::is_selected));
@@ -314,7 +315,7 @@ void fill_selection(Application& app)
 
 void extend_selection(Application& app)
 {
-  foreach_segment(app, [](const auto* segment) {
+  foreach_subpath(app, [](const auto* segment) {
     std::set<std::size_t> selection;
     const auto points = segment->points();
     for (std::size_t i = 1; i < points.size() - 1; ++i) {
@@ -332,7 +333,7 @@ void extend_selection(Application& app)
 
 void shrink_selection(Application& app)
 {
-  foreach_segment(app, [](const auto* segment) {
+  foreach_subpath(app, [](const auto* segment) {
     std::set<std::size_t> selection_fringe;
     const auto points = segment->points();
     for (std::size_t i = 1; i < points.size() - 1; ++i) {
@@ -378,6 +379,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
 
 namespace omm::path_actions
 {
+
 bool perform_action(const QString& name, Application& app)
 {
   auto it = ::actions.find(name);

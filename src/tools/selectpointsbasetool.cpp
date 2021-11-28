@@ -1,6 +1,8 @@
 #include "tools/selectpointstool.h"
 #include "keybindings/keybindings.h"
-#include "objects/path/pathpoint.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "properties/optionproperty.h"
@@ -68,13 +70,13 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool allow_clear)
 {
-  const auto paths = type_casts<Path*>(scene()->template item_selection<Object>());
+  const auto path_objects = type_casts<PathObject*>(scene()->template item_selection<Object>());
   if (AbstractSelectTool::mouse_press(pos, event)) {
-    m_transform_points_helper->update(paths);
+    m_transform_points_helper->update(path_objects);
     return true;
   } else if (allow_clear && event.buttons() == Qt::LeftButton) {
-    for (auto* path : paths) {
-      path->deselect_all_points();
+    for (auto* path_object : path_objects) {
+      path_object->geometry().deselect_all_points();
     }
     Q_EMIT scene()->mail_box().point_selection_changed();
     return false;
@@ -85,9 +87,9 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 
 void SelectPointsBaseTool::make_handles()
 {
-  for (auto* path : scene()->item_selection<Path>()) {
-    for (auto* point : path->points()) {
-      auto handle = std::make_unique<PointSelectHandle>(*this, *path, *point);
+  for (auto* path_object : scene()->item_selection<PathObject>()) {
+    for (auto* point : path_object->geometry().points()) {
+      auto handle = std::make_unique<PointSelectHandle>(*this, *path_object, *point);
       push_handle(std::move(handle));
     }
   }

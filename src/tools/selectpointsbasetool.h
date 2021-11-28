@@ -1,7 +1,6 @@
 #pragma once
 
 #include "tools/handles/particlehandle.h"
-#include "objects/path.h"
 #include "tools/selecttool.h"
 #include "tools/handles/pointselecthandle.h"
 #include <memory>
@@ -22,7 +21,7 @@ public:
   SelectPointsBaseTool& operator=(SelectPointsBaseTool&&) = delete;
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   static constexpr auto BOUNDING_BOX_MODE_PROPERTY_KEY = "bounding_box_mode";
-  enum class BoundingBoxMode { IncludeTangents, ExcludeTangents, None };
+  enum class BoundingBoxMode {IncludeTangents, ExcludeTangents, None};
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void transform_objects(ObjectTransformation t) override;

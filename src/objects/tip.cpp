@@ -1,7 +1,7 @@
 #include "objects/tip.h"
-#include "objects/path/segment.h"
-#include "objects/path/pathpoint.h"
-#include "objects/path/enhancedpathvector.h"
+#include "path/path.h"
+#include "path/pathpoint.h"
+#include "path/enhancedpathvector.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 
@@ -43,7 +43,7 @@ EnhancedPathVector Tip::paths() const
 {
   auto points = m_marker_properties.shape(1.0);
   EnhancedPathVector::JoinedPointIndices joined_points{{{0, points.size() - 1}}};
-  return {Geom::PathVector{Segment{std::move(points)}.to_geom_path()}, joined_points};
+  return {Geom::PathVector{Path{std::move(points)}.to_geom_path()}, joined_points};
 }
 
 }  // namespace omm

@@ -1,8 +1,8 @@
 #include "objects/lineobject.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
-#include "objects/path/segment.h"
-#include "objects/path/enhancedpathvector.h"
+#include "path/path.h"
+#include "path/enhancedpathvector.h"
 #include <QObject>
 
 namespace omm
@@ -43,8 +43,8 @@ EnhancedPathVector LineObject::paths() const
   const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
   const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
   const PolarCoordinates b(angle, centered ? length / 2.0 : length);
-  const Segment segment{std::vector{Point(a.to_cartesian()), Point(b.to_cartesian())}};
-  auto geom_path = segment.to_geom_path(InterpolationMode::Linear);
+  const Path path{std::vector{Point(a.to_cartesian()), Point(b.to_cartesian())}};
+  auto geom_path = path.to_geom_path(InterpolationMode::Linear);
   return {geom_path};
 }
 

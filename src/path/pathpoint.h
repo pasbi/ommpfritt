@@ -7,17 +7,17 @@ namespace omm
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path;
-class Segment;
+class PathVector;
 
 class PathPoint
 {
 public:
-  explicit PathPoint(const Point& geometry, Segment& segment);
-  explicit PathPoint(Segment& segment);
+  explicit PathPoint(const Point& geometry, Path& path);
+  explicit PathPoint(Path& path);
   void set_geometry(const Point& point);
   [[nodiscard]] const Point& geometry() const;
-  PathPoint copy(Segment& segment) const;
-  [[nodiscard]] Segment& segment() const;
+  PathPoint copy(Path& path) const;
+  [[nodiscard]] Path& path() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PathPoint", "PathPoint");
 
   void set_selected(bool is_selected, bool update_buddies = true);
@@ -36,7 +36,7 @@ public:
   [[nodiscard]] std::set<PathPoint*> joined_points() const;
   void join(std::set<PathPoint*> buddies);
   void disjoin();
-  [[nodiscard]] Path* path() const;
+  [[nodiscard]] PathVector* path_vector() const;
   [[nodiscard]] Point compute_joined_point_geometry(PathPoint& joined) const;
 
   /**
@@ -48,7 +48,7 @@ public:
 
 private:
   Point m_geometry;
-  Segment& m_segment;
+  Path& m_path;
   bool m_is_selected = false;
 };
 

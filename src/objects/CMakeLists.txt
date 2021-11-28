@@ -17,8 +17,8 @@ target_sources(libommpfritt PRIVATE
   mirror.h
   object.cpp
   object.h
-  path.cpp
-  path.h
+  pathobject.cpp
+  pathobject.h
   proceduralpath.cpp
   proceduralpath.h
   rectangleobject.cpp
@@ -30,5 +30,3 @@ target_sources(libommpfritt PRIVATE
   view.cpp
   view.h
 )
-
-add_subdirectory(path)

@@ -10,14 +10,14 @@ class QMouseEvent;
 namespace omm
 {
 
-class Path;
+class PathObject;
 class PathPoint;
 
 class PointSelectHandle : public AbstractSelectHandle
 {
 public:
   enum class TangentMode { Mirror, Individual };
-  explicit PointSelectHandle(Tool& tool, Path& path, PathPoint& point);
+  explicit PointSelectHandle(Tool& tool, PathObject& path_object, PathPoint& point);
   [[nodiscard]] bool contains_global(const Vec2f& point) const override;
   void draw(QPainter& painter) const override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
@@ -33,7 +33,7 @@ protected:
   [[nodiscard]] bool is_selected() const override;
 
 private:
-  Path& m_path;
+  PathObject& m_path_object;
   PathPoint& m_point;
   std::unique_ptr<TangentHandle> m_left_tangent_handle;
   std::unique_ptr<TangentHandle> m_right_tangent_handle;

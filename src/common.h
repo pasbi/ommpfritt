@@ -364,10 +364,10 @@ auto find_if(Ts&& items, P&& predicate, F&& f, R&& default_)
  * @param up the unique_ptr to copy
  * @return a new unique pointer holding a copy of the old unique_ptr's content.
  */
-template<typename T> std::unique_ptr<T> copy_unique_ptr(const std::unique_ptr<T>& up)
+template<typename T, typename... Args> std::unique_ptr<T> copy_unique_ptr(const std::unique_ptr<T>& up, Args&&... args)
 {
   if (up) {
-    return std::make_unique<T>(*up);
+    return std::make_unique<T>(*up, std::forward<Args>(args)...);
   } else {
     return {};
   }
