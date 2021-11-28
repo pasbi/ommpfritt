@@ -2,7 +2,7 @@
 #include "commands/modifypointscommand.h"
 #include "scene/scene.h"
 #include "objects/path.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
 #include "widgets/coordinateedit.h"
 #include <QHBoxLayout>
 #include <QPushButton>

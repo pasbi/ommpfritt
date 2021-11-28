@@ -1,6 +1,6 @@
 #include "tools/selectpointstool.h"
 #include "keybindings/keybindings.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "properties/optionproperty.h"

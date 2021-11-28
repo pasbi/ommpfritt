@@ -1,6 +1,6 @@
 #include "scene/disjointpathpointsetforest.h"
 #include "serializers/abstractserializer.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
 #include "objects/path.h"
 #include "scene/scene.h"
 

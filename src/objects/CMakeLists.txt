@@ -9,8 +9,6 @@ target_sources(libommpfritt PRIVATE
   ellipse.h
   empty.cpp
   empty.h
-  enhancedpathvector.cpp
-  enhancedpathvector.h
   instance.cpp
   instance.h
   lineobject.cpp
@@ -21,14 +19,10 @@ target_sources(libommpfritt PRIVATE
   object.h
   path.cpp
   path.h
-  pathpoint.cpp
-  pathpoint.h
   proceduralpath.cpp
   proceduralpath.h
   rectangleobject.cpp
   rectangleobject.h
-  segment.cpp
-  segment.h
   text.cpp
   text.h
   tip.cpp
@@ -36,3 +30,5 @@ target_sources(libommpfritt PRIVATE
   view.cpp
   view.h
 )
+
+add_subdirectory(path)

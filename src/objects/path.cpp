@@ -6,9 +6,9 @@
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
-#include "objects/pathpoint.h"
-#include "objects/segment.h"
-#include "objects/enhancedpathvector.h"
+#include "objects/path/pathpoint.h"
+#include "objects/path/segment.h"
+#include "objects/path/enhancedpathvector.h"
 #include <QObject>
 #include "scene/mailbox.h"
 

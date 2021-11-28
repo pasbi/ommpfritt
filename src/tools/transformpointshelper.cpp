@@ -3,7 +3,7 @@
 #include "cachedgetter.h"
 #include "geometry/objecttransformation.h"
 #include "objects/path.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 

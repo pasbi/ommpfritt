@@ -1,5 +1,5 @@
 #include "objects/boolean.h"
-#include "objects/enhancedpathvector.h"
+#include "objects/path/enhancedpathvector.h"
 #include "properties/optionproperty.h"
 #include <2geom/2geom.h>
 #include <2geom/intersection-graph.h>

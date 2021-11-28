@@ -1,9 +1,9 @@
 #include "objects/ellipse.h"
 
 #include "objects/path.h"
-#include "objects/pathpoint.h"
-#include "objects/segment.h"
-#include "objects/enhancedpathvector.h"
+#include "objects/path/pathpoint.h"
+#include "objects/path/segment.h"
+#include "objects/path/enhancedpathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"

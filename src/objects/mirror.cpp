@@ -3,7 +3,7 @@
 #include "geometry/vec2.h"
 #include "objects/convertedobject.h"
 #include "objects/empty.h"
-#include "objects/enhancedpathvector.h"
+#include "objects/path/enhancedpathvector.h"
 #include "objects/path.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"

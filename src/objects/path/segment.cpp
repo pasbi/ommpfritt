@@ -1,6 +1,6 @@
 #include "geometry/point.h"
-#include "objects/pathpoint.h"
-#include "objects/segment.h"
+#include "objects/path/pathpoint.h"
+#include "objects/path/segment.h"
 #include "serializers/abstractserializer.h"
 #include <2geom/pathvector.h>
 

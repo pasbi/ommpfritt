@@ -1,8 +1,8 @@
 #include "commands/cutpathcommand.h"
-#include "objects/segment.h"
 #include "commands/modifypointscommand.h"
 #include "objects/path.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
+#include "objects/path/segment.h"
 
 namespace
 {

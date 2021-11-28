@@ -1,6 +1,6 @@
 #include "tools/brushselecttool.h"
 #include "objects/path.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
 #include "preferences/uicolors.h"
 #include "properties/floatproperty.h"
 #include "renderers/painter.h"

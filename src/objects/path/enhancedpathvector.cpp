@@ -1,4 +1,4 @@
-#include "objects/enhancedpathvector.h"
+#include "objects/path/enhancedpathvector.h"
 #include "objects/path.h"
 #include <QPainterPath>
 

@@ -4,7 +4,7 @@
 #include "common.h"
 #include "geometry/point.h"
 #include "objects/path.h"
-#include "objects/enhancedpathvector.h"
+#include "objects/path/enhancedpathvector.h"
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
 #include "scene/history/historymodel.h"

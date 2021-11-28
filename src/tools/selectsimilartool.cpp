@@ -2,7 +2,7 @@
 #include "common.h"
 #include "logging.h"
 #include "objects/path.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 #include "properties/triggerproperty.h"

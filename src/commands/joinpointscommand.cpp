@@ -1,5 +1,5 @@
 #include "commands/joinpointscommand.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
 #include "scene/scene.h"
 
 namespace omm

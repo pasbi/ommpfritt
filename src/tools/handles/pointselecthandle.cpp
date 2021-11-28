@@ -2,8 +2,8 @@
 
 #include "commands/modifypointscommand.h"
 #include "objects/path.h"
-#include "objects/pathpoint.h"
-#include "objects/segment.h"
+#include "objects/path/pathpoint.h"
+#include "objects/path/segment.h"
 #include "scene/scene.h"
 #include "scene/mailbox.h"
 #include "tools/tool.h"

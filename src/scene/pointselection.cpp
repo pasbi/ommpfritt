@@ -1,6 +1,6 @@
 #include "scene/pointselection.h"
 #include "objects/path.h"
-#include "objects/pathpoint.h"
+#include "objects/path/pathpoint.h"
 #include "scene/scene.h"
 
 namespace omm

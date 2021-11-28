@@ -1,7 +1,7 @@
 #include "objects/rectangleobject.h"
-#include "objects/enhancedpathvector.h"
-#include "objects/segment.h"
-#include "objects/pathpoint.h"
+#include "objects/path/enhancedpathvector.h"
+#include "objects/path/segment.h"
+#include "objects/path/pathpoint.h"
 #include "properties/floatvectorproperty.h"
 
 namespace omm
