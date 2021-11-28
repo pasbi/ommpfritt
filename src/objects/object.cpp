@@ -363,9 +363,9 @@ void Object::draw_recursive(Painter& renderer, PainterOptions options) const
 BoundingBox Object::bounding_box(const ObjectTransformation& transformation) const
 {
   if (is_active()) {
-    return BoundingBox((paths().qpainter_path() * transformation.to_qtransform()).boundingRect());
+    return BoundingBox{(paths().outline() * transformation.to_qtransform()).boundingRect()};
   } else {
-    return BoundingBox();
+    return {};
   }
 }
 
@@ -655,14 +655,27 @@ void Object::draw_object(Painter& renderer,
                          const PainterOptions& options) const
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
-    if (const auto painter_path = this->paths().qpainter_path(); !painter_path.isEmpty()) {
+    const auto& enhanced_paths = geom_paths();
+    const auto& paths = enhanced_paths.path_vector();
+    const auto& fill = enhanced_paths.fill();
+    const auto& outline = enhanced_paths.outline();
+    if (!fill.isEmpty() || !outline.isEmpty()) {
       renderer.set_style(style, *this, options);
+      auto& painter = *renderer.painter;
+
+      painter.save();
+      painter.setPen(Qt::NoPen);
+      painter.drawPath(fill);
+      painter.restore();
+
+      painter.save();
       renderer.painter->setBrush(Qt::NoBrush);
-      painter->drawPath(painter_path);
+      painter.drawPath(outline);
+      painter.restore();
+
       const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
       const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
 
-      const auto paths = this->geom_paths().path_vector();
       for (std::size_t path_index = 0; path_index < paths.size(); ++path_index) {
         const auto pos = [this, path_index](const double t) {
           const auto tt = compute_path_vector_time(path_index, t);

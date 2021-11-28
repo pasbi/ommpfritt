@@ -2,6 +2,16 @@
 #include "objects/path.h"
 #include <QPainterPath>
 
+namespace
+{
+
+QPointF qpoint(const Geom::Point& vec)
+{
+  return {vec[0], vec[1]};
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -10,7 +20,8 @@ EnhancedPathVector::EnhancedPathVector() = default;
 EnhancedPathVector::EnhancedPathVector(const EnhancedPathVector& other)
   : m_path_vector(other.m_path_vector)
   , m_joined_points(other.m_joined_points)
-  , m_qpainter_path(other.m_qpainter_path ? std::make_unique<QPainterPath>(*other.m_qpainter_path) : nullptr)
+  , m_outline(other.m_outline ? std::make_unique<QPainterPath>(*other.m_outline) : nullptr)
+  , m_fill(other.m_fill ? std::make_unique<QPainterPath>(*other.m_fill) : nullptr)
 {
 }
 
@@ -43,20 +54,27 @@ const Geom::PathVector& EnhancedPathVector::path_vector() const
   return m_path_vector;
 }
 
-const QPainterPath& EnhancedPathVector::qpainter_path() const
+const QPainterPath& EnhancedPathVector::fill() const
 {
-  if (!m_qpainter_path) {
-    static const auto qpoint = [](const Geom::Point& point) { return QPointF{point[0], point[1]}; };
-    m_qpainter_path = std::make_unique<QPainterPath>();
+  if (!m_fill) {
+    m_fill = std::make_unique<QPainterPath>();
+  }
+  return *m_fill;
+}
+
+const QPainterPath& EnhancedPathVector::outline() const
+{
+  if (!m_outline) {
+    m_outline = std::make_unique<QPainterPath>();
     for (const Geom::Path& path : m_path_vector) {
-      m_qpainter_path->moveTo(qpoint(path.initialPoint()));
+      m_outline->moveTo(qpoint(path.initialPoint()));
       for (const Geom::Curve& curve : path) {
         const auto& cbc = dynamic_cast<const Geom::CubicBezier&>(curve);
-        m_qpainter_path->cubicTo(qpoint(cbc[1]), qpoint(cbc[2]), qpoint(cbc[3]));
+        m_outline->cubicTo(qpoint(cbc[1]), qpoint(cbc[2]), qpoint(cbc[3]));
       }
     }
   }
-  return *m_qpainter_path;
+  return *m_outline;
 }
 
 DisjointPathPointSetForest EnhancedPathVector::joined_points(const Path& path) const
@@ -79,7 +97,8 @@ void swap(EnhancedPathVector& a, EnhancedPathVector& b) noexcept
   b.m_path_vector = std::move(apv);
 
   swap(a.m_joined_points, b.m_joined_points);
-  swap(a.m_qpainter_path, b.m_qpainter_path);
+  swap(a.m_fill, b.m_fill);
+  swap(a.m_outline, b.m_outline);
 }
 
 }  // namespace omm
