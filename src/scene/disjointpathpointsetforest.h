@@ -16,6 +16,7 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void remove_dangling_points();
+  void replace(const std::map<PathPoint*, PathPoint*>& dict, bool keep_old);
 
 private:
   class ReferencePolisher;

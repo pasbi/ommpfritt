@@ -34,12 +34,29 @@ using MaybeOwningDisjointPathPointSetForest = std::variant<std::unique_ptr<Disjo
 MaybeOwningDisjointPathPointSetForest copy(const MaybeOwningDisjointPathPointSetForest& o)
 {
   return std::visit([]<typename T>(const T& o) {
-    if constexpr (std::is_same_v<T, std::unique_ptr<DisjointPathPointSetForest>>) {
-      return MaybeOwningDisjointPathPointSetForest(copy_unique_ptr(o));
-    } else {
+    if constexpr (std::is_same_v<T, DisjointPathPointSetForest*>) {
       return MaybeOwningDisjointPathPointSetForest(o);
+    } else {
+      return MaybeOwningDisjointPathPointSetForest(std::make_unique<DisjointPathPointSetForest>());
     }
   }, o);
+}
+
+std::map<PathPoint*, PathPoint*> map_points(const PathVector& from, const PathVector& to)
+{
+  const auto from_paths = from.paths();
+  const auto to_paths = to.paths();
+  assert(from_paths.size() == to_paths.size());
+  std::map<PathPoint*, PathPoint*> map;
+  for (std::size_t i = 0; i < from_paths.size(); ++i) {
+    const auto& from_path = from_paths.at(i);
+    const auto& to_path = to_paths.at(i);
+    assert(from_path->size() == to_path->size());
+    for (std::size_t j = 0; j < from_path->size(); ++j) {
+      map.insert({&from_path->at(j), &to_path->at(j)});
+    }
+  }
+  return map;
 }
 
 }  // namespace
@@ -53,7 +70,6 @@ PathVector::PathVector(PathObject& path_object, DisjointPathPointSetForest& shar
   : m_path_object(&path_object)
   , m_joined_points(&shared_joined_points)
 {
-
 }
 
 PathVector::PathVector()
@@ -67,6 +83,8 @@ PathVector::PathVector(const PathVector& other, PathObject* path_object)
   , m_joined_points(copy(other.m_joined_points))
   , m_paths(copy(other.m_paths, this))
 {
+  const auto keep_old = std::holds_alternative<DisjointPathPointSetForest*>(m_joined_points);
+  joined_points().replace(map_points(other, *this), keep_old);
 }
 
 PathVector::~PathVector() = default;
@@ -110,7 +128,7 @@ PathPoint& PathVector::point_at_index(std::size_t index) const
 
 void PathVector::set(const Geom::PathVector& path_vector)
 {
-  if (m_path_object) {
+  if (m_path_object != nullptr) {
     m_path_object->update();
   }
   for (const auto& path : path_vector) {
