@@ -110,7 +110,7 @@ void DisjointPathPointSetForest::remove_dangling_points()
   }), m_forest.end());
 }
 
-void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>& dict, bool keep_old)
+void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>& dict)
 {
   std::list<std::set<PathPoint*>> new_sets;
   for (auto& old_set : m_forest) {
@@ -120,11 +120,7 @@ void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>&
         new_set.insert(it->second);
       }
     }
-    if (keep_old) {
-      new_sets.push_back(new_set);
-    } else {
-      old_set = new_set;
-    }
+    old_set = new_set;
   }
 
   m_forest.insert(m_forest.end(), new_sets.begin(), new_sets.end());

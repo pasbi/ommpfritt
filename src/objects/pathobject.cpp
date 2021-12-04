@@ -19,7 +19,7 @@ class Style;
 
 PathObject::PathObject(Scene* scene)
   : Object(scene)
-  , m_path_vector(std::make_unique<PathVector>(*this, scene->joined_points()))
+  , m_path_vector(std::make_unique<PathVector>(this))
 {
   static const auto category = QObject::tr("path");
 
@@ -34,12 +34,15 @@ PathObject::PathObject(Scene* scene)
       geometry().update_joined_points_geometry();
     }
   });
+
+  m_path_vector->share_join_points(scene->joined_points());
 }
 
 PathObject::PathObject(const PathObject& other)
   : Object(other)
   , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
 {
+  m_path_vector->share_join_points(scene()->joined_points());
 }
 
 PathObject::~PathObject() = default;

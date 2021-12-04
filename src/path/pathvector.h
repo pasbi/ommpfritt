@@ -12,21 +12,31 @@ class EnhancedPathVector;
 class Path;
 class PathPoint;
 class PathObject;
-class JoinedPointIndices;
 class DisjointPathPointSetForest;
 class Scene;
 
 class PathVector : public Serializable
 {
 public:
-  explicit PathVector(PathObject& path_object, DisjointPathPointSetForest& shared_joined_points);
-  explicit PathVector();
-  explicit PathVector(const PathVector& other, PathObject* path_object);
-  PathVector(const PathVector&) = delete;
-  PathVector(PathVector&&) = delete;
-  PathVector& operator=(const PathVector& other) = delete;
-  PathVector& operator=(PathVector&&) = delete;
+  PathVector(PathObject* path_object = nullptr);
+  PathVector(const PathVector& other, PathObject* path_object = nullptr);
+  PathVector(PathVector&& other) noexcept;
+  PathVector& operator=(const PathVector& other);
+  PathVector& operator=(PathVector&& other) noexcept;
   ~PathVector() override;
+  friend void swap(PathVector& a, PathVector& b) noexcept;
+
+  /**
+   * @brief share_join_points use the `joined_points` forest to register joined points.
+   *  The currently owned joined points will be added to the shared joined points.
+   */
+  void share_join_points(DisjointPathPointSetForest& joined_points);
+
+  /**
+   * @brief join_points_shared returns true if the joined points are shared or false otherwise.
+   */
+  [[nodiscard]] bool joined_points_shared() const;
+
   static constexpr auto SEGMENTS_POINTER = "segments";
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
@@ -36,7 +46,6 @@ public:
 
   [[nodiscard]] const QPainterPath& outline() const;
   [[nodiscard]] const QPainterPath& fill() const;
-  [[nodiscard]] JoinedPointIndices joined_point_indices() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;
@@ -50,8 +59,9 @@ public:
   void update_joined_points_geometry() const;
 
 private:
-  PathObject* const m_path_object = nullptr;
-  std::variant<std::unique_ptr<DisjointPathPointSetForest>, DisjointPathPointSetForest*> m_joined_points;
+  PathObject* m_path_object = nullptr;
+  DisjointPathPointSetForest* m_shared_joined_points = nullptr;
+  std::unique_ptr<DisjointPathPointSetForest> m_owned_joined_points;
   std::deque<std::unique_ptr<Path>> m_paths;
 };
 

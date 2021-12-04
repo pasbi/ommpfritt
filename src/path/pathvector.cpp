@@ -6,6 +6,7 @@
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
+#include "scene/disjointpathpointsetforest.h"
 #include "objects/pathobject.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
@@ -17,30 +18,6 @@ namespace
 {
 
 using namespace omm;
-
-auto copy(const std::deque<std::unique_ptr<Path>>& vs, PathVector* path_vector)
-{
-  std::decay_t<decltype(vs)> copy;
-  for (auto&& v : vs) {
-    std::cout << "v = " << v.get() << std::endl;
-    copy.emplace_back(std::make_unique<Path>(*v, path_vector));
-  }
-  return copy;
-}
-
-using MaybeOwningDisjointPathPointSetForest = std::variant<std::unique_ptr<DisjointPathPointSetForest>,
-                                                          DisjointPathPointSetForest*>;
-
-MaybeOwningDisjointPathPointSetForest copy(const MaybeOwningDisjointPathPointSetForest& o)
-{
-  return std::visit([]<typename T>(const T& o) {
-    if constexpr (std::is_same_v<T, DisjointPathPointSetForest*>) {
-      return MaybeOwningDisjointPathPointSetForest(o);
-    } else {
-      return MaybeOwningDisjointPathPointSetForest(std::make_unique<DisjointPathPointSetForest>());
-    }
-  }, o);
-}
 
 std::map<PathPoint*, PathPoint*> map_points(const PathVector& from, const PathVector& to)
 {
@@ -66,25 +43,61 @@ namespace omm
 
 class Style;
 
-PathVector::PathVector(PathObject& path_object, DisjointPathPointSetForest& shared_joined_points)
-  : m_path_object(&path_object)
-  , m_joined_points(&shared_joined_points)
+PathVector::PathVector(PathObject* path_object)
+  : m_path_object(path_object)
+  , m_owned_joined_points(std::make_unique<DisjointPathPointSetForest>())
 {
 }
 
-PathVector::PathVector()
-  : m_joined_points(std::make_unique<DisjointPathPointSetForest>())
+bool PathVector::joined_points_shared() const
 {
-
+  assert((m_shared_joined_points == nullptr) != (!m_owned_joined_points));
+  return m_shared_joined_points != nullptr;
 }
 
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
   : m_path_object(path_object)
-  , m_joined_points(copy(other.m_joined_points))
-  , m_paths(copy(other.m_paths, this))
+  , m_owned_joined_points(std::make_unique<DisjointPathPointSetForest>(other.joined_points()))
 {
-  const auto keep_old = std::holds_alternative<DisjointPathPointSetForest*>(m_joined_points);
-  joined_points().replace(map_points(other, *this), keep_old);
+  for (const auto* path : other.paths()) {
+    add_path(std::make_unique<Path>(*path, this));
+  }
+  m_owned_joined_points->replace(map_points(other, *this));
+}
+
+PathVector::PathVector(PathVector&& other) noexcept
+{
+  swap(*this, other);
+}
+
+PathVector& PathVector::operator=(const PathVector& other)
+{
+  *this = PathVector{other};
+  return *this;
+}
+
+void PathVector::share_join_points(DisjointPathPointSetForest& joined_points)
+{
+  assert(!joined_points_shared());
+  m_shared_joined_points = &joined_points;
+  for (const auto& set : m_owned_joined_points->sets()) {
+    m_shared_joined_points->insert(set);
+  }
+  m_owned_joined_points.reset();
+}
+
+PathVector& PathVector::operator=(PathVector&& other) noexcept
+{
+  swap(*this, other);
+  return *this;
+}
+
+void swap(PathVector& a, PathVector& b) noexcept
+{
+  swap(a.m_owned_joined_points, b.m_owned_joined_points);
+  std::swap(a.m_path_object, b.m_path_object);
+  swap(a.m_paths, b.m_paths);
+  std::swap(a.m_shared_joined_points, b.m_shared_joined_points);
 }
 
 PathVector::~PathVector() = default;
@@ -219,10 +232,11 @@ PathObject* PathVector::path_object() const
 
 DisjointPathPointSetForest& PathVector::joined_points() const
 {
-  const auto visitor = [](const auto& joined_points) -> DisjointPathPointSetForest& {
-    return *joined_points;
-  };
-  return std::visit(visitor, m_joined_points);
+  if (joined_points_shared()) {
+    return *m_shared_joined_points;
+  } else {
+    return *m_owned_joined_points;
+  }
 }
 
 }  // namespace omm
