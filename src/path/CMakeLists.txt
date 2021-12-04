@@ -1,8 +1,6 @@
 target_sources(libommpfritt PRIVATE
-  enhancedpathvector.cpp
-  enhancedpathvector.h
-  pathvector.cpp
   pathvector.h
+  pathvector.cpp
   pathpoint.cpp
   pathpoint.h
   path.cpp

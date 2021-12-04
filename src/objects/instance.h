@@ -33,7 +33,7 @@ public:
   Flag flags() const override;
   void post_create_hook() override;
   void update() override;
-  EnhancedPathVector paths() const override;
+  PathVector compute_path_vector() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

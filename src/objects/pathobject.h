@@ -35,7 +35,7 @@ public:
   const PathVector& geometry() const;
   PathVector& geometry();
 
-  EnhancedPathVector paths() const override;
+  PathVector compute_path_vector() const override;
 
 private:
   std::unique_ptr<PathVector> m_path_vector;

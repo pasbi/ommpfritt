@@ -1,9 +1,10 @@
 #include "objects/tip.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
-#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
+#include "scene/disjointpathpointsetforest.h"
 
 namespace
 {
@@ -39,11 +40,15 @@ void Tip::on_property_value_changed(Property* property)
   }
 }
 
-EnhancedPathVector Tip::paths() const
+PathVector Tip::compute_path_vector() const
 {
   auto points = m_marker_properties.shape(1.0);
-  EnhancedPathVector::JoinedPointIndices joined_points{{{0, points.size() - 1}}};
-  return {Geom::PathVector{Path{std::move(points)}.to_geom_path()}, joined_points};
+  PathVector pv;
+  auto path = std::make_unique<Path>(std::move(points));
+  const auto path_points = path->points();
+  pv.add_path(std::move(path));
+  pv.joined_points().insert({path_points.front(), path_points.back()});
+  return pv;
 }
 
 }  // namespace omm

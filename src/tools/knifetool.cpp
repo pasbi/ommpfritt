@@ -4,7 +4,7 @@
 #include "common.h"
 #include "geometry/point.h"
 #include "objects/pathobject.h"
-#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
 #include "scene/history/historymodel.h"
@@ -19,9 +19,8 @@ namespace
 {
 using namespace omm;
 
-template<typename ResultFormat>
-std::vector<ResultFormat>
-compute_cut_points(const Geom::PathVector& path_vector, Vec2f start, Vec2f& end)
+std::vector<Geom::Intersection<Geom::PathVectorTime>>
+compute_cut_points(const Geom::PathVector& path_vector, const Vec2f& start, const Vec2f& end)
 {
   static const auto line = [](const Vec2f& start, const Vec2f& end) {
     std::vector<Geom::CubicBezier> lines{std::vector<Geom::Point>{{start.x, start.y},
@@ -30,17 +29,14 @@ compute_cut_points(const Geom::PathVector& path_vector, Vec2f start, Vec2f& end)
                                                                   {end.x, end.y}}};
     return Geom::PathVector(Geom::Path(lines.begin(), lines.end()));
   };
-  const auto intersections = path_vector.intersect(line(start, end), 0.0);
-  if constexpr (std::is_same_v<ResultFormat, Geom::PathVectorTime>) {
-    return ::transform<Geom::PathVectorTime>(intersections,
-                                             [](const auto& piv) { return piv.first; });
-  } else {
-    static_assert(std::is_same_v<ResultFormat, Vec2f>);
-    return ::transform<Vec2f>(intersections, [](const auto& piv) {
-      const Geom::Point p{piv};
-      return Vec2f{p.x(), p.y()};
-    });
-  }
+  return path_vector.intersect(line(start, end), 0.0);
+}
+
+Geom::PathVector get_global_path_vector(const PathObject& po)
+{
+  const auto path_vector = po.path_vector().to_geom();
+  const auto transformation = po.global_transformation(Space::Viewport);
+  return transformation.apply(path_vector);
 }
 
 }  // namespace
@@ -60,11 +56,13 @@ bool KnifeTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEve
   } else if (m_is_cutting) {
     m_points.clear();
     for (auto&& path_object : ::type_casts<PathObject*>(scene()->item_selection<Object>())) {
-      const auto path_vector
-          = path_object->global_transformation(Space::Viewport).apply(path_object->geom_paths().path_vector());
-      const auto cut_points
-          = compute_cut_points<Vec2f>(path_vector, m_mouse_press_pos, m_mouse_move_pos);
-      m_points.insert(m_points.end(), cut_points.begin(), cut_points.end());
+      const auto global_path_vector = get_global_path_vector(*path_object);
+      const auto intersections = compute_cut_points(global_path_vector, m_mouse_press_pos, m_mouse_move_pos);
+      const auto points = ::transform<Vec2f>(intersections, [](const auto& t) {
+        const Geom::Point p{t};
+        return Vec2f{p.x(), p.y()};
+      });
+      m_points.insert(m_points.end(), std::move_iterator{points.begin()}, std::move_iterator{points.end()});
     }
     return true;
   } else {
@@ -93,16 +91,14 @@ void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
     if (const auto path_objects = ::type_casts<PathObject*>(scene()->item_selection<Object>()); !path_objects.empty()) {
       std::unique_ptr<Macro> macro;
       for (auto&& path_object : path_objects) {
-        const auto path_vector
-            = path_object->global_transformation(Space::Viewport).apply(path_object->geom_paths().path_vector());
-        const auto cut_points = compute_cut_points<Geom::PathVectorTime>(path_vector,
-                                                                         m_mouse_press_pos,
-                                                                         m_mouse_move_pos);
-        if (!cut_points.empty()) {
+        const auto global_path_vector = get_global_path_vector(*path_object);
+        const auto intersections = compute_cut_points(global_path_vector, m_mouse_press_pos, m_mouse_move_pos);
+        const auto ts = ::transform<Geom::PathVectorTime>(intersections, [](const auto& piv) { return piv.first; });
+        if (!ts.empty()) {
           if (!macro) {
             macro = scene()->history().start_macro(QObject::tr("Cut Path"));
           }
-          scene()->submit<CutPathCommand>(*path_object, cut_points);
+          scene()->submit<CutPathCommand>(*path_object, ts);
         }
       }
     }

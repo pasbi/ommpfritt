@@ -6,7 +6,6 @@
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
-#include "path/enhancedpathvector.h"
 #include "path/path.h"
 #include "scene/mailbox.h"
 #include "path/pathvector.h"
@@ -29,20 +28,24 @@ PathObject::PathObject(Scene* scene)
       .set_category(category);
   PathObject::update();
 
-  connect(&scene->mail_box(), &MailBox::transformation_changed, this, [this](const Object& o) {
-    if (&o == this) {
-      geometry().update_joined_points_geometry();
-    }
-  });
+  if (scene != nullptr) {
+    connect(&scene->mail_box(), &MailBox::transformation_changed, this, [this](const Object& o) {
+      if (&o == this) {
+        geometry().update_joined_points_geometry();
+      }
+    });
 
-  m_path_vector->share_join_points(scene->joined_points());
+    m_path_vector->share_join_points(scene->joined_points());
+  }
 }
 
 PathObject::PathObject(const PathObject& other)
   : Object(other)
   , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
 {
-  m_path_vector->share_join_points(scene()->joined_points());
+  if (auto* scene = this->scene(); scene != nullptr) {
+    m_path_vector->share_join_points(scene->joined_points());
+  }
 }
 
 PathObject::~PathObject() = default;
@@ -80,30 +83,20 @@ Flag PathObject::flags() const
 
 const PathVector& PathObject::geometry() const
 {
-  std::cout << "geometry size: " << m_path_vector->paths().size() << std::endl;
-  for (const auto* path : m_path_vector->paths()) {
-    std::cout << "  path size: " << path->size() << std::endl;
-  }
   return *m_path_vector;
 }
 
 PathVector& PathObject::geometry()
 {
-  std::cout << "geometry size: " << m_path_vector->paths().size() << std::endl;
-  for (const auto* path : m_path_vector->paths()) {
-    std::cout << "  path size: " << path->size() << std::endl;
-  }
   return *m_path_vector;
 }
 
-EnhancedPathVector PathObject::paths() const
+PathVector PathObject::compute_path_vector() const
 {
   const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
-  Geom::PathVector paths;
-  for (auto&& segment : m_path_vector->paths()) {
-    paths.push_back(segment->to_geom_path(interpolation));
-  }
-  return paths;
+  PathVector pv;
+  pv.set(m_path_vector->to_geom(interpolation));
+  return pv;
 }
 
 }  // namespace omm

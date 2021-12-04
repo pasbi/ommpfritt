@@ -3,12 +3,13 @@
 #include "objects/pathobject.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
-#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 #include "properties/integerproperty.h"
 #include "scene/scene.h"
+#include "scene/disjointpathpointsetforest.h"
 #include <QObject>
 
 namespace omm
@@ -49,7 +50,7 @@ void Ellipse::on_property_value_changed(Property* property)
   }
 }
 
-EnhancedPathVector Ellipse::paths() const
+PathVector Ellipse::compute_path_vector() const
 {
   const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
   const auto n = static_cast<std::size_t>(std::max(3, n_raw));
@@ -67,8 +68,13 @@ EnhancedPathVector Ellipse::paths() const
       points.emplace_back(Vec2f{x, y});
     }
   }
-  EnhancedPathVector::JoinedPointIndices joined_points{{{0, n}}};
-  return {Path(std::move(points)).to_geom_path(), joined_points};
+
+  PathVector path_vector;
+  auto path = std::make_unique<Path>(std::move(points));
+  const auto path_points = path->points();
+  path_vector.add_path(std::move(path));
+  path_vector.joined_points().insert({path_points.front(), path_points.back()});
+  return path_vector;
 }
 
 }  // namespace omm

@@ -3,7 +3,7 @@
 #include "objects/pathobject.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
-#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/stringproperty.h"
@@ -80,17 +80,17 @@ void ProceduralPath::update()
   Object::update();
 }
 
-EnhancedPathVector ProceduralPath::paths() const
+PathVector ProceduralPath::compute_path_vector() const
 {
   std::deque<Point> points(m_points.begin(), m_points.end());
-  return Geom::PathVector{Path{std::move(points)}.to_geom_path()};
+  PathVector pv;
+  pv.add_path(std::make_unique<Path>(std::move(points)));
+  return pv;
 }
 
 void ProceduralPath::on_property_value_changed(Property* property)
 {
-  if (property == this->property(CODE_PROPERTY_KEY)
-      || property == this->property(COUNT_PROPERTY_KEY))
-  {
+  if (property == this->property(CODE_PROPERTY_KEY) || property == this->property(COUNT_PROPERTY_KEY)) {
     update();
   } else {
     Object::on_property_value_changed(property);

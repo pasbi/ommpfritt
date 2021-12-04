@@ -3,7 +3,7 @@
 #include "commands/propertycommand.h"
 #include "objects/convertedobject.h"
 #include "objects/empty.h"
-#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
 #include "renderers/painteroptions.h"
@@ -158,12 +158,12 @@ void Instance::update()
   Object::update();
 }
 
-EnhancedPathVector Instance::paths() const
+PathVector Instance::compute_path_vector() const
 {
   if (m_reference) {
-    return m_reference->geom_paths();
+    return PathVector{m_reference->path_vector(), nullptr};
   } else {
-    return Geom::PathVector();
+    return {};
   }
 }
 

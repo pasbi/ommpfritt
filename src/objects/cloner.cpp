@@ -4,7 +4,7 @@
 
 #include "objects/convertedobject.h"
 #include "objects/empty.h"
-#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -193,9 +193,9 @@ void Cloner::update()
   Object::update();
 }
 
-EnhancedPathVector Cloner::paths() const
+PathVector Cloner::compute_path_vector() const
 {
-  return join(m_clones);
+  return join(::transform<Object*>(m_clones, [](const auto& up) { return up.get(); }));
 }
 
 void Cloner::on_property_value_changed(Property* property)

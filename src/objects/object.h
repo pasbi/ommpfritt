@@ -16,14 +16,14 @@
 namespace omm
 {
 
+class ConvertedObject;
 class ObjectTree;
 class Painter;
 class Point;
 class Property;
 class Scene;
-struct ConvertedObject;
 struct PainterOptions;
-class EnhancedPathVector;
+class PathVector;
 
 class Object
     : public PropertyOwner<Kind::Object>
@@ -88,7 +88,7 @@ private:
    * @note use `Object::geom_paths` or `Object::painter_path` to access the paths.
    * @return the paths.
    */
-  virtual EnhancedPathVector paths() const;
+  virtual PathVector compute_path_vector() const;
 
 public:
   enum class Interpolation { Natural, Distance };
@@ -101,7 +101,7 @@ private:
   class CachedGeomPathVectorGetter;
   std::unique_ptr<CachedGeomPathVectorGetter> m_cached_geom_path_vector_getter;
 public:
-  EnhancedPathVector geom_paths() const;
+  const PathVector& path_vector() const;
 
   TagList tags;
 
@@ -159,15 +159,7 @@ private:
   static const QBrush m_bounding_box_brush;
 
 protected:
-  template<typename Iterable> static Geom::PathVector join(const Iterable& items)
-  {
-    Geom::PathVector paths;
-    for (auto&& item : items) {
-      const auto cps = item->paths().path_vector();
-      paths.insert(paths.end(), cps.begin(), cps.end());
-    }
-    return paths;
-  }
+  static PathVector join(const std::vector<Object*>& items);
 };
 
 }  // namespace omm

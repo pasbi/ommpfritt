@@ -1,5 +1,5 @@
 #include "objects/empty.h"
-#include "path/enhancedpathvector.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 
 namespace omm
@@ -23,12 +23,12 @@ QString Empty::type() const
   return TYPE;
 }
 
-EnhancedPathVector Empty::paths() const
+PathVector Empty::compute_path_vector() const
 {
   if (property(JOIN_PROPERTY_KEY)->value<bool>()) {
     return join(tree_children());
   } else {
-    return Geom::PathVector();
+    return PathVector{};
   }
 }
 

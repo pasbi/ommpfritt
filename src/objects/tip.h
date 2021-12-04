@@ -21,7 +21,9 @@ public:
   }
   void on_property_value_changed(Property* property) override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Tip");
-  EnhancedPathVector paths() const override;
+
+protected:
+  PathVector compute_path_vector() const override;
 
 private:
   MarkerProperties m_marker_properties;

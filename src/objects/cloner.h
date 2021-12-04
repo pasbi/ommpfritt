@@ -47,7 +47,6 @@ public:
   Mode mode() const;
   bool contains(const Vec2f& pos) const override;
   void update() override;
-  EnhancedPathVector paths() const override;
   PathProperties path_properties;
 
 protected:
@@ -57,6 +56,8 @@ protected:
   void update_property_visibility(Mode mode);
 
 private:
+  PathVector compute_path_vector() const override;
+
   std::vector<std::unique_ptr<Object>> make_clones();
   std::vector<std::unique_ptr<Object>> copy_children(std::size_t count);
 

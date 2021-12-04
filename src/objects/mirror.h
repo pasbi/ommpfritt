@@ -32,7 +32,7 @@ public:
   static constexpr auto AS_PATH_PROPERTY_KEY = "as_path";
   static constexpr auto TOLERANCE_PROPERTY_KEY = "eps";
 
-  EnhancedPathVector paths() const override;
+  PathVector compute_path_vector() const override;
   ConvertedObject convert() const override;
   void update() override;
 

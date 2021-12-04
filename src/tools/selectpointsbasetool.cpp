@@ -88,7 +88,8 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 void SelectPointsBaseTool::make_handles()
 {
   for (auto* path_object : scene()->item_selection<PathObject>()) {
-    for (auto* point : path_object->geometry().points()) {
+    const auto points = path_object->geometry().points();
+    for (auto* point : points) {
       auto handle = std::make_unique<PointSelectHandle>(*this, *path_object, *point);
       push_handle(std::move(handle));
     }

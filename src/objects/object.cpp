@@ -4,7 +4,6 @@
 #include "logging.h"
 #include "objects/convertedobject.h"
 #include "objects/pathobject.h"
-#include "path/enhancedpathvector.h"
 #include "path/path.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
@@ -99,12 +98,12 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
 namespace omm
 {
 
-class Object::CachedGeomPathVectorGetter : public CachedGetter<EnhancedPathVector, Object>
+class Object::CachedGeomPathVectorGetter : public CachedGetter<PathVector, Object>
 {
 public:
   using CachedGetter::CachedGetter;
 private:
-  EnhancedPathVector compute() const override;
+  PathVector compute() const override;
 };
 
 const QPen Object::m_bounding_box_pen = make_bounding_box_pen();
@@ -262,6 +261,17 @@ QString Object::to_string() const
   return QString("%1[%2]").arg(type(), name());
 }
 
+PathVector Object::join(const std::vector<Object*>& objects)
+{
+  PathVector path_vector;
+  for (const auto* object : objects) {
+    for (const auto* path : object->path_vector().paths()) {
+      path_vector.add_path(std::make_unique<Path>(*path));
+    }
+  }
+  return path_vector;
+}
+
 void Object::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   PropertyOwner::serialize(serializer, root);
@@ -298,7 +308,9 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
     try {
       auto child = Object::make(child_type, static_cast<Scene*>(scene()));
-      child->set_object_tree(scene()->object_tree());
+      if (auto* scene = this->scene(); scene != nullptr) {
+        child->set_object_tree(scene->object_tree());
+      }
       child->deserialize(deserializer, child_pointer);
 
       // TODO adopt sets the global transformation which is reverted by setting the local
@@ -364,7 +376,7 @@ void Object::draw_recursive(Painter& renderer, PainterOptions options) const
 BoundingBox Object::bounding_box(const ObjectTransformation& transformation) const
 {
   if (is_active()) {
-    return BoundingBox{(paths().outline() * transformation.to_qtransform()).boundingRect()};
+    return BoundingBox{(path_vector().outline() * transformation.to_qtransform()).boundingRect()};
   } else {
     return {};
   }
@@ -403,11 +415,10 @@ ConvertedObject Object::convert() const
   auto converted = std::make_unique<PathObject>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
-  const auto enhanced_path_vector = geom_paths();
-  converted->geometry().set(enhanced_path_vector.path_vector());
+  converted->geometry() = PathVector{this->path_vector(), converted.get()};
+  converted->geometry().share_join_points(scene()->joined_points());
   converted->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
-  auto joined_points = enhanced_path_vector.joined_points(converted->geometry());
-  return ConvertedObject{std::move(converted), std::move(joined_points), true};
+  return ConvertedObject{std::move(converted), true};
 }
 
 Flag Object::flags() const
@@ -545,7 +556,7 @@ std::vector<const omm::Style*> Object::find_styles() const
 
 Point Object::pos(const Geom::PathVectorTime& t) const
 {
-  const auto paths = geom_paths().path_vector();
+  const auto paths = path_vector().to_geom();
   if (const auto n = paths.curveCount(); n == 0) {
     return Point();
   } else if (t.path_index >= paths.size()) {
@@ -569,12 +580,12 @@ Point Object::pos(const Geom::PathVectorTime& t) const
 
 bool Object::contains(const Vec2f& point) const
 {
-  const auto path_vector = geom_paths().path_vector();
+  const auto path_vector = this->path_vector().to_geom();
   const auto winding = path_vector.winding(Geom::Point{point.x, point.y});
   return std::abs(winding) % 2 == 1;
 }
 
-EnhancedPathVector Object::paths() const
+PathVector Object::compute_path_vector() const
 {
   return {};
 }
@@ -582,19 +593,19 @@ EnhancedPathVector Object::paths() const
 Geom::PathVectorTime Object::compute_path_vector_time(double t, Interpolation interpolation) const
 {
   t = std::clamp(t, 0.0, almost_one);
-  const auto path_vector = paths().path_vector();
-  if (path_vector.empty()) {
+  const auto& path_vector = this->path_vector();
+  if (path_vector.paths().empty()) {
     return Geom::PathVectorTime(0, 0, 0.0);
   }
 
   switch (interpolation) {
   case Interpolation::Natural: {
     double path_index = -1.0;
-    const double path_position = std::modf(t * path_vector.size(), &path_index);
+    const double path_position = std::modf(t * path_vector.paths().size(), &path_index);
     return compute_path_vector_time(static_cast<int>(path_index), path_position, interpolation);
   }
   case Interpolation::Distance: {
-    const auto [i, tp] = factor_time_by_distance(path_vector, t);
+    const auto [i, tp] = factor_time_by_distance(path_vector.to_geom(), t);
     return compute_path_vector_time(i, tp, interpolation);
   }
   default:
@@ -610,7 +621,7 @@ Object::compute_path_vector_time(int path_index, double t, Interpolation interpo
   }
 
   t = std::clamp(t, 0.0, almost_one);
-  const auto path_vector = geom_paths().path_vector();
+  const auto path_vector = this->path_vector().to_geom();
   if (static_cast<std::size_t>(path_index) >= path_vector.size()) {
     return Geom::PathVectorTime(path_index, 0, 0.0);
   }
@@ -656,10 +667,9 @@ void Object::draw_object(Painter& renderer,
                          const PainterOptions& options) const
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
-    const auto& enhanced_paths = geom_paths();
-    const auto& paths = enhanced_paths.path_vector();
-    const auto& fill = enhanced_paths.fill();
-    const auto& outline = enhanced_paths.outline();
+    const auto& path_vector = this->path_vector();
+    const auto& fill = path_vector.fill();
+    const auto& outline = path_vector.outline();
     if (!fill.isEmpty() || !outline.isEmpty()) {
       renderer.set_style(style, *this, options);
       auto& painter = *renderer.painter;
@@ -677,7 +687,7 @@ void Object::draw_object(Painter& renderer,
       const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
       const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
 
-      for (std::size_t path_index = 0; path_index < paths.size(); ++path_index) {
+      for (std::size_t path_index = 0; path_index < path_vector.paths().size(); ++path_index) {
         const auto pos = [this, path_index](const double t) {
           const auto tt = compute_path_vector_time(path_index, t);
           return this->pos(tt).rotated(M_PI_2);
@@ -746,12 +756,12 @@ void Object::listen_to_children_changes()
   connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
 }
 
-EnhancedPathVector Object::CachedGeomPathVectorGetter::compute() const
+PathVector Object::CachedGeomPathVectorGetter::compute() const
 {
-  return m_self.paths();
+  return m_self.compute_path_vector();
 }
 
-EnhancedPathVector Object::geom_paths() const
+const PathVector& Object::path_vector() const
 {
   return m_cached_geom_path_vector_getter->operator()();
 }

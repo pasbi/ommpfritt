@@ -19,7 +19,7 @@ public:
   static constexpr auto COUNT_PROPERTY_KEY = "count";
 
   void update() override;
-  EnhancedPathVector paths() const override;
+  PathVector compute_path_vector() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

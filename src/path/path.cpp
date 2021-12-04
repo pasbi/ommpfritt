@@ -174,6 +174,11 @@ PathVector* Path::path_vector() const
   return m_path_vector;
 }
 
+void Path::set_path_vector(PathVector* path_vector)
+{
+  m_path_vector = path_vector;
+}
+
 void Path::smoothen() const
 {
   std::deque<std::unique_ptr<PathPoint>> points;

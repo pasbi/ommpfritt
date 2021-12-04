@@ -6,31 +6,26 @@ namespace omm
 {
 
 ConvertedObject::ConvertedObject(std::unique_ptr<Object>&& object, bool keep_children)
-  : object(std::move(object))
-  , keep_children(keep_children)
-{
-
-}
-
-ConvertedObject::ConvertedObject(std::unique_ptr<Object>&& object,
-                                 std::unique_ptr<DisjointPathPointSetForest>&& joined_points,
-                                 bool keep_children)
-  : object(std::move(object))
-  , joined_points(std::move(joined_points))
-  , keep_children(keep_children)
-{
-
-}
-
-ConvertedObject::ConvertedObject(std::unique_ptr<Object>&& object,
-                                 DisjointPathPointSetForest&& joined_points,
-                                 bool keep_children)
-  : object(std::move(object))
-  , joined_points(std::make_unique<DisjointPathPointSetForest>(joined_points))
-  , keep_children(keep_children)
+  : m_object(std::move(object))
+  , m_keep_children(keep_children)
 {
 }
 
 ConvertedObject::~ConvertedObject() = default;
+
+std::unique_ptr<Object> ConvertedObject::extract_object()
+{
+  return std::move(m_object);
+}
+
+Object& ConvertedObject::object() const
+{
+  return *m_object;
+}
+
+bool ConvertedObject::keep_children() const
+{
+  return m_keep_children;
+}
 
 }  // namespace omm

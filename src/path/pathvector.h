@@ -41,11 +41,11 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   [[nodiscard]] PathPoint& point_at_index(std::size_t index) const;
-  [[nodiscard]] Geom::PathVector to_geom() const;
+  [[nodiscard]] Geom::PathVector to_geom(InterpolationMode interpolation = InterpolationMode::Bezier) const;
   void set(const Geom::PathVector& path_vector);
 
-  [[nodiscard]] const QPainterPath& outline() const;
-  [[nodiscard]] const QPainterPath& fill() const;
+  [[nodiscard]] QPainterPath outline() const;
+  [[nodiscard]] QPainterPath fill() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;
@@ -57,6 +57,14 @@ public:
   [[nodiscard]] PathObject* path_object() const;
   [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
   void update_joined_points_geometry() const;
+
+  /**
+   * @brief is_valid returns true if this path vector is valid.
+   * A PathVector must be valid before and after every public member function.
+   * Undefined Behaviour may occur, if a path vector is not valid.
+   * This function is a very convenient debugging tool, it shouldn't be used otherwise.
+   */
+  [[nodiscard, maybe_unused]] bool is_valid() const;
 
 private:
   PathObject* m_path_object = nullptr;

@@ -30,10 +30,10 @@ public:
 
   static constexpr auto WIDTH_PROPERTY_KEY = "width";
   QRectF rect(Qt::Alignment alignment) const;
-  EnhancedPathVector paths() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;
+  PathVector compute_path_vector() const override;
 
 private:
   FontProperties m_font_properties;

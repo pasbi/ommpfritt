@@ -3,7 +3,6 @@
 #include "geometry/vec2.h"
 #include "objects/convertedobject.h"
 #include "objects/empty.h"
-#include "path/enhancedpathvector.h"
 #include "path/pathvector.h"
 #include "objects/pathobject.h"
 #include "properties/boolproperty.h"
@@ -169,10 +168,10 @@ ConvertedObject Mirror::convert() const
   }
 }
 
-EnhancedPathVector Mirror::paths() const
+PathVector Mirror::compute_path_vector() const
 {
   if (m_reflection && is_active()) {
-    return m_reflection->geom_paths();
+    return PathVector{m_reflection->path_vector(), nullptr};
   } else {
     return {};
   }
@@ -210,7 +209,7 @@ void Mirror::update_path_mode()
     m_reflection.reset();
   } else {
     Object& child = this->tree_child(0);
-    const auto pv = child.geom_paths().path_vector();
+    const auto pv = child.path_vector().to_geom();
 
     const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
     auto reflection = std::make_unique<PathObject>(scene());

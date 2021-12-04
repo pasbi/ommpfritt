@@ -11,10 +11,10 @@ public:
   explicit RectangleObject(Scene* scene);
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "RectangleObject");
-  EnhancedPathVector paths() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;
+  PathVector compute_path_vector() const override;
 
   static constexpr auto SIZE_PROPERTY_KEY = "size";
   static constexpr auto RADIUS_PROPERTY_KEY = "r";

@@ -106,6 +106,9 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
       assert(property_type == property(property_key)->type());
       property(property_key)->deserialize(deserializer, property_pointer);
     } else {
+      if (property_key == "closed") {
+        continue;
+      }
       std::unique_ptr<Property> property;
       try {
         property = Property::make(property_type);

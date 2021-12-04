@@ -63,10 +63,11 @@ public:
   compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation = InterpolationMode::Bezier);
 
   [[nodiscard]] PathVector* path_vector() const;
+  void set_path_vector(PathVector* path_vector);
 
 private:
   std::deque<std::unique_ptr<PathPoint>> m_points;
-  PathVector* const m_path_vector;
+  PathVector* m_path_vector;
 };
 
 }  // namespace

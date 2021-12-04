@@ -1,7 +1,8 @@
 #include "objects/rectangleobject.h"
-#include "path/enhancedpathvector.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
+#include "path/pathvector.h"
+#include "scene/disjointpathpointsetforest.h"
 #include "properties/floatvectorproperty.h"
 
 namespace omm
@@ -34,7 +35,7 @@ QString RectangleObject::type() const
   return TYPE;
 }
 
-EnhancedPathVector RectangleObject::paths() const
+PathVector RectangleObject::compute_path_vector() const
 {
   std::deque<Point> points;
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>() / 2.0;
@@ -68,8 +69,12 @@ EnhancedPathVector RectangleObject::paths() const
   add(Vec2f(size.x - ar.x, -size.y), h, null);
 
   points.emplace_back(points.front());
-  EnhancedPathVector::JoinedPointIndices joined_points{{{0, points.size() - 1}}};
-  return {Geom::PathVector{Path{std::move(points)}.to_geom_path()}, joined_points};
+  auto path = std::make_unique<Path>(std::move(points));
+  const auto path_points = path->points();
+  PathVector pv;
+  pv.add_path(std::move(path));
+  pv.joined_points().insert({path_points.front(), path_points.back()});
+  return pv;
 }
 
 void RectangleObject::on_property_value_changed(Property* property)

@@ -10,9 +10,8 @@
 #include "objects/pathobject.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
-#include "path/enhancedpathvector.h"
-#include <QObject>
 #include "scene/mailbox.h"
+#include <QObject>
 
 namespace
 {
@@ -36,6 +35,11 @@ std::map<PathPoint*, PathPoint*> map_points(const PathVector& from, const PathVe
   return map;
 }
 
+QPointF qpoint(const Geom::Point& vec)
+{
+  return {vec[0], vec[1]};
+}
+
 }  // namespace
 
 namespace omm
@@ -51,7 +55,6 @@ PathVector::PathVector(PathObject* path_object)
 
 bool PathVector::joined_points_shared() const
 {
-  assert((m_shared_joined_points == nullptr) != (!m_owned_joined_points));
   return m_shared_joined_points != nullptr;
 }
 
@@ -97,6 +100,12 @@ void swap(PathVector& a, PathVector& b) noexcept
   swap(a.m_owned_joined_points, b.m_owned_joined_points);
   std::swap(a.m_path_object, b.m_path_object);
   swap(a.m_paths, b.m_paths);
+  for (auto& path : a.m_paths) {
+    path->set_path_vector(&a);
+  }
+  for (auto& path : b.m_paths) {
+    path->set_path_vector(&b);
+  }
   std::swap(a.m_shared_joined_points, b.m_shared_joined_points);
 }
 
@@ -149,6 +158,29 @@ void PathVector::set(const Geom::PathVector& path_vector)
   }
 }
 
+QPainterPath PathVector::outline() const
+{
+  QPainterPath outline;
+  for (const Geom::Path& path : to_geom()) {  // TODO that conversion is unnecessary
+    outline.moveTo(qpoint(path.initialPoint()));
+    for (const Geom::Curve& curve : path) {
+      const auto& cbc = dynamic_cast<const Geom::CubicBezier&>(curve);
+      outline.cubicTo(qpoint(cbc[1]), qpoint(cbc[2]), qpoint(cbc[3]));
+    }
+  }
+  return outline;
+}
+
+QPainterPath PathVector::fill() const
+{
+  QPainterPath fill;
+//  const auto faces = Cycle::find_all_faces(this, joined_points(this));
+//  for (const auto& face : faces) {
+//    fill.addPath(face.to_qpainter_path());
+//  }
+  return fill;
+}
+
 std::size_t PathVector::point_count() const
 {
   return std::accumulate(cbegin(m_paths), cend(m_paths), 0, [](std::size_t n, auto&& path) {
@@ -173,6 +205,7 @@ Path* PathVector::find_path(const PathPoint& point) const
 
 Path& PathVector::add_path(std::unique_ptr<Path>&& path)
 {
+  path->set_path_vector(this);
   return *m_paths.emplace_back(std::move(path));
 }
 
@@ -225,6 +258,21 @@ void PathVector::update_joined_points_geometry() const
   }
 }
 
+bool PathVector::is_valid() const
+{
+  if ((m_shared_joined_points == nullptr) != (!m_owned_joined_points)) {
+    return false;
+  }
+  for (const auto& path : m_paths) {
+    for (auto* point : path->points()) {
+      if (&point->path() != path.get() || point->path_vector() != this) {
+        return false;;
+      }
+    }
+  }
+  return true;
+}
+
 PathObject* PathVector::path_object() const
 {
   return m_path_object;
@@ -237,6 +285,15 @@ DisjointPathPointSetForest& PathVector::joined_points() const
   } else {
     return *m_owned_joined_points;
   }
+}
+
+Geom::PathVector PathVector::to_geom(InterpolationMode interpolation) const
+{
+  Geom::PathVector paths;
+  for (auto&& path : this->paths()) {
+    paths.push_back(path->to_geom_path(interpolation));
+  }
+  return paths;
 }
 
 }  // namespace omm
