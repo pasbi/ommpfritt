@@ -74,8 +74,7 @@ PathVector::PathVector(PathVector&& other) noexcept
 }
 
 PathVector::PathVector(const Geom::PathVector& geometry)
-  : m_path_object(nullptr)
-  , m_owned_joined_points(std::make_unique<DisjointPathPointSetForest>())
+  : m_owned_joined_points(std::make_unique<DisjointPathPointSetForest>())
 {
   for (const auto& path : geometry) {
     m_paths.emplace_back(std::make_unique<Path>(path, this));

@@ -145,6 +145,28 @@ Geom::Path Path::to_geom_path(InterpolationMode interpolation) const
   return {bzs.begin(), bzs.end()};
 }
 
+void Path::make_linear() const
+{
+  for (const auto& point : m_points) {
+    point->set_geometry(point->geometry().nibbed());
+  }
+}
+
+void Path::set_interpolation(InterpolationMode interpolation) const
+{
+  switch (interpolation) {
+  case InterpolationMode::Bezier:
+    return;
+  case InterpolationMode::Smooth:
+    smoothen();
+    return;
+  case InterpolationMode::Linear:
+    make_linear();
+    return;
+  }
+  Q_UNREACHABLE();
+}
+
 std::vector<Geom::Point>
 Path::compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation)
 {
@@ -181,10 +203,8 @@ void Path::set_path_vector(PathVector* path_vector)
 
 void Path::smoothen() const
 {
-  std::deque<std::unique_ptr<PathPoint>> points;
   for (std::size_t i = 0; i < m_points.size(); ++i) {
-    Point smoothened_point = smoothen_point(i);
-    m_points[i]->set_geometry(smoothened_point);
+    m_points[i]->set_geometry(smoothen_point(i));
   }
 }
 

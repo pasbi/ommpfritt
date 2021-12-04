@@ -54,6 +54,7 @@ public:
   [[nodiscard]] std::size_t find(const PathPoint& point) const;
   [[nodiscard]] PathPoint& add_point(const Vec2f& pos);
   [[nodiscard]] Geom::Path to_geom_path(InterpolationMode interpolation = InterpolationMode::Bezier) const;
+  void make_linear() const;
   void smoothen() const;
   [[nodiscard]] Point smoothen_point(std::size_t i) const;
   [[nodiscard]] std::deque<PathPoint*> points() const;
@@ -64,6 +65,7 @@ public:
 
   [[nodiscard]] PathVector* path_vector() const;
   void set_path_vector(PathVector* path_vector);
+  void set_interpolation(InterpolationMode interpolation) const;
 
 private:
   std::deque<std::unique_ptr<PathPoint>> m_points;
