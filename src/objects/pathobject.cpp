@@ -94,9 +94,7 @@ PathVector& PathObject::geometry()
 PathVector PathObject::compute_path_vector() const
 {
   const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
-  PathVector pv;
-  pv.set(m_path_vector->to_geom(interpolation));
-  return pv;
+  return {m_path_vector->to_geom(interpolation)};
 }
 
 }  // namespace omm

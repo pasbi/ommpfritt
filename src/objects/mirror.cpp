@@ -220,11 +220,11 @@ void Mirror::update_path_mode()
       auto r = child.transformation().apply(pv);
       r = reflect(r, Direction::Horizontal, eps);
       r = reflect(r, Direction::Vertical, eps);
-      reflection->geometry().set(r);
+      reflection->geometry() = PathVector{r};
     } else {
       auto r = child.transformation().apply(pv);
       r = reflect(r, direction, eps);
-      reflection->geometry().set(r);
+      reflection->geometry() = PathVector{r};
     }
 
     const auto interpolation = child.has_property(PathObject::INTERPOLATION_PROPERTY_KEY)

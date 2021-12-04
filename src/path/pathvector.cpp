@@ -73,6 +73,15 @@ PathVector::PathVector(PathVector&& other) noexcept
   swap(*this, other);
 }
 
+PathVector::PathVector(const Geom::PathVector& geometry)
+  : m_path_object(nullptr)
+  , m_owned_joined_points(std::make_unique<DisjointPathPointSetForest>())
+{
+  for (const auto& path : geometry) {
+    m_paths.emplace_back(std::make_unique<Path>(path, this));
+  }
+}
+
 PathVector& PathVector::operator=(const PathVector& other)
 {
   *this = PathVector{other};
@@ -146,16 +155,6 @@ PathPoint& PathVector::point_at_index(std::size_t index) const
     }
   }
   throw std::runtime_error{"Index out of bounds."};
-}
-
-void PathVector::set(const Geom::PathVector& path_vector)
-{
-  if (m_path_object != nullptr) {
-    m_path_object->update();
-  }
-  for (const auto& path : path_vector) {
-    m_paths.emplace_back(std::make_unique<Path>(path, this));
-  }
 }
 
 QPainterPath PathVector::outline() const

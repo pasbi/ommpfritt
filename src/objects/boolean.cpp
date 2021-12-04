@@ -97,9 +97,7 @@ PathVector Boolean::compute_path_vector() const
     Geom::PathIntersectionGraph pig{get_path_vector(*children[0]), get_path_vector(*children[1])};
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
-      PathVector pv;
-      pv.set(dispatcher[i].compute(pig));
-      return pv;
+      return PathVector{dispatcher[i].compute(pig)};
     } else {
       return {};
     }
