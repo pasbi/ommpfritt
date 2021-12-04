@@ -16,7 +16,6 @@
 namespace omm
 {
 
-class ConvertedObject;
 class ObjectTree;
 class Painter;
 class Point;
@@ -71,7 +70,7 @@ public:
   Object& adopt(std::unique_ptr<Object> adoptee, std::size_t pos) override;
   using TreeElement::adopt;
 
-  virtual ConvertedObject convert() const;
+  virtual std::unique_ptr<Object> convert(bool& keep_children) const;
 
   Flag flags() const override;
   bool is_active() const;

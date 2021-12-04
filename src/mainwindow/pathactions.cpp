@@ -16,7 +16,6 @@
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/pathvector.h"
-#include "objects/convertedobject.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
@@ -110,24 +109,25 @@ std::set<Object*> convert_objects_recursively(Application& app, std::set<Object*
   if (!convertibles.empty()) {
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertibles) {
-      auto converted = c->convert();
-      auto& converted_object = converted.object();
-      converted_object.set_object_tree(app.scene->object_tree());
+      bool keep_children = true;
+      auto converted_object = c->convert(keep_children);
+      auto& ref = *converted_object;
+      ref.set_object_tree(app.scene->object_tree());
       assert(!c->is_root());
-      ObjectTreeOwningContext context(converted_object, c->tree_parent(), c);
+      ObjectTreeOwningContext context(ref, c->tree_parent(), c);
       const auto properties = ::transform<Property*>(app.scene->find_reference_holders(*c));
       if (!properties.empty()) {
-        app.scene->submit<PropertiesCommand<ReferenceProperty>>(properties, &converted_object);
+        app.scene->submit<PropertiesCommand<ReferenceProperty>>(properties, &ref);
       }
-      context.subject.capture(converted.extract_object());
+      context.subject.capture(std::move(converted_object));
       app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
-      assert(converted_object.scene() == app.scene.get());
-      converted_object.set_transformation(c->transformation());
-      converted_objects.insert(&converted_object);
+      assert(ref.scene() == app.scene.get());
+      ref.set_transformation(c->transformation());
+      converted_objects.insert(&ref);
 
-      if (converted.keep_children()) {
-        const auto make_move_context = [&converted_object](auto* cc) {
-          return ObjectTreeMoveContext(*cc, converted_object, nullptr);
+      if (keep_children) {
+        const auto make_move_context = [&ref](auto* cc) {
+          return ObjectTreeMoveContext(*cc, ref, nullptr);
         };
         const auto old_children = c->tree_children();
         std::transform(old_children.rbegin(),

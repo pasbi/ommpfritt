@@ -2,7 +2,6 @@
 
 #include <QObject>
 
-#include "objects/convertedobject.h"
 #include "objects/empty.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
@@ -292,7 +291,7 @@ Flag Cloner::flags() const
   return Object::flags() | Flag::HasScript;
 }
 
-ConvertedObject Cloner::convert() const
+std::unique_ptr<Object> Cloner::convert(bool& keep_children) const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
@@ -306,7 +305,8 @@ ConvertedObject Cloner::convert() const
     clone.set_transformation(local_transformation);
   }
 
-  return {std::move(converted), !is_active()};
+  keep_children = !is_active();
+  return converted;
 }
 
 std::vector<std::unique_ptr<Object>> Cloner::make_clones()

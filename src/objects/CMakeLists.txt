@@ -3,8 +3,6 @@ target_sources(libommpfritt PRIVATE
   boolean.h
   cloner.cpp
   cloner.h
-  convertedobject.cpp
-  convertedobject.h
   ellipse.cpp
   ellipse.h
   empty.cpp

@@ -1,7 +1,6 @@
 #include "objects/mirror.h"
 
 #include "geometry/vec2.h"
-#include "objects/convertedobject.h"
 #include "objects/empty.h"
 #include "path/pathvector.h"
 #include "objects/pathobject.h"
@@ -155,16 +154,18 @@ QString Mirror::type() const
   return TYPE;
 }
 
-ConvertedObject Mirror::convert() const
+std::unique_ptr<Object> Mirror::convert(bool& keep_children) const
 {
   if (m_draw_children) {
     std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
     auto reflection = m_reflection->clone();
     reflection->update();
     converted->adopt(std::move(reflection));
-    return {std::move(converted), true};
+    keep_children = true;
+    return converted;
   } else {
-    return {m_reflection->clone(), false};
+    keep_children = false;
+    return m_reflection->clone();
   }
 }
 

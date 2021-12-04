@@ -33,7 +33,7 @@ public:
   static constexpr auto TOLERANCE_PROPERTY_KEY = "eps";
 
   PathVector compute_path_vector() const override;
-  ConvertedObject convert() const override;
+  std::unique_ptr<Object> convert(bool& keep_children) const override;
   void update() override;
 
 protected:

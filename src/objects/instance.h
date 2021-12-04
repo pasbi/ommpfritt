@@ -29,7 +29,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Instance");
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
   static constexpr auto IDENTICAL_PROPERTY_KEY = "identical";
-  ConvertedObject convert() const override;
+  std::unique_ptr<Object> convert(bool& keep_children) const override;
   Flag flags() const override;
   void post_create_hook() override;
   void update() override;

@@ -2,7 +2,6 @@
 
 #include "common.h"
 #include "logging.h"
-#include "objects/convertedobject.h"
 #include "objects/pathobject.h"
 #include "path/path.h"
 #include "path/pathvector.h"
@@ -410,7 +409,7 @@ Object& Object::adopt(std::unique_ptr<Object> adoptee, const std::size_t pos)
   return o;
 }
 
-ConvertedObject Object::convert() const
+std::unique_ptr<Object> Object::convert(bool& keep_children) const
 {
   auto converted = std::make_unique<PathObject>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
@@ -418,7 +417,8 @@ ConvertedObject Object::convert() const
   converted->geometry() = PathVector{this->path_vector(), converted.get()};
   converted->geometry().share_join_points(scene()->joined_points());
   converted->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
-  return ConvertedObject{std::move(converted), true};
+  keep_children = true;
+  return converted;
 }
 
 Flag Object::flags() const

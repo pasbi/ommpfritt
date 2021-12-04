@@ -43,7 +43,7 @@ public:
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom };
   enum class Anchor { Path, This };
   Flag flags() const override;
-  ConvertedObject convert() const override;
+  std::unique_ptr<Object> convert(bool& keep_children) const override;
   Mode mode() const;
   bool contains(const Vec2f& pos) const override;
   void update() override;

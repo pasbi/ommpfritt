@@ -1,7 +1,6 @@
 #include "objects/instance.h"
 
 #include "commands/propertycommand.h"
-#include "objects/convertedobject.h"
 #include "objects/empty.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
@@ -98,7 +97,7 @@ Object* Instance::illustrated_object() const
   }
 }
 
-ConvertedObject Instance::convert() const
+std::unique_ptr<Object> Instance::convert(bool& keep_children) const
 {
   std::unique_ptr<Object> clone;
   if (is_active()) {
@@ -112,7 +111,8 @@ ConvertedObject Instance::convert() const
   if (!clone) {
     clone = std::make_unique<Empty>(scene());
   }
-  return {std::move(clone), true};
+  keep_children = true;
+  return clone;
 }
 
 QString Instance::type() const
