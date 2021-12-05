@@ -88,20 +88,16 @@ void DisjointPathPointSetForest::remove_dangling_points()
 {
   for (auto& set : m_forest) {
     std::erase_if(set, [](const PathPoint* point) {
-      if (point == nullptr) {
-        return true;
-      }
-      if (point->path_vector() == nullptr) {
-        return true;
-      }
-      const auto* path_object = point->path_vector()->path_object();
-      if (path_object == nullptr) {
-        return true;
-      }
-      if (path_object->scene() == nullptr) {
-        return true;
-      }
-      return !path_object->scene()->contains(path_object);
+      static constexpr auto is_part_of_scene = [](const PathPoint* point) {
+        const auto* const path_object = point->path_vector()->path_object();
+        return path_object->scene() != nullptr && path_object->scene()->contains(path_object);
+      };
+      return point == nullptr
+          || point->path_vector() == nullptr
+          || !point->path().contains(*point)
+          || !::contains(point->path_vector()->paths(), &point->path())
+          || point->path_vector()->path_object() == nullptr
+          || !is_part_of_scene(point);
     });
   }
 
