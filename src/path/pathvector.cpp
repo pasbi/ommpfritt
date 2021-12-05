@@ -169,14 +169,12 @@ QPainterPath PathVector::outline() const
   return outline;
 }
 
-QPainterPath PathVector::fill() const
+std::vector<QPainterPath> PathVector::faces() const
 {
-  QPainterPath fill;
-//  const auto faces = Cycle::find_all_faces(this, joined_points(this));
-//  for (const auto& face : faces) {
-//    fill.addPath(face.to_qpainter_path());
-//  }
-  return fill;
+  return {};
+//  return ::transform<QPainterPath, std::vector>(Cycle::find_all_faces(*this), [](const Cycle& cycle) {
+//    return cycle.to_qpainter_path();
+//  });
 }
 
 std::size_t PathVector::point_count() const

@@ -668,16 +668,18 @@ void Object::draw_object(Painter& renderer,
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     const auto& path_vector = this->path_vector();
-    const auto& fill = path_vector.fill();
+    const auto faces = path_vector.faces();
     const auto& outline = path_vector.outline();
-    if (!fill.isEmpty() || !outline.isEmpty()) {
+    if (!faces.empty() || !outline.isEmpty()) {
       renderer.set_style(style, *this, options);
       auto& painter = *renderer.painter;
 
-      painter.save();
-      painter.setPen(Qt::NoPen);
-      painter.drawPath(fill);
-      painter.restore();
+      for (const auto& face : faces) {
+        painter.save();
+        painter.setPen(Qt::NoPen);
+        painter.drawPath(face);
+        painter.restore();
+      }
 
       painter.save();
       renderer.painter->setBrush(Qt::NoBrush);

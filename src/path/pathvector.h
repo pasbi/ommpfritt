@@ -45,7 +45,7 @@ public:
   [[nodiscard]] Geom::PathVector to_geom(InterpolationMode interpolation = InterpolationMode::Bezier) const;
 
   [[nodiscard]] QPainterPath outline() const;
-  [[nodiscard]] QPainterPath fill() const;
+  [[nodiscard]] std::vector<QPainterPath> faces() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;
