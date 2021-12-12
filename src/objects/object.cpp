@@ -4,6 +4,7 @@
 #include "logging.h"
 #include "objects/pathobject.h"
 #include "path/path.h"
+#include "path/lib2geomadapter.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
@@ -556,7 +557,7 @@ std::vector<const omm::Style*> Object::find_styles() const
 
 Point Object::pos(const Geom::PathVectorTime& t) const
 {
-  const auto paths = path_vector().to_geom();
+  const auto paths = omm_to_geom(path_vector());
   if (const auto n = paths.curveCount(); n == 0) {
     return Point();
   } else if (t.path_index >= paths.size()) {
@@ -580,7 +581,7 @@ Point Object::pos(const Geom::PathVectorTime& t) const
 
 bool Object::contains(const Vec2f& point) const
 {
-  const auto path_vector = this->path_vector().to_geom();
+  const auto path_vector = omm_to_geom(this->path_vector());
   const auto winding = path_vector.winding(Geom::Point{point.x, point.y});
   return std::abs(winding) % 2 == 1;
 }
@@ -605,7 +606,7 @@ Geom::PathVectorTime Object::compute_path_vector_time(double t, Interpolation in
     return compute_path_vector_time(static_cast<int>(path_index), path_position, interpolation);
   }
   case Interpolation::Distance: {
-    const auto [i, tp] = factor_time_by_distance(path_vector.to_geom(), t);
+    const auto [i, tp] = factor_time_by_distance(omm_to_geom(path_vector), t);
     return compute_path_vector_time(i, tp, interpolation);
   }
   default:
@@ -621,7 +622,7 @@ Object::compute_path_vector_time(int path_index, double t, Interpolation interpo
   }
 
   t = std::clamp(t, 0.0, almost_one);
-  const auto path_vector = this->path_vector().to_geom();
+  const auto path_vector = omm_to_geom(this->path_vector());
   if (static_cast<std::size_t>(path_index) >= path_vector.size()) {
     return Geom::PathVectorTime(path_index, 0, 0.0);
   }

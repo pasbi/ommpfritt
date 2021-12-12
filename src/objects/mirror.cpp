@@ -3,6 +3,7 @@
 #include "geometry/vec2.h"
 #include "objects/empty.h"
 #include "path/pathvector.h"
+#include "path/lib2geomadapter.h"
 #include "objects/pathobject.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
@@ -210,7 +211,7 @@ void Mirror::update_path_mode()
     m_reflection.reset();
   } else {
     Object& child = this->tree_child(0);
-    const auto pv = child.path_vector().to_geom();
+    const auto pv = omm_to_geom(child.path_vector());
 
     const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
     auto reflection = std::make_unique<PathObject>(scene());
@@ -220,11 +221,11 @@ void Mirror::update_path_mode()
       auto r = child.transformation().apply(pv);
       r = reflect(r, Direction::Horizontal, eps);
       r = reflect(r, Direction::Vertical, eps);
-      reflection->geometry() = PathVector{r};
+      reflection->geometry() = *geom_to_omm(r);
     } else {
       auto r = child.transformation().apply(pv);
       r = reflect(r, direction, eps);
-      reflection->geometry() = PathVector{r};
+      reflection->geometry() = *geom_to_omm(r);
     }
 
     const auto interpolation = child.has_property(PathObject::INTERPOLATION_PROPERTY_KEY)

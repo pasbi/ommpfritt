@@ -1,6 +1,7 @@
 #include "objects/boolean.h"
 #include "path/pathvector.h"
 #include "properties/optionproperty.h"
+#include "path/lib2geomadapter.h"
 #include <2geom/2geom.h>
 #include <2geom/intersection-graph.h>
 #include <2geom/pathvector.h>
@@ -92,12 +93,12 @@ PathVector Boolean::compute_path_vector() const
   if (is_active() && children.size() == 2) {
     static constexpr auto get_path_vector = [](const Object& object) {
       const auto t = object.transformation();
-      return t.apply(object.path_vector().to_geom());
+      return t.apply(omm_to_geom(object.path_vector()));
     };
     Geom::PathIntersectionGraph pig{get_path_vector(*children[0]), get_path_vector(*children[1])};
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
-      return PathVector{dispatcher[i].compute(pig)};
+      return *geom_to_omm(dispatcher[i].compute(pig));
     } else {
       return {};
     }

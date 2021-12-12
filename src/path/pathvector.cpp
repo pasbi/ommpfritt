@@ -2,6 +2,7 @@
 
 #include "commands/modifypointscommand.h"
 #include "common.h"
+#include "geometry/point.h"
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
@@ -35,9 +36,9 @@ std::map<PathPoint*, PathPoint*> map_points(const PathVector& from, const PathVe
   return map;
 }
 
-QPointF qpoint(const Geom::Point& vec)
+QPointF qpoint(const Vec2f& vec)
 {
-  return {vec[0], vec[1]};
+  return {vec.x, vec.y};
 }
 
 }  // namespace
@@ -71,14 +72,6 @@ PathVector::PathVector(const PathVector& other, PathObject* path_object)
 PathVector::PathVector(PathVector&& other) noexcept
 {
   swap(*this, other);
-}
-
-PathVector::PathVector(const Geom::PathVector& geometry)
-  : m_owned_joined_points(std::make_unique<DisjointPathPointSetForest>())
-{
-  for (const auto& path : geometry) {
-    m_paths.emplace_back(std::make_unique<Path>(path, this));
-  }
 }
 
 PathVector& PathVector::operator=(const PathVector& other)
@@ -159,11 +152,15 @@ PathPoint& PathVector::point_at_index(std::size_t index) const
 QPainterPath PathVector::outline() const
 {
   QPainterPath outline;
-  for (const Geom::Path& path : to_geom()) {  // TODO that conversion is unnecessary
-    outline.moveTo(qpoint(path.initialPoint()));
-    for (const Geom::Curve& curve : path) {
-      const auto& cbc = dynamic_cast<const Geom::CubicBezier&>(curve);
-      outline.cubicTo(qpoint(cbc[1]), qpoint(cbc[2]), qpoint(cbc[3]));
+  for (const Path* path : paths()) {
+    const auto points = path->points();
+    if (!points.empty()) {
+      outline.moveTo(qpoint(points[0]->geometry().position()));
+      for (std::size_t i = 0; i < points.size() - 1; ++i) {
+        outline.cubicTo(qpoint(points[i]->geometry().right_position()),
+                        qpoint(points[i+1]->geometry().left_position()),
+                        qpoint(points[i+1]->geometry().position()));
+      }
     }
   }
   return outline;
@@ -281,15 +278,6 @@ DisjointPathPointSetForest& PathVector::joined_points() const
   } else {
     return *m_owned_joined_points;
   }
-}
-
-Geom::PathVector PathVector::to_geom(InterpolationMode interpolation) const
-{
-  Geom::PathVector paths;
-  for (auto&& path : this->paths()) {
-    paths.push_back(path->to_geom_path(interpolation));
-  }
-  return paths;
 }
 
 }  // namespace omm

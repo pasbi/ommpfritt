@@ -5,4 +5,6 @@ target_sources(libommpfritt PRIVATE
   pathpoint.h
   path.cpp
   path.h
+  lib2geomadapter.cpp
+  lib2geomadapter.h
 )

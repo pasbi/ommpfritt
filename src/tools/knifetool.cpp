@@ -5,6 +5,7 @@
 #include "geometry/point.h"
 #include "objects/pathobject.h"
 #include "path/pathvector.h"
+#include "path/lib2geomadapter.h"
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
 #include "scene/history/historymodel.h"
@@ -34,7 +35,7 @@ compute_cut_points(const Geom::PathVector& path_vector, const Vec2f& start, cons
 
 Geom::PathVector get_global_path_vector(const PathObject& po)
 {
-  const auto path_vector = po.path_vector().to_geom();
+  const auto path_vector = omm_to_geom(po.path_vector());
   const auto transformation = po.global_transformation(Space::Viewport);
   return transformation.apply(path_vector);
 }

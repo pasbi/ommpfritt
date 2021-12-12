@@ -21,7 +21,6 @@ public:
   PathVector(PathObject* path_object = nullptr);
   PathVector(const PathVector& other, PathObject* path_object = nullptr);
   PathVector(PathVector&& other) noexcept;
-  PathVector(const Geom::PathVector& geometry);
   PathVector& operator=(const PathVector& other);
   PathVector& operator=(PathVector&& other) noexcept;
   ~PathVector() override;
@@ -42,7 +41,6 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   [[nodiscard]] PathPoint& point_at_index(std::size_t index) const;
-  [[nodiscard]] Geom::PathVector to_geom(InterpolationMode interpolation = InterpolationMode::Bezier) const;
 
   [[nodiscard]] QPainterPath outline() const;
   [[nodiscard]] std::vector<QPainterPath> faces() const;

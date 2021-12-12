@@ -4,13 +4,6 @@
 #include <memory>
 #include "aspects/serializable.h"
 
-namespace Geom
-{
-class Path;
-class Curve;
-class Point;
-}  // namespace Geom
-
 namespace omm
 {
 
@@ -38,7 +31,6 @@ public:
   explicit Path(const Path& other, PathVector* path_vector = nullptr);
   explicit Path(std::deque<Point>&& points, PathVector* path_vector = nullptr);
   explicit Path(std::vector<Point>&& points, PathVector* path_vector = nullptr);
-  explicit Path(const Geom::Path& geom_path, PathVector* path_vector = nullptr);
   ~Path() override;
   Path(Path&&) = delete;
   Path& operator=(const Path&) = delete;
@@ -52,15 +44,14 @@ public:
   [[nodiscard]] PathPoint& at(std::size_t i) const;
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::size_t find(const PathPoint& point) const;
-  [[nodiscard]] PathPoint& add_point(const Vec2f& pos);
-  [[nodiscard]] Geom::Path to_geom_path(InterpolationMode interpolation = InterpolationMode::Bezier) const;
+  PathPoint& add_point(const Vec2f& pos);
   void make_linear() const;
   void smoothen() const;
   [[nodiscard]] Point smoothen_point(std::size_t i) const;
   [[nodiscard]] std::deque<PathPoint*> points() const;
   void insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint> >&& points);
   [[nodiscard]] std::deque<std::unique_ptr<PathPoint>> extract(std::size_t start, std::size_t size);
-  [[nodiscard]] static std::vector<Geom::Point>
+  [[nodiscard]] static std::vector<Vec2f>
   compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation = InterpolationMode::Bezier);
 
   [[nodiscard]] PathVector* path_vector() const;

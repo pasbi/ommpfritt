@@ -54,30 +54,6 @@ Path::Path(std::vector<Point>&& points, PathVector* path_vector)
 {
 }
 
-Path::Path(const Geom::Path& geom_path, PathVector* path_vector)
-  : m_path_vector(path_vector)
-{
-  const auto n = geom_path.size();
-  for (std::size_t i = 0; i < n; ++i) {
-    const auto& c = dynamic_cast<const Geom::CubicBezier&>(geom_path[i]);
-    const auto p0 = Vec2f(c[0]);
-    if (m_points.empty()) {
-      m_points.push_back(std::make_unique<PathPoint>(Point{p0}, *this));
-    }
-    auto geometry = m_points.back()->geometry();
-    geometry.set_right_tangent(PolarCoordinates(Vec2f(c[1]) - p0));
-    m_points.back()->set_geometry(geometry);
-    const auto p1 = Vec2f(c[3]);
-    auto& pref = *m_points.emplace_back(std::make_unique<PathPoint>(Point{p1}, *this));
-    geometry = pref.geometry();
-    geometry.set_left_tangent(PolarCoordinates(Vec2f(c[2]) - p1));
-    pref.set_geometry(geometry);
-  }
-
-  // path_vector counts number of curves, path counts number of points
-  assert(geom_path.size() + 1 == m_points.size());
-}
-
 Path::Path(const Path& other, PathVector* path_vector)
   : m_points(copy(other.m_points, *this))
   , m_path_vector(path_vector)
@@ -120,31 +96,6 @@ PathPoint& Path::add_point(const Vec2f& pos)
   return *m_points.emplace_back(std::make_unique<PathPoint>(Point{pos}, *this));
 }
 
-Geom::Path Path::to_geom_path(InterpolationMode interpolation) const
-{
-  std::vector<Geom::CubicBezier> bzs;
-  const std::size_t n = m_points.size();
-  if (n == 0) {
-    return Geom::Path{};
-  }
-
-  bzs.reserve(n - 1);
-
-  std::unique_ptr<Path> smoothened;
-  const Path* self = this;
-  if (interpolation == InterpolationMode::Smooth) {
-    smoothened = std::make_unique<Path>(*this);
-    smoothened->smoothen();
-    self = smoothened.get();
-  }
-
-  for (std::size_t i = 0; i < n - 1; ++i) {
-    bzs.emplace_back(compute_control_points(self->at(i).geometry(), self->at(i + 1).geometry(), interpolation));
-  }
-
-  return {bzs.begin(), bzs.end()};
-}
-
 void Path::make_linear() const
 {
   for (const auto& point : m_points) {
@@ -167,24 +118,23 @@ void Path::set_interpolation(InterpolationMode interpolation) const
   Q_UNREACHABLE();
 }
 
-std::vector<Geom::Point>
-Path::compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation)
+std::vector<Vec2f> Path::compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation)
 {
   static constexpr double t = 1.0 / 3.0;
   switch (interpolation) {
   case InterpolationMode::Bezier:
     [[fallthrough]];
   case InterpolationMode::Smooth:
-    return {a.position().to_geom_point(),
-            a.right_position().to_geom_point(),
-            b.left_position().to_geom_point(),
-            b.position().to_geom_point()};
+    return {a.position(),
+            a.right_position(),
+            b.left_position(),
+            b.position()};
     break;
   case InterpolationMode::Linear:
-    return {a.position().to_geom_point(),
-            ((1.0 - t) * a.position() + t * b.position()).to_geom_point(),
-            ((1.0 - t) * b.position() + t * a.position()).to_geom_point(),
-            b.position().to_geom_point()};
+    return {a.position(),
+            ((1.0 - t) * a.position() + t * b.position()),
+            ((1.0 - t) * b.position() + t * a.position()),
+            b.position()};
     break;
   }
   Q_UNREACHABLE();
