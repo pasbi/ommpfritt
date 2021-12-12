@@ -109,7 +109,7 @@ void DisjointPathPointSetForest::remove_dangling_points()
 void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>& dict)
 {
   for (auto& old_set : m_forest) {
-    std::set<PathPoint*> new_set;
+    Joint new_set;
     for (auto* old_point : old_set) {
       if (const auto it = dict.find(old_point); it != dict.end()) {
         new_set.insert(it->second);
