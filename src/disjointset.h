@@ -69,7 +69,7 @@ public:
   /**
    * @brief get returns the set that contains `key` or the empty set if there is no such.
    */
-  template<typename K> Joint get(K&& key) const
+  template<typename K> Joint get(const K& key) const
   {
     for (const auto& set : m_forest) {
       if (::contains(set, key)) {
