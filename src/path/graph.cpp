@@ -48,6 +48,7 @@ public:
   using JointMap = std::deque<Joint>;
   using EdgeDescriptor = boost::detail::edge_desc_impl<boost::undirected_tag, std::size_t>;
   using VertexDescriptor = std::size_t;
+  using Embedding = std::vector<std::deque<EdgeDescriptor>>;
   using adjacency_list::adjacency_list;
   const Vertex& data(VertexDescriptor vertex) const;
   Vertex& data(VertexDescriptor vertex);
@@ -56,6 +57,8 @@ public:
   void add_vertex(PathPoint* path_point);
   bool add_edge(PathPoint* a, PathPoint* b);
   VertexDescriptor lookup_vertex(const PathPoint* p) const;
+  Embedding compute_embedding() const;
+  PolarCoordinates get_direction_at(const Edge& edge, VertexDescriptor vertex) const;
 
 private:
   VertexIndexMap m_vertex_index_map;
@@ -119,19 +122,7 @@ std::vector<Face> Graph::compute_faces() const
     const Impl& m_impl;
   };
 
-  typedef std::vector< std::vector< graph_traits<Graph::Impl>::edge_descriptor > >
-      embedding_storage_t;
-  typedef boost::iterator_property_map
-      < embedding_storage_t::iterator,
-        property_map<Graph::Impl, vertex_index_t>::type
-       >
-          embedding_t;
-
-  embedding_storage_t embedding_storage(num_vertices(*m_impl));
-  embedding_t embedding(embedding_storage.begin(), get(vertex_index, *m_impl));
-  boyer_myrvold_planarity_test(boyer_myrvold_params::graph = *m_impl,
-                               boyer_myrvold_params::embedding = &embedding[0]);
-//  const auto embedding = impl().compute_embedding();
+  const auto embedding = m_impl->compute_embedding();
   Visitor visitor{*m_impl, faces};
   boost::planar_face_traversal(*m_impl, &embedding[0], visitor);
 
@@ -187,6 +178,44 @@ bool Graph::Impl::add_edge(PathPoint* a, PathPoint* b)
 Graph::Impl::VertexDescriptor Graph::Impl::lookup_vertex(const PathPoint* p) const
 {
   return m_vertex_index_map.at(p);
+}
+
+Graph::Impl::Embedding Graph::Impl::compute_embedding() const
+{
+  const auto n = boost::num_vertices(*this);
+  Graph::Impl::Embedding embedding(n);
+  for (auto [v, vend] = boost::vertices(*this); v != vend; ++v) {
+    std::deque<EdgeDescriptor> edges;
+    for (auto [e, eend] = out_edges(*v, *this); e != eend; ++e) {
+      edges.emplace_back(*e);
+    }
+    std::sort(edges.begin(), edges.end(), [this, v=*v](const auto e1, const auto e2) {
+      const auto a1 = python_like_mod(get_direction_at(data(e1), v).argument, 2 * M_PI);
+      const auto a2 = python_like_mod(get_direction_at(data(e2), v).argument, 2 * M_PI);
+      return a1 < a2;
+    });
+    embedding[*v] = std::move(edges);
+  }
+  return embedding;
+}
+
+PolarCoordinates Graph::Impl::get_direction_at(const Edge& edge, VertexDescriptor vertex) const
+{
+  const auto compute_edge_direction = [](const Point& major, const Point& minor, const auto& get_tangent) {
+    static constexpr double eps = 0.00001;
+    if (const auto tangent = get_tangent(major); tangent.magnitude > eps) {
+      return tangent;
+    } else {
+      return PolarCoordinates{-major.position() + minor.position()};
+    }
+  };
+  const auto& joint = m_joint_map.at(vertex);
+  if (::contains(joint, edge.a)) {
+    return compute_edge_direction(edge.a->geometry(), edge.b->geometry(), std::mem_fn(&Point::left_tangent));
+  } else {
+    assert(::contains(joint, edge.b));
+    return compute_edge_direction(edge.b->geometry(), edge.a->geometry(), std::mem_fn(&Point::right_tangent));
+  }
 }
 
 Graph::~Graph() = default;

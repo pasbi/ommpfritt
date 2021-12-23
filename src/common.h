@@ -526,6 +526,11 @@ template<typename Vs, typename F> auto find_coherent_ranges(const Vs& vs, F&& f)
   return ranges;
 }
 
+template<typename T> auto python_like_mod(const T& dividend, const T& divisor)
+{
+  return std::fmod(std::fmod(dividend, divisor) + divisor, divisor);
+}
+
 }  // namespace omm
 
 template<> struct omm::EnableBitMaskOperators<omm::Kind> : std::true_type {
