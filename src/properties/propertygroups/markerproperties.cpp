@@ -1,5 +1,4 @@
 #include "properties/propertygroups/markerproperties.h"
-#include "geometry/util.h"
 #include "objects/tip.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
@@ -49,7 +48,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
 {
   QPainter& p = *painter.painter;
   p.save();
-  p.translate(to_qpoint(location.position()));
+  p.translate(location.position().to_pointf());
   if (property_value<bool>(REVERSE_PROPERTY_KEY)) {
     p.rotate((location.rotation() + M_PI_2) * M_180_PI);
   } else {

@@ -1,5 +1,4 @@
 #include "python/objectwrapper.h"
-#include "geometry/util.h"
 
 namespace omm
 {

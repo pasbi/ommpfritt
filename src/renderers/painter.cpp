@@ -1,5 +1,4 @@
 #include "renderers/painter.h"
-#include "geometry/util.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
 #include "renderers/painteroptions.h"
@@ -90,9 +89,8 @@ void Painter::toast(const Vec2f& pos, const QString& text) const
   painter->setPen(pen);
   const Vec2f gpos = current_transformation().apply_to_position(pos);
   painter->resetTransform();
-  const QPointF top_left = to_qpoint(gpos);
   static constexpr double huge = 10.0e10;
-  const QRectF rect(top_left, QSizeF(huge, huge));
+  const QRectF rect(gpos.to_pointf(), QSizeF(huge, huge));
   QRectF actual_rect;
   painter->drawText(rect, Qt::AlignTop | Qt::AlignLeft, text, &actual_rect);
   const double margin = 10.0;
@@ -110,18 +108,18 @@ QPainterPath Painter::path(const std::vector<Point>& points, bool closed)
 {
   QPainterPath path;
   if (points.size() > 1) {
-    path.moveTo(to_qpoint(points.front().position()));
+    path.moveTo(points.front().position().to_pointf());
 
     for (std::size_t i = 1; i < points.size(); ++i) {
-      path.cubicTo(to_qpoint(points.at(i - 1).right_position()),
-                   to_qpoint(points.at(i).left_position()),
-                   to_qpoint(points.at(i).position()));
+      path.cubicTo(points.at(i - 1).right_position().to_pointf(),
+                   points.at(i).left_position().to_pointf(),
+                   points.at(i).position().to_pointf());
     }
 
     if (closed && points.size() > 2) {
-      path.cubicTo(to_qpoint(points.back().right_position()),
-                   to_qpoint(points.front().left_position()),
-                   to_qpoint(points.front().position()));
+      path.cubicTo(points.back().right_position().to_pointf(),
+                   points.front().left_position().to_pointf(),
+                   points.front().position().to_pointf());
     }
   }
   return path;
