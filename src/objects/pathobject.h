@@ -37,6 +37,10 @@ public:
 
   PathVector compute_path_vector() const override;
 
+#ifdef DRAW_POINT_IDS
+  void draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const override;
+#endif  // DRAW_POINT_IDS
+
 private:
   std::unique_ptr<PathVector> m_path_vector;
 };
