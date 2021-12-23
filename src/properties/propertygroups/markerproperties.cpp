@@ -3,7 +3,9 @@
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
+#include "path/path.h"
 #include "renderers/painter.h"
+#include <QPainter>
 
 namespace omm
 {
@@ -56,7 +58,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
   }
   p.setPen(Qt::NoPen);
   p.setBrush(color.to_qcolor());
-  QPainterPath path = Painter::path(shape(width), true);
+  QPainterPath path = Path::to_painter_path(shape(width), true);
   p.drawPath(path);
   p.restore();
 }

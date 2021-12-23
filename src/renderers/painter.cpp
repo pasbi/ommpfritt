@@ -104,27 +104,6 @@ void Painter::toast(const Vec2f& pos, const QString& text) const
   painter->restore();
 }
 
-QPainterPath Painter::path(const std::vector<Point>& points, bool closed)
-{
-  QPainterPath path;
-  if (points.size() > 1) {
-    path.moveTo(points.front().position().to_pointf());
-
-    for (std::size_t i = 1; i < points.size(); ++i) {
-      path.cubicTo(points.at(i - 1).right_position().to_pointf(),
-                   points.at(i).left_position().to_pointf(),
-                   points.at(i).position().to_pointf());
-    }
-
-    if (closed && points.size() > 2) {
-      path.cubicTo(points.back().right_position().to_pointf(),
-                   points.front().left_position().to_pointf(),
-                   points.front().position().to_pointf());
-    }
-  }
-  return path;
-}
-
 QBrush
 Painter::make_brush(const Style& style, const Object& object, const PainterOptions& options)
 {

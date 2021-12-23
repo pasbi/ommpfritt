@@ -3,6 +3,7 @@
 #include <deque>
 #include <memory>
 #include "aspects/serializable.h"
+#include <QPainterPath>
 
 namespace omm
 {
@@ -57,6 +58,26 @@ public:
   [[nodiscard]] PathVector* path_vector() const;
   void set_path_vector(PathVector* path_vector);
   void set_interpolation(InterpolationMode interpolation) const;
+
+  template<typename Points> static QPainterPath to_painter_path(const Points& points, bool close = false)
+  {
+    if (points.empty()) {
+      return {};
+    }
+    QPainterPath path;
+    path.moveTo(points.front().position().to_pointf());
+    for (auto it = points.begin(); next(it) != points.end(); ++it) {
+      path.cubicTo(it->right_position().to_pointf(),
+                   next(it)->left_position().to_pointf(),
+                   next(it)->position().to_pointf());
+    }
+    if (close) {
+      path.cubicTo(points.back().right_position().to_pointf(),
+                   points.front().left_position().to_pointf(),
+                   points.front().position().to_pointf());
+    }
+    return path;
+  }
 
 private:
   std::deque<std::unique_ptr<PathPoint>> m_points;

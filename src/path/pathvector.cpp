@@ -38,11 +38,6 @@ std::map<PathPoint*, PathPoint*> map_points(const PathVector& from, const PathVe
   return map;
 }
 
-QPointF qpoint(const Vec2f& vec)
-{
-  return {vec.x, vec.y};
-}
-
 }  // namespace
 
 namespace omm
@@ -151,25 +146,13 @@ PathPoint& PathVector::point_at_index(std::size_t index) const
   throw std::runtime_error{"Index out of bounds."};
 }
 
-template<typename Points> void to_painter_path(QPainterPath& path, const Points& points)
-{
-  if (!points.empty()) {
-    path.moveTo(qpoint(points.front().position()));
-  }
-  for (auto it = points.begin(); next(it) != points.end(); ++it) {
-    path.cubicTo(qpoint(it->right_position()),
-                 qpoint(next(it)->left_position()),
-                 qpoint(next(it)->position()));
-  }
-}
-
 QPainterPath PathVector::outline() const
 {
   QPainterPath outline;
   for (const Path* path : paths()) {
     const auto points = path->points();
     if (!points.empty()) {
-      to_painter_path(outline, ::transform<Point>(points, std::mem_fn(&PathPoint::geometry)));
+      outline.addPath(Path::to_painter_path(::transform<Point>(points, std::mem_fn(&PathPoint::geometry))));
     }
   }
   return outline;
@@ -182,8 +165,7 @@ std::vector<QPainterPath> PathVector::faces() const
   std::vector<QPainterPath> qpps;
   qpps.reserve(faces.size());
   for (const auto& face : faces) {
-    auto& qpp = qpps.emplace_back();
-    to_painter_path(qpp, face.points());
+    qpps.emplace_back(Path::to_painter_path(face.points()));
   }
   return qpps;
 }

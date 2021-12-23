@@ -43,7 +43,6 @@ public:
 
   void toast(const Vec2f& pos, const QString& text) const;
 
-  static QPainterPath path(const std::vector<Point>& points, bool closed = false);
   static QBrush make_brush(const Style& style, const Object& object, const PainterOptions& options);
   static QPen make_pen(const Style& style, const Object& object);
 
