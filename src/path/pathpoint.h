@@ -40,6 +40,13 @@ public:
   [[nodiscard]] Point compute_joined_point_geometry(PathPoint& joined) const;
 
   /**
+   * @brief debug_id returns an string to identify the point uniquely at this point in time
+   * @note this id is not persistent.
+   *  If a point is added or removed from its path, the id may change.
+   */
+  [[nodiscard]] QString debug_id() const;
+
+  /**
    * @brief index returns the index of the point in the path.
    *  It can be used to persistently identify points for serialization.
    *  The index may change when the path is modified.

@@ -53,6 +53,19 @@ Point PathPoint::compute_joined_point_geometry(PathPoint& joined) const
   return geometry;
 }
 
+QString PathPoint::debug_id() const
+{
+  auto joins = ::transform<const PathPoint*>(joined_points());
+  if (joins.empty()) {
+    joins = {this};
+  }
+  QStringList ids = ::transform<QString, QList>(joins, [](const auto* p) {
+    return QString("%1").arg(p->index());
+  });
+  std::sort(ids.begin(), ids.end());
+  return "(" + ids.join(" ") + ")";
+}
+
 std::size_t PathPoint::index() const
 {
   assert(path_vector() != nullptr);
