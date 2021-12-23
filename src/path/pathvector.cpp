@@ -149,18 +149,25 @@ PathPoint& PathVector::point_at_index(std::size_t index) const
   throw std::runtime_error{"Index out of bounds."};
 }
 
+template<typename Points> void to_painter_path(QPainterPath& path, const Points& points)
+{
+  if (!points.empty()) {
+    path.moveTo(qpoint(points.front().position()));
+  }
+  for (auto it = points.begin(); next(it) != points.end(); ++it) {
+    path.cubicTo(qpoint(it->right_position()),
+                 qpoint(next(it)->left_position()),
+                 qpoint(next(it)->position()));
+  }
+}
+
 QPainterPath PathVector::outline() const
 {
   QPainterPath outline;
   for (const Path* path : paths()) {
     const auto points = path->points();
     if (!points.empty()) {
-      outline.moveTo(qpoint(points[0]->geometry().position()));
-      for (std::size_t i = 0; i < points.size() - 1; ++i) {
-        outline.cubicTo(qpoint(points[i]->geometry().right_position()),
-                        qpoint(points[i+1]->geometry().left_position()),
-                        qpoint(points[i+1]->geometry().position()));
-      }
+      to_painter_path(outline, ::transform<Point>(points, std::mem_fn(&PathPoint::geometry)));
     }
   }
   return outline;
