@@ -34,6 +34,7 @@ public:
 
   [[nodiscard]] Point rotated(double rad) const;
   [[nodiscard]] Point nibbed() const;
+  [[nodiscard]] Point flipped() const;
 
   static constexpr auto POSITION_POINTER = "position";
   static constexpr auto LEFT_TANGENT_POINTER = "left";

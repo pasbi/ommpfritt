@@ -115,6 +115,11 @@ Point Point::nibbed() const
   return copy;
 }
 
+Point Point::flipped() const
+{
+  return Point{position(), right_tangent(), left_tangent()};
+}
+
 void Point::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
 {
   serializer.set_value(m_position, make_pointer(root, POSITION_POINTER));
