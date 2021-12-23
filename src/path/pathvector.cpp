@@ -11,6 +11,8 @@
 #include "objects/pathobject.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
+#include "path/graph.h"
+#include "path/face.h"
 #include "scene/mailbox.h"
 #include <QObject>
 
@@ -175,10 +177,15 @@ QPainterPath PathVector::outline() const
 
 std::vector<QPainterPath> PathVector::faces() const
 {
-  return {};
-//  return ::transform<QPainterPath, std::vector>(Cycle::find_all_faces(*this), [](const Cycle& cycle) {
-//    return cycle.to_qpainter_path();
-//  });
+  Graph graph{*this};
+  auto faces = graph.compute_faces();
+  std::vector<QPainterPath> qpps;
+  qpps.reserve(faces.size());
+  for (const auto& face : faces) {
+    auto& qpp = qpps.emplace_back();
+    to_painter_path(qpp, face.points());
+  }
+  return qpps;
 }
 
 std::size_t PathVector::point_count() const
