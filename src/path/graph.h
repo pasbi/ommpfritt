@@ -25,9 +25,7 @@ public:
   ~Graph();
 
   std::vector<Face> compute_faces() const;
-
-  void identify_edges();
-  std::string to_dot() const;
+  QString to_dot() const;
 
 private:
   std::unique_ptr<Impl> m_impl;

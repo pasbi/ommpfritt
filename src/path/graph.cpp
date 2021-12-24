@@ -17,6 +17,15 @@ struct Vertex
   QString debug_id() const { return (*points.begin())->debug_id(); }
 };
 
+template<typename Graph> void identify_edges(Graph& graph)
+{
+  auto e_index = get(boost::edge_index, graph);
+  typename boost::graph_traits<Graph>::edges_size_type edge_count = 0;
+  for(auto [it, end] = edges(graph); it != end; ++it) {
+    put(e_index, *it, edge_count++);
+  }
+}
+
 }  // namespace
 
 namespace omm
@@ -78,17 +87,7 @@ Graph::Graph(const PathVector& path_vector)
       last_path_point = point;
     }
   }
-  identify_edges();
-}
-
-void Graph::identify_edges()
-{
-  using Impl = Graph::Impl;
-  auto e_index = get(edge_index, *m_impl);
-  graph_traits<Impl>::edges_size_type edge_count = 0;
-  for(auto [it, end] = edges(*m_impl); it != end; ++it) {
-    put(e_index, *it, edge_count++);
-  }
+  identify_edges(*m_impl);
 }
 
 std::vector<Face> Graph::compute_faces() const
@@ -240,25 +239,24 @@ Edge& Graph::Impl::data(EdgeDescriptor edge)
   return get(edge_data_t{}, *this)[edge];
 }
 
-std::string Graph::to_dot() const
+QString Graph::to_dot() const
 {
   const auto& g = *m_impl;
-  std::ostringstream os;
-  os << "graph x {\n";
+  QString dot = "graph x {\n";
   for (auto ep = boost::edges(g); ep.first != ep.second; ++ep.first) {
     const auto& edge = *ep.first;
     auto v1 = boost::source(edge, g);
     auto v2 = boost::target(edge, g);
-    os << "\""
-       << g.data(v1).debug_id().toStdString()
-       << "\" -- \""
-       << g.data(v2).debug_id().toStdString()
-       << "\" [label=\""
-       << g.data(edge).label().toStdString()
-       << "\"];\n";
+    dot += "\"";
+    dot += g.data(v1).debug_id();
+    dot += "\" -- \"";
+    dot += g.data(v2).debug_id();
+    dot += "\" [label=\"";
+    dot += g.data(edge).label();
+    dot += "\"];\n";
   }
-  os << "}";
-  return os.str();
+  dot += "}";
+  return dot;\
 }
 
 }  // namespace omm
