@@ -48,8 +48,12 @@ public:
   };
 
 protected:
-  explicit AbstractPointsCommand(const QString& label, PathObject& path_object, std::deque<OwnedLocatedPath>&& points_to_add);
-  explicit AbstractPointsCommand(const QString& label, PathObject& path_object, std::deque<PathView>&& points_to_remove);
+  explicit AbstractPointsCommand(const QString& label,
+                                 PathObject& path_object,
+                                 std::deque<OwnedLocatedPath>&& points_to_add);
+  explicit AbstractPointsCommand(const QString& label,
+                                 PathObject& path_object,
+                                 std::deque<PathView>&& points_to_remove);
   void add();
   void remove();
 

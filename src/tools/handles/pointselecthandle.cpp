@@ -187,7 +187,8 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
 
 std::pair<bool, bool> PointSelectHandle::tangents_active() const
 {
-  const auto interpolation_mode = m_path_object.property(PathObject::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
+  const auto* interpolation_property = m_path_object.property(PathObject::INTERPOLATION_PROPERTY_KEY);
+  const auto interpolation_mode = interpolation_property->value<InterpolationMode>();
   if ((interpolation_mode == InterpolationMode::Bezier && m_point.is_selected())) {
     const auto points = m_path_object.geometry().find_path(m_point)->points();
     assert(!points.empty());

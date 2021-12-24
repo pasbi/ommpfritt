@@ -94,7 +94,8 @@ public:
       insert_point_segment(point, 0);
     } else {
       // other point of segment is selected: add point to a newly created segment and join points
-      auto new_path = std::make_unique<Path>(std::deque{m_current.last_point->geometry(), point}, &m_current.path_object->geometry());
+      auto new_path = std::make_unique<Path>(std::deque{m_current.last_point->geometry(), point},
+                                             &m_current.path_object->geometry());
       m_current.point = &new_path->at(1);
       m_points_to_join = {&new_path->at(0), m_current.last_point};
       m_located_paths.emplace_back(std::move(new_path));
@@ -121,7 +122,8 @@ public:
     if (current.path == nullptr) {
       start_macro();
       static constexpr auto insert_mode = Application::InsertionMode::Default;
-      current.path_object = dynamic_cast<PathObject*>(&Application::instance().insert_object(PathObject::TYPE, insert_mode));
+      auto& path_object = Application::instance().insert_object(PathObject::TYPE, insert_mode);
+      current.path_object = dynamic_cast<PathObject*>(&path_object);
       current.path_object->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
       scene.set_selection({current.path_object});
     }

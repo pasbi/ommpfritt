@@ -31,7 +31,10 @@ double normal_distance(const Point& a, const Point& b)
                   normalize(a.right_tangent().argument, b.right_tangent().argument));
 }
 
-omm::Vec2f distance(const PathObject& path_object, const Point& a, const Point& b, omm::SelectSimilarTool::Alignment alignment)
+omm::Vec2f distance(const PathObject& path_object,
+                    const Point& a,
+                    const Point& b,
+                    omm::SelectSimilarTool::Alignment alignment)
 {
   if (alignment == SelectSimilarTool::Alignment::Global) {
     const auto global_pos = [&path_object](const Point& point) {
