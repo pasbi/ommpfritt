@@ -378,7 +378,7 @@ BoundingBox Object::bounding_box(const ObjectTransformation& transformation) con
   if (is_active()) {
     return BoundingBox{(path_vector().outline() * transformation.to_qtransform()).boundingRect()};
   } else {
-    return {};
+    return BoundingBox{};
   }
 }
 
