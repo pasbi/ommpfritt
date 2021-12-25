@@ -306,6 +306,8 @@ bool Scene::load_from(const QString& filename)
     m_joined_points->deserialize(deserializer, JOINED_POINTS_POINTER);
     deserializer.polish();
     return true;
+  } catch (const Object::AbstractFactory::InvalidKeyError& invalid_key_error) {
+    error_handler(invalid_key_error.what());
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
     error_handler(deserialize_error.what());
   } catch (const nlohmann::json::exception& exception) {
