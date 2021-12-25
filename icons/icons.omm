@@ -16,6 +16,9 @@
         "view": 0,
         "x_resolution": 1000
     },
+    "joined_points": {
+        "forest": []
+    },
     "root": {
         "children": [
             {
@@ -91,21 +94,7 @@
                                 "animated": false,
                                 "key": "code",
                                 "type": "StringProperty",
-                                "value": "import math\nimport numpy as np\n\nfor i, p in enumerate(points):\n  r = 50 if i % 2 else 200\n  theta = i/len(points)*math.pi*2\n  pos = np.array([math.cos(theta), math.sin(theta)])\n  tangent = np.array([pos[1], -pos[0]])\n  p.set_position(r*pos)\n  r /= 10\n  p.set_left_tangent(r*tangent)\n  p.set_right_tangent(-r*tangent)\n"
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
-                                "key": "count",
-                                "type": "IntegerProperty",
-                                "value": 10
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
-                                "key": "closed",
-                                "type": "BoolProperty",
-                                "value": true
+                                "value": "import numpy as np\nimport math\nimport omm\n\nn = 10;\npoints = []\npoints.append([])\nfor i in range(n + 1):\n    r = 50 if i % 2 else 200\n    theta = i/n * math.pi*2\n    pos = np.array([math.cos(theta), math.sin(theta)])\n    tangent = np.array([pos[1], -pos[0]])\n    p = omm.Point()\n    p.set_position(r * pos)\n    r /= 10\n    p.set_left_tangent(r*tangent)\n    p.set_right_tangent(-r*tangent)\n    points[-1].append(p)\njoined_points = [{0, n}, {n+1, 2 * n + 1}]\n"
                             }
                         ],
                         "tags": [
@@ -822,7 +811,7 @@
                                 "animated": false,
                                 "key": "name",
                                 "type": "StringProperty",
-                                "value": "Line"
+                                "value": "LineObject"
                             },
                             {
                                 "animatable": true,
@@ -1240,6 +1229,70 @@
                     {
                         "children": [],
                         "id": 94472848280784,
+                        "path-vector": {
+                            "segments": [
+                                {
+                                    "points": [
+                                        {
+                                            "left": [
+                                                2.684269565968816,
+                                                50.00701381934231
+                                            ],
+                                            "position": [
+                                                -86.58163914502319,
+                                                76.37545118848402
+                                            ],
+                                            "right": [
+                                                -0.45732308762097745,
+                                                50.007013819342326
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                3.006023330467286,
+                                                49.30382127150686
+                                            ],
+                                            "position": [
+                                                -41.37305638516678,
+                                                -77.12355373511936
+                                            ],
+                                            "right": [
+                                                -0.1355693231225077,
+                                                49.30382127150686
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                2.6551098328071516,
+                                                56.68568953304176
+                                            ],
+                                            "position": [
+                                                44.03692472458843,
+                                                76.88803810921202
+                                            ],
+                                            "right": [
+                                                5.796702486396946,
+                                                56.685689533041725
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                2.5731959934298865,
+                                                62.638496202104015
+                                            ],
+                                            "position": [
+                                                99.3548285837048,
+                                                -70.05543748526507
+                                            ],
+                                            "right": [
+                                                -0.5683966601599066,
+                                                62.63849620210402
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
                         "properties": [
                             {
                                 "animatable": true,
@@ -1267,7 +1320,7 @@
                                 "animated": false,
                                 "key": "name",
                                 "type": "StringProperty",
-                                "value": "Path"
+                                "value": "PathObject"
                             },
                             {
                                 "animatable": true,
@@ -1306,78 +1359,9 @@
                             {
                                 "animatable": true,
                                 "animated": false,
-                                "key": "closed",
-                                "type": "BoolProperty",
-                                "value": false
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
                                 "key": "interpolation",
                                 "type": "OptionProperty",
                                 "value": 2
-                            }
-                        ],
-                        "segments": [
-                            {
-                                "points": [
-                                    {
-                                        "left": [
-                                            2.684269565968816,
-                                            50.00701381934231
-                                        ],
-                                        "position": [
-                                            -86.58163914502319,
-                                            76.37545118848402
-                                        ],
-                                        "right": [
-                                            -0.45732308762097745,
-                                            50.007013819342326
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            3.006023330467286,
-                                            49.30382127150686
-                                        ],
-                                        "position": [
-                                            -41.37305638516678,
-                                            -77.12355373511936
-                                        ],
-                                        "right": [
-                                            -0.1355693231225077,
-                                            49.30382127150686
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            2.6551098328071516,
-                                            56.68568953304176
-                                        ],
-                                        "position": [
-                                            44.03692472458843,
-                                            76.88803810921202
-                                        ],
-                                        "right": [
-                                            5.796702486396946,
-                                            56.685689533041725
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            2.5731959934298865,
-                                            62.638496202104015
-                                        ],
-                                        "position": [
-                                            99.3548285837048,
-                                            -70.05543748526507
-                                        ],
-                                        "right": [
-                                            -0.5683966601599066,
-                                            62.63849620210402
-                                        ]
-                                    }
-                                ]
                             }
                         ],
                         "tags": [
@@ -1416,11 +1400,131 @@
                                 "type": "StyleTag"
                             }
                         ],
-                        "type": "Path"
+                        "type": "PathObject"
                     },
                     {
                         "children": [],
                         "id": 94472848286528,
+                        "path-vector": {
+                            "segments": [
+                                {
+                                    "points": [
+                                        {
+                                            "left": [
+                                                0.0,
+                                                0.0
+                                            ],
+                                            "position": [
+                                                -99.67824876798474,
+                                                76.58944596969157
+                                            ],
+                                            "right": [
+                                                0.0,
+                                                0.0
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                0.0,
+                                                0.0
+                                            ],
+                                            "position": [
+                                                26.372801243685608,
+                                                76.58944596969157
+                                            ],
+                                            "right": [
+                                                0.0,
+                                                0.0
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                0.0,
+                                                0.0
+                                            ],
+                                            "position": [
+                                                26.372801243685608,
+                                                -0.13728012436862666
+                                            ],
+                                            "right": [
+                                                0.0,
+                                                0.0
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                0.0,
+                                                0.0
+                                            ],
+                                            "position": [
+                                                97.6190469024558,
+                                                54.667524228531526
+                                            ],
+                                            "right": [
+                                                0.0,
+                                                0.0
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                0.0,
+                                                0.0
+                                            ],
+                                            "position": [
+                                                97.6190469024558,
+                                                -54.94208447726878
+                                            ],
+                                            "right": [
+                                                0.0,
+                                                0.0
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                0.0,
+                                                0.0
+                                            ],
+                                            "position": [
+                                                26.372801243685608,
+                                                -0.13728012436862666
+                                            ],
+                                            "right": [
+                                                0.0,
+                                                0.0
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                0.0,
+                                                0.0
+                                            ],
+                                            "position": [
+                                                26.372801243685608,
+                                                -71.38352578313881
+                                            ],
+                                            "right": [
+                                                0.0,
+                                                0.0
+                                            ]
+                                        },
+                                        {
+                                            "left": [
+                                                0.0,
+                                                0.0
+                                            ],
+                                            "position": [
+                                                -99.67824876798474,
+                                                -71.38352578313881
+                                            ],
+                                            "right": [
+                                                0.0,
+                                                0.0
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
                         "properties": [
                             {
                                 "animatable": true,
@@ -1487,134 +1591,9 @@
                             {
                                 "animatable": true,
                                 "animated": false,
-                                "key": "closed",
-                                "type": "BoolProperty",
-                                "value": true
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
                                 "key": "interpolation",
                                 "type": "OptionProperty",
                                 "value": 0
-                            }
-                        ],
-                        "segments": [
-                            {
-                                "points": [
-                                    {
-                                        "left": [
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "position": [
-                                            -99.67824876798474,
-                                            76.58944596969157
-                                        ],
-                                        "right": [
-                                            0.0,
-                                            0.0
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "position": [
-                                            26.372801243685608,
-                                            76.58944596969157
-                                        ],
-                                        "right": [
-                                            0.0,
-                                            0.0
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "position": [
-                                            26.372801243685608,
-                                            -0.13728012436862666
-                                        ],
-                                        "right": [
-                                            0.0,
-                                            0.0
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "position": [
-                                            97.6190469024558,
-                                            54.667524228531526
-                                        ],
-                                        "right": [
-                                            0.0,
-                                            0.0
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "position": [
-                                            97.6190469024558,
-                                            -54.94208447726878
-                                        ],
-                                        "right": [
-                                            0.0,
-                                            0.0
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "position": [
-                                            26.372801243685608,
-                                            -0.13728012436862666
-                                        ],
-                                        "right": [
-                                            0.0,
-                                            0.0
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "position": [
-                                            26.372801243685608,
-                                            -71.38352578313881
-                                        ],
-                                        "right": [
-                                            0.0,
-                                            0.0
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.0,
-                                            0.0
-                                        ],
-                                        "position": [
-                                            -99.67824876798474,
-                                            -71.38352578313881
-                                        ],
-                                        "right": [
-                                            0.0,
-                                            0.0
-                                        ]
-                                    }
-                                ]
                             }
                         ],
                         "tags": [
@@ -1653,7 +1632,7 @@
                                 "type": "StyleTag"
                             }
                         ],
-                        "type": "Path"
+                        "type": "PathObject"
                     },
                     {
                         "children": [
@@ -2253,6 +2232,42 @@
                             {
                                 "children": [],
                                 "id": 93825083947056,
+                                "path-vector": {
+                                    "segments": [
+                                        {
+                                            "points": [
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        -21.180195129089384,
+                                                        0.0
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        134.43049766184234,
+                                                        5.684341886080802e-14
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
                                 "properties": [
                                     {
                                         "animatable": true,
@@ -2319,50 +2334,9 @@
                                     {
                                         "animatable": true,
                                         "animated": false,
-                                        "key": "closed",
-                                        "type": "BoolProperty",
-                                        "value": false
-                                    },
-                                    {
-                                        "animatable": true,
-                                        "animated": false,
                                         "key": "interpolation",
                                         "type": "OptionProperty",
                                         "value": 2
-                                    }
-                                ],
-                                "segments": [
-                                    {
-                                        "points": [
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    -21.180195129089384,
-                                                    0.0
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    134.43049766184234,
-                                                    5.684341886080802e-14
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            }
-                                        ]
                                     }
                                 ],
                                 "tags": [
@@ -2401,11 +2375,47 @@
                                         "type": "StyleTag"
                                     }
                                 ],
-                                "type": "Path"
+                                "type": "PathObject"
                             },
                             {
                                 "children": [],
                                 "id": 93825034777200,
+                                "path-vector": {
+                                    "segments": [
+                                        {
+                                            "points": [
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        -20.679875559110926,
+                                                        1.623954237550444e-31
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        134.4304990884451,
+                                                        -5.684341886080802e-14
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
                                 "properties": [
                                     {
                                         "animatable": true,
@@ -2472,50 +2482,9 @@
                                     {
                                         "animatable": true,
                                         "animated": false,
-                                        "key": "closed",
-                                        "type": "BoolProperty",
-                                        "value": false
-                                    },
-                                    {
-                                        "animatable": true,
-                                        "animated": false,
                                         "key": "interpolation",
                                         "type": "OptionProperty",
                                         "value": 2
-                                    }
-                                ],
-                                "segments": [
-                                    {
-                                        "points": [
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    -20.679875559110926,
-                                                    1.623954237550444e-31
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    134.4304990884451,
-                                                    -5.684341886080802e-14
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            }
-                                        ]
                                     }
                                 ],
                                 "tags": [
@@ -2554,7 +2523,7 @@
                                         "type": "StyleTag"
                                     }
                                 ],
-                                "type": "Path"
+                                "type": "PathObject"
                             }
                         ],
                         "id": 93825087532976,
@@ -2891,6 +2860,84 @@
                             {
                                 "children": [],
                                 "id": 5622154328468358953,
+                                "path-vector": {
+                                    "segments": [
+                                        {
+                                            "points": [
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        -108.43833572623574,
+                                                        105.04247687912728
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        -67.61922262601497,
+                                                        -72.11033589396268
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        5.717721767694205,
+                                                        58.83737941367637
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        68.65989436466387,
+                                                        20.994230318904446
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        104.60921852900834,
+                                                        104.14479175685327
+                                                    ],
+                                                    "right": [
+                                                        0.0,
+                                                        0.0
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
                                 "properties": [
                                     {
                                         "animatable": true,
@@ -2957,92 +3004,9 @@
                                     {
                                         "animatable": true,
                                         "animated": false,
-                                        "key": "closed",
-                                        "type": "BoolProperty",
-                                        "value": true
-                                    },
-                                    {
-                                        "animatable": true,
-                                        "animated": false,
                                         "key": "interpolation",
                                         "type": "OptionProperty",
                                         "value": 2
-                                    }
-                                ],
-                                "segments": [
-                                    {
-                                        "points": [
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    -108.43833572623574,
-                                                    105.04247687912728
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    -67.61922262601497,
-                                                    -72.11033589396268
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    5.717721767694205,
-                                                    58.83737941367637
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    68.65989436466387,
-                                                    20.994230318904446
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    104.60921852900834,
-                                                    104.14479175685327
-                                                ],
-                                                "right": [
-                                                    0.0,
-                                                    0.0
-                                                ]
-                                            }
-                                        ]
                                     }
                                 ],
                                 "tags": [
@@ -3090,7 +3054,7 @@
                                         "type": "StyleTag"
                                     }
                                 ],
-                                "type": "Path"
+                                "type": "PathObject"
                             },
                             {
                                 "children": [],
@@ -3699,6 +3663,56 @@
                             {
                                 "children": [],
                                 "id": 93825070684176,
+                                "path-vector": {
+                                    "segments": [
+                                        {
+                                            "points": [
+                                                {
+                                                    "left": [
+                                                        3.046085788290667,
+                                                        99.62066943048393
+                                                    ],
+                                                    "position": [
+                                                        -98.5,
+                                                        78.5
+                                                    ],
+                                                    "right": [
+                                                        -0.09550686529912601,
+                                                        99.620669430484
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        2.432966381462122,
+                                                        43.02454080070019
+                                                    ],
+                                                    "position": [
+                                                        23.49999999999997,
+                                                        -85.50000000000003
+                                                    ],
+                                                    "right": [
+                                                        -0.7086262721276712,
+                                                        43.02454080070018
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        -1.661456213995642,
+                                                        71.79484661171718
+                                                    ],
+                                                    "position": [
+                                                        102.5,
+                                                        42.5
+                                                    ],
+                                                    "right": [
+                                                        1.4801364395941514,
+                                                        71.79484661171718
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
                                 "properties": [
                                     {
                                         "animatable": true,
@@ -3765,64 +3779,9 @@
                                     {
                                         "animatable": true,
                                         "animated": false,
-                                        "key": "closed",
-                                        "type": "BoolProperty",
-                                        "value": false
-                                    },
-                                    {
-                                        "animatable": true,
-                                        "animated": false,
                                         "key": "interpolation",
                                         "type": "OptionProperty",
                                         "value": 2
-                                    }
-                                ],
-                                "segments": [
-                                    {
-                                        "points": [
-                                            {
-                                                "left": [
-                                                    3.046085788290667,
-                                                    99.62066943048393
-                                                ],
-                                                "position": [
-                                                    -98.5,
-                                                    78.5
-                                                ],
-                                                "right": [
-                                                    -0.09550686529912601,
-                                                    99.620669430484
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    2.432966381462122,
-                                                    43.02454080070019
-                                                ],
-                                                "position": [
-                                                    23.49999999999997,
-                                                    -85.50000000000003
-                                                ],
-                                                "right": [
-                                                    -0.7086262721276712,
-                                                    43.02454080070018
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    -1.661456213995642,
-                                                    71.79484661171718
-                                                ],
-                                                "position": [
-                                                    102.5,
-                                                    42.5
-                                                ],
-                                                "right": [
-                                                    1.4801364395941514,
-                                                    71.79484661171718
-                                                ]
-                                            }
-                                        ]
                                     }
                                 ],
                                 "tags": [
@@ -3861,7 +3820,7 @@
                                         "type": "StyleTag"
                                     }
                                 ],
-                                "type": "Path"
+                                "type": "PathObject"
                             },
                             {
                                 "children": [],
@@ -3911,7 +3870,7 @@
                                         "key": "scale",
                                         "type": "FloatVectorProperty",
                                         "value": [
-                                            1.0000000000003646,
+                                            1.0000000000003677,
                                             0.9999999999999004
                                         ]
                                     },
@@ -5439,6 +5398,9 @@
                     {
                         "children": [],
                         "id": 2793677973366659630,
+                        "path-vector": {
+                            "segments": []
+                        },
                         "properties": [
                             {
                                 "animatable": true,
@@ -5505,92 +5467,9 @@
                             {
                                 "animatable": true,
                                 "animated": false,
-                                "key": "closed",
-                                "type": "BoolProperty",
-                                "value": true
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
                                 "key": "interpolation",
                                 "type": "OptionProperty",
                                 "value": 0
-                            }
-                        ],
-                        "segments": [
-                            {
-                                "points": [
-                                    {
-                                        "left": [
-                                            -1.5695206892113227,
-                                            18.260640626845888
-                                        ],
-                                        "position": [
-                                            100.0,
-                                            0.0
-                                        ],
-                                        "right": [
-                                            -3.137170644383231,
-                                            16.51516419204027
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.0043721894987131344,
-                                            55.25686806366653
-                                        ],
-                                        "position": [
-                                            0.0,
-                                            6.908988685228154e-14
-                                        ],
-                                        "right": [
-                                            -1.5664006112594024,
-                                            48.30486164795134
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            1.5486078786200075,
-                                            28.372687957478256
-                                        ],
-                                        "position": [
-                                            -1.8369701987210297e-14,
-                                            -100.0
-                                        ],
-                                        "right": [
-                                            6.269349261411968,
-                                            16.668262095279932
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            -2.6179938779914944,
-                                            16.666666666666668
-                                        ],
-                                        "position": [
-                                            50.000000000000014,
-                                            -86.60254037844386
-                                        ],
-                                        "right": [
-                                            0.5235987755982987,
-                                            16.666666666666668
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            -2.094395102393196,
-                                            16.666666666666664
-                                        ],
-                                        "position": [
-                                            86.60254037844383,
-                                            -50.00000000000004
-                                        ],
-                                        "right": [
-                                            1.047197551196597,
-                                            16.666666666666664
-                                        ]
-                                    }
-                                ]
                             }
                         ],
                         "tags": [
@@ -5681,7 +5560,7 @@
                                 "type": "StyleTag"
                             }
                         ],
-                        "type": "Path"
+                        "type": "PathObject"
                     }
                 ],
                 "id": 4437697592813677424,
@@ -6822,6 +6701,9 @@
                     {
                         "children": [],
                         "id": 93825007679360,
+                        "path-vector": {
+                            "segments": []
+                        },
                         "properties": [
                             {
                                 "animatable": true,
@@ -6888,162 +6770,9 @@
                             {
                                 "animatable": true,
                                 "animated": false,
-                                "key": "closed",
-                                "type": "BoolProperty",
-                                "value": false
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
                                 "key": "interpolation",
                                 "type": "OptionProperty",
                                 "value": 2
-                            }
-                        ],
-                        "segments": [
-                            {
-                                "points": [
-                                    {
-                                        "left": [
-                                            -1.0471975511965979,
-                                            16.666666666666668
-                                        ],
-                                        "position": [
-                                            86.60254037844388,
-                                            49.99999999999999
-                                        ],
-                                        "right": [
-                                            2.0943951023931953,
-                                            16.666666666666668
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            -0.523598775598299,
-                                            16.666666666666668
-                                        ],
-                                        "position": [
-                                            50.000000000000014,
-                                            86.60254037844386
-                                        ],
-                                        "right": [
-                                            2.617993877991494,
-                                            16.666666666666668
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            -6.123233995736766e-17,
-                                            16.666666666666668
-                                        ],
-                                        "position": [
-                                            6.123233995736766e-15,
-                                            100.0
-                                        ],
-                                        "right": [
-                                            3.141592653589793,
-                                            16.666666666666668
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            0.5323211528108784,
-                                            16.666666666666668
-                                        ],
-                                        "position": [
-                                            -50.359307298788345,
-                                            86.8527682995732
-                                        ],
-                                        "right": [
-                                            -2.609271500778915,
-                                            16.666666666666668
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            1.0559199284091778,
-                                            16.666666666666664
-                                        ],
-                                        "position": [
-                                            -86.64119821199783,
-                                            49.93236315454267
-                                        ],
-                                        "right": [
-                                            -2.0856727251806153,
-                                            16.666666666666664
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            1.5795187040074765,
-                                            16.66666666666666
-                                        ],
-                                        "position": [
-                                            -99.60203486765772,
-                                            -0.18259107567215627
-                                        ],
-                                        "right": [
-                                            -1.5620739495823168,
-                                            16.66666666666666
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            2.0943951023931957,
-                                            16.666666666666668
-                                        ],
-                                        "position": [
-                                            -86.60254037844386,
-                                            -50.000000000000014
-                                        ],
-                                        "right": [
-                                            5.235987755982989,
-                                            16.666666666666668
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            2.617993877991494,
-                                            16.666666666666664
-                                        ],
-                                        "position": [
-                                            -50.00000000000004,
-                                            -86.60254037844383
-                                        ],
-                                        "right": [
-                                            5.759586531581287,
-                                            16.666666666666664
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            3.141592653589793,
-                                            16.666666666666668
-                                        ],
-                                        "position": [
-                                            -1.8369701987210297e-14,
-                                            -100.0
-                                        ],
-                                        "right": [
-                                            6.283185307179586,
-                                            16.666666666666668
-                                        ]
-                                    },
-                                    {
-                                        "left": [
-                                            -2.6179938779914944,
-                                            16.666666666666668
-                                        ],
-                                        "position": [
-                                            50.000000000000014,
-                                            -86.60254037844386
-                                        ],
-                                        "right": [
-                                            0.5235987755982987,
-                                            16.666666666666668
-                                        ]
-                                    }
-                                ]
                             }
                         ],
                         "tags": [
@@ -7082,7 +6811,7 @@
                                 "type": "StyleTag"
                             }
                         ],
-                        "type": "Path"
+                        "type": "PathObject"
                     },
                     {
                         "children": [
@@ -7091,6 +6820,9 @@
                                     {
                                         "children": [],
                                         "id": 93825088061648,
+                                        "path-vector": {
+                                            "segments": []
+                                        },
                                         "properties": [
                                             {
                                                 "animatable": true,
@@ -7157,82 +6889,13 @@
                                             {
                                                 "animatable": true,
                                                 "animated": false,
-                                                "key": "closed",
-                                                "type": "BoolProperty",
-                                                "value": false
-                                            },
-                                            {
-                                                "animatable": true,
-                                                "animated": false,
                                                 "key": "interpolation",
                                                 "type": "OptionProperty",
                                                 "value": 2
                                             }
                                         ],
-                                        "segments": [
-                                            {
-                                                "points": [
-                                                    {
-                                                        "left": [
-                                                            0.0,
-                                                            0.0
-                                                        ],
-                                                        "position": [
-                                                            -0.8196296937429111,
-                                                            -12.244652263947614
-                                                        ],
-                                                        "right": [
-                                                            3.141592653589793,
-                                                            0.0
-                                                        ]
-                                                    },
-                                                    {
-                                                        "left": [
-                                                            0.0,
-                                                            0.0
-                                                        ],
-                                                        "position": [
-                                                            67.90111194465526,
-                                                            -11.187129810771523
-                                                        ],
-                                                        "right": [
-                                                            0.0,
-                                                            0.0
-                                                        ]
-                                                    },
-                                                    {
-                                                        "left": [
-                                                            -0.6620635891792206,
-                                                            9.241007635413842
-                                                        ],
-                                                        "position": [
-                                                            71.68479134368121,
-                                                            95.31613248347753
-                                                        ],
-                                                        "right": [
-                                                            2.479529064410571,
-                                                            9.241007635413835
-                                                        ]
-                                                    },
-                                                    {
-                                                        "left": [
-                                                            0.0,
-                                                            0.0
-                                                        ],
-                                                        "position": [
-                                                            0.024419195752614087,
-                                                            99.16980114946588
-                                                        ],
-                                                        "right": [
-                                                            3.141592653589793,
-                                                            0.0
-                                                        ]
-                                                    }
-                                                ]
-                                            }
-                                        ],
                                         "tags": [],
-                                        "type": "Path"
+                                        "type": "PathObject"
                                     }
                                 ],
                                 "id": 93825086530144,
@@ -7362,6 +7025,9 @@
                             {
                                 "children": [],
                                 "id": 93825090100208,
+                                "path-vector": {
+                                    "segments": []
+                                },
                                 "properties": [
                                     {
                                         "animatable": true,
@@ -7428,78 +7094,9 @@
                                     {
                                         "animatable": true,
                                         "animated": false,
-                                        "key": "closed",
-                                        "type": "BoolProperty",
-                                        "value": false
-                                    },
-                                    {
-                                        "animatable": true,
-                                        "animated": false,
                                         "key": "interpolation",
                                         "type": "OptionProperty",
                                         "value": 2
-                                    }
-                                ],
-                                "segments": [
-                                    {
-                                        "points": [
-                                            {
-                                                "left": [
-                                                    1.3948567013423687,
-                                                    11.865519039337496
-                                                ],
-                                                "position": [
-                                                    50.255827590295354,
-                                                    -11.478798209347389
-                                                ],
-                                                "right": [
-                                                    -1.7467359522474244,
-                                                    11.865519039337496
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    0.8943094238836602,
-                                                    27.410749890509123
-                                                ],
-                                                "position": [
-                                                    31.161331380700982,
-                                                    -85.11844205260383
-                                                ],
-                                                "right": [
-                                                    -2.247283229706133,
-                                                    27.410749890509127
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    -0.8943094238836602,
-                                                    27.410749890509123
-                                                ],
-                                                "position": [
-                                                    -31.161331380700926,
-                                                    -85.11844205260383
-                                                ],
-                                                "right": [
-                                                    2.247283229706133,
-                                                    27.410749890509127
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    -1.394856701342369,
-                                                    11.865519039337492
-                                                ],
-                                                "position": [
-                                                    -50.25582759029528,
-                                                    -11.478798209347389
-                                                ],
-                                                "right": [
-                                                    1.7467359522474246,
-                                                    11.865519039337492
-                                                ]
-                                            }
-                                        ]
                                     }
                                 ],
                                 "tags": [
@@ -7538,7 +7135,7 @@
                                         "type": "StyleTag"
                                     }
                                 ],
-                                "type": "Path"
+                                "type": "PathObject"
                             }
                         ],
                         "id": 93825093625184,
@@ -7722,6 +7319,9 @@
                             {
                                 "children": [],
                                 "id": 93825090250960,
+                                "path-vector": {
+                                    "segments": []
+                                },
                                 "properties": [
                                     {
                                         "animatable": true,
@@ -7788,64 +7388,9 @@
                                     {
                                         "animatable": true,
                                         "animated": false,
-                                        "key": "closed",
-                                        "type": "BoolProperty",
-                                        "value": false
-                                    },
-                                    {
-                                        "animatable": true,
-                                        "animated": false,
                                         "key": "interpolation",
                                         "type": "OptionProperty",
                                         "value": 2
-                                    }
-                                ],
-                                "segments": [
-                                    {
-                                        "points": [
-                                            {
-                                                "left": [
-                                                    1.3714992585545789,
-                                                    26.629418128332205
-                                                ],
-                                                "position": [
-                                                    41.95840293190028,
-                                                    -64.89346944776568
-                                                ],
-                                                "right": [
-                                                    -1.7700933950352142,
-                                                    26.62941812833221
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    -0.576846719746659,
-                                                    33.59741461710094
-                                                ],
-                                                "position": [
-                                                    -20.27096151655739,
-                                                    -94.45304479329832
-                                                ],
-                                                "right": [
-                                                    2.564745933843134,
-                                                    33.597414617100924
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    -1.3170874082579893,
-                                                    12.67915714301304
-                                                ],
-                                                "position": [
-                                                    -50.25582759029528,
-                                                    -11.478798209347389
-                                                ],
-                                                "right": [
-                                                    1.8245052453318038,
-                                                    12.67915714301304
-                                                ]
-                                            }
-                                        ]
                                     }
                                 ],
                                 "tags": [
@@ -7884,7 +7429,7 @@
                                         "type": "StyleTag"
                                     }
                                 ],
-                                "type": "Path"
+                                "type": "PathObject"
                             }
                         ],
                         "id": 93825093462336,
@@ -8294,6 +7839,9 @@
                                     {
                                         "children": [],
                                         "id": 140737152863728,
+                                        "path-vector": {
+                                            "segments": []
+                                        },
                                         "properties": [
                                             {
                                                 "animatable": true,
@@ -8360,96 +7908,13 @@
                                             {
                                                 "animatable": true,
                                                 "animated": false,
-                                                "key": "closed",
-                                                "type": "BoolProperty",
-                                                "value": false
-                                            },
-                                            {
-                                                "animatable": true,
-                                                "animated": false,
                                                 "key": "interpolation",
                                                 "type": "OptionProperty",
                                                 "value": 2
                                             }
                                         ],
-                                        "segments": [
-                                            {
-                                                "points": [
-                                                    {
-                                                        "left": [
-                                                            -0.021288756782666507,
-                                                            22.798967010131253
-                                                        ],
-                                                        "position": [
-                                                            -0.43324179008877195,
-                                                            5.103836250100102
-                                                        ],
-                                                        "right": [
-                                                            3.120303896807124,
-                                                            22.79896701013126
-                                                        ]
-                                                    },
-                                                    {
-                                                        "left": [
-                                                            1.4732931435006897,
-                                                            15.811111455481822
-                                                        ],
-                                                        "position": [
-                                                            -45.032761504983725,
-                                                            -28.126678549466547
-                                                        ],
-                                                        "right": [
-                                                            -2.6121474788553725,
-                                                            4.557961056917823
-                                                        ]
-                                                    },
-                                                    {
-                                                        "left": [
-                                                            5.570830584723974,
-                                                            4.84472681714071
-                                                        ],
-                                                        "position": [
-                                                            -75.4164250928825,
-                                                            -28.59271609629826
-                                                        ],
-                                                        "right": [
-                                                            1.3780965697597616,
-                                                            20.886149301532708
-                                                        ]
-                                                    },
-                                                    {
-                                                        "left": [
-                                                            -1.7945344087454416,
-                                                            14.399421975020871
-                                                        ],
-                                                        "position": [
-                                                            -55.44631477072534,
-                                                            99.49143976340156
-                                                        ],
-                                                        "right": [
-                                                            1.3470582448443529,
-                                                            14.399421975020882
-                                                        ]
-                                                    },
-                                                    {
-                                                        "left": [
-                                                            -3.0246712773213624,
-                                                            44.64202352609849
-                                                        ],
-                                                        "position": [
-                                                            -0.43324179008880037,
-                                                            113.83241790088876
-                                                        ],
-                                                        "right": [
-                                                            0.11692137626843208,
-                                                            44.64202352609849
-                                                        ]
-                                                    }
-                                                ]
-                                            }
-                                        ],
                                         "tags": [],
-                                        "type": "Path"
+                                        "type": "PathObject"
                                     }
                                 ],
                                 "id": 93825009627920,
@@ -9520,6 +8985,9 @@
                                             {
                                                 "children": [],
                                                 "id": 7224871665348369809,
+                                                "path-vector": {
+                                                    "segments": []
+                                                },
                                                 "properties": [
                                                     {
                                                         "animatable": true,
@@ -9586,54 +9054,13 @@
                                                     {
                                                         "animatable": true,
                                                         "animated": false,
-                                                        "key": "closed",
-                                                        "type": "BoolProperty",
-                                                        "value": false
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
                                                         "key": "interpolation",
                                                         "type": "OptionProperty",
                                                         "value": 2
                                                     }
                                                 ],
-                                                "segments": [
-                                                    {
-                                                        "points": [
-                                                            {
-                                                                "left": [
-                                                                    -1.6708373308527873,
-                                                                    8.959306497371147
-                                                                ],
-                                                                "position": [
-                                                                    108.2718151851126,
-                                                                    2.842170943040401e-14
-                                                                ],
-                                                                "right": [
-                                                                    1.9967179377806377,
-                                                                    101.66243880748961
-                                                                ]
-                                                            },
-                                                            {
-                                                                "left": [
-                                                                    0.0,
-                                                                    50.0
-                                                                ],
-                                                                "position": [
-                                                                    3.454494342614077e-14,
-                                                                    149.46227479153993
-                                                                ],
-                                                                "right": [
-                                                                    3.141592653589793,
-                                                                    50.0
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                ],
                                                 "tags": [],
-                                                "type": "Path"
+                                                "type": "PathObject"
                                             }
                                         ],
                                         "id": 13185437771219526046,
@@ -10798,6 +10225,70 @@
                             {
                                 "children": [],
                                 "id": 6798415826952283120,
+                                "path-vector": {
+                                    "segments": [
+                                        {
+                                            "points": [
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        122.72202963703958,
+                                                        2.891890383086838
+                                                    ],
+                                                    "right": [
+                                                        -1.504233445861542,
+                                                        1.1607321235369965
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        1.7063551229655294,
+                                                        2.0508859175487624
+                                                    ],
+                                                    "position": [
+                                                        121.61630497433012,
+                                                        -4.773029746553793
+                                                    ],
+                                                    "right": [
+                                                        3.137404665906261,
+                                                        54.19451203011837
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        1.6185113791623131,
+                                                        28.90806021808179
+                                                    ],
+                                                    "position": [
+                                                        96.80225708875489,
+                                                        -35.77692036108077
+                                                    ],
+                                                    "right": [
+                                                        2.72112859846872,
+                                                        10.655921556249911
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        -0.32204465268465693,
+                                                        54.07015041468261
+                                                    ],
+                                                    "position": [
+                                                        -4.782728692306893,
+                                                        3.086181489520429
+                                                    ],
+                                                    "right": [
+                                                        2.8195480009051384,
+                                                        54.07015041468253
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
                                 "properties": [
                                     {
                                         "animatable": true,
@@ -10864,82 +10355,13 @@
                                     {
                                         "animatable": true,
                                         "animated": false,
-                                        "key": "closed",
-                                        "type": "BoolProperty",
-                                        "value": false
-                                    },
-                                    {
-                                        "animatable": true,
-                                        "animated": false,
                                         "key": "interpolation",
                                         "type": "OptionProperty",
                                         "value": 2
                                     }
                                 ],
-                                "segments": [
-                                    {
-                                        "points": [
-                                            {
-                                                "left": [
-                                                    0.0,
-                                                    0.0
-                                                ],
-                                                "position": [
-                                                    122.72202963703958,
-                                                    2.891890383086838
-                                                ],
-                                                "right": [
-                                                    -1.504233445861542,
-                                                    1.1607321235369965
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    1.7063551229655294,
-                                                    2.0508859175487624
-                                                ],
-                                                "position": [
-                                                    121.61630497433012,
-                                                    -4.773029746553793
-                                                ],
-                                                "right": [
-                                                    3.137404665906261,
-                                                    54.19451203011837
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    1.6185113791623131,
-                                                    28.90806021808179
-                                                ],
-                                                "position": [
-                                                    96.80225708875489,
-                                                    -35.77692036108077
-                                                ],
-                                                "right": [
-                                                    2.72112859846872,
-                                                    10.655921556249911
-                                                ]
-                                            },
-                                            {
-                                                "left": [
-                                                    -0.32204465268465693,
-                                                    54.07015041468261
-                                                ],
-                                                "position": [
-                                                    -4.782728692306893,
-                                                    3.086181489520429
-                                                ],
-                                                "right": [
-                                                    2.8195480009051384,
-                                                    54.07015041468253
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ],
                                 "tags": [],
-                                "type": "Path"
+                                "type": "PathObject"
                             }
                         ],
                         "id": 9872313149991136971,
@@ -10949,14 +10371,14 @@
                                 "animated": false,
                                 "key": "viewport-visibility",
                                 "type": "OptionProperty",
-                                "value": 0
+                                "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
                                 "type": "OptionProperty",
-                                "value": 0
+                                "value": 1
                             },
                             {
                                 "animatable": true,
@@ -11985,6 +11407,105 @@
                 ],
                 "tags": [],
                 "type": "View"
+            },
+            {
+                "children": [],
+                "id": 14345555703757577909,
+                "path-vector": {
+                    "segments": [
+                        {
+                            "points": [
+                                {
+                                    "left": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "position": [
+                                        121.57323262234144,
+                                        1.606184595761249
+                                    ],
+                                    "right": [
+                                        3.141592653589793,
+                                        0.0
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "properties": [
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "viewport-visibility",
+                        "type": "OptionProperty",
+                        "value": 0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "visibility",
+                        "type": "OptionProperty",
+                        "value": 0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "is_active",
+                        "type": "BoolProperty",
+                        "value": true
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "name",
+                        "type": "StringProperty",
+                        "value": "PathObject 2"
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "position",
+                        "type": "FloatVectorProperty",
+                        "value": [
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "scale",
+                        "type": "FloatVectorProperty",
+                        "value": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "rotation",
+                        "type": "FloatProperty",
+                        "value": 0.0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "shear",
+                        "type": "FloatProperty",
+                        "value": 0.0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "interpolation",
+                        "type": "OptionProperty",
+                        "value": 2
+                    }
+                ],
+                "tags": [],
+                "type": "PathObject"
             }
         ],
         "id": 94472847566576,
@@ -12023,8 +11544,8 @@
                 "key": "position",
                 "type": "FloatVectorProperty",
                 "value": [
-                    605.0,
-                    428.5
+                    793.7695026818727,
+                    626.7037264431705
                 ]
             },
             {
@@ -12033,8 +11554,8 @@
                 "key": "scale",
                 "type": "FloatVectorProperty",
                 "value": [
-                    1.0,
-                    1.0
+                    2.287306976348565,
+                    2.2873069763485647
                 ]
             },
             {
