@@ -12,22 +12,32 @@
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
 #include "scene/scene.h"
+#include "scene/disjointpathpointsetforest.h"
 #include <QObject>
 
 namespace
 {
 constexpr auto default_script = R"(import math
 import numpy as np
+import omm
 
-for i, p in enumerate(points):
-  r = 50 if i % 2 else 200
-  theta = i/len(points)*math.pi*2
-  pos = np.array([math.cos(theta), math.sin(theta)])
-  tangent = np.array([pos[1], -pos[0]])
-  p.set_position(r*pos)
-  r /= 10
-  p.set_left_tangent(r*tangent)
-  p.set_right_tangent(-r*tangent)
+n = 20;
+points = []
+for j in range(2):
+    points.append([])
+    offset = [j * 300, 0]
+    for i in range(n + 1):
+        r = 50 if i % 2 else 200
+        theta = i/n * math.pi*2
+        pos = np.array([math.cos(theta), math.sin(theta)])
+        tangent = np.array([pos[1], -pos[0]])
+        p = omm.Point()
+        p.set_position(r * pos + offset)
+        r /= 10
+        p.set_left_tangent(r*tangent)
+        p.set_right_tangent(-r*tangent)
+        points[-1].append(p)
+joined_points = [{0, n}, {n+1, 2 * n + 1}]
 )";
 
 }  // namespace
@@ -39,15 +49,10 @@ class Style;
 
 ProceduralPath::ProceduralPath(Scene* scene) : Object(scene)
 {
-  static constexpr int DEFAULT_COUNT = 10;
   static const auto category = QObject::tr("ProceduralPath");
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
       .set_mode(StringProperty::Mode::Code)
       .set_label(QObject::tr("code"))
-      .set_category(category);
-  create_property<IntegerProperty>(COUNT_PROPERTY_KEY, DEFAULT_COUNT)
-      .set_range(0, std::numeric_limits<int>::max())
-      .set_label(QObject::tr("count"))
       .set_category(category);
   ProceduralPath::update();
 }
@@ -61,30 +66,49 @@ void ProceduralPath::update()
 {
   assert(scene() != nullptr);
   using namespace pybind11::literals;
-  const auto count = property(COUNT_PROPERTY_KEY)->value<int>();
   const auto code = property(CODE_PROPERTY_KEY)->value<QString>();
 
-  m_points = std::vector<Point>(static_cast<std::size_t>(std::max(0, count)));
-  std::vector<PointWrapper> point_wrappers;
-  point_wrappers.reserve(m_points.size());
-  for (Point& point : m_points) {
-    point_wrappers.emplace_back(point);
+  auto locals = pybind11::dict("this"_a = ObjectWrapper::make(*this),
+                               "scene"_a = SceneWrapper(*scene()));
+
+  m_points.clear();
+  try {
+    scene()->python_engine.exec(code, locals, this);
+    const auto wrappers = locals["points"].cast<std::vector<std::vector<PointWrapper>>>();
+    m_joined_points = locals["joined_points"].cast<std::vector<std::set<int>>>();
+    for (const auto& ws : wrappers) {
+      auto& points = m_points.emplace_back();
+      for (const auto& w : ws) {
+        points.emplace_back(w.point());
+      }
+    }
+
+  } catch (const py::error_already_set& e) {
+    LERROR << e.what();
+  } catch (const py::cast_error& e) {
+    LERROR << e.what();
   }
 
-  if (!m_points.empty()) {
-    auto locals = pybind11::dict("points"_a = point_wrappers,
-                                 "this"_a = ObjectWrapper::make(*this),
-                                 "scene"_a = SceneWrapper(*scene()));
-    scene()->python_engine.exec(code, locals, this);
-  }
   Object::update();
 }
 
 PathVector ProceduralPath::compute_path_vector() const
 {
-  std::deque<Point> points(m_points.begin(), m_points.end());
   PathVector pv;
-  pv.add_path(std::make_unique<Path>(std::move(points)));
+  for (const auto& points : m_points) {
+    pv.add_path(std::make_unique<Path>(std::deque(points)));
+  }
+
+  try {
+    for (const auto& set : m_joined_points) {
+      pv.joined_points().insert(::transform<PathPoint*>(set, [&pv](const int i) {
+        return &pv.point_at_index(i);
+      }));
+    }
+  } catch (const std::runtime_error& e) {
+    LERROR << e.what();
+  }
+
   return pv;
 }
 

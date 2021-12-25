@@ -25,7 +25,8 @@ protected:
   void on_property_value_changed(Property* property) override;
 
 private:
-  std::vector<Point> m_points;
+  std::deque<std::deque<Point>> m_points;
+  std::vector<std::set<int>> m_joined_points;
 };
 
 }  // namespace omm

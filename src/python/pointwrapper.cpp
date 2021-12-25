@@ -13,6 +13,7 @@ PointWrapper::PointWrapper(const Point& point)
 void PointWrapper::define_python_interface(py::object& module)
 {
   py::class_<PointWrapper>(module, Point::TYPE)
+      .def(py::init<>())
       .def("position", &PointWrapper::position)
       .def("left_tangent", &PointWrapper::left_tangent)
       .def("right_tangent", &PointWrapper::right_tangent)
@@ -49,6 +50,11 @@ void PointWrapper::set_right_tangent(const py::object& value)
 void PointWrapper::set_position(const py::object& value)
 {
   m_point.set_position(Vec2f(value.cast<std::vector<double>>()));
+}
+
+const Point& PointWrapper::point() const
+{
+  return m_point;
 }
 
 }  // namespace omm
