@@ -20,6 +20,7 @@ public:
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Boolean");
   void update() override;
+  std::unique_ptr<Object> convert(bool& keep_children) const override;
 
 private:
   static constexpr auto MODE_PROPERTY_KEY = "mode";

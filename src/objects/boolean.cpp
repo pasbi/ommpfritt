@@ -74,6 +74,13 @@ void Boolean::update()
   Object::update();
 }
 
+std::unique_ptr<Object> Boolean::convert(bool& keep_children) const
+{
+  auto c = Object::convert(keep_children);
+  keep_children = !is_active();
+  return c;
+}
+
 void Boolean::on_property_value_changed(Property* property)
 {
   if (property == this->property(MODE_PROPERTY_KEY)) {
