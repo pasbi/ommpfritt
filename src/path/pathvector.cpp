@@ -247,6 +247,25 @@ void PathVector::update_joined_points_geometry() const
   }
 }
 
+void PathVector::join_points_by_position(const std::vector<Vec2f>& positions)
+{
+  static constexpr auto eps = 0.1;
+  static constexpr auto eps2 = eps * eps;
+  const auto points = this->points();
+  LINFO << "===";
+  for (const auto pos : positions) {
+    std::set<PathPoint*> joint;
+    for (auto* point : points) {
+      const auto d2 = (point->geometry().position() - pos).euclidean_norm2();
+      LINFO << "d2: " << d2 << "   " << point->geometry().position().to_string() << " " << pos.to_string();
+      if (d2 < eps2) {
+        joint.insert(point);
+      }
+    }
+    joined_points().insert(joint);
+  }
+}
+
 bool PathVector::is_valid() const
 {
   if ((m_shared_joined_points == nullptr) != (!m_owned_joined_points)) {

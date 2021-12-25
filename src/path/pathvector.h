@@ -55,6 +55,7 @@ public:
   [[nodiscard]] PathObject* path_object() const;
   [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
   void update_joined_points_geometry() const;
+  void join_points_by_position(const std::vector<Vec2f>& positions);
 
   /**
    * @brief is_valid returns true if this path vector is valid.
