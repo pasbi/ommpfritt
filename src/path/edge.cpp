@@ -7,7 +7,7 @@ namespace omm
 
 QString Edge::label() const
 {
-  const auto separator = flipped ? "++" : "--";
+  const auto* separator = flipped ? "++" : "--";
   return start_point()->debug_id() + separator + end_point()->debug_id();
 }
 
