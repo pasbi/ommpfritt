@@ -24,8 +24,8 @@ public:
   Graph& operator=(Graph&& other) = default;
   ~Graph();
 
-  std::vector<Face> compute_faces() const;
-  QString to_dot() const;
+  [[nodiscard]] std::vector<Face> compute_faces() const;
+  [[nodiscard]] QString to_dot() const;
 
 private:
   std::unique_ptr<Impl> m_impl;

@@ -13,13 +13,13 @@ class Edge
 {
 public:
   Edge() = default;
-  std::vector<PathPoint*> points() const;
-  QString label() const;
+  [[nodiscard]] std::vector<PathPoint*> points() const;
+  [[nodiscard]] QString label() const;
 
-  Point start_geometry() const;
-  Point end_geometry() const;
-  PathPoint* start_point() const;
-  PathPoint* end_point() const;
+  [[nodiscard]] Point start_geometry() const;
+  [[nodiscard]] Point end_geometry() const;
+  [[nodiscard]] PathPoint* start_point() const;
+  [[nodiscard]] PathPoint* end_point() const;
 
   bool flipped = false;
   PathPoint* a = nullptr;

@@ -22,12 +22,12 @@ public:
   {
   }
 
-  Geom::PathVector compute(Geom::PathIntersectionGraph& pig) const
+  [[nodiscard]] Geom::PathVector compute(Geom::PathIntersectionGraph& pig) const
   {
     return std::invoke(m_f, pig);
   }
 
-  QString label() const
+  [[nodiscard]] QString label() const
   {
     return QApplication::translate("QObject", m_name.data());
   }

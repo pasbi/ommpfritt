@@ -14,7 +14,7 @@ namespace
 struct Vertex
 {
   std::set<omm::PathPoint*> points;
-  QString debug_id() const { return (*points.begin())->debug_id(); }
+  [[nodiscard]] QString debug_id() const { return (*points.begin())->debug_id(); }
 };
 
 template<typename Graph> void identify_edges(Graph& graph)
@@ -59,15 +59,15 @@ public:
   using VertexDescriptor = std::size_t;
   using Embedding = std::vector<std::deque<EdgeDescriptor>>;
   using adjacency_list::adjacency_list;
-  const Vertex& data(VertexDescriptor vertex) const;
-  Vertex& data(VertexDescriptor vertex);
-  const Edge& data(EdgeDescriptor edge_descriptor) const;
-  Edge& data(EdgeDescriptor edge_descriptor);
+  [[nodiscard]] const Vertex& data(VertexDescriptor vertex) const;
+  [[nodiscard]] Vertex& data(VertexDescriptor vertex);
+  [[nodiscard]] const Edge& data(EdgeDescriptor edge_descriptor) const;
+  [[nodiscard]] Edge& data(EdgeDescriptor edge_descriptor);
   void add_vertex(PathPoint* path_point);
   bool add_edge(PathPoint* a, PathPoint* b);
-  VertexDescriptor lookup_vertex(const PathPoint* p) const;
-  Embedding compute_embedding() const;
-  PolarCoordinates get_direction_at(const Edge& edge, VertexDescriptor vertex) const;
+  [[nodiscard]] VertexDescriptor lookup_vertex(const PathPoint* p) const;
+  [[nodiscard]] Embedding compute_embedding() const;
+  [[nodiscard]] PolarCoordinates get_direction_at(const Edge& edge, VertexDescriptor vertex) const;
 
 private:
   VertexIndexMap m_vertex_index_map;

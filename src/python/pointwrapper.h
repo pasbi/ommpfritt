@@ -17,7 +17,7 @@ public:
   void set_left_tangent(const py::object& value);
   void set_right_tangent(const py::object& value);
   void set_position(const py::object& value);
-  const Point& point() const;
+  [[nodiscard]] const Point& point() const;
 
 private:
   Point m_point;
