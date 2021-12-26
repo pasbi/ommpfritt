@@ -8,7 +8,7 @@ namespace omm
 QString Edge::label() const
 {
   const auto* separator = flipped ? "++" : "--";
-  return start_point()->debug_id() + separator + end_point()->debug_id();
+  return QString{"%1%2%3"}.arg(start_point()->index()).arg(separator).arg(end_point()->index());
 }
 
 Point Edge::start_geometry() const
