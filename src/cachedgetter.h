@@ -38,6 +38,11 @@ public:
   {
   }
 
+  CachedGetter(const CachedGetter&) = delete;
+  CachedGetter(CachedGetter&&) = delete;
+  CachedGetter& operator=(const CachedGetter&) = delete;
+  CachedGetter& operator=(CachedGetter&&) = delete;
+
   virtual ~CachedGetter() = default;
 
   const T& operator()() const

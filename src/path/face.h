@@ -13,7 +13,13 @@ class Edge;
 class Face
 {
 public:
+  Face() = default;
   ~Face();
+  Face(const Face&) = default;
+  Face(Face&&) = default;
+  Face& operator=(const Face&) = default;
+  Face& operator=(Face&&) = default;
+
   bool add_edge(const Edge& edge);
   [[nodiscard]] std::list<Point> points() const;
   [[nodiscard]] const std::deque<Edge>& edges() const;
