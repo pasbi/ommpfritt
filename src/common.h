@@ -373,8 +373,6 @@ template<typename T, typename... Args> std::unique_ptr<T> copy_unique_ptr(const 
   }
 }
 
-void hash_combine(std::size_t& hash, const std::size_t& new_hash);
-
 namespace omm
 {
 template<typename T> struct EnableBitMaskOperators : std::false_type {
