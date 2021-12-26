@@ -42,7 +42,7 @@ private:
 class DisjoinPointsCommand : public AbstractJoinPointsCommand
 {
 public:
-  explicit DisjoinPointsCommand(Scene& scene, const DisjointPathPointSetForest& points);
+  explicit DisjoinPointsCommand(Scene& scene, const DisjointPathPointSetForest& forest);
   void undo() override;
   void redo() override;
 

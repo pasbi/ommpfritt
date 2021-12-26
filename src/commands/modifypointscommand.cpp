@@ -136,8 +136,8 @@ QString AddPointsCommand::static_label()
   return QObject::tr("AddPointsCommand");
 }
 
-RemovePointsCommand::RemovePointsCommand(PathObject& path_vector, std::deque<PathView>&& removed_points)
-    : AbstractPointsCommand(QObject::tr("RemovePointsCommand"), path_vector, std::move(removed_points))
+RemovePointsCommand::RemovePointsCommand(PathObject& path_object, std::deque<PathView>&& removed_points)
+    : AbstractPointsCommand(QObject::tr("RemovePointsCommand"), path_object, std::move(removed_points))
 {
 }
 

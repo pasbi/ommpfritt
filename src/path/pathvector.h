@@ -47,8 +47,8 @@ public:
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;
-  Path& add_path(std::unique_ptr<Path>&& segment);
-  std::unique_ptr<Path> remove_path(const Path& segment);
+  Path& add_path(std::unique_ptr<Path>&& path);
+  std::unique_ptr<Path> remove_path(const Path& path);
   [[nodiscard]] std::deque<PathPoint*> points() const;
   [[nodiscard]] std::deque<PathPoint*> selected_points() const;
   void deselect_all_points() const;

@@ -158,7 +158,7 @@ private:
   static const QBrush m_bounding_box_brush;
 
 protected:
-  static PathVector join(const std::vector<Object*>& items);
+  static PathVector join(const std::vector<Object*>& objects);
 };
 
 }  // namespace omm

@@ -36,8 +36,8 @@ public:
   {
   public:
     explicit OwnedLocatedPath(Path* path, std::size_t index, std::deque<std::unique_ptr<PathPoint>>&& points);
-    explicit OwnedLocatedPath(std::unique_ptr<Path> segment);
-    PathView insert_into(PathVector& path_object);
+    explicit OwnedLocatedPath(std::unique_ptr<Path> path);
+    PathView insert_into(PathVector& path_vector);
     friend bool operator<(const OwnedLocatedPath& a, const OwnedLocatedPath& b);
 
   private:
