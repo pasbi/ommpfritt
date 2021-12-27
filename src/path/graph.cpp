@@ -133,6 +133,8 @@ std::vector<Face> Graph::compute_faces() const
   const auto areas = ::transform<double>(faces, std::mem_fn(&Face::compute_aabb_area));
   const auto largest_face_i = std::distance(areas.begin(), std::max_element(areas.begin(), areas.end()));
   faces.erase(std::next(faces.begin(), largest_face_i));
+
+  // NOLINTNEXTLINE(modernize-return-braced-init-list)
   return std::vector(faces.begin(), faces.end());
 }
 

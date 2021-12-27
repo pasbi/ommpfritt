@@ -10,6 +10,8 @@ namespace omm
 
 class Point;
 class PathPoint;
+
+// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path;
 
 struct PathView
@@ -23,8 +25,10 @@ public:
   std::size_t size;
 };
 
+// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class PathVector;
 
+// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path : public Serializable
 {
 public:

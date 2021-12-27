@@ -9,12 +9,15 @@ namespace omm
 {
 
 class EnhancedPathVector;
+
+// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path;
 class PathPoint;
 class PathObject;
 class DisjointPathPointSetForest;
 class Scene;
 
+// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class PathVector : public Serializable
 {
 public:

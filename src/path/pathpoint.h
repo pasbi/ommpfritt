@@ -7,6 +7,8 @@ namespace omm
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path;
+
+// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class PathVector;
 
 class PathPoint

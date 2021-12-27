@@ -28,3 +28,5 @@ CheckOptions:
   value: '1.0;2.0'
 - key: cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
   value: '1.0;2.0'
+- key: bugprone-easily-swappable-parameters.MinimumLength
+  value: 3

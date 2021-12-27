@@ -11,7 +11,7 @@ namespace omm
 class PathPoint;
 class Edge;
 class Face;
-class PathVector;
+class PathVector;  // NOLINT(bugprone-forward-declaration-namespace)
 
 class Graph
 {

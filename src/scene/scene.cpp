@@ -571,10 +571,14 @@ bool Scene::contains(const AbstractPropertyOwner* apo) const
   switch (apo->kind) {
   case Kind::Tag: {
     const auto tags = this->tags();
+    // the std::set::find does not allow keys of type `const Tag*`.
+    // NOLINTNEXTLINE(performance-inefficient-algorithm)
     return tags.end() != std::find(tags.begin(), tags.end(), dynamic_cast<const Tag*>(apo));
   }
   case Kind::Node: {
     const auto nodes = this->collect_nodes();
+    // the std::set::find does not allow keys of type `const Tag*`.
+    // NOLINTNEXTLINE(performance-inefficient-algorithm)
     return nodes.end() != std::find(nodes.begin(), nodes.end(), dynamic_cast<const Node*>(apo));
   }
   case Kind::Object:
