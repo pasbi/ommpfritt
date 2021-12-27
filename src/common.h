@@ -127,6 +127,11 @@ auto transform(ContainerS&& ss)
   return ::transform<T, ContainerT>(std::forward<ContainerS>(ss), ::identity);
 }
 
+template<typename Ts, typename F> bool any_of(const Ts& ts, const F& f)
+{
+  return std::any_of(begin(ts), end(ts), f);
+}
+
 template<typename Ts, typename F = identity_t, typename EqualT = std::equal_to<>>
 auto is_uniform(const Ts& container,
                 const F& mapper = ::identity,

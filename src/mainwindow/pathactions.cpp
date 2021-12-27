@@ -379,7 +379,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
 namespace omm::path_actions
 {
 
-bool perform_action(const QString& name, Application& app)
+bool perform_action(Application& app, const QString& name)
 {
   auto it = ::actions.find(name);
   if (it == ::actions.end()) {

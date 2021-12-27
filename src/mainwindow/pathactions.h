@@ -14,6 +14,6 @@ namespace omm::path_actions
 {
 
 std::set<QString> available_actions();
-bool perform_action(const QString& name, Application& app);
+bool perform_action(Application& app, const QString& name);
 
 }  // namespace omm::path_actions
