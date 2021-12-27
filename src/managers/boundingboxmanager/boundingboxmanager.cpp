@@ -75,7 +75,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   m_ui->setupUi(widget.get());
   set_widget(std::move(widget));
 
-  connect(&Application::instance().options(), &Options::anchor_changed, [this]() {
+  connect(&Application::instance().options(), &Options::anchor_changed, this, [this]() {
     reset_transformation();
   });
 
