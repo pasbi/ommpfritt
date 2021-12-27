@@ -58,12 +58,12 @@ PathVector Ellipse::compute_path_vector() const
   const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
   std::deque<Point> points;
   for (std::size_t i = 0; i <= n; ++i) {
-    const double theta = i * 2.0 / n * M_PI;
+    const double theta = static_cast<double>(i) * 2.0 / static_cast<double>(n) * M_PI;
     const double x = std::cos(theta) * r.x;
     const double y = std::sin(theta) * r.y;
     if (smooth) {
       const Vec2f d(std::sin(theta) * r.x, -std::cos(theta) * r.y);
-      points.emplace_back(Vec2f{x, y}, d.arg(), 2.0 * d.euclidean_norm() / n);
+      points.emplace_back(Vec2f{x, y}, d.arg(), 2.0 * d.euclidean_norm() / static_cast<double>(n));
     } else {
       points.emplace_back(Vec2f{x, y});
     }

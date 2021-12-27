@@ -602,12 +602,12 @@ Geom::PathVectorTime Object::compute_path_vector_time(double t, Interpolation in
   switch (interpolation) {
   case Interpolation::Natural: {
     double path_index = -1.0;
-    const double path_position = std::modf(t * path_vector.paths().size(), &path_index);
+    const double path_position = std::modf(t * static_cast<double>(path_vector.paths().size()), &path_index);
     return compute_path_vector_time(static_cast<int>(path_index), path_position, interpolation);
   }
   case Interpolation::Distance: {
     const auto [i, tp] = factor_time_by_distance(omm_to_geom(path_vector), t);
-    return compute_path_vector_time(i, tp, interpolation);
+    return compute_path_vector_time(static_cast<int>(i), tp, interpolation);
   }
   default:
     return {};
@@ -624,23 +624,23 @@ Object::compute_path_vector_time(int path_index, double t, Interpolation interpo
   t = std::clamp(t, 0.0, almost_one);
   const auto path_vector = omm_to_geom(this->path_vector());
   if (static_cast<std::size_t>(path_index) >= path_vector.size()) {
-    return Geom::PathVectorTime(path_index, 0, 0.0);
+    return Geom::PathVectorTime(static_cast<std::size_t>(path_index), 0, 0.0);
   }
 
   const auto path = path_vector[path_index];
   if (path.empty()) {
-    return Geom::PathVectorTime(path_index, 0, 0.0);
+    return Geom::PathVectorTime(static_cast<std::size_t>(path_index), 0, 0.0);
   }
 
   switch (interpolation) {
   case Interpolation::Natural: {
     double curve_index = -1.0;
-    const double curve_position = std::modf(t * path.size(), &curve_index);
-    return Geom::PathVectorTime(static_cast<int>(path_index), curve_index, curve_position);
+    const double curve_position = std::modf(t * static_cast<double>(path.size()), &curve_index);
+    return Geom::PathVectorTime(static_cast<std::size_t>(path_index), static_cast<std::size_t>(curve_index), curve_position);
   }
   case Interpolation::Distance: {
     const auto [i, tc] = factor_time_by_distance(path, t);
-    return Geom::PathVectorTime(path_index, i, tc);
+    return Geom::PathVectorTime(static_cast<std::size_t>(path_index), static_cast<std::size_t>(i), tc);
   }
   default:
     return {};
@@ -692,7 +692,7 @@ void Object::draw_object(Painter& renderer,
 
       for (std::size_t path_index = 0; path_index < path_vector.paths().size(); ++path_index) {
         const auto pos = [this, path_index](const double t) {
-          const auto tt = compute_path_vector_time(path_index, t);
+          const auto tt = compute_path_vector_time(static_cast<int>(path_index), t);
           return this->pos(tt).rotated(M_PI_2);
         };
         style.start_marker->draw_marker(renderer, pos(0.0), marker_color, width);

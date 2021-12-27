@@ -391,7 +391,7 @@ double Cloner::get_t(std::size_t i) const
     return 0.0;
   } else {
     const auto spacing = (end - start) / (n - 1);
-    return apply_border(start + spacing * i, border);
+    return apply_border(start + spacing * static_cast<double>(i), border);
   }
 }
 
@@ -408,7 +408,7 @@ void Cloner::set_grid(Object& object, std::size_t i)
   const auto n = property(COUNT_2D_PROPERTY_KEY)->value<Vec2i>();
   const auto v = property(DISTANCE_2D_PROPERTY_KEY)->value<Vec2f>();
   auto t = object.transformation();
-  const auto [q, r] = std::div(i, static_cast<int>(n.x));
+  const auto [q, r] = std::div(static_cast<int>(i), static_cast<int>(n.x));
   t.set_translation({v.x * r, v.y * q});
   object.set_transformation(t);
 }

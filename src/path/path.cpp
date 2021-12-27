@@ -187,7 +187,7 @@ std::deque<PathPoint*> Path::points() const
 
 void Path::insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint>>&& points)
 {
-  m_points.insert(m_points.begin() + i,
+  m_points.insert(std::next(m_points.begin(), static_cast<std::ptrdiff_t>(i)),
                   std::make_move_iterator(points.begin()),
                   std::make_move_iterator(points.end()));
 }
@@ -198,8 +198,8 @@ std::deque<std::unique_ptr<PathPoint> > Path::extract(std::size_t start, std::si
   for (std::size_t i = 0; i < size; ++i) {
     std::swap(points[i], m_points[i + start]);
   }
-  const auto begin = m_points.begin() + start;
-  const auto end = begin + size;
+  const auto begin = std::next(m_points.begin(), static_cast<std::ptrdiff_t>(start));
+  const auto end = std::next(begin, static_cast<std::ptrdiff_t>(size));
   m_points.erase(begin, end);
   return points;
 }
