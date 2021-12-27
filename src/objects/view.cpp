@@ -60,9 +60,9 @@ BoundingBox View::bounding_box(const ObjectTransformation& transformation) const
     const double b = size.y / 2.0;
     QPainterPath path;
     path.addRect(QRectF{QPointF{l, t}, QPointF{r, b}});
-    return BoundingBox((path * transformation.to_qtransform()).boundingRect());
+    return BoundingBox{(path * transformation.to_qtransform()).boundingRect()};
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 

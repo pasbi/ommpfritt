@@ -151,7 +151,7 @@ BoundingBox Cloner::bounding_box(const ObjectTransformation& transformation) con
     }
     return bb;
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 

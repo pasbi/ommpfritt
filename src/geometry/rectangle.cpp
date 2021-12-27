@@ -83,12 +83,12 @@ double Rectangle::height() const
 
 Vec2f Rectangle::size() const
 {
-  return Vec2f(width(), height());
+  return {width(), height()};
 }
 
 Rectangle::operator QRectF() const
 {
-  return QRectF(m_top_left.to_pointf(), m_bottom_right.to_pointf());
+  return {m_top_left.to_pointf(), m_bottom_right.to_pointf()};
 }
 
 std::vector<Point> Rectangle::to_points() const

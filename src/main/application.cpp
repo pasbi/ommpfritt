@@ -45,18 +45,18 @@ QKeySequence push_back(const QKeySequence& s, int t)
 {
   switch (s.count()) {
   case 0:
-    return QKeySequence(t);
+    return t;
   case 1:
-    return QKeySequence(s[0], t);
+    return {s[0], t};
   case 2:
-    return QKeySequence(s[0], s[1], t);
+    return {s[0], s[1], t};
   case 3:
-    return QKeySequence(s[0], s[1], s[2], t);
+    return {s[0], s[1], s[2], t};
   case 4:
-    return QKeySequence(s[1], s[2], s[3], t);
+    return {s[1], s[2], s[3], t};
   default:
     Q_UNREACHABLE();
-    return QKeySequence();
+    return {};
   }
 }
 

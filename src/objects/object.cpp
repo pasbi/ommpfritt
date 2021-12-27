@@ -559,11 +559,11 @@ Point Object::pos(const Geom::PathVectorTime& t) const
 {
   const auto paths = omm_to_geom(path_vector());
   if (const auto n = paths.curveCount(); n == 0) {
-    return Point();
+    return Point{};
   } else if (t.path_index >= paths.size()) {
-    return Point();
+    return Point{};
   } else if (auto&& path = paths[t.path_index]; t.curve_index >= path.size()) {
-    return Point();
+    return Point{};
   } else {
     auto&& curve = path[t.curve_index];
 
@@ -596,7 +596,7 @@ Geom::PathVectorTime Object::compute_path_vector_time(double t, Interpolation in
   t = std::clamp(t, 0.0, almost_one);
   const auto& path_vector = this->path_vector();
   if (path_vector.paths().empty()) {
-    return Geom::PathVectorTime(0, 0, 0.0);
+    return {0, 0, 0.0};
   }
 
   switch (interpolation) {
@@ -624,23 +624,23 @@ Object::compute_path_vector_time(int path_index, double t, Interpolation interpo
   t = std::clamp(t, 0.0, almost_one);
   const auto path_vector = omm_to_geom(this->path_vector());
   if (static_cast<std::size_t>(path_index) >= path_vector.size()) {
-    return Geom::PathVectorTime(static_cast<std::size_t>(path_index), 0, 0.0);
+    return {static_cast<std::size_t>(path_index), 0, 0.0};
   }
 
   const auto path = path_vector[path_index];
   if (path.empty()) {
-    return Geom::PathVectorTime(static_cast<std::size_t>(path_index), 0, 0.0);
+    return {static_cast<std::size_t>(path_index), 0, 0.0};
   }
 
   switch (interpolation) {
   case Interpolation::Natural: {
     double curve_index = -1.0;
     const double curve_position = std::modf(t * static_cast<double>(path.size()), &curve_index);
-    return Geom::PathVectorTime(static_cast<std::size_t>(path_index), static_cast<std::size_t>(curve_index), curve_position);
+    return {static_cast<std::size_t>(path_index), static_cast<std::size_t>(curve_index), curve_position};
   }
   case Interpolation::Distance: {
     const auto [i, tc] = factor_time_by_distance(path, t);
-    return Geom::PathVectorTime(static_cast<std::size_t>(path_index), static_cast<std::size_t>(i), tc);
+    return {static_cast<std::size_t>(path_index), static_cast<std::size_t>(i), tc};
   }
   default:
     return {};

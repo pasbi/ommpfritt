@@ -77,10 +77,10 @@ BoundingBox Instance::bounding_box(const ObjectTransformation& transformation) c
     if (r != nullptr) {
       return r->recursive_bounding_box(transformation);
     } else {
-      return BoundingBox();
+      return BoundingBox{};
     }
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 

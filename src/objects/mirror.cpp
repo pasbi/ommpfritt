@@ -146,7 +146,7 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation& transformation) con
       Q_UNREACHABLE();
     }
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 

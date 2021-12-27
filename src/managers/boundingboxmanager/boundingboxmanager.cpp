@@ -277,7 +277,7 @@ BoundingBox BoundingBoxManager::bounding_box() const
     }
   }();
 
-  return BoundingBox(top_left, top_left + size);
+  return BoundingBox{top_left, top_left + size};
 }
 
 bool BoundingBoxManager::perform_action(const QString& name)

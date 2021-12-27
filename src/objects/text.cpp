@@ -43,7 +43,7 @@ BoundingBox Text::bounding_box(const ObjectTransformation& transformation) const
       return transformation.apply_to_position(v);
     }));
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 
@@ -114,7 +114,7 @@ QRectF Text::rect(Qt::Alignment alignment) const
     }
   }();
 
-  return QRectF(QPointF(left, top), QSizeF(width, height));
+  return {QPointF(left, top), QSizeF(width, height)};
 }
 
 PathVector Text::compute_path_vector() const
