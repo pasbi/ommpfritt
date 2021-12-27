@@ -247,7 +247,7 @@ void PathVector::update_joined_points_geometry() const
   }
 }
 
-void PathVector::join_points_by_position(const std::vector<Vec2f>& positions)
+void PathVector::join_points_by_position(const std::vector<Vec2f>& positions) const
 {
   static constexpr auto eps = 0.1;
   static constexpr auto eps2 = eps * eps;

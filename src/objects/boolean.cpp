@@ -105,7 +105,7 @@ PathVector Boolean::compute_path_vector() const
     Geom::PathIntersectionGraph pig{get_path_vector(*children[0]), get_path_vector(*children[1])};
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
-      auto path_vector = *geom_to_omm(dispatcher[i].compute(pig));
+      auto path_vector = *geom_to_omm(dispatcher.at(i).compute(pig));
       path_vector.join_points_by_position(::transform<Vec2f>(pig.intersectionPoints(), [](const auto& p) {
         return Vec2f{p};
       }));

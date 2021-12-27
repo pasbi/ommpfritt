@@ -142,7 +142,7 @@ void Graph::Impl::add_vertex(PathPoint* path_point)
 {
   // if a point is not joined, we need a set containing only that lonely point.
   const auto vertex_points = [path_point]() {
-    if (const auto set = path_point->joined_points(); set.empty()) {
+    if (auto set = path_point->joined_points(); set.empty()) {
       return std::set{path_point};
     } else {
       return set;
