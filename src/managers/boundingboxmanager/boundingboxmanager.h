@@ -19,6 +19,11 @@ class BoundingBoxManager : public Manager
   Q_OBJECT
 public:
   BoundingBoxManager(Scene& scene);
+  ~BoundingBoxManager() override;
+  BoundingBoxManager(const BoundingBoxManager&) = delete;
+  BoundingBoxManager(BoundingBoxManager&&) = delete;
+  BoundingBoxManager& operator=(const BoundingBoxManager&) = delete;
+  BoundingBoxManager& operator=(BoundingBoxManager&&) = delete;
   [[nodiscard]] QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BoundingBoxManager");
 
@@ -30,11 +35,7 @@ private:
   [[nodiscard]] BoundingBox bounding_box() const;
   BoundingBox m_old_bounding_box;
 
-  struct UiBoundingBoxManagerDeleter {
-    void operator()(::Ui::BoundingBoxManager* ui);
-  };
-
-  std::unique_ptr<::Ui::BoundingBoxManager, UiBoundingBoxManagerDeleter> m_ui;
+  std::unique_ptr<::Ui::BoundingBoxManager> m_ui;
   TransformPointsHelper m_transform_points_helper;
   TransformObjectsHelper m_transform_objects_helper;
   Mode m_current_mode = Mode::Objects;

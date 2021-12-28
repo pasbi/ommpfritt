@@ -154,6 +154,8 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
           update_spinbox_enabledness);
 }
 
+BoundingBoxManager::~BoundingBoxManager() = default;
+
 QString BoundingBoxManager::type() const
 {
   return TYPE;
@@ -300,11 +302,6 @@ bool BoundingBoxManager::eventFilter(QObject* o, QEvent* e)
     }
   }
   return Manager::eventFilter(o, e);
-}
-
-void BoundingBoxManager::UiBoundingBoxManagerDeleter::operator()(Ui::BoundingBoxManager* ui)
-{
-  delete ui;  // NOLINT(cppcoreguidelines-owning-memory)
 }
 
 }  // namespace omm
