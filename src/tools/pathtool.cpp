@@ -119,7 +119,7 @@ public:
 
   void ensure_active_path(Scene& scene, PathTool::Current& current)
   {
-    if (current.path == nullptr) {
+    if (current.path_object == nullptr) {
       start_macro();
       static constexpr auto insert_mode = Application::InsertionMode::Default;
       auto& path_object = Application::instance().insert_object(PathObject::TYPE, insert_mode);
