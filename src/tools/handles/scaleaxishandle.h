@@ -4,6 +4,8 @@
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
 #include <QMouseEvent>
+#include <QPainter>
+#include <QPen>
 
 namespace omm
 {
@@ -83,9 +85,9 @@ public:
     static constexpr double PEN_WIDTH = 2.0;
     pen.setWidthF(PEN_WIDTH);
     painter.setPen(pen);
-    painter.drawLine(QPointF{0, 0}, to_qpoint(m_direction));
-    const auto size = Vec2{1.0, 1.0} * 0.1 * m_direction.euclidean_norm();
-    const QRectF rect(to_qpoint(m_direction - size / 2.0), QSizeF(size.x, size.y));
+    painter.drawLine(QPointF{0, 0}, m_direction.to_pointf());
+    const auto size = Vec2f{1.0, 1.0} * 0.1 * m_direction.euclidean_norm();
+    const QRectF rect((m_direction - size / 2.0).to_pointf(), QSizeF(size.x, size.y));
     painter.fillRect(rect, this->ui_color(name + "-fill"));
     painter.drawRect(rect);
     painter.restore();

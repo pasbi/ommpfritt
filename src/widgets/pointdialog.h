@@ -8,14 +8,15 @@ class QComboBox;
 
 namespace omm
 {
-class Path;
+
+class PathObject;
 class PointEdit;
 
 class PointDialog : public QDialog
 {
   Q_OBJECT
 public:
-  explicit PointDialog(const std::set<Path*>& paths, QWidget* parent = nullptr);
+  explicit PointDialog(const std::set<PathObject*>& paths, QWidget* parent = nullptr);
   ~PointDialog() override;
   PointDialog(PointDialog&&) = delete;
   PointDialog(const PointDialog&) = delete;

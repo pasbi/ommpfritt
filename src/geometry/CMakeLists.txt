@@ -11,7 +11,5 @@ target_sources(libommpfritt PRIVATE
   polarcoordinates.h
   rectangle.cpp
   rectangle.h
-  util.cpp
-  util.h
   vec2.h
 )

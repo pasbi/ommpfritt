@@ -13,7 +13,8 @@ TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tange
 
 double TangentHandle::draw_epsilon() const
 {
-  return 2.0;
+  static constexpr auto draw_epsilon = 4.0;
+  return draw_epsilon;
 }
 
 void TangentHandle::draw(QPainter& painter) const

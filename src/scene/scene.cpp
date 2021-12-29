@@ -306,6 +306,8 @@ bool Scene::load_from(const QString& filename)
     m_joined_points->deserialize(deserializer, JOINED_POINTS_POINTER);
     deserializer.polish();
     return true;
+  } catch (const Object::AbstractFactory::InvalidKeyError& invalid_key_error) {
+    error_handler(invalid_key_error.what());
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
     error_handler(deserialize_error.what());
   } catch (const nlohmann::json::exception& exception) {
@@ -569,10 +571,14 @@ bool Scene::contains(const AbstractPropertyOwner* apo) const
   switch (apo->kind) {
   case Kind::Tag: {
     const auto tags = this->tags();
+    // the std::set::find does not allow keys of type `const Tag*`.
+    // NOLINTNEXTLINE(performance-inefficient-algorithm)
     return tags.end() != std::find(tags.begin(), tags.end(), dynamic_cast<const Tag*>(apo));
   }
   case Kind::Node: {
     const auto nodes = this->collect_nodes();
+    // the std::set::find does not allow keys of type `const Tag*`.
+    // NOLINTNEXTLINE(performance-inefficient-algorithm)
     return nodes.end() != std::find(nodes.begin(), nodes.end(), dynamic_cast<const Node*>(apo));
   }
   case Kind::Object:

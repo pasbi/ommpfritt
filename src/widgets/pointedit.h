@@ -7,7 +7,7 @@ class QPushButton;
 namespace omm
 {
 class CoordinateEdit;
-class Path;
+class PathObject;
 class Point;
 class PathPoint;
 struct PolarCoordinates;
@@ -17,7 +17,7 @@ class PointEdit : public QWidget
 {
   Q_OBJECT
 public:
-  PointEdit(Path& path, PathPoint& point, QWidget* parent = nullptr);
+  PointEdit(PathObject& path_object, PathPoint& point, QWidget* parent = nullptr);
   void set_display_mode(const DisplayMode& display_mode);
 
 private:
@@ -30,7 +30,7 @@ private:
   CoordinateEdit* m_right_tangent_edit = nullptr;
   CoordinateEdit* m_position_edit;
   PathPoint& m_point;
-  Path* m_path{};
+  PathObject* m_path{};
 
 private:
   void mirror_from_right();

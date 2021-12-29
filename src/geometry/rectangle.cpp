@@ -30,54 +30,65 @@ bool Rectangle::is_empty() const
 {
   return m_is_empty;
 }
+
 Vec2f Rectangle::top_left() const
 {
   return m_top_left;
 }
+
 Vec2f Rectangle::top_right() const
 {
-  return Vec2f(m_bottom_right.x, m_top_left.y);
+  return {m_bottom_right.x, m_top_left.y};
 }
+
 Vec2f Rectangle::bottom_left() const
 {
-  return Vec2f(m_top_left.x, m_bottom_right.y);
+  return {m_top_left.x, m_bottom_right.y};
 }
+
 Vec2f Rectangle::bottom_right() const
 {
   return m_bottom_right;
 }
+
 double Rectangle::left() const
 {
   return top_left().x;
 }
+
 double Rectangle::top() const
 {
   return top_left().y;
 }
+
 double Rectangle::right() const
 {
   return bottom_right().x;
 }
+
 double Rectangle::bottom() const
 {
   return bottom_right().y;
 }
+
 double Rectangle::width() const
 {
   return right() - left();
 }
+
 double Rectangle::height() const
 {
   return bottom() - top();
 }
+
 Vec2f Rectangle::size() const
 {
-  return Vec2f(width(), height());
+  return {width(), height()};
 }
 
 Rectangle::operator QRectF() const
 {
-  return QRectF(m_top_left.to_pointf(), m_bottom_right.to_pointf());
+  return {m_top_left.to_pointf(), m_bottom_right.to_pointf()};
 }
 
 std::vector<Point> Rectangle::to_points() const

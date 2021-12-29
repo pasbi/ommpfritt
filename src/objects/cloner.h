@@ -43,11 +43,10 @@ public:
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom };
   enum class Anchor { Path, This };
   Flag flags() const override;
-  ConvertedObject convert() const override;
+  std::unique_ptr<Object> convert(bool& keep_children) const override;
   Mode mode() const;
   bool contains(const Vec2f& pos) const override;
   void update() override;
-  Geom::PathVector paths() const override;
   PathProperties path_properties;
 
 protected:
@@ -57,10 +56,12 @@ protected:
   void update_property_visibility(Mode mode);
 
 private:
+  PathVector compute_path_vector() const override;
+
   std::vector<std::unique_ptr<Object>> make_clones();
   std::vector<std::unique_ptr<Object>> copy_children(std::size_t count);
 
-  double get_t(std::size_t i, bool inclusive) const;
+  double get_t(std::size_t i) const;
   void set_linear(Object& object, std::size_t i);
   void set_grid(Object& object, std::size_t i);
   void set_radial(Object& object, std::size_t i);

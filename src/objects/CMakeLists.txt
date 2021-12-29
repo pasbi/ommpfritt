@@ -15,16 +15,12 @@ target_sources(libommpfritt PRIVATE
   mirror.h
   object.cpp
   object.h
-  path.cpp
-  path.h
-  pathpoint.cpp
-  pathpoint.h
+  pathobject.cpp
+  pathobject.h
   proceduralpath.cpp
   proceduralpath.h
   rectangleobject.cpp
   rectangleobject.h
-  segment.cpp
-  segment.h
   text.cpp
   text.h
   tip.cpp

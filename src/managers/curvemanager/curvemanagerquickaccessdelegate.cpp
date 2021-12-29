@@ -1,6 +1,5 @@
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
 #include "mainwindow/iconprovider.h"
-#include "geometry/util.h"
 #include "animation/animator.h"
 #include "logging.h"
 #include "main/application.h"
@@ -73,9 +72,9 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index, const QRe
     }
   }();
 
-  icon = icon.scaledToWidth(rect.width(), Qt::SmoothTransformation);
+  icon = icon.scaledToWidth(static_cast<int>(rect.width()), Qt::SmoothTransformation);
   const auto y = static_cast<int>(rect.center().y() - icon.height() / 2.0);
-  painter.drawPixmap(rect.left(), y, icon);
+  painter.drawPixmap(static_cast<int>(rect.left()), y, icon);
 }
 
 void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)

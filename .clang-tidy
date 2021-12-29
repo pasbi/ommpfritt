@@ -20,7 +20,10 @@ Checks: '-*,
          -readability-else-after-return,
          -readability-named-parameter,
          -readability-redundant-access-specifiers,
+         -clang-analyzer-cplusplus.NewDeleteLeaks,
          -readability-uppercase-literal-suffix'
+
+# clang-analyzer-cplusplus.NewDeleteLeaks           # False positives with QTimer::singleShot even when using `// NOLINTNEXTLINE`
 
 WarningsAsErrors: '*'
 CheckOptions:
@@ -28,3 +31,5 @@ CheckOptions:
   value: '1.0;2.0'
 - key: cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
   value: '1.0;2.0'
+- key: bugprone-easily-swappable-parameters.MinimumLength
+  value: 3

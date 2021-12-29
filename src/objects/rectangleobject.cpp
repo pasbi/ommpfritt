@@ -1,10 +1,13 @@
 #include "objects/rectangleobject.h"
-#include "objects/segment.h"
-#include "objects/pathpoint.h"
+#include "path/path.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
+#include "scene/disjointpathpointsetforest.h"
 #include "properties/floatvectorproperty.h"
 
 namespace omm
 {
+
 RectangleObject::RectangleObject(Scene* scene) : Object(scene)
 {
   static constexpr double DEFAULT_SIZE = 200.0;
@@ -32,7 +35,7 @@ QString RectangleObject::type() const
   return TYPE;
 }
 
-Geom::PathVector RectangleObject::paths() const
+PathVector RectangleObject::compute_path_vector() const
 {
   std::deque<Point> points;
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>() / 2.0;
@@ -65,7 +68,13 @@ Geom::PathVector RectangleObject::paths() const
   }
   add(Vec2f(size.x - ar.x, -size.y), h, null);
 
-  return Geom::PathVector{Segment{std::move(points)}.to_geom_path(is_closed())};
+  points.emplace_back(points.front());
+  auto path = std::make_unique<Path>(std::move(points));
+  const auto path_points = path->points();
+  PathVector pv;
+  pv.add_path(std::move(path));
+  pv.joined_points().insert({path_points.front(), path_points.back()});
+  return pv;
 }
 
 void RectangleObject::on_property_value_changed(Property* property)

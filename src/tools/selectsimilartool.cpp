@@ -1,8 +1,9 @@
 #include "tools/selectsimilartool.h"
 #include "common.h"
 #include "logging.h"
-#include "objects/path.h"
-#include "objects/pathpoint.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 #include "properties/triggerproperty.h"
@@ -30,11 +31,14 @@ double normal_distance(const Point& a, const Point& b)
                   normalize(a.right_tangent().argument, b.right_tangent().argument));
 }
 
-omm::Vec2f distance(const Path& path, const Point& a, const Point& b, omm::SelectSimilarTool::Alignment alignment)
+omm::Vec2f distance(const PathObject& path_object,
+                    const Point& a,
+                    const Point& b,
+                    omm::SelectSimilarTool::Alignment alignment)
 {
   if (alignment == SelectSimilarTool::Alignment::Global) {
-    const auto global_pos = [&path](const Point& point) {
-      const auto t = path.global_transformation(omm::Space::Viewport);
+    const auto global_pos = [&path_object](const Point& point) {
+      const auto t = path_object.global_transformation(omm::Space::Viewport);
       return t.apply_to_position(point.position());
     };
     return global_pos(a) - global_pos(b);
@@ -100,11 +104,11 @@ void SelectSimilarTool::on_property_value_changed(Property* property)
 void SelectSimilarTool::update_selection()
 {
   const auto strategy = property(STRATEGY_PROPERTY_KEY)->value<MatchStrategy>();
-  for (const auto* path : scene()->item_selection<Path>()) {
-    for (auto* point : path->points()) {
+  for (const auto* path_object : scene()->item_selection<PathObject>()) {
+    for (auto* point : path_object->geometry().points()) {
       if (!::contains(m_base_selection, point)) {
-        const auto is_similar = [point, path, this](const PathPoint* b) {
-          return this->is_similar(*path, point->geometry(), b->geometry());
+        const auto is_similar = [point, path_object, this](const PathPoint* b) {
+          return this->is_similar(*path_object, point->geometry(), b->geometry());
         };
         const auto& begin = m_base_selection.begin();
         const auto& end = m_base_selection.end();
@@ -127,8 +131,8 @@ void SelectSimilarTool::update_selection()
 void SelectSimilarTool::update_base_selection()
 {
   m_base_selection.clear();
-  for (const auto* path : scene()->item_selection<Path>()) {
-    for (auto* point : path->points()) {
+  for (const auto* path_object : scene()->item_selection<PathObject>()) {
+    for (auto* point : path_object->geometry().points()) {
       if (point->is_selected()) {
         m_base_selection.insert(point);
       }
@@ -136,20 +140,20 @@ void SelectSimilarTool::update_base_selection()
   }
 }
 
-bool SelectSimilarTool::is_similar(const Path& path, const Point& a, const Point& b) const
+bool SelectSimilarTool::is_similar(const PathObject& path_object, const Point& a, const Point& b) const
 {
   const auto alignment = property(ALIGNMENT_PROPERTY_KEY)->value<Alignment>();
   const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
-  const auto distance = [mode, &path, alignment](const Point& a, const Point& b) {
+  const auto distance = [mode, &path_object, alignment](const Point& a, const Point& b) {
     switch (mode) {
     case Mode::Normal:
       return normal_distance(a, b);
     case Mode::X:
-      return std::abs(::distance(path, a, b, alignment).x);
+      return std::abs(::distance(path_object, a, b, alignment).x);
     case Mode::Y:
-      return std::abs(::distance(path, a, b, alignment).y);
+      return std::abs(::distance(path_object, a, b, alignment).y);
     case Mode::Distance:
-      return ::distance(path, a, b, alignment).euclidean_norm();
+      return ::distance(path_object, a, b, alignment).euclidean_norm();
     default:
       Q_UNREACHABLE();
       return 0.0;

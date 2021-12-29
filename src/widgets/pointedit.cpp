@@ -1,8 +1,8 @@
 #include "widgets/pointedit.h"
 #include "commands/modifypointscommand.h"
 #include "scene/scene.h"
-#include "objects/path.h"
-#include "objects/pathpoint.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
 #include "widgets/coordinateedit.h"
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -36,8 +36,8 @@ auto make_tangent_layout(omm::CoordinateEdit*& coordinate_edit_ref,
 
 namespace omm
 {
-PointEdit::PointEdit(Path& path, PathPoint& point, QWidget* parent)
-  : QWidget(parent), m_point(point), m_path(&path)
+PointEdit::PointEdit(PathObject& path_object, PathPoint& point, QWidget* parent)
+  : QWidget(parent), m_point(point), m_path(&path_object)
 {
   if (m_point.is_selected()) {
     QPalette palette = this->palette();

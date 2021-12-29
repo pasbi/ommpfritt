@@ -1,11 +1,11 @@
 #pragma once
 
-#include "geometry/util.h"
 #include "geometry/vec2.h"
 #include "geometry/polarcoordinates.h"
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
 #include <QPainter>
+#include <QPainterPath>
 
 namespace omm
 {
@@ -57,15 +57,15 @@ public:
     const QPainterPath path = [this]() {
       const double magnitude = 0.9 * m_direction.euclidean_norm();
       const double argument = m_direction.arg();
-      const auto right = to_qpoint(PolarCoordinates(argument - 0.1, magnitude).to_cartesian());
-      const auto left = to_qpoint(PolarCoordinates(argument + 0.1, magnitude).to_cartesian());
+      const auto right = PolarCoordinates(argument - 0.1, magnitude).to_cartesian().to_pointf();
+      const auto left = PolarCoordinates(argument + 0.1, magnitude).to_cartesian().to_pointf();
       const auto p = (left + right) / 2.0;
 
       QPainterPath path;
       path.moveTo({0.0, 0.0});
       path.lineTo(p);
       path.lineTo(left);
-      path.lineTo(to_qpoint(m_direction));
+      path.lineTo(m_direction.to_pointf());
       path.lineTo(right);
       path.lineTo(p);
       path.closeSubpath();

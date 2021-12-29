@@ -1,6 +1,8 @@
 #include "objects/lineobject.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
+#include "path/path.h"
+#include "path/pathvector.h"
 #include <QObject>
 
 namespace omm
@@ -34,16 +36,17 @@ Flag LineObject::flags() const
   return Object::flags() | Flag::Convertible;
 }
 
-Geom::PathVector LineObject::paths() const
+PathVector LineObject::compute_path_vector() const
 {
-  return Geom::PathVector{};
-//  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
-//  const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
-//  const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
-//  const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
-//  const PolarCoordinates b(angle, centered ? length / 2.0 : length);
-//  std::vector<Point> segment = {Point(a.to_cartesian()), Point(b.to_cartesian())};
-//  return segments_to_path_vector({segment}, false);
+  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
+  const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
+  const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
+  const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
+  const PolarCoordinates b(angle, centered ? length / 2.0 : length);
+  std::vector points{Point(a.to_cartesian()), Point(b.to_cartesian())};
+  PathVector pv;
+  pv.add_path(std::make_unique<Path>(std::move(points)));
+  return pv;
 }
 
 void LineObject::on_property_value_changed(Property* property)

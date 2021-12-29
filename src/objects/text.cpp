@@ -1,6 +1,6 @@
 #include "objects/text.h"
 #include "mainwindow/viewport/viewport.h"
-#include "objects/path.h"
+#include "path/pathvector.h"
 #include "properties/floatproperty.h"
 #include "properties/stringproperty.h"
 #include "renderers/painter.h"
@@ -43,7 +43,7 @@ BoundingBox Text::bounding_box(const ObjectTransformation& transformation) const
       return transformation.apply_to_position(v);
     }));
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 
@@ -114,12 +114,12 @@ QRectF Text::rect(Qt::Alignment alignment) const
     }
   }();
 
-  return QRectF(QPointF(left, top), QSizeF(width, height));
+  return {QPointF(left, top), QSizeF(width, height)};
 }
 
-Geom::PathVector Text::paths() const
+PathVector Text::compute_path_vector() const
 {
-  return Geom::PathVector();
+  return {};
 }
 
 void Text::on_property_value_changed(Property* property)

@@ -29,11 +29,11 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Instance");
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
   static constexpr auto IDENTICAL_PROPERTY_KEY = "identical";
-  ConvertedObject convert() const override;
+  std::unique_ptr<Object> convert(bool& keep_children) const override;
   Flag flags() const override;
   void post_create_hook() override;
   void update() override;
-  Geom::PathVector paths() const override;
+  PathVector compute_path_vector() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

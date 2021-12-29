@@ -1,5 +1,6 @@
 #include "widgets/pointdialog.h"
-#include "objects/path.h"
+#include "objects/pathobject.h"
+#include "path/pathvector.h"
 #include "widgets/coordinateedit.h"
 #include "widgets/pointedit.h"
 #include <QComboBox>
@@ -13,7 +14,7 @@
 
 namespace
 {
-auto make_tab_widget_page(omm::Path& path, std::list<omm::PointEdit*>& point_edits)
+auto make_tab_widget_page(omm::PathObject& path_object, std::list<omm::PointEdit*>& point_edits)
 {
   auto scroll_area = std::make_unique<QScrollArea>();
   scroll_area->setWidgetResizable(true);
@@ -22,8 +23,8 @@ auto make_tab_widget_page(omm::Path& path, std::list<omm::PointEdit*>& point_edi
   auto widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>();
 
-  for (auto* point : path.points()) {
-    auto point_edit = std::make_unique<omm::PointEdit>(path, *point);
+  for (auto* point : path_object.geometry().points()) {
+    auto point_edit = std::make_unique<omm::PointEdit>(path_object, *point);
     point_edits.push_back(point_edit.get());
     layout->addWidget(point_edit.release());
   }
@@ -38,11 +39,11 @@ auto make_tab_widget_page(omm::Path& path, std::list<omm::PointEdit*>& point_edi
 
 namespace omm
 {
-PointDialog::PointDialog(const std::set<Path*>& paths, QWidget* parent) : QDialog(parent)
+PointDialog::PointDialog(const std::set<PathObject*>& paths, QWidget* parent) : QDialog(parent)
 {
   assert(!paths.empty());
   auto tab_widget = std::make_unique<QTabWidget>();
-  for (Path* path : paths) {
+  for (PathObject* path : paths) {
     tab_widget->addTab(make_tab_widget_page(*path, m_point_edits).release(), path->name());
   }
   auto button_box = std::make_unique<QDialogButtonBox>(QDialogButtonBox::Ok);

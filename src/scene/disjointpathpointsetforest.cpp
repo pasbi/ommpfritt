@@ -1,7 +1,10 @@
 #include "scene/disjointpathpointsetforest.h"
 #include "serializers/abstractserializer.h"
-#include "objects/pathpoint.h"
-#include "objects/path.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
+#include "path/path.h"
+#include "objects/pathobject.h"
+#include "scene/scene.h"
 
 static constexpr auto FOREST_POINTER = "forest";
 static constexpr auto PATH_ID_POINTER = "path-id";
@@ -46,8 +49,8 @@ private:
     for (const auto& set : m_joined_point_indices) {
       auto& forest_set = m_ref.m_forest.emplace_back();
       for (const auto& [path_id, point_index] : set) {
-        auto* path = dynamic_cast<Path*>(map.at(path_id));
-        auto& path_point = path->point_at_index(point_index);
+        auto* path_object = dynamic_cast<PathObject*>(map.at(path_id));
+        auto& path_point = path_object->geometry().point_at_index(point_index);
         forest_set.insert(&path_point);
       }
     }
@@ -76,6 +79,52 @@ void DisjointPathPointSetForest::deserialize(AbstractDeserializer& deserializer,
 
 void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
+  auto copy = *this;
+  copy.remove_dangling_points();
+  copy.serialize_impl(serializer, root);
+}
+
+void DisjointPathPointSetForest::remove_dangling_points()
+{
+  for (auto& set : m_forest) {
+    std::erase_if(set, [](const PathPoint* point) {
+      static constexpr auto is_part_of_scene = [](const PathPoint* point) {
+        const auto* const path_object = point->path_vector()->path_object();
+        return path_object->scene() != nullptr && path_object->scene()->contains(path_object);
+      };
+      return point == nullptr
+          || point->path_vector() == nullptr
+          || !point->path().contains(*point)
+          || !::contains(point->path_vector()->paths(), &point->path())
+          || point->path_vector()->path_object() == nullptr
+          || !is_part_of_scene(point);
+    });
+  }
+
+  m_forest.erase(std::remove_if(m_forest.begin(), m_forest.end(), [](const auto& set) {
+    return set.empty();
+  }), m_forest.end());
+}
+
+void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>& dict)
+{
+  for (auto& old_set : m_forest) {
+    Joint new_set;
+    for (auto* old_point : old_set) {
+      if (const auto it = dict.find(old_point); it != dict.end()) {
+        new_set.insert(it->second);
+      }
+    }
+    old_set = new_set;
+  }
+
+  m_forest.erase(remove_if(m_forest.begin(), m_forest.end(), [](const auto& set) {
+    return set.empty();
+  }), m_forest.end());
+}
+
+void DisjointPathPointSetForest::serialize_impl(AbstractSerializer& serializer, const Pointer& root) const
+{
   const auto forest_ptr = make_pointer(root, FOREST_POINTER);
   serializer.start_array(m_forest.size(), forest_ptr);
   for (std::size_t i = 0; i < m_forest.size(); ++i) {
@@ -85,7 +134,7 @@ void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer, const
     for (auto* p : m_forest[i]) {
       const auto ptr = make_pointer(set_ptr, j);
       serializer.set_value(p->index(), make_pointer(ptr, INDEX_POINTER));
-      serializer.set_value(p->path()->id(), make_pointer(ptr, PATH_ID_POINTER));
+      serializer.set_value(p->path_vector()->path_object()->id(), make_pointer(ptr, PATH_ID_POINTER));
       j += 1;
     }
     serializer.end_array();

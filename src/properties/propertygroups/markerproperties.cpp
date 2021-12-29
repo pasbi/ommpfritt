@@ -1,10 +1,11 @@
 #include "properties/propertygroups/markerproperties.h"
-#include "geometry/util.h"
 #include "objects/tip.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
+#include "path/path.h"
 #include "renderers/painter.h"
+#include <QPainter>
 
 namespace omm
 {
@@ -49,7 +50,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
 {
   QPainter& p = *painter.painter;
   p.save();
-  p.translate(to_qpoint(location.position()));
+  p.translate(location.position().to_pointf());
   if (property_value<bool>(REVERSE_PROPERTY_KEY)) {
     p.rotate((location.rotation() + M_PI_2) * M_180_PI);
   } else {
@@ -57,7 +58,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
   }
   p.setPen(Qt::NoPen);
   p.setBrush(color.to_qcolor());
-  QPainterPath path = Painter::path(shape(width), true);
+  QPainterPath path = Path::to_painter_path(shape(width), true);
   p.drawPath(path);
   p.restore();
 }
@@ -99,6 +100,7 @@ std::vector<Point> MarkerProperties::arrow(const Vec2f& size)
       Point(Vec2f(size.x, 0.0)),
       Point(Vec2f(0.0, size.y)),
       Point(Vec2f(0.0, -size.y)),
+      Point(Vec2f(size.x, 0.0)),
   };
 }
 
@@ -109,6 +111,7 @@ std::vector<Point> MarkerProperties::bar(const Vec2f& size)
       Point(Vec2f(-size.x, -size.y)),
       Point(Vec2f(size.x, -size.y)),
       Point(Vec2f(size.x, size.y)),
+      Point(Vec2f(-size.x, size.y)),
   };
 }
 
@@ -125,6 +128,7 @@ std::vector<Point> MarkerProperties::diamond(const Vec2f& size)
       Point(Vec2f(0.0, -size.y)),
       Point(Vec2f(size.x, 0.0)),
       Point(Vec2f(0.0, size.y)),
+      Point(Vec2f(-size.x, 0.0)),
   };
 }
 

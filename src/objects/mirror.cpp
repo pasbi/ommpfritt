@@ -2,7 +2,9 @@
 
 #include "geometry/vec2.h"
 #include "objects/empty.h"
-#include "objects/path.h"
+#include "path/pathvector.h"
+#include "path/lib2geomadapter.h"
+#include "objects/pathobject.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
@@ -45,10 +47,8 @@ transform_path(const ObjectTransformation& t, const Geom::Path& path, bool rever
   });
 }
 
-Geom::PathVector reflect(bool& wants_to_be_closed,
-                         const Geom::PathVector& pv,
+Geom::PathVector reflect(const Geom::PathVector& pv,
                          const Mirror::Direction direction,
-                         const bool child_is_closed,
                          const double eps)
 {
   const auto mt = get_mirror_t(direction);
@@ -64,14 +64,11 @@ Geom::PathVector reflect(bool& wants_to_be_closed,
 
       const bool close_ends = are_close(path.finalPoint(),  mt.apply(path.finalPoint()));
       const bool close_mids = are_close(path.initialPoint(), mt.apply(path.initialPoint()));
-      if (!child_is_closed && (!close_ends || !close_mids)) {
-        wants_to_be_closed = false;
-      }
 
-      if (close_mids && !child_is_closed) {
+      if (close_mids) {
         original_path.insert(original_path.begin(), reflected_path.rbegin(), reflected_path.rend());
         paths.emplace_back(original_path.begin(), original_path.end());
-      } else if (close_ends && !child_is_closed) {
+      } else if (close_ends) {
         original_path.insert(original_path.end(), reflected_path.rbegin(), reflected_path.rend());
         paths.emplace_back(original_path.begin(), original_path.end());
       } else {
@@ -149,7 +146,7 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation& transformation) con
       Q_UNREACHABLE();
     }
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 
@@ -158,23 +155,25 @@ QString Mirror::type() const
   return TYPE;
 }
 
-Object::ConvertedObject Mirror::convert() const
+std::unique_ptr<Object> Mirror::convert(bool& keep_children) const
 {
   if (m_draw_children) {
     std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
     auto reflection = m_reflection->clone();
     reflection->update();
     converted->adopt(std::move(reflection));
-    return {std::move(converted), true};
+    keep_children = true;
+    return converted;
   } else {
-    return {m_reflection->clone(), false};
+    keep_children = false;
+    return m_reflection->clone();
   }
 }
 
-Geom::PathVector Mirror::paths() const
+PathVector Mirror::compute_path_vector() const
 {
   if (m_reflection && is_active()) {
-    return m_reflection->geom_paths();
+    return PathVector{m_reflection->path_vector(), nullptr};
   } else {
     return {};
   }
@@ -212,31 +211,27 @@ void Mirror::update_path_mode()
     m_reflection.reset();
   } else {
     Object& child = this->tree_child(0);
-    const auto pv = child.geom_paths();
-    bool wants_to_be_closed = true;
+    const auto pv = omm_to_geom(child.path_vector());
 
-    const bool child_is_closed = child.is_closed();
     const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
-    auto reflection = std::make_unique<Path>(scene());
+    auto reflection = std::make_unique<PathObject>(scene());
     if (const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
         direction == Direction::Both)
     {
       auto r = child.transformation().apply(pv);
-      r = reflect(wants_to_be_closed, r, Direction::Horizontal, child_is_closed, eps);
-      wants_to_be_closed = !wants_to_be_closed;
-      r = reflect(wants_to_be_closed, r, Direction::Vertical, child_is_closed, eps);
-      reflection->set(r);
+      r = reflect(r, Direction::Horizontal, eps);
+      r = reflect(r, Direction::Vertical, eps);
+      reflection->geometry() = *geom_to_omm(r);
     } else {
       auto r = child.transformation().apply(pv);
-      r = reflect(wants_to_be_closed, r, direction, child_is_closed, eps);
-      reflection->set(r);
+      r = reflect(r, direction, eps);
+      reflection->geometry() = *geom_to_omm(r);
     }
 
-    reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(wants_to_be_closed);
-    const auto interpolation = child.has_property(Path::INTERPOLATION_PROPERTY_KEY)
-                             ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
+    const auto interpolation = child.has_property(PathObject::INTERPOLATION_PROPERTY_KEY)
+                             ? child.property(PathObject::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
                              : InterpolationMode::Bezier;
-    reflection->property(Path::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
+    reflection->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
     m_reflection = std::move(reflection);
   }
 }

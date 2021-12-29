@@ -3,6 +3,7 @@
 #include <QObject>
 
 #include "objects/empty.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -150,7 +151,7 @@ BoundingBox Cloner::bounding_box(const ObjectTransformation& transformation) con
     }
     return bb;
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 
@@ -191,9 +192,9 @@ void Cloner::update()
   Object::update();
 }
 
-Geom::PathVector Cloner::paths() const
+PathVector Cloner::compute_path_vector() const
 {
-  return join(m_clones);
+  return join(::transform<Object*>(m_clones, [](const auto& up) { return up.get(); }));
 }
 
 void Cloner::on_property_value_changed(Property* property)
@@ -290,7 +291,7 @@ Flag Cloner::flags() const
   return Object::flags() | Flag::HasScript;
 }
 
-Object::ConvertedObject Cloner::convert() const
+std::unique_ptr<Object> Cloner::convert(bool& keep_children) const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
@@ -304,7 +305,8 @@ Object::ConvertedObject Cloner::convert() const
     clone.set_transformation(local_transformation);
   }
 
-  return {std::move(converted), !is_active()};
+  keep_children = !is_active();
+  return converted;
 }
 
 std::vector<std::unique_ptr<Object>> Cloner::make_clones()
@@ -378,9 +380,9 @@ std::vector<std::unique_ptr<Object>> Cloner::copy_children(const std::size_t cou
   return clones;
 }
 
-double Cloner::get_t(std::size_t i, const bool inclusive) const
+double Cloner::get_t(std::size_t i) const
 {
-  const auto n = property(COUNT_PROPERTY_KEY)->value<int>() + (inclusive ? 0 : 1);
+  const auto n = property(COUNT_PROPERTY_KEY)->value<int>() + 1;
   const auto start = property(START_PROPERTY_KEY)->value<double>();
   const auto end = property(END_PROPERTY_KEY)->value<double>();
   const auto border = property(BORDER_PROPERTY_KEY)->value<Border>();
@@ -389,7 +391,7 @@ double Cloner::get_t(std::size_t i, const bool inclusive) const
     return 0.0;
   } else {
     const auto spacing = (end - start) / (n - 1);
-    return apply_border(start + spacing * i, border);
+    return apply_border(start + spacing * static_cast<double>(i), border);
   }
 }
 
@@ -406,14 +408,14 @@ void Cloner::set_grid(Object& object, std::size_t i)
   const auto n = property(COUNT_2D_PROPERTY_KEY)->value<Vec2i>();
   const auto v = property(DISTANCE_2D_PROPERTY_KEY)->value<Vec2f>();
   auto t = object.transformation();
-  const auto [q, r] = std::div(i, static_cast<int>(n.x));
+  const auto [q, r] = std::div(static_cast<int>(i), static_cast<int>(n.x));
   t.set_translation({v.x * r, v.y * q});
   object.set_transformation(t);
 }
 
 void Cloner::set_radial(Object& object, std::size_t i)
 {
-  const double angle = 2 * M_PI * get_t(i, false);
+  const double angle = 2 * M_PI * get_t(i);
   const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
   const Point op({std::cos(angle) * r, std::sin(angle) * r}, angle + M_PI / 2.0);
   object.set_oriented_position(op, property(PathProperties::ALIGN_PROPERTY_KEY)->value<bool>());
@@ -424,7 +426,7 @@ void Cloner::set_path(Object& object, std::size_t i)
   if (const auto* const o = path_object_reference(); o == nullptr) {
     return;
   } else {
-    const double t = get_t(i, !o->is_closed());
+    const double t = get_t(i);
     const auto transformation = (property(ANCHOR_PROPERTY_KEY)->value<Anchor>() == Anchor::Path)
                                     ? o->global_transformation(Space::Scene)
                                           .apply(global_transformation(Space::Scene).inverted())

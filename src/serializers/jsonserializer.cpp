@@ -269,7 +269,7 @@ PolarCoordinates JSONDeserializer::get_polarcoordinates(const Pointer& pointer)
 TriggerPropertyDummyValueType
 JSONDeserializer::get_trigger_dummy_value(const AbstractDeserializer::Pointer&)
 {
-  return TriggerPropertyDummyValueType();
+  return {};
 }
 
 SplineType JSONDeserializer::get_spline(const AbstractDeserializer::Pointer& pointer)

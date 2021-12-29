@@ -32,8 +32,8 @@ public:
   static constexpr auto AS_PATH_PROPERTY_KEY = "as_path";
   static constexpr auto TOLERANCE_PROPERTY_KEY = "eps";
 
-  Geom::PathVector paths() const override;
-  ConvertedObject convert() const override;
+  PathVector compute_path_vector() const override;
+  std::unique_ptr<Object> convert(bool& keep_children) const override;
   void update() override;
 
 protected:

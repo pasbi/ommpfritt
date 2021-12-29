@@ -1,19 +1,48 @@
 #include "objects/boolean.h"
+#include "path/pathvector.h"
 #include "properties/optionproperty.h"
+#include "path/lib2geomadapter.h"
 #include <2geom/2geom.h>
 #include <2geom/intersection-graph.h>
 #include <2geom/pathvector.h>
 #include <2geom/utils.h>
+#include <QApplication>
 
 namespace
 {
-using F = std::function<Geom::PathVector(Geom::PathIntersectionGraph&)>;
-const std::vector<std::pair<QString, F>> dispatcher = {
-    {QObject::tr("Union"), [](auto& pig) { return pig.getUnion(); }},
-    {QObject::tr("Intersection"), [](auto& pig) { return pig.getIntersection(); }},
-    {QObject::tr("Exclusive Or"), [](auto& pig) { return pig.getXOR(); }},
-    {QObject::tr("Difference"), [](auto& pig) { return pig.getAminusB(); }},
-    {QObject::tr("Inverse Difference"), [](auto& pig) { return pig.getBminusA(); }},
+
+using F = Geom::PathVector(Geom::PathIntersectionGraph::*)();
+
+class BooleanOperation
+{
+public:
+  constexpr explicit BooleanOperation(std::string_view name, F f)
+    : m_name(name)
+    , m_f(f)
+  {
+  }
+
+  [[nodiscard]] Geom::PathVector compute(Geom::PathIntersectionGraph& pig) const
+  {
+    return std::invoke(m_f, pig);
+  }
+
+  [[nodiscard]] QString label() const
+  {
+    return QApplication::translate("QObject", m_name.data());
+  }
+
+private:
+  const std::string_view m_name;
+  const F m_f;
+};
+
+const auto dispatcher = std::array {
+    BooleanOperation{"Union", &Geom::PathIntersectionGraph::getUnion},
+    BooleanOperation{"Intersection", &Geom::PathIntersectionGraph::getIntersection},
+    BooleanOperation{"Exclusive Or", &Geom::PathIntersectionGraph::getXOR},
+    BooleanOperation{"Difference", &Geom::PathIntersectionGraph::getAminusB},
+    BooleanOperation{"Inverse Difference", &Geom::PathIntersectionGraph::getBminusA},
 };
 
 }  // namespace
@@ -23,7 +52,7 @@ namespace omm
 Boolean::Boolean(Scene* scene) : Object(scene)
 {
   create_property<OptionProperty>(MODE_PROPERTY_KEY)
-      .set_options(::transform<QString>(dispatcher, [](auto&& p) { return p.first; }))
+      .set_options(::transform<QString, std::vector>(dispatcher, std::mem_fn(&BooleanOperation::label)))
       .set_label(QObject::tr("mode"))
       .set_category(QObject::tr("Boolean"));
   polish();
@@ -45,6 +74,13 @@ void Boolean::update()
   Object::update();
 }
 
+std::unique_ptr<Object> Boolean::convert(bool& keep_children) const
+{
+  auto c = Object::convert(keep_children);
+  keep_children = !is_active();
+  return c;
+}
+
 void Boolean::on_property_value_changed(Property* property)
 {
   if (property == this->property(MODE_PROPERTY_KEY)) {
@@ -58,20 +94,22 @@ void Boolean::polish()
   listen_to_children_changes();
 }
 
-bool Boolean::is_closed() const
-{
-  return true;
-}
-
-Geom::PathVector Boolean::paths() const
+PathVector Boolean::compute_path_vector() const
 {
   const auto children = tree_children();
   if (is_active() && children.size() == 2) {
-    Geom::PathIntersectionGraph pig(children[0]->transformation().apply(children[0]->geom_paths()),
-                                    children[1]->transformation().apply(children[1]->geom_paths()));
+    static constexpr auto get_path_vector = [](const Object& object) {
+      const auto t = object.transformation();
+      return t.apply(omm_to_geom(object.path_vector()));
+    };
+    Geom::PathIntersectionGraph pig{get_path_vector(*children[0]), get_path_vector(*children[1])};
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
-      return dispatcher[i].second(pig);
+      auto path_vector = *geom_to_omm(dispatcher.at(i).compute(pig));
+      path_vector.join_points_by_position(::transform<Vec2f>(pig.intersectionPoints(), [](const auto& p) {
+        return Vec2f{p};
+      }));
+      return path_vector;
     } else {
       return {};
     }

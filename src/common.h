@@ -127,6 +127,11 @@ auto transform(ContainerS&& ss)
   return ::transform<T, ContainerT>(std::forward<ContainerS>(ss), ::identity);
 }
 
+template<typename Ts, typename F> bool any_of(const Ts& ts, const F& f)
+{
+  return std::any_of(begin(ts), end(ts), f);
+}
+
 template<typename Ts, typename F = identity_t, typename EqualT = std::equal_to<>>
 auto is_uniform(const Ts& container,
                 const F& mapper = ::identity,
@@ -357,6 +362,22 @@ auto find_if(Ts&& items, P&& predicate, F&& f, R&& default_)
   return default_;
 }
 
+/**
+ * @brief copy_unique_ptr sometimes it makes sense to copy a unique ptr, i.e., to create
+ *  a new unique ptr with a copied content.
+ *  Calls T's copy constructor.
+ * @param up the unique_ptr to copy
+ * @return a new unique pointer holding a copy of the old unique_ptr's content.
+ */
+template<typename T, typename... Args> std::unique_ptr<T> copy_unique_ptr(const std::unique_ptr<T>& up, Args&&... args)
+{
+  if (up) {
+    return std::make_unique<T>(*up, std::forward<Args>(args)...);
+  } else {
+    return {};
+  }
+}
+
 namespace omm
 {
 template<typename T> struct EnableBitMaskOperators : std::false_type {
@@ -508,6 +529,10 @@ template<typename Vs, typename F> auto find_coherent_ranges(const Vs& vs, F&& f)
   return ranges;
 }
 
+template<typename T> auto python_like_mod(const T& dividend, const T& divisor)
+{
+  return std::fmod(std::fmod(dividend, divisor) + divisor, divisor);
+}
 
 }  // namespace omm
 

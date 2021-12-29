@@ -4,7 +4,7 @@
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"
 #include "menuhelper.h"
-#include "objects/path.h"
+#include "objects/pathobject.h"
 #include "preferences/uicolors.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"

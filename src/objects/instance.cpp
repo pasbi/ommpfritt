@@ -2,6 +2,7 @@
 
 #include "commands/propertycommand.h"
 #include "objects/empty.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
 #include "renderers/painteroptions.h"
@@ -76,10 +77,10 @@ BoundingBox Instance::bounding_box(const ObjectTransformation& transformation) c
     if (r != nullptr) {
       return r->recursive_bounding_box(transformation);
     } else {
-      return BoundingBox();
+      return BoundingBox{};
     }
   } else {
-    return BoundingBox();
+    return BoundingBox{};
   }
 }
 
@@ -96,7 +97,7 @@ Object* Instance::illustrated_object() const
   }
 }
 
-Object::ConvertedObject Instance::convert() const
+std::unique_ptr<Object> Instance::convert(bool& keep_children) const
 {
   std::unique_ptr<Object> clone;
   if (is_active()) {
@@ -110,7 +111,8 @@ Object::ConvertedObject Instance::convert() const
   if (!clone) {
     clone = std::make_unique<Empty>(scene());
   }
-  return {std::move(clone), true};
+  keep_children = true;
+  return clone;
 }
 
 QString Instance::type() const
@@ -156,12 +158,12 @@ void Instance::update()
   Object::update();
 }
 
-Geom::PathVector Instance::paths() const
+PathVector Instance::compute_path_vector() const
 {
   if (m_reference) {
-    return m_reference->geom_paths();
+    return PathVector{m_reference->path_vector(), nullptr};
   } else {
-    return Geom::PathVector();
+    return {};
   }
 }
 

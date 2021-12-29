@@ -59,6 +59,7 @@ jobs:
       - run: |
           cd omm
           files="$(build-scripts/files.py --mode changed)"
+          cmake --build ../omm-build --config Release -j4 --target libommpfritt_autogen
           if [ -z "$files" ]; then
             echo "Skip clazy: No relevant files have changed."
           else
@@ -81,6 +82,7 @@ jobs:
           path: omm-build
       - run: |
           cd omm
+          cmake --build ../omm-build --config Release -j4 --target libommpfritt_autogen
           files="$(build-scripts/files.py --mode changed)"
           if [ -z "$files" ]; then
             echo "Skip clang-tidy: No relevant files have changed."

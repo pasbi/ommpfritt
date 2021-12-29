@@ -1,4 +1,5 @@
 #pragma once
+
 #include "objects/object.h"
 
 namespace omm
@@ -15,11 +16,7 @@ public:
   static constexpr auto ANGLE_PROPERTY_KEY = "angle";
   static constexpr auto CENTER_PROPERTY_KEY = "center";
 
-  Geom::PathVector paths() const override;
-  bool is_closed() const override
-  {
-    return false;
-  }
+  PathVector compute_path_vector() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

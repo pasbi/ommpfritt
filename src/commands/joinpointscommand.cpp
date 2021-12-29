@@ -1,20 +1,24 @@
 #include "commands/joinpointscommand.h"
-#include "objects/pathpoint.h"
+#include "objects/pathobject.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "scene/scene.h"
 
 namespace omm
 {
 
-JoinPointsCommand::JoinPointsCommand(Scene& scene, const std::set<PathPoint*>& points)
-  : AbstractJoinPointsCommand(QObject::tr("Join Points"), scene, points)
+JoinPointsCommand::JoinPointsCommand(Scene& scene, const DisjointPathPointSetForest& forest)
+  : AbstractJoinPointsCommand(QObject::tr("Join Points"), scene, forest)
 {
 }
 
 void JoinPointsCommand::undo()
 {
   scene().joined_points() = m_old_forest;
-  for (auto* point : points()) {
-    point->set_geometry(m_old_positions[point]);
+  for (const auto& set : forest().sets()) {
+    for (auto* point : set) {
+      point->set_geometry(m_old_positions[point]);
+    }
   }
   update_affected_paths();
 }
@@ -22,13 +26,15 @@ void JoinPointsCommand::undo()
 void JoinPointsCommand::redo()
 {
   m_old_forest = scene().joined_points();
-  const auto joined = scene().joined_points().insert(points());
-  const auto new_pos = compute_position(joined);
-  for (auto* point : points()) {
-    m_old_positions[point] = point->geometry();
-    auto geometry = point->geometry();
-    geometry.set_position(new_pos);
-    point->set_geometry(geometry);
+  for (const auto& set : forest().sets()) {
+    const auto joined = scene().joined_points().insert(set);
+    const auto new_pos = compute_position(joined);
+    for (auto* point : set) {
+      m_old_positions[point] = point->geometry();
+      auto geometry = point->geometry();
+      geometry.set_position(new_pos);
+      point->set_geometry(geometry);
+    }
   }
   update_affected_paths();
 }
@@ -42,8 +48,8 @@ Vec2f JoinPointsCommand::compute_position(const std::set<PathPoint*>& points)
   return pos / static_cast<double>(points.size());
 }
 
-DisjoinPointsCommand::DisjoinPointsCommand(Scene& scene, const std::set<PathPoint*>& points)
-  : AbstractJoinPointsCommand(QObject::tr("Disjoin Points"), scene, points)
+DisjoinPointsCommand::DisjoinPointsCommand(Scene& scene, const DisjointPathPointSetForest& forest)
+  : AbstractJoinPointsCommand(QObject::tr("Disjoin Points"), scene, forest)
 {
 }
 
@@ -55,24 +61,26 @@ void DisjoinPointsCommand::undo()
 void DisjoinPointsCommand::redo()
 {
   m_old_forest = scene().joined_points();
-  for (auto* point : points()) {
-    scene().joined_points().remove({point});
+  for (const auto& set : forest().sets()) {
+    for (auto* point : set) {
+      scene().joined_points().remove({point});
+    }
   }
 }
 
 AbstractJoinPointsCommand::AbstractJoinPointsCommand(const QString& label,
                                                      Scene& scene,
-                                                     const std::set<PathPoint*>& points)
+                                                     const DisjointPathPointSetForest& forest)
   : Command(label)
   , m_scene(scene)
-  , m_points(points)
+  , m_forest(forest)
 {
 
 }
 
-std::set<PathPoint*> AbstractJoinPointsCommand::points() const
+const DisjointPathPointSetForest& AbstractJoinPointsCommand::forest() const
 {
-  return m_points;
+  return m_forest;
 }
 
 Scene& AbstractJoinPointsCommand::scene() const
@@ -82,12 +90,14 @@ Scene& AbstractJoinPointsCommand::scene() const
 
 void AbstractJoinPointsCommand::update_affected_paths() const
 {
-  std::set<Path*> paths;
-  for (const auto* point : points()) {
-    paths.insert(point->path());
+  std::set<PathVector*> path_vectors;
+  for (const auto& set : forest().sets()) {
+    for (const auto* point : set) {
+      path_vectors.insert(point->path_vector());
+    }
   }
-  for (auto* path : paths) {
-    path->update();
+  for (auto* path_vector : path_vectors) {
+    path_vector->path_object()->update();
   }
 }
 

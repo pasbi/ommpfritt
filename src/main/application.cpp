@@ -35,34 +35,35 @@
 #include "tools/tool.h"
 #include "tools/toolbox.h"
 #include "widgets/pointdialog.h"
-#include "objects/path.h"
+#include "objects/pathobject.h"
 
 namespace
 {
 constexpr auto FILE_ENDING = ".omm";
+using namespace omm;
 
 QKeySequence push_back(const QKeySequence& s, int t)
 {
   switch (s.count()) {
   case 0:
-    return QKeySequence(t);
+    return t;
   case 1:
-    return QKeySequence(s[0], t);
+    return {s[0], t};
   case 2:
-    return QKeySequence(s[0], s[1], t);
+    return {s[0], s[1], t};
   case 3:
-    return QKeySequence(s[0], s[1], s[2], t);
+    return {s[0], s[1], s[2], t};
   case 4:
-    return QKeySequence(s[1], s[2], s[3], t);
+    return {s[1], s[2], s[3], t};
   default:
     Q_UNREACHABLE();
-    return QKeySequence();
+    return {};
   }
 }
 
 auto load_locale()
 {
-  const auto locale = QSettings().value(omm::MainWindow::LOCALE_SETTINGS_KEY).toLocale();
+  const auto locale = QSettings().value(MainWindow::LOCALE_SETTINGS_KEY).toLocale();
   return locale;
 }
 
@@ -77,19 +78,117 @@ QString scene_directory_hint(const QString& scene_filename)
 
 auto init_mode_selectors()
 {
-  std::map<QString, std::unique_ptr<omm::ModeSelector>> map;
+  std::map<QString, std::unique_ptr<ModeSelector>> map;
   const auto insert = [&map](const QString& name,
                              const QString& cycle_action,
                              const std::vector<QString>& activation_actions) {
     map.insert({name,
-                std::make_unique<omm::ModeSelector>(omm::Application::instance(),
-                                                    name,
-                                                    cycle_action,
-                                                    activation_actions)});
+                std::make_unique<ModeSelector>(Application::instance(),
+                                               name,
+                                               cycle_action,
+                                               activation_actions)});
   };
 
   insert("scene_mode", "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex"});
   return map;
+}
+
+bool dispatch_named_action(Application& app, const QString& action_name)
+{
+  const std::map<QString, std::function<void()>> dispatch_map {
+    {"undo", [&app](){ app.scene->history().undo(); }},
+    {"redo", [&app](){ app.scene->history().redo(); }},
+    {"new", [&app](){ app.reset(); }},  // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
+    {"save", [&app](){ app.save(); }},
+    {"save as ...", [&app](){ app.save_as(); }},
+    {"open", [&app](){ app.open(); }},
+    {"export ...", [&app](){ ExportDialog(*app.scene, app.main_window()).exec(); }},
+    {"evaluate", [&app](){ app.evaluate(); }},
+    {"restore default layout", [&app]() { app.main_window()->restore_default_layout(); }},
+    {"save_layout ...", [&app]() { app.main_window()->load_layout(); }},
+    {"load layout ...", [&app]() { app.main_window()->save_layout(); }},
+    {"new toolbar", [&app]() { app.spawn_toolbar(); }},
+    {"previous tool", [&app]() { app.scene->tool_box().activate_previous_tool(); }},
+    {"new style", [&app]() {
+      using namespace omm;
+      using command_type = AddCommand<List<Style>>;
+      auto style = app.scene->default_style().clone();
+      assert(style->scene() == app.scene.get());
+      app.scene->submit<command_type>(app.scene->styles(), std::move(style));
+    }},
+    {"reset viewport", [&app]() { app.main_window()->viewport().reset(); }},
+    {"show point dialog", [&app](){
+      if (const auto paths = app.scene->item_selection<PathObject>(); !paths.empty()) {
+        PointDialog(paths, app.main_window()).exec();
+      }
+    }},
+    {"preferences", []() { PreferenceDialog().exec(); }}
+  };
+
+  if (const auto it = dispatch_map.find(action_name); it != dispatch_map.end()) {
+    it->second();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool dispatch_create_object_action(Application& app, const QString& action_name)
+{
+  return ::any_of(Object::keys(), [&app, action_name](const auto& key) {
+    if (key == action_name) {
+      const auto modifiers = QApplication::keyboardModifiers();
+      if ((modifiers & Qt::ControlModifier) != 0u) {
+        app.insert_object(key, Application::InsertionMode::AsChild);
+      } else if ((modifiers & Qt::ShiftModifier) != 0u) {
+        app.insert_object(key, Application::InsertionMode::AsParent);
+      } else {
+        app.insert_object(key, Application::InsertionMode::Default);
+      }
+      return true;
+    }
+    return false;
+  });
+}
+
+bool dispatch_spawn_manager_action(Application& app, const QString& action_name)
+{
+  return ::any_of(Manager::keys(), [&app, action_name](const auto& key) {
+    if (key == action_name) {
+      app.spawn_manager(key);
+      return true;
+    }
+    return false;
+  });
+}
+
+bool dispatch_activate_tool_action(Application& app, const QString& action_name)
+{
+  return ::any_of(Tool::keys(), [&app, action_name](const auto& key) {
+    if (key == action_name) {
+      app.scene->tool_box().set_active_tool(key);
+      return true;
+    }
+    return false;
+  });
+}
+
+bool dispatch_add_tag_action(Application& app, const QString& action_name)
+{
+  return ::any_of(Tag::keys(), [&app, action_name](const auto& key) {
+    if (key == action_name) {
+      const auto object_selection = app.scene->item_selection<Object>();
+      if (!object_selection.empty()) {
+        [[maybe_unused]] auto macro = app.scene->history().start_macro(Application::tr("Add Tag"));
+        for (auto&& object : object_selection) {
+          using AddTagCommand = AddCommand<List<Tag>>;
+          app.scene->submit<AddTagCommand>(object->tags, Tag::make(key, *object));
+        }
+      }
+      return true;
+    }
+    return false;
+  });
 }
 
 }  // namespace
@@ -130,7 +229,7 @@ Application::Application(QCoreApplication& app, std::unique_ptr<Options> options
   scene->polish();
 }
 
-void Application::init(omm::Application* instance)
+void Application::init(Application* instance)
 {
   register_everything();
   QCoreApplication::setOrganizationName(QObject::tr("omm"));
@@ -261,8 +360,8 @@ void Application::reset()
 
 void Application::open(const QString& filename, bool force)
 {
-  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (force || can_close()) {
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     QTimer::singleShot(0, this, [this, filename]() {
       if (!scene->load_from(filename)) {
         QMessageBox::critical(m_main_window,
@@ -296,92 +395,13 @@ bool Application::perform_action(const QString& action_name)
   }
 #endif
 
-  if (action_name == "undo") {
-    scene->history().undo();
-  } else if (action_name == "redo") {
-    scene->history().redo();
-  } else if (action_name == "new") {
-    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
-    reset();
-  } else if (action_name == "save") {
-    save();
-  } else if (action_name == "save as ...") {
-    save_as();
-  } else if (action_name == "open ...") {
-    open();
-  } else if (action_name == "export ...") {
-    ExportDialog(*scene, main_window()).exec();
-  } else if (action_name == "evaluate") {
-    evaluate();
-  } else if (action_name == "restore default layout") {
-    main_window()->restore_default_layout();
-  } else if (action_name == "save layout ...") {
-    main_window()->save_layout();
-  } else if (action_name == "load layout ...") {
-    main_window()->load_layout();
-  } else if (action_name == "new toolbar") {
-    spawn_toolbar();
-  } else if (action_name == "previous tool") {
-    scene->tool_box().activate_previous_tool();
-  } else if (action_name == "new style") {
-    using command_type = AddCommand<List<Style>>;
-    auto style = scene->default_style().clone();
-    assert(style->scene() == scene.get());
-    scene->submit<command_type>(scene->styles(), std::move(style));
-  } else if (action_name == "reset viewport") {
-    main_window()->viewport().reset();
-  } else if (action_name == "show point dialog") {
-    if (const auto paths = scene->item_selection<Path>(); !paths.empty()) {
-      PointDialog(paths, main_window()).exec();
-    }
-  } else if (action_name == "preferences") {
-    PreferenceDialog().exec();
-  } else if (omm::path_actions::perform_action(action_name, *this)) {
-    // action was handled by perform_action.
-  } else if (handle_mode(action_name)) {
-    // action was handled as mode
-  } else {
-    for (const auto& key : Object::keys()) {
-      if (key == action_name) {
-        const auto modifiers = QApplication::keyboardModifiers();
-        if ((modifiers & Qt::ControlModifier) != 0u) {
-          insert_object(key, InsertionMode::AsChild);
-        } else if ((modifiers & Qt::ShiftModifier) != 0u) {
-          insert_object(key, InsertionMode::AsParent);
-        } else {
-          insert_object(key, InsertionMode::Default);
-        }
-        return true;
-      }
-    }
-    for (const auto& key : Manager::keys()) {
-      if (key == action_name) {
-        spawn_manager(key);
-        return true;
-      }
-    }
-    for (const auto& key : Tool::keys()) {
-      if (key == action_name) {
-        scene->tool_box().set_active_tool(key);
-        return true;
-      }
-    }
-    for (const auto& key : Tag::keys()) {
-      if (key == action_name) {
-        const auto object_selection = scene->item_selection<Object>();
-        if (!object_selection.empty()) {
-          [[maybe_unused]] auto macro = scene->history().start_macro(tr("Add Tag"));
-          for (auto&& object : object_selection) {
-            using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
-            scene->submit<AddTagCommand>(object->tags, Tag::make(key, *object));
-          }
-        }
-        return true;
-      }
-    }
-    return false;
-  }
-  return true;
+  return ::dispatch_named_action(*this, action_name)
+         || path_actions::perform_action(*this, action_name)
+         || handle_mode(action_name)
+         || dispatch_create_object_action(*this, action_name)
+         || dispatch_spawn_manager_action(*this, action_name)
+         || dispatch_activate_tool_action(*this, action_name)
+         || dispatch_add_tag_action(*this, action_name);
 }
 
 bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, CommandInterface& ci)

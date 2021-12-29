@@ -22,6 +22,7 @@ class Point;
 class Property;
 class Scene;
 struct PainterOptions;
+class PathVector;
 
 class Object
     : public PropertyOwner<Kind::Object>
@@ -69,11 +70,7 @@ public:
   Object& adopt(std::unique_ptr<Object> adoptee, std::size_t pos) override;
   using TreeElement::adopt;
 
-  struct ConvertedObject {
-    std::unique_ptr<Object> object;
-    bool keep_children;
-  };
-  virtual ConvertedObject convert() const;
+  virtual std::unique_ptr<Object> convert(bool& keep_children) const;
 
   Flag flags() const override;
   bool is_active() const;
@@ -81,7 +78,6 @@ public:
   virtual std::vector<const omm::Style*> find_styles() const;
 
   virtual Point pos(const Geom::PathVectorTime& t) const;
-  virtual bool is_closed() const;
   virtual bool contains(const Vec2f& point) const;
 
 private:
@@ -91,7 +87,7 @@ private:
    * @note use `Object::geom_paths` or `Object::painter_path` to access the paths.
    * @return the paths.
    */
-  virtual Geom::PathVector paths() const;
+  virtual PathVector compute_path_vector() const;
 
 public:
   enum class Interpolation { Natural, Distance };
@@ -100,21 +96,12 @@ public:
   Geom::PathVectorTime
   compute_path_vector_time(int path_index, double t, Interpolation = Interpolation::Natural) const;
 
-  struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Object> {
-    using CachedGetter::CachedGetter;
+private:
+  class CachedGeomPathVectorGetter;
+  std::unique_ptr<CachedGeomPathVectorGetter> m_cached_geom_path_vector_getter;
+public:
+  const PathVector& path_vector() const;
 
-  private:
-    QPainterPath compute() const override;
-  } painter_path;
-
-  struct CachedGeomPathVectorGetter : CachedGetter<Geom::PathVector, Object> {
-    using CachedGetter::CachedGetter;
-
-  private:
-    Geom::PathVector compute() const override;
-  } geom_paths;
-
-  friend struct CachedQPainterPathGetter;
   TagList tags;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP(ANY_TR_CONTEXT, "Object");
@@ -171,15 +158,7 @@ private:
   static const QBrush m_bounding_box_brush;
 
 protected:
-  template<typename Iterable> static Geom::PathVector join(const Iterable& items)
-  {
-    Geom::PathVector paths;
-    for (auto&& item : items) {
-      const auto cps = item->paths();
-      paths.insert(paths.end(), cps.begin(), cps.end());
-    }
-    return paths;
-  }
+  static PathVector join(const std::vector<Object*>& objects);
 };
 
 }  // namespace omm

@@ -20,13 +20,13 @@ public:
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Boolean");
   void update() override;
+  std::unique_ptr<Object> convert(bool& keep_children) const override;
 
 private:
   static constexpr auto MODE_PROPERTY_KEY = "mode";
   void on_property_value_changed(Property* property) override;
   void polish();
-  bool is_closed() const override;
-  Geom::PathVector paths() const override;
+  PathVector compute_path_vector() const override;
 };
 
 }  // namespace omm

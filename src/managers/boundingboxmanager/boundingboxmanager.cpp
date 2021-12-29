@@ -3,7 +3,7 @@
 #include "main/options.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
-#include "objects/path.h"
+#include "objects/pathobject.h"
 #include "scene/mailbox.h"
 #include "scene/pointselection.h"
 #include "scene/scene.h"
@@ -75,7 +75,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   m_ui->setupUi(widget.get());
   set_widget(std::move(widget));
 
-  connect(&Application::instance().options(), &Options::anchor_changed, [this]() {
+  connect(&Application::instance().options(), &Options::anchor_changed, this, [this]() {
     reset_transformation();
   });
 
@@ -97,7 +97,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
           [this](const std::set<Object*>&) { update_manager(); });
 
   connect(&scene.mail_box(), &MailBox::object_appearance_changed, this, [this](Object& o) {
-    Path* path = type_cast<Path*>(&o);
+    auto* path = type_cast<PathObject*>(&o);
     if (path != nullptr) {
       update_manager();
     }
@@ -153,6 +153,8 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
           this,
           update_spinbox_enabledness);
 }
+
+BoundingBoxManager::~BoundingBoxManager() = default;
 
 QString BoundingBoxManager::type() const
 {
@@ -235,7 +237,7 @@ void BoundingBoxManager::reset_transformation()
   m_old_bounding_box = update_manager();
   switch (m_current_mode) {
   case Mode::Points:
-    m_transform_points_helper.update(type_casts<Path*>(scene().item_selection<Object>()));
+    m_transform_points_helper.update(type_casts<PathObject*>(scene().item_selection<Object>()));
     break;
   case Mode::Objects:
     m_transform_objects_helper.update(scene().item_selection<Object>());
@@ -277,7 +279,7 @@ BoundingBox BoundingBoxManager::bounding_box() const
     }
   }();
 
-  return BoundingBox(top_left, top_left + size);
+  return BoundingBox{top_left, top_left + size};
 }
 
 bool BoundingBoxManager::perform_action(const QString& name)
@@ -300,11 +302,6 @@ bool BoundingBoxManager::eventFilter(QObject* o, QEvent* e)
     }
   }
   return Manager::eventFilter(o, e);
-}
-
-void BoundingBoxManager::UiBoundingBoxManagerDeleter::operator()(Ui::BoundingBoxManager* ui)
-{
-  delete ui;  // NOLINT(cppcoreguidelines-owning-memory)
 }
 
 }  // namespace omm

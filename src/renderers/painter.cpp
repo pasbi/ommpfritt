@@ -1,5 +1,4 @@
 #include "renderers/painter.h"
-#include "geometry/util.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
 #include "renderers/painteroptions.h"
@@ -32,15 +31,15 @@ QRectF get_roi(const omm::ObjectTransformation& viewport_transform,
 QTransform to_transformation(const omm::ObjectTransformation& transformation)
 {
   const auto& m = transformation.to_mat();
-  return QTransform(m.m[0][0],
-                    m.m[1][0],
-                    m.m[2][0],
-                    m.m[0][1],
-                    m.m[1][1],
-                    m.m[2][1],
-                    m.m[0][2],
-                    m.m[1][2],
-                    m.m[2][2]);
+  return {m.m[0][0],
+          m.m[1][0],
+          m.m[2][0],
+          m.m[0][1],
+          m.m[1][1],
+          m.m[2][1],
+          m.m[0][2],
+          m.m[1][2],
+          m.m[2][2]};
 }
 
 }  // namespace
@@ -90,9 +89,8 @@ void Painter::toast(const Vec2f& pos, const QString& text) const
   painter->setPen(pen);
   const Vec2f gpos = current_transformation().apply_to_position(pos);
   painter->resetTransform();
-  const QPointF top_left = to_qpoint(gpos);
   static constexpr double huge = 10.0e10;
-  const QRectF rect(top_left, QSizeF(huge, huge));
+  const QRectF rect(gpos.to_pointf(), QSizeF(huge, huge));
   QRectF actual_rect;
   painter->drawText(rect, Qt::AlignTop | Qt::AlignLeft, text, &actual_rect);
   const double margin = 10.0;
@@ -104,27 +102,6 @@ void Painter::toast(const Vec2f& pos, const QString& text) const
   painter->setPen(QPen(Qt::white));
   painter->drawRoundedRect(actual_rect, TOAST_RADIUS, TOAST_RADIUS, Qt::AbsoluteSize);
   painter->restore();
-}
-
-QPainterPath Painter::path(const std::vector<Point>& points, bool closed)
-{
-  QPainterPath path;
-  if (points.size() > 1) {
-    path.moveTo(to_qpoint(points.front().position()));
-
-    for (std::size_t i = 1; i < points.size(); ++i) {
-      path.cubicTo(to_qpoint(points.at(i - 1).right_position()),
-                   to_qpoint(points.at(i).left_position()),
-                   to_qpoint(points.at(i).position()));
-    }
-
-    if (closed && points.size() > 2) {
-      path.cubicTo(to_qpoint(points.back().right_position()),
-                   to_qpoint(points.front().left_position()),
-                   to_qpoint(points.front().position()));
-    }
-  }
-  return path;
 }
 
 QBrush
@@ -152,7 +129,7 @@ Painter::make_brush(const Style& style, const Object& object, const PainterOptio
       return make_simple_brush(style);
     }
   } else {
-    return QBrush(Qt::NoBrush);
+    return Qt::NoBrush;
   }
 }
 
@@ -164,7 +141,7 @@ QBrush Painter::make_simple_brush(const Style& style)
     brush.setColor(color.to_qcolor());
     return brush;
   } else {
-    return QBrush(Qt::NoBrush);
+    return Qt::NoBrush;
   }
 }
 
@@ -207,7 +184,7 @@ QPen Painter::make_simple_pen(const Style& style)
     pen.setStyle(static_cast<Qt::PenStyle>(pen_style + 1));
     return pen;
   } else {
-    return QPen(Qt::NoPen);
+    return Qt::NoPen;
   }
 }
 
