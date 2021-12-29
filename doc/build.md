@@ -50,7 +50,11 @@ Many of the icons that are present in the *omm* graphical user interface are gen
 Hence, you first need a runnable *omm* installation without icons.
 Then, you use this installation to generate the icons and eventually you add the icons into the installation.
 
-That may sound complicated, but a CMake target exists for every step, which simplifies and speeds up the processes a lot:
+That may sound complicated, but a CMake target exists for every step, which simplifies and speeds up the processes a lot.
+
+The quickest way is to use the script `build-scripts/build-omm-with-icons.sh`, which places the application into /tmp.
+
+Detailed steps:
 
 1.  Configure the build: `cmake -S SOURCE_DIRECTORY -B BUILD_DIRECTORY ADDITIONAL_OPTIONS`
 2.  Build and install: `cmake --build BUILD_DIRECTORY --target install`
