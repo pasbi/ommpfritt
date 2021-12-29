@@ -20,42 +20,6 @@ auto make_face(const PathVector& pv, const std::vector<std::pair<int, int>>& ind
   return face;
 }
 
-// Considering the loop without joints (A) --e1-- (B) --e2-- (A), e1 and e2 will be considered equal.
-// However, this case does not occur during testing.
-bool edge_equal(const Edge& a, const Edge& b)
-{
-  return std::set{a.a, a.b} == std::set{b.a, b.b};
-}
-
-bool operator==(const Face& a, const Face& b)
-{
-  const auto& a_edges = a.edges();
-  const auto& b_edges = b.edges();
-  if (a_edges.size() != b_edges.size()) {
-    return false;
-  }
-
-  const auto n = a_edges.size();
-  const auto rotation_match = [n, &a_edges, &b_edges](const int offset, bool reverse) {
-    for (std::size_t j = 0; j < n; ++j) {
-      const auto ai = reverse ? n - j - 1 : j;
-      const auto bi = (j + offset) % n;
-      if (!edge_equal(a_edges[ai], b_edges[bi])) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  for (std::size_t i = 0; i < n; ++i) {
-    if (rotation_match(i, false) || rotation_match(i, true)) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
 TEST(Path, face_detection)
 {
 

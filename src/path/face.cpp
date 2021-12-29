@@ -111,4 +111,31 @@ QString Face::to_string() const
   return static_cast<QStringList>(edges).join(", ");
 }
 
+bool operator==(const Face& a, const Face& b)
+{
+  const auto n = a.edges().size();
+  if (n != b.edges().size()) {
+    return false;
+  }
+
+  const auto face_equal = [n](const Face& a, const Face& b, std::size_t offset, bool reverse) {
+    for (std::size_t i = 0; i < n; ++i) {
+      const auto j = (i + offset) % n;
+      const auto a_edge = a.edges().at(i);
+      const auto b_edge = b.edges().at(reverse ? n - j - 1 : j);
+      if (a_edge.a != b_edge.a || a_edge.b != b_edge.b) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  for (std::size_t i = 0; i < n; ++i) {
+    if (face_equal(a, b, i, true) || face_equal(a, b, i, false)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 }  // namespace omm

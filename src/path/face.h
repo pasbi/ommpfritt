@@ -25,6 +25,9 @@ public:
   [[nodiscard]] const std::deque<Edge>& edges() const;
   [[nodiscard]] double compute_aabb_area() const;
   [[nodiscard]] QString to_string() const;
+
+  friend bool operator==(const Face& f1, const Face& f2);
+
 private:
   std::deque<Edge> m_edges;
 };

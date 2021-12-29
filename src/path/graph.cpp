@@ -135,7 +135,9 @@ std::vector<Face> Graph::compute_faces() const
   faces.erase(std::next(faces.begin(), largest_face_i));
 
   // NOLINTNEXTLINE(modernize-return-braced-init-list)
-  return std::vector(faces.begin(), faces.end());
+  std::vector vfaces(faces.begin(), faces.end());
+  vfaces.erase(std::unique(vfaces.begin(), vfaces.end()), vfaces.end());
+  return vfaces;
 }
 
 void Graph::Impl::add_vertex(PathPoint* path_point)
