@@ -290,12 +290,34 @@ void invert_selection(Application& app)
 
 void select_connected_points(Application& app)
 {
-  foreach_subpath(app, [](const auto* segment) {
-    const auto points = segment->points();
+  std::set<const Path*> selected_paths;
+  foreach_subpath(app, [&selected_paths](const auto* path) {
+    const auto points = path->points();
     if (std::any_of(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected))) {
-      std::for_each(points.begin(), points.end(), [](auto* point) { point->set_selected(true); });
+      selected_paths.insert(path);
     }
   });
+
+  for (bool selected_paths_changed = true; selected_paths_changed;) {
+    selected_paths_changed = false;
+    for (const auto* path : selected_paths) {
+      for (auto* point : path->points()) {
+        for (auto* joined_point : point->joined_points()) {
+          const auto& other_path = joined_point->path();
+          if (const auto [_, was_inserted] = selected_paths.insert(&other_path); was_inserted) {
+            selected_paths_changed = true;
+          }
+        }
+      }
+    }
+  }
+
+  for (const auto* path : selected_paths) {
+    for (auto* point : path->points()) {
+      point->set_selected(true);
+    }
+  }
+
   Q_EMIT app.mail_box().scene_appearance_changed();
 }
 
