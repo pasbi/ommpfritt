@@ -16,6 +16,7 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void remove_dangling_points();
+  void remove_if(const std::function<bool(const PathPoint* point)>& predicate);
   void replace(const std::map<PathPoint*, PathPoint*>& dict);
 
 private:
