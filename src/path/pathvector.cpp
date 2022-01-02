@@ -170,6 +170,23 @@ std::vector<QPainterPath> PathVector::faces() const
   for (const auto& face : faces) {
     qpps.emplace_back(Path::to_painter_path(face.points()));
   }
+
+  for (bool path_changed = true; path_changed;)
+  {
+    path_changed = false;
+    for (auto& q1 : qpps) {
+      for (auto& q2 : qpps) {
+        if (&q1 == &q2) {
+          continue;
+        }
+        if (q1.contains(q2)) {
+          path_changed = true;
+          q1 -= q2;
+        }
+      }
+    }
+  }
+
   return qpps;
 }
 
