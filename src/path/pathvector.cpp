@@ -163,7 +163,8 @@ QPainterPath PathVector::outline() const
 std::vector<QPainterPath> PathVector::faces() const
 {
   Graph graph{*this};
-  auto faces = graph.compute_faces();
+  graph.remove_articulation_edges();
+  const auto faces = graph.compute_faces();
   std::vector<QPainterPath> qpps;
   qpps.reserve(faces.size());
   for (const auto& face : faces) {
