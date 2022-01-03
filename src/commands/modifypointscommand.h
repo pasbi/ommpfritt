@@ -64,7 +64,13 @@ protected:
   void remove();
 
   [[nodiscard]] Scene& scene() const;
-  virtual ~AbstractPointsCommand();
+  ~AbstractPointsCommand() override;
+
+public:
+  AbstractPointsCommand(const AbstractPointsCommand&) = delete;
+  AbstractPointsCommand(AbstractPointsCommand&&) = delete;
+  AbstractPointsCommand& operator=(const AbstractPointsCommand&) = delete;
+  AbstractPointsCommand& operator=(AbstractPointsCommand&&) = delete;
 
 private:
   PathObject& m_path_object;

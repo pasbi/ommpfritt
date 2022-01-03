@@ -16,7 +16,6 @@ public:
   explicit PathView(Path& path, std::size_t index, std::size_t size);
   friend bool operator<(const PathView& a, const PathView& b);
   friend std::ostream& operator<<(std::ostream& ostream, const PathView& path_view);
-  [[nodiscard]] PathPoint& at(std::size_t i) const;
   [[nodiscard]] std::deque<PathPoint*> points() const;
   Path* path;
   std::size_t index;

@@ -11,11 +11,6 @@ PathView::PathView(Path& path, std::size_t index, std::size_t size)
 {
 }
 
-PathPoint& PathView::at(std::size_t i) const
-{
-  return path->at(index + i);
-}
-
 std::deque<PathPoint*> PathView::points() const
 {
   auto points = path->points();
