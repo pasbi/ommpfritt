@@ -10,6 +10,7 @@ namespace omm
 
 namespace nodes
 {
+class Node;
 class NodeModel;
 }  // namespace nodes
 

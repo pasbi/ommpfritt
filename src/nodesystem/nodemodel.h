@@ -17,6 +17,7 @@ class Scene;
 namespace omm::nodes
 {
 
+class AbstractNodeCompiler;
 class Node;
 class AbstractPort;
 class OutputPort;

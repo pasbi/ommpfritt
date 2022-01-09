@@ -1,8 +1,10 @@
 #pragma once
 
 #include "cachedgetter.h"
-#include "nodesystem/nodecompiler.h"
+#include "nodesystem/common.h"
 #include <memory>
+
+class QObject;
 
 namespace omm
 {

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "aspects/propertyowner.h"
-#include "nodesystem/nodecompiler.h"
 #include "nodesystem/port.h"
 #include "nodesystem/propertyport.h"
+#include "nodesystem/common.h"
 #include <QObject>
 #include <QRectF>
 #include <memory>
@@ -155,7 +155,8 @@ private:
   class ReferencePolisher;
 
 public:
-  struct Detail {
+  struct Detail
+  {
     std::map<BackendLanguage, QString> definitions;
     std::vector<const char*> menu_path;
   };
