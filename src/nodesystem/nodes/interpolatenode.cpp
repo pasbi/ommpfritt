@@ -37,7 +37,7 @@ namespace omm::nodes
 {
 
 const Node::Detail InterpolateNode::detail{
-    {
+    .definitions = {
         {BackendLanguage::Python,
          QString(R"(
 def %1(x, y, balance, ramp):
@@ -56,9 +56,7 @@ def %1(x, y, balance, ramp):
              .join("\n")
              .arg(InterpolateNode::TYPE)},
     },
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Interpolation"),
-    }};
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Interpolation")}};
 
 InterpolateNode::InterpolateNode(NodeModel& model) : Node(model)
 {

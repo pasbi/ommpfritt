@@ -7,7 +7,7 @@ namespace omm::nodes
 {
 
 const Node::Detail Function2Node::detail{
-    {{BackendLanguage::Python,
+    .definitions = {{BackendLanguage::Python,
       QString(R"(
 import math
 def %1(op, x, y):
@@ -47,9 +47,7 @@ float %1_0(int op, int x, int y) {
 }
 )")
           .arg(Function2Node::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
-    },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Math")},
 };
 
 Function2Node::Function2Node(NodeModel& model) : Node(model)

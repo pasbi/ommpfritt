@@ -7,7 +7,7 @@ namespace omm::nodes
 {
 
 const Node::Detail ComposeNode::detail{
-    {{BackendLanguage::Python,
+    .definitions = {{BackendLanguage::Python,
       QString(R"(
 def %1(a, b):
   return [a, b]
@@ -18,9 +18,7 @@ def %1(a, b):
 vec2 %1_0(float a, float b) { return vec2(a, b); }
 )")
           .arg(ComposeNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Vector"),
-    },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Vector")},
 };
 
 ComposeNode::ComposeNode(NodeModel& model) : Node(model)

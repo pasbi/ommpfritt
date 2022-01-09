@@ -39,7 +39,7 @@ namespace omm::nodes
 {
 
 const Node::Detail MathNode::detail{
-    {{BackendLanguage::Python,
+    .definitions = {{BackendLanguage::Python,
       QString(R"(
 @listarithm_decorator
 def %1(op, a, b):
@@ -77,10 +77,9 @@ def %1(op, a, b):
                                         NodeCompilerGLSL::translate_type(QString{type.data()}));
                                   })
           .join("\n")
-          .arg(MathNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
-    }};
+          .arg(MathNode::TYPE)}
+    },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Math")}};
 
 MathNode::MathNode(NodeModel& model) : Node(model)
 {

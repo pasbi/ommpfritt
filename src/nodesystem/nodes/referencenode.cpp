@@ -11,13 +11,8 @@ namespace omm::nodes
 {
 
 const Node::Detail ReferenceNode::detail{
-    {
-        {BackendLanguage::Python, ""},
-        {BackendLanguage::GLSL, ""},
-    },
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
-    },
+    .definitions = {{BackendLanguage::Python, ""}, {BackendLanguage::GLSL, ""}},
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "General")},
 };
 
 ReferenceNode::ReferenceNode(NodeModel& model) : Node(model)

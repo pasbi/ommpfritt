@@ -7,7 +7,7 @@ namespace omm::nodes
 {
 
 const Node::Detail ComposeColorNode::detail{
-    {{BackendLanguage::Python,
+    .definitions = {{BackendLanguage::Python,
       QString(R"(
 def %1(r, g, b, a):
   return [r, g, b, a]
@@ -18,9 +18,7 @@ def %1(r, g, b, a):
 vec4 %1_0(float r, float g, float b, float a) { return vec4(r, g, b, a); }
 )")
           .arg(ComposeColorNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
-    },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Color")},
 };
 
 ComposeColorNode::ComposeColorNode(NodeModel& model) : Node(model)

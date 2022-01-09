@@ -18,7 +18,7 @@ namespace omm::nodes
 {
 
 const Node::Detail ColorConvertNode::detail{
-    {{BackendLanguage::Python,
+    .definitions = {{BackendLanguage::Python,
       QString(R"(
 def %1(option, color):
   if option == 0:
@@ -58,7 +58,7 @@ vec4 %1_0(int option, vec4 color) {
   }
 })")
           .arg(ColorConvertNode::TYPE)}},
-    {
+    .menu_path = {
         QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
     },
 

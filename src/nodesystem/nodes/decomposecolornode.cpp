@@ -7,7 +7,7 @@ namespace omm::nodes
 {
 
 const Node::Detail DecomposeColorNode::detail{
-    {{BackendLanguage::Python, QString(R"(
+    .definitions = {{BackendLanguage::Python, QString(R"(
 def %1(c):
     return c
 )")},
@@ -19,9 +19,7 @@ float %1_2(vec4 c) { return c.b; }
 float %1_3(vec4 c) { return c.a; }
 )")
           .arg(DecomposeColorNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
-    },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Color")},
 };
 
 DecomposeColorNode::DecomposeColorNode(NodeModel& model) : Node(model)

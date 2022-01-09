@@ -6,10 +6,8 @@ namespace omm::nodes
 {
 
 const Node::Detail SpyNode::detail{
-    {{BackendLanguage::Python, ""}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
-    },
+    .definitions = {{BackendLanguage::Python, ""}},
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "General")},
 };
 
 SpyNode::SpyNode(NodeModel& model) : Node(model)

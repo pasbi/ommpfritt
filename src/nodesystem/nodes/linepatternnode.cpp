@@ -6,7 +6,7 @@ namespace omm::nodes
 {
 
 const Node::Detail LinePatternNode::detail{
-    {{BackendLanguage::GLSL,
+    .definitions = {{BackendLanguage::GLSL,
       QString(R"(
 float %1_0(float frequency, float ratio, float left_ramp, float right_ramp, float v) {
   float lambda = 1.0 / frequency;
@@ -26,9 +26,7 @@ float %1_0(float frequency, float ratio, float left_ramp, float right_ramp, floa
 }
 )")
           .arg(LinePatternNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Pattern"),
-    },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Pattern")},
 };
 
 LinePatternNode::LinePatternNode(NodeModel& model) : Node(model)

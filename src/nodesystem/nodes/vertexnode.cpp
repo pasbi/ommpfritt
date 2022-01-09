@@ -9,10 +9,8 @@ namespace omm::nodes
 {
 
 const Node::Detail VertexNode::detail{
-    {{BackendLanguage::GLSL, ""}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
-    },
+    .definitions = {{BackendLanguage::GLSL, ""}},
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "General")},
 };
 
 VertexNode::VertexNode(NodeModel& model) : Node(model)
