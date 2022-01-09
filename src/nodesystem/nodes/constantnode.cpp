@@ -7,10 +7,11 @@
 #include "variant.h"
 #include <QMenu>
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail ConstantNode::detail{
-    {{AbstractNodeCompiler::Language::Python, ""}, {AbstractNodeCompiler::Language::GLSL, ""}},
+    {{BackendLanguage::Python, ""}, {BackendLanguage::GLSL, ""}},
     {QT_TRANSLATE_NOOP("NodeMenuPath", "General")}};
 
 ConstantNode::ConstantNode(NodeModel& model) : Node(model)
@@ -20,11 +21,11 @@ ConstantNode::ConstantNode(NodeModel& model) : Node(model)
 void ConstantNode::populate_menu(QMenu& menu)
 {
   QAction* edit_port_action = menu.addAction(tr("Edit ports ..."));
-  connect(edit_port_action, &QAction::triggered, [this, &menu]() {
-    const std::set<QString> types = AbstractNodeCompiler::supported_types(model().language());
+  connect(edit_port_action, &QAction::triggered, this, [this, &menu]() {
+    const std::set<QString> types = types::supported_types(model().language());
     auto dialog = UserPropertyDialog(*this, types, &menu);
     dialog.exec();
   });
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

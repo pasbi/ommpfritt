@@ -13,15 +13,16 @@
 
 namespace
 {
-std::unique_ptr<omm::AbstractNodeCompiler>
-make_compiler(omm::AbstractNodeCompiler::Language language, omm::NodeModel& model)
+
+std::unique_ptr<omm::nodes::AbstractNodeCompiler>
+make_compiler(omm::nodes::BackendLanguage language, omm::nodes::NodeModel& model)
 {
-  using Language = omm::AbstractNodeCompiler::Language;
+  using Language = omm::nodes::BackendLanguage;
   switch (language) {
   case Language::GLSL:
-    return std::make_unique<omm::NodeCompilerGLSL>(model);
+    return std::make_unique<omm::nodes::NodeCompilerGLSL>(model);
   case Language::Python:
-    return std::make_unique<omm::NodeCompilerPython>(model);
+    return std::make_unique<omm::nodes::NodeCompilerPython>(model);
   default:
     Q_UNREACHABLE();
     return nullptr;
@@ -30,18 +31,19 @@ make_compiler(omm::AbstractNodeCompiler::Language language, omm::NodeModel& mode
 
 }  // namespace
 
-namespace omm
+namespace omm::nodes
 {
-NodeModel::NodeModel(AbstractNodeCompiler::Language language, Scene& scene)
+
+NodeModel::NodeModel(BackendLanguage language, Scene& scene)
     : m_scene(scene), m_compiler(make_compiler(language, *this))
 {
   init();
 }
 
-std::unique_ptr<NodeModel> NodeModel::make(AbstractNodeCompiler::Language language, Scene& scene)
+std::unique_ptr<NodeModel> NodeModel::make(BackendLanguage language, Scene& scene)
 {
   const bool no_opengl = !Application::instance().options().have_opengl;
-  if (language == AbstractNodeCompiler::Language::GLSL && no_opengl) {
+  if (language == BackendLanguage::GLSL && no_opengl) {
     return nullptr;
   } else {
     return std::make_unique<NodeModel>(language, scene);
@@ -77,7 +79,7 @@ void NodeModel::init()
   connect(this, &NodeModel::node_added, this, &NodeModel::emit_topology_changed);
   connect(this, &NodeModel::node_removed, this, &NodeModel::emit_topology_changed);
   connect(this, &NodeModel::topology_changed, m_compiler.get(), &AbstractNodeCompiler::invalidate);
-  if (m_compiler->language == AbstractNodeCompiler::Language::GLSL) {
+  if (m_compiler->language == BackendLanguage::GLSL) {
     auto fragment_node = std::make_unique<FragmentNode>(*this);
     m_fragment_node = fragment_node.get();
     add_node(std::move(fragment_node));
@@ -247,4 +249,4 @@ void NodeModel::emit_topology_changed()
   }
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

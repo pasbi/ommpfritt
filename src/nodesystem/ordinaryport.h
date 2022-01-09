@@ -3,8 +3,9 @@
 #include "nodesystem/port.h"
 #include "properties/property.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 template<PortType port_type_> class OrdinaryPort : public ConcretePortSelector<port_type_>::T
 {
 public:
@@ -28,4 +29,4 @@ private:
   QString m_label;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

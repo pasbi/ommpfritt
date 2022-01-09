@@ -3,8 +3,9 @@
 #include "nodesystem/node.h"
 #include "nodesystem/port.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 NodeStatement::NodeStatement(const Node& node) : node(node)
 {
 }
@@ -84,4 +85,5 @@ QString Statement::to_string() const
                       format(defines()).join(", "),
                       format(uses()).join(", "));
 }
-}  // namespace omm
+
+}  // namespace omm::nodes

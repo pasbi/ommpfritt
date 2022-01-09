@@ -3,8 +3,9 @@
 #include <QStringList>
 #include <set>
 
-namespace omm
+namespace omm::nodes
 {
+
 class AbstractPort;
 class Node;
 class OutputPort;
@@ -52,4 +53,4 @@ private:
   [[nodiscard]] std::set<const AbstractPort*> uses() const override;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

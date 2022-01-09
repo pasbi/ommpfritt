@@ -1,13 +1,14 @@
 #pragma once
 
-#include "common.h"
+#include "../common.h"
 #include <QPoint>
 #include <QString>
 #include <memory>
 #include <set>
 
-namespace omm
+namespace omm::nodes
 {
+
 class Node;
 
 enum class PortType { Input = 0x1, Output = 0x2, Both = 0x3 };
@@ -144,7 +145,6 @@ template<> struct ConcretePortSelector<PortType::Output> {
   using T = OutputPort;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes
 
-template<> struct omm::EnableBitMaskOperators<omm::PortType> : std::true_type {
-};
+template<> struct omm::EnableBitMaskOperators<omm::nodes::PortType> : std::true_type {};

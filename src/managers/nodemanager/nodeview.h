@@ -13,12 +13,17 @@ class QMimeData;
 
 namespace omm
 {
+
 class NodeScene;
-class InputPort;
+class PortItem;
+
+namespace nodes
+{
 class AbstractPort;
+class InputPort;
 class Node;
 class NodeModel;
-class PortItem;
+}  // namespace nodes
 
 class NodeView : public QGraphicsView
 {
@@ -34,8 +39,8 @@ public:
   const QFont font;
   void abort();
   void remove_selection() const;
-  void set_model(NodeModel* model);
-  NodeModel* model() const;
+  void set_model(nodes::NodeModel* model);
+  nodes::NodeModel* model() const;
   NodeScene* scene() const
   {
     return m_node_scene.get();
@@ -48,7 +53,7 @@ public:
   void pan_to_center();
   bool accepts_paste(const QMimeData& mime_data) const;
   void reset_scene_rect();
-  std::set<Node*> selected_nodes() const;
+  std::set<nodes::Node*> selected_nodes() const;
 
 public:
   void copy_to_clipboard() const;
@@ -86,8 +91,8 @@ private:
 
   PortItem* m_tmp_connection_origin = nullptr;
   PortItem* m_tmp_connection_target = nullptr;
-  InputPort* m_former_connection_target = nullptr;
-  InputPort* m_about_to_disconnect = nullptr;
+  nodes::InputPort* m_former_connection_target = nullptr;
+  nodes::InputPort* m_about_to_disconnect = nullptr;
   bool m_aborted = false;
   QPoint m_last_mouse_position;
   QPointF m_node_insert_pos;

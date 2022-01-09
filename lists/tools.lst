@@ -1,6 +1,7 @@
 {
   "clazz": "Tool",
   "category": "tools",
+  "namespace": "omm",
   "items": [
     "BrushSelectTool",
     "KnifeTool",

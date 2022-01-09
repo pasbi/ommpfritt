@@ -121,15 +121,15 @@ public:
   AbstractPropertyWidget* const widget;
 };
 
-NodeItem::NodeItem(Node& node) : node(node)
+NodeItem::NodeItem(nodes::Node& node) : node(node)
 {
   update_children();
   setFlags(ItemIsSelectable | ItemIsMovable | ItemSendsScenePositionChanges);
   setPos(node.pos());
-  QObject::connect(&node, &Node::pos_changed, &m_context, [this](const QPointF& pos) {
+  QObject::connect(&node, &nodes::Node::pos_changed, &m_context, [this](const QPointF& pos) {
     setPos(pos);
   });
-  QObject::connect(&node, &Node::ports_changed, &m_context, [this]() { update_children(); });
+  QObject::connect(&node, &nodes::Node::ports_changed, &m_context, [this]() { update_children(); });
   // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(0, &node, [this]() { update_children(); });
 }
@@ -180,9 +180,9 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
   }
 }
 
-PortItem* NodeItem::port_item(const AbstractPort& port) const
+PortItem* NodeItem::port_item(const nodes::AbstractPort& port) const
 {
-  for (PortType type : {PortType::Input, PortType::Output}) {
+  for (nodes::PortType type : {nodes::PortType::Input, nodes::PortType::Output}) {
     if (const auto it = m_port_items.find(type); it != m_port_items.end()) {
       for (const auto& port_item : it->second) {
         if (&port == &port_item->port) {
@@ -242,22 +242,22 @@ void NodeItem::update_children()
     {
     }
     Property* property;
-    PropertyInputPort* i;
-    PropertyOutputPort* o;
+    nodes::PropertyInputPort* i;
+    nodes::PropertyOutputPort* o;
   };
 
   std::list<PropertyPorts> property_ports;
-  std::list<OrdinaryPort<PortType::Input>*> ordinary_inputs;
-  std::list<OrdinaryPort<PortType::Output>*> ordinary_outputs;
-  auto ports = ::transform<AbstractPort*, std::vector>(node.ports());
-  std::sort(ports.begin(), ports.end(), [](const AbstractPort* a, const AbstractPort* b) {
+  std::list<nodes::OrdinaryPort<nodes::PortType::Input>*> ordinary_inputs;
+  std::list<nodes::OrdinaryPort<nodes::PortType::Output>*> ordinary_outputs;
+  auto ports = ::transform<nodes::AbstractPort*, std::vector>(node.ports());
+  std::sort(ports.begin(), ports.end(), [](const auto* const a, const auto* const b) {
     return a->index < b->index;
   });
-  for (AbstractPort* p : ports) {
-    if (p->flavor == PortFlavor::Property) {
-      Property* property = p->port_type == PortType::Input
-                               ? dynamic_cast<PropertyInputPort&>(*p).property()
-                               : dynamic_cast<PropertyOutputPort&>(*p).property();
+  for (auto* const p : ports) {
+    if (p->flavor == nodes::PortFlavor::Property) {
+      Property* property = p->port_type == nodes::PortType::Input
+                               ? dynamic_cast<nodes::PropertyInputPort&>(*p).property()
+                               : dynamic_cast<nodes::PropertyOutputPort&>(*p).property();
       const auto it
           = std::find_if(property_ports.begin(),
                          property_ports.end(),
@@ -270,16 +270,16 @@ void NodeItem::update_children()
         current = &*it;
       }
 
-      if (p->port_type == PortType::Input) {
-        current->i = dynamic_cast<PropertyInputPort*>(p);
+      if (p->port_type == nodes::PortType::Input) {
+        current->i = dynamic_cast<nodes::PropertyInputPort*>(p);
       } else {
-        current->o = dynamic_cast<PropertyOutputPort*>(p);
+        current->o = dynamic_cast<nodes::PropertyOutputPort*>(p);
       }
     } else {
-      if (p->port_type == PortType::Input) {
-        ordinary_inputs.push_back(dynamic_cast<OrdinaryPort<PortType::Input>*>(p));
+      if (p->port_type == nodes::PortType::Input) {
+        ordinary_inputs.push_back(dynamic_cast<nodes::OrdinaryPort<nodes::PortType::Input>*>(p));
       } else {
-        ordinary_outputs.push_back(dynamic_cast<OrdinaryPort<PortType::Output>*>(p));
+        ordinary_outputs.push_back(dynamic_cast<nodes::OrdinaryPort<nodes::PortType::Output>*>(p));
       }
     }
   }
@@ -344,11 +344,11 @@ void NodeItem::clear_ports()
 
 void NodeItem::align_ports()
 {
-  for (const auto& port_item : m_port_items[PortType::Input]) {
+  for (const auto& port_item : m_port_items[nodes::PortType::Input]) {
     port_item->setX(m_shape.left());
   }
 
-  for (const auto& port_item : m_port_items[PortType::Output]) {
+  for (const auto& port_item : m_port_items[nodes::PortType::Output]) {
     port_item->setX(m_shape.right());
   }
 
@@ -360,7 +360,7 @@ void NodeItem::align_ports()
   }
 }
 
-void NodeItem::add_port(AbstractPort& p, double pos_y)
+void NodeItem::add_port(nodes::AbstractPort& p, double pos_y)
 {
   auto port_item = std::make_unique<PortItem>(p, *this);
   port_item->setY(pos_y);
@@ -421,12 +421,13 @@ NodeScene* NodeItem::scene() const
 bool NodeItem::can_expand() const
 {
   const auto ports = node.ports();
-  return std::any_of(ports.begin(), ports.end(), [](const AbstractPort* port) {
-    return port->flavor == PortFlavor::Property;
+  return std::any_of(ports.begin(), ports.end(), [](const auto* const port) {
+    return port->flavor == nodes::PortFlavor::Property;
   });
 }
 
-void NodeItem::add_port(PropertyInputPort* ip, PropertyOutputPort* op, double pos_y)
+void NodeItem::add_port(nodes::PropertyInputPort* const ip, nodes::PropertyOutputPort* const op,
+                        const double pos_y)
 {
   if (ip != nullptr) {
     add_port(*ip, pos_y);

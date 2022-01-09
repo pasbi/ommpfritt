@@ -3,8 +3,9 @@
 #include "nodesystem/node.h"
 #include "renderers/offscreenrenderer.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 template<PortType> class OrdinaryPort;
 
 class VertexNode : public Node
@@ -43,4 +44,4 @@ private:
   std::set<PortInfo> m_shader_inputs;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

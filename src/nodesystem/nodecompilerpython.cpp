@@ -3,8 +3,9 @@
 #include "nodesystem/node.h"
 #include "nodesystem/port.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 NodeCompilerPython::NodeCompilerPython(const NodeModel& model) : NodeCompiler(model)
 {
 }
@@ -71,4 +72,4 @@ QString NodeCompilerPython::define_node(const QString& node_type, QStringList& l
   return "";
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

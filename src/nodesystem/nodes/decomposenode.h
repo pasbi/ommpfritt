@@ -2,8 +2,9 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 template<PortType> class OrdinaryPort;
 
 class DecomposeNode : public Node
@@ -28,4 +29,4 @@ private:
   OutputPort* m_output_y_port;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

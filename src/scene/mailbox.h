@@ -7,8 +7,12 @@
 namespace omm
 {
 
-class AbstractPropertyOwner;
+namespace nodes
+{
 class Node;
+}  // namespace nodes
+
+class AbstractPropertyOwner;
 class Object;
 class Property;
 class Style;
@@ -118,7 +122,7 @@ Q_SIGNALS:
   /**
    * @brief node_selection_changed is emitted when the node selection changed.
    */
-  void node_selection_changed(const std::set<omm::Node*>&);
+  void node_selection_changed(const std::set<omm::nodes::Node*>&);
 
   /**
    * @brief tool_selection_changed is emitted when the tool selection changed.

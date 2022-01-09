@@ -7,6 +7,10 @@
 namespace omm
 {
 class Property;
+}  // namespace omm
+
+namespace omm::nodes
+{
 
 template<PortType port_type_> class PropertyPort : public ConcretePortSelector<port_type_>::T
 {
@@ -56,4 +60,4 @@ public:
   void connect(OutputPort* port) override;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

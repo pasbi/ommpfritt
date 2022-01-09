@@ -6,10 +6,11 @@
 #include "scene/scene.h"
 #include "variant.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail FragmentNode::detail{{
-                                            {AbstractNodeCompiler::Language::GLSL, ""},
+                                            {BackendLanguage::GLSL, ""},
                                         },
                                         {
                                             // No Menu Path
@@ -24,7 +25,7 @@ bool FragmentNode::accepts_input_data_type(const QString& type, const InputPort&
 {
   Q_UNUSED(port)
   assert(&port == m_input_port);
-  return type == NodeCompilerTypes::COLOR_TYPE;
+  return type == types::COLOR_TYPE;
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

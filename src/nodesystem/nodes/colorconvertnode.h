@@ -2,8 +2,9 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 template<PortType> class OrdinaryPort;
 
 class ColorConvertNode : public Node
@@ -27,4 +28,4 @@ private:
   OutputPort* m_vector_output_port;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

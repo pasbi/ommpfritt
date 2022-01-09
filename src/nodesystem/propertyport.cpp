@@ -3,10 +3,11 @@
 
 namespace
 {
+
 QString data_type(const omm::Property* property)
 {
   if (property == nullptr) {
-    return omm::NodeCompilerTypes::INVALID_TYPE;
+    return omm::nodes::types::INVALID_TYPE;
   } else {
     return property->data_type();
   }
@@ -14,7 +15,7 @@ QString data_type(const omm::Property* property)
 
 }  // namespace
 
-namespace omm
+namespace omm::nodes
 {
 template<> QString PropertyPort<PortType::Input>::data_type() const
 {
@@ -39,4 +40,4 @@ void PropertyInputPort::connect(OutputPort* port)
   PropertyPort<PortType::Input>::connect(port);
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

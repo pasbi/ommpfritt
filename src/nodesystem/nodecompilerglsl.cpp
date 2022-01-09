@@ -11,26 +11,27 @@
 
 namespace
 {
+
 constexpr auto output_variable_name = "out_color";
 
-QString format_connection(const omm::AbstractPort& lhs, const omm::AbstractPort& rhs)
+QString format_connection(const omm::nodes::AbstractPort& lhs, const omm::nodes::AbstractPort& rhs)
 {
-  return QString("%1 %2 = %3;")
-      .arg(omm::NodeCompilerGLSL::translate_type(lhs.data_type()), lhs.uuid(), rhs.uuid());
+  const auto type = omm::nodes::NodeCompilerGLSL::translate_type(lhs.data_type());
+  return QString("%1 %2 = %3;").arg(type, lhs.uuid(), rhs.uuid());
 }
 
-omm::AbstractPort* get_sibling(const omm::AbstractPort* port)
+omm::nodes::AbstractPort* get_sibling(const omm::nodes::AbstractPort* port)
 {
-  if (port->flavor != omm::PortFlavor::Property) {
+  if (port->flavor != omm::nodes::PortFlavor::Property) {
     return nullptr;
   }
-  static const auto get_property = [](const omm::AbstractPort* port) {
-    return port->port_type == omm::PortType::Input
-               ? dynamic_cast<const omm::PropertyInputPort*>(port)->property()
-               : dynamic_cast<const omm::PropertyOutputPort*>(port)->property();
+  static const auto get_property = [](const auto* const port) {
+    return port->port_type == omm::nodes::PortType::Input
+               ? dynamic_cast<const omm::nodes::PropertyInputPort*>(port)->property()
+               : dynamic_cast<const omm::nodes::PropertyOutputPort*>(port)->property();
   };
-  const omm::Property* property = get_property(port);
-  for (omm::AbstractPort* candidate : port->node.ports()) {
+  const auto* const property = get_property(port);
+  for (auto* const candidate : port->node.ports()) {
     if (port->flavor == candidate->flavor && port->port_type != candidate->port_type) {
       if (property == get_property(candidate)) {
         return candidate;
@@ -42,20 +43,21 @@ omm::AbstractPort* get_sibling(const omm::AbstractPort* port)
 
 }  // namespace
 
-namespace omm
+namespace omm::nodes
 {
+
 QString NodeCompilerGLSL::translate_type(const QString& type)
 {
   static const std::map<QString, QString> dict{
-      {NodeCompilerTypes::COLOR_TYPE, "vec4"},
-      {NodeCompilerTypes::REFERENCE_TYPE, "uint"},
-      {NodeCompilerTypes::BOOL_TYPE, "bool"},
-      {NodeCompilerTypes::FLOAT_TYPE, "float"},
-      {NodeCompilerTypes::INTEGER_TYPE, "int"},
-      {NodeCompilerTypes::FLOATVECTOR_TYPE, "vec2"},
-      {NodeCompilerTypes::INTEGERVECTOR_TYPE, "ivec2"},
-      {NodeCompilerTypes::OPTION_TYPE, "int"},
-      {NodeCompilerTypes::SPLINE_TYPE, "float[SPLINE_SIZE]"}};
+      {nodes::types::COLOR_TYPE, "vec4"},
+      {nodes::types::REFERENCE_TYPE, "uint"},
+      {nodes::types::BOOL_TYPE, "bool"},
+      {nodes::types::FLOAT_TYPE, "float"},
+      {nodes::types::INTEGER_TYPE, "int"},
+      {nodes::types::FLOATVECTOR_TYPE, "vec2"},
+      {nodes::types::INTEGERVECTOR_TYPE, "ivec2"},
+      {nodes::types::OPTION_TYPE, "int"},
+      {nodes::types::SPLINE_TYPE, "float[SPLINE_SIZE]"}};
 
   const auto it = dict.find(type);
   if (it == dict.end()) {
@@ -95,7 +97,7 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
 
   for (OutputPort* port : model().ports<OutputPort>()) {
     // only property ports can be uniform
-    if (port->flavor == omm::PortFlavor::Property) {
+    if (port->flavor == nodes::PortFlavor::Property) {
       AbstractPort* sibling = get_sibling(port);
       // if the sibling (same property) input port is connected, the non-uniform value is forwarded.
       // We don't need a uniform.
@@ -106,7 +108,7 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   }
   for (InputPort* port : model().ports<InputPort>()) {
     // only property ports can be uniform
-    if (port->flavor == omm::PortFlavor::Property) {
+    if (port->flavor == nodes::PortFlavor::Property) {
       auto* ip = dynamic_cast<PropertyInputPort*>(port);
       if (!ip->is_connected() && get_sibling(port) == nullptr) {
         m_uniform_ports.insert(port);
@@ -232,4 +234,9 @@ QString NodeCompilerGLSL::define_node(const QString& node_type, QStringList& lin
   return "";
 }
 
-}  // namespace omm
+std::set<AbstractPort*> NodeCompilerGLSL::uniform_ports() const
+{
+  return m_uniform_ports;
+}
+
+}  // namespace omm::nodes

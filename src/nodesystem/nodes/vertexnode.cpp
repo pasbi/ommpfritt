@@ -5,10 +5,11 @@
 #include "scene/scene.h"
 #include "variant.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail VertexNode::detail{
-    {{AbstractNodeCompiler::Language::GLSL, ""}},
+    {{BackendLanguage::GLSL, ""}},
     {
         QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
     },
@@ -34,4 +35,4 @@ bool VertexNode::PortInfo::operator==(const AbstractPort* port) const
   return port == this->port;
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

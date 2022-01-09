@@ -2,13 +2,14 @@
 
 #include "nodesystem/nodecompiler.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 class NodeCompilerPython : public NodeCompiler<NodeCompilerPython>
 {
 public:
   explicit NodeCompilerPython(const NodeModel& model);
-  static constexpr auto LANGUAGE = AbstractNodeCompiler::Language::Python;
+  static constexpr auto LANGUAGE = BackendLanguage::Python;
 
   static QString generate_header(QStringList& lines);
   static QString start_program(QStringList&);
@@ -18,4 +19,4 @@ public:
   QString define_node(const QString& node_type, QStringList& lines) const;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

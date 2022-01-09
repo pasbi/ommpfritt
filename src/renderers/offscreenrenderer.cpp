@@ -18,27 +18,27 @@ namespace omm
 {
 const std::vector<OffscreenRenderer::ShaderInput> OffscreenRenderer::fragment_shader_inputs = {
     {
-        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        nodes::types::FLOATVECTOR_TYPE,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos"),
         ShaderInput::Kind::Varying,
     },
     {
-        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        nodes::types::FLOATVECTOR_TYPE,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "global_pos"),
         ShaderInput::Kind::Varying,
     },
     {
-        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        nodes::types::FLOATVECTOR_TYPE,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "local_normalized_pos"),
         ShaderInput::Kind::Varying,
     },
     {
-        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        nodes::types::FLOATVECTOR_TYPE,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "object_size"),
         ShaderInput::Kind::Uniform,
     },
     {
-        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        nodes::types::FLOATVECTOR_TYPE,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "view_pos"),
         ShaderInput::Kind::Varying,
     },
@@ -169,7 +169,7 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
   } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
     // trigger is not available in GLSL
   } else if constexpr (std::is_same_v<T, SplineType>) {
-    static constexpr std::size_t n = NodeCompilerGLSL::SPLINE_SIZE;
+    static constexpr std::size_t n = nodes::NodeCompilerGLSL::SPLINE_SIZE;
     const auto samples = sample<GLfloat>(value, n);
     program->setUniformValueArray(location, samples.data(), n, 1);
   } else if constexpr (std::is_same_v<T, ObjectTransformation>) {

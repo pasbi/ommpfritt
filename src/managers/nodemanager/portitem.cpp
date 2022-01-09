@@ -12,7 +12,7 @@ constexpr double pen_width = 2.0;
 
 namespace omm
 {
-PortItem::PortItem(AbstractPort& port, NodeItem& parent)
+PortItem::PortItem(nodes::AbstractPort& port, NodeItem& parent)
     : QGraphicsItem(&parent), node_item(parent), port(port)
 {
 }
@@ -34,13 +34,13 @@ void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
   pen.setWidth(pen_width);
   painter->setPen(pen);
   painter->drawPath(path);
-  if (port.flavor == PortFlavor::Ordinary) {
+  if (port.flavor == nodes::PortFlavor::Ordinary) {
     QRectF text_rect;
     const double h = painter->fontMetrics().height() * 2.0;
     text_rect.setHeight(h);
     text_rect.setY(h);
     int flags = Qt::AlignVCenter;
-    if (port.port_type == PortType::Input) {
+    if (port.port_type == nodes::PortType::Input) {
       text_rect.setLeft(ellipse.right() + margin);
       text_rect.setRight(big_number);
       flags |= Qt::AlignLeft;

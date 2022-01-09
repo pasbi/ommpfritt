@@ -3,10 +3,11 @@
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail FunctionNode::detail{
-    {{AbstractNodeCompiler::Language::Python,
+    {{BackendLanguage::Python,
       QString(R"(
 import math
 def %1(op, v):
@@ -50,7 +51,7 @@ def %1(op, v):
     return 0.0
 )")
           .arg(FunctionNode::TYPE)},
-     {AbstractNodeCompiler::Language::GLSL,
+     {BackendLanguage::GLSL,
       QString(R"(
 float %1_0(int op, float v) {
   if (op == 0) {
@@ -135,13 +136,12 @@ FunctionNode::FunctionNode(NodeModel& model) : Node(model)
 
 QString FunctionNode::output_data_type(const OutputPort&) const
 {
-  using namespace NodeCompilerTypes;
-  return FLOAT_TYPE;
+  return types::FLOAT_TYPE;
 }
 
 bool FunctionNode::accepts_input_data_type(const QString& type, const InputPort&) const
 {
-  return NodeCompilerTypes::is_numeric(type);
+  return types::is_numeric(type);
 }
 
 QString FunctionNode::title() const
@@ -157,4 +157,4 @@ QString FunctionNode::title() const
   return Node::title() + tr(" [%1]").arg(operation_label);
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

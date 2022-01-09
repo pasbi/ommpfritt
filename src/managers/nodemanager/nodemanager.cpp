@@ -21,11 +21,12 @@
 
 namespace
 {
+
 using namespace omm;
 
-bool accept_node(const NodeModel& model, const QString& name)
+bool accept_node(const nodes::NodeModel& model, const QString& name)
 {
-  return ::contains(Node::detail(name).definitions, model.language());
+  return ::contains(nodes::Node::detail(name).definitions, model.language());
 }
 
 }  // namespace
@@ -49,7 +50,7 @@ NodeManager::NodeManager(Scene& scene)
 
   connect(&scene.mail_box(), &MailBox::selection_changed, this, &NodeManager::set_selection);
   connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed, [this](const auto& apo) {
-    const auto* nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
+    const auto* nodes_owner = dynamic_cast<const nodes::NodesOwner*>(&apo);
     const auto* node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
     if (node_model == m_ui->nodeview->model()) {
       set_model(nullptr);
@@ -66,7 +67,7 @@ QString NodeManager::type() const
   return TYPE;
 }
 
-void NodeManager::set_model(NodeModel* model)
+void NodeManager::set_model(nodes::NodeModel* model)
 {
   if (NodeScene* scene = m_ui->nodeview->scene(); scene != nullptr) {
     QSignalBlocker blocker(scene);
@@ -80,7 +81,7 @@ void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selectio
   if (!is_locked()) {
     for (AbstractPropertyOwner* apo : selection) {
       if (!!(apo->flags() & Flag::HasNodes)) {
-        NodeModel* model = dynamic_cast<NodesOwner*>(apo)->node_model();
+        auto* const model = dynamic_cast<nodes::NodesOwner*>(apo)->node_model();
         if (m_ui->nodeview->model() != model) {
           set_model(model);
         }
@@ -132,10 +133,10 @@ bool NodeManager::perform_action(const QString& name)
     m_ui->nodeview->remove_selection();
   } else if (name == "paste") {
     m_ui->nodeview->paste_from_clipboard();
-  } else if (::contains(Node::keys(), name)) {
-    std::vector<std::unique_ptr<Node>> nodes;
+  } else if (::contains(nodes::Node::keys(), name)) {
+    std::vector<std::unique_ptr<nodes::Node>> nodes;
     auto& model = *m_ui->nodeview->model();
-    auto node = Node::make(name, model);
+    auto node = nodes::Node::make(name, model);
     node->set_pos(m_ui->nodeview->node_insert_pos());
     nodes.push_back(std::move(node));
     scene().submit<AddNodesCommand>(model, std::move(nodes));
@@ -167,10 +168,10 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
     return *root;
   };
 
-  if (NodeModel* model = m_ui->nodeview->model(); model != nullptr) {
-    for (const QString& name : Node::keys()) {
+  if (auto* const model = m_ui->nodeview->model(); model != nullptr) {
+    for (const QString& name : nodes::Node::keys()) {
       if (accept_node(*model, name)) {
-        if (const auto menu_path = Node::detail(name).menu_path; !menu_path.empty()) {
+        if (const auto menu_path = nodes::Node::detail(name).menu_path; !menu_path.empty()) {
           auto action = kb.make_menu_action(*this, name);
           QMenu& menu = find_menu(root_menu.get(), menu_path);
           menu.addAction(action.release());
@@ -180,17 +181,17 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
 
     {
       auto quick_constant_node_actions_menu = std::make_unique<QMenu>(tr("Constant ..."));
-      const auto types = AbstractNodeCompiler::supported_types(model->language());
+      const auto types = nodes::types::supported_types(model->language());
       for (const QString& type : types) {
         const QString label = QApplication::translate("Property", type.toStdString().c_str());
         auto action = std::make_unique<QAction>(label);
         connect(action.get(), &QAction::triggered, model, [type, model, label, this]() {
-          auto node = std::make_unique<ConstantNode>(*model);
+          auto node = std::make_unique<nodes::ConstantNode>(*model);
           auto property = Property::make(type);
           property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
           property->set_label(label);
           node->add_property(type, std::move(property));
-          std::vector<std::unique_ptr<Node>> nodes;
+          std::vector<std::unique_ptr<nodes::Node>> nodes;
           node->set_pos(m_ui->nodeview->node_insert_pos());
           nodes.push_back(std::move(node));
           scene().submit<AddNodesCommand>(*model, std::move(nodes));

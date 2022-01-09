@@ -123,7 +123,7 @@ Scene::Scene(PythonEngine& python_engine)
     , m_joined_points(new DisjointPathPointSetForest())
 {
   object_tree().root().set_object_tree(object_tree());
-  for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, Node::KIND}) {
+  for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, nodes::Node::KIND}) {
     m_item_selection[kind] = {};
   }
   connect(&history(), &HistoryModel::index_changed, &mail_box(), &MailBox::filename_changed);
@@ -396,7 +396,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
       Q_EMIT mail_box.tool_selection_changed(kind_cast<Tool>(selection));
       break;
     case Kind::Node:
-      Q_EMIT mail_box.node_selection_changed(kind_cast<Node>(selection));
+      Q_EMIT mail_box.node_selection_changed(kind_cast<nodes::Node>(selection));
       break;
     default:
       break;
@@ -463,12 +463,12 @@ void Scene::evaluate_tags() const
   }
 }
 
-std::set<Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner*>& owners)
+std::set<nodes::Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner*>& owners)
 {
-  std::set<Node*> nodes;
+  std::set<nodes::Node*> nodes;
   for (auto&& apo : owners) {
     if (!!(apo->flags() & Flag::HasNodes)) {
-      const auto& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
+      const auto& nodes_owner = dynamic_cast<const nodes::NodesOwner&>(*apo);
       if (const auto* node_model = nodes_owner.node_model()) {
         nodes = ::merge(nodes, node_model->nodes());
       }
@@ -477,7 +477,7 @@ std::set<Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner*>& own
   return nodes;
 }
 
-std::set<Node*> Scene::collect_nodes() const
+std::set<nodes::Node*> Scene::collect_nodes() const
 {
   return collect_nodes(collect_apos_without_nodes(*this));
 }
@@ -579,7 +579,7 @@ bool Scene::contains(const AbstractPropertyOwner* apo) const
     const auto nodes = this->collect_nodes();
     // the std::set::find does not allow keys of type `const Tag*`.
     // NOLINTNEXTLINE(performance-inefficient-algorithm)
-    return nodes.end() != std::find(nodes.begin(), nodes.end(), dynamic_cast<const Node*>(apo));
+    return nodes.end() != std::find(nodes.begin(), nodes.end(), dynamic_cast<const nodes::Node*>(apo));
   }
   case Kind::Object:
     return object_tree().contains(dynamic_cast<const Object&>(*apo));

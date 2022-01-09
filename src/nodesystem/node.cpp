@@ -14,7 +14,7 @@ struct ConnectionIds {
 
 }  // namespace
 
-namespace omm
+namespace omm::nodes
 {
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::map<QString, const Node::Detail*> Node::m_details;
@@ -133,7 +133,7 @@ QString Node::name() const
   return QCoreApplication::translate("any-context", type().toStdString().c_str());
 }
 
-AbstractNodeCompiler::Language Node::language() const
+BackendLanguage Node::language() const
 {
   return model().language();
 }
@@ -161,7 +161,7 @@ QString Node::output_data_type(const OutputPort& port) const
 {
   Q_UNUSED(port)
   Q_UNREACHABLE();
-  return NodeCompilerTypes::INVALID_TYPE;
+  return types::INVALID_TYPE;
 }
 
 QString Node::input_data_type(const InputPort& port) const
@@ -169,7 +169,7 @@ QString Node::input_data_type(const InputPort& port) const
   if (OutputPort* op = port.connected_output(); op != nullptr) {
     return op->data_type();
   } else {
-    return NodeCompilerTypes::INVALID_TYPE;
+    return types::INVALID_TYPE;
   }
 }
 
@@ -183,7 +183,7 @@ bool Node::accepts_input_data_type(const QString& type, const InputPort& port) c
 bool Node::is_valid() const
 {
   for (const auto& p : m_ports) {
-    if (p->data_type() == NodeCompilerTypes::INVALID_TYPE) {
+    if (p->data_type() == types::INVALID_TYPE) {
       return false;
     }
   }
@@ -266,4 +266,4 @@ QString Node::fst_con_ptype(const std::vector<InputPort*>& ports, const QString&
       default_t);
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

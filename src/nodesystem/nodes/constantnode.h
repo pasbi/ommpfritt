@@ -2,8 +2,9 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 class ConstantNode : public Node
 {
   Q_OBJECT
@@ -20,4 +21,4 @@ public:
   static const Detail detail;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

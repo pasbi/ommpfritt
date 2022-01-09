@@ -3,14 +3,15 @@
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail DecomposeColorNode::detail{
-    {{AbstractNodeCompiler::Language::Python, QString(R"(
+    {{BackendLanguage::Python, QString(R"(
 def %1(c):
     return c
 )")},
-     {AbstractNodeCompiler::Language::GLSL,
+     {BackendLanguage::GLSL,
       QString(R"(
 float %1_0(vec4 c) { return c.r; }
 float %1_1(vec4 c) { return c.g; }
@@ -37,9 +38,8 @@ DecomposeColorNode::DecomposeColorNode(NodeModel& model) : Node(model)
 
 QString DecomposeColorNode::output_data_type(const OutputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   Q_UNUSED(port)
-  return FLOAT_TYPE;
+  return types::FLOAT_TYPE;
 }
 
 QString DecomposeColorNode::title() const
@@ -49,9 +49,8 @@ QString DecomposeColorNode::title() const
 
 bool DecomposeColorNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   Q_UNUSED(port)
-  return type == COLOR_TYPE;
+  return type == types::COLOR_TYPE;
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

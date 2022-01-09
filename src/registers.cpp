@@ -45,7 +45,7 @@ void register_everything()
   register_tools();
   merge(keys, Tool::keys());
   register_nodes();
-  merge(keys, Node::keys());
+  merge(keys, nodes::Node::keys());
 
   // assume that the keys are unique, even for different types.
   // However, keys may have the same name as actions.

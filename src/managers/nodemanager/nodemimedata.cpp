@@ -5,9 +5,9 @@
 
 namespace omm
 {
-const std::map<AbstractNodeCompiler::Language, QString> NodeMimeData::MIME_TYPES
-    = {{AbstractNodeCompiler::Language::Python, "application/pythonnodes"},
-       {AbstractNodeCompiler::Language::GLSL, "application/glslnodes"}};
+const std::map<nodes::BackendLanguage, QString> NodeMimeData::MIME_TYPES
+    = {{nodes::BackendLanguage::Python, "application/pythonnodes"},
+       {nodes::BackendLanguage::GLSL, "application/glslnodes"}};
 
 QVariant NodeMimeData::retrieveData(const QString&, QVariant::Type) const
 {
@@ -15,7 +15,7 @@ QVariant NodeMimeData::retrieveData(const QString&, QVariant::Type) const
   abort();
 }
 
-NodeMimeData::NodeMimeData(AbstractNodeCompiler::Language language, const std::set<Node*>& items)
+NodeMimeData::NodeMimeData(nodes::BackendLanguage language, const std::set<nodes::Node*>& items)
     : m_language(language), m_nodes(items)
 {
 }

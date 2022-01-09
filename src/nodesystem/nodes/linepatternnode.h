@@ -2,8 +2,9 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 class LinePatternNode : public Node
 {
   Q_OBJECT
@@ -29,4 +30,4 @@ private:
   const OutputPort* m_output_port = nullptr;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

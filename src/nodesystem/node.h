@@ -10,8 +10,9 @@
 
 class QMenu;
 
-namespace omm
+namespace omm::nodes
 {
+
 class NodeModel;
 
 class Node
@@ -53,7 +54,7 @@ public:
   }
   QString name() const override;
 
-  AbstractNodeCompiler::Language language() const;
+  BackendLanguage language() const;
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
@@ -155,7 +156,7 @@ private:
 
 public:
   struct Detail {
-    std::map<AbstractNodeCompiler::Language, QString> definitions;
+    std::map<BackendLanguage, QString> definitions;
     std::vector<const char*> menu_path;
   };
 
@@ -170,4 +171,4 @@ public:
   static std::map<QString, const Detail*> m_details;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

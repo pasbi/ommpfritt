@@ -3,16 +3,17 @@
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail ComposeColorNode::detail{
-    {{AbstractNodeCompiler::Language::Python,
+    {{BackendLanguage::Python,
       QString(R"(
 def %1(r, g, b, a):
   return [r, g, b, a]
 )")
           .arg(ComposeColorNode::TYPE)},
-     {AbstractNodeCompiler::Language::GLSL,
+     {BackendLanguage::GLSL,
       QString(R"(
 vec4 %1_0(float r, float g, float b, float a) { return vec4(r, g, b, a); }
 )")
@@ -52,8 +53,7 @@ ComposeColorNode::ComposeColorNode(NodeModel& model) : Node(model)
 QString ComposeColorNode::output_data_type(const OutputPort& port) const
 {
   Q_UNUSED(port)
-  using namespace NodeCompilerTypes;
-  return COLOR_TYPE;
+  return types::COLOR_TYPE;
 }
 
 QString ComposeColorNode::title() const
@@ -64,7 +64,7 @@ QString ComposeColorNode::title() const
 bool ComposeColorNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   Q_UNUSED(port)
-  return NodeCompilerTypes::is_numeric(type);
+  return types::is_numeric(type);
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

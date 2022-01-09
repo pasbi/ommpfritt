@@ -2,8 +2,9 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 template<PortType> class OrdinaryPort;
 
 class FragmentNode : public Node
@@ -34,4 +35,4 @@ private:
   OrdinaryPort<PortType::Input>* m_input_port = nullptr;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

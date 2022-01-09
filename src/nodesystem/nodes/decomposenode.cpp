@@ -3,16 +3,17 @@
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail DecomposeNode::detail{
-    {{AbstractNodeCompiler::Language::Python,
+    {{BackendLanguage::Python,
       QString(R"(
 def %1(v):
   return v
 )")
           .arg(DecomposeNode::TYPE)},
-     {AbstractNodeCompiler::Language::GLSL,
+     {BackendLanguage::GLSL,
       QString(R"(
 float %1_0(vec2 xy) { return xy.x; }
 float %1_1(vec2 xy) { return xy.y; }
@@ -35,23 +36,22 @@ DecomposeNode::DecomposeNode(NodeModel& model) : Node(model)
 
 QString DecomposeNode::output_data_type(const OutputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   switch (language()) {
-  case AbstractNodeCompiler::Language::Python:
+  case BackendLanguage::Python:
     if (&port == m_output_x_port || &port == m_output_y_port) {
       const QString type = find_port<InputPort>(*property(INPUT_PROPERTY_KEY))->data_type();
-      if (type == INTEGERVECTOR_TYPE) {
-        return INTEGER_TYPE;
-      } else if (type == FLOATVECTOR_TYPE) {
-        return FLOAT_TYPE;
+      if (type == types::INTEGERVECTOR_TYPE) {
+        return types::INTEGER_TYPE;
+      } else if (type == types::FLOATVECTOR_TYPE) {
+        return types::FLOAT_TYPE;
       }
     }
-    return INVALID_TYPE;
-  case AbstractNodeCompiler::Language::GLSL:
-    return FLOAT_TYPE;
+    return types::INVALID_TYPE;
+  case BackendLanguage::GLSL:
+    return types::FLOAT_TYPE;
   default:
     Q_UNREACHABLE();
-    return INVALID_TYPE;
+    return types::INVALID_TYPE;
   }
 }
 
@@ -62,17 +62,16 @@ QString DecomposeNode::title() const
 
 bool DecomposeNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   Q_UNUSED(port)
   switch (language()) {
-  case AbstractNodeCompiler::Language::Python:
-    return is_vector(type);
-  case AbstractNodeCompiler::Language::GLSL:
-    return type == FLOATVECTOR_TYPE;
+  case BackendLanguage::Python:
+    return types::is_vector(type);
+  case BackendLanguage::GLSL:
+    return type == types::FLOATVECTOR_TYPE;
   default:
     Q_UNREACHABLE();
     return false;
   }
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

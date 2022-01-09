@@ -8,6 +8,7 @@
 
 namespace omm
 {
+
 NodeScene::NodeScene(Scene& scene) : scene(scene)
 {
   connect(this, &NodeScene::selectionChanged, [&scene, this]() {
@@ -19,7 +20,7 @@ NodeScene::NodeScene(Scene& scene) : scene(scene)
           &MailBox::property_value_changed,
           this,
           [this](AbstractPropertyOwner& owner, const QString&, Property&) {
-            const Node* const node = kind_cast<Node*>(&owner);
+            const auto* const node = kind_cast<nodes::Node*>(&owner);
             // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
             if (node != nullptr && &node->model() == m_model) {
               QTimer::singleShot(0, this, [this]() { update(); });
@@ -32,7 +33,7 @@ NodeScene::~NodeScene()
   clearSelection();
 }
 
-void NodeScene::set_model(NodeModel* model)
+void NodeScene::set_model(nodes::NodeModel* model)
 {
   m_block_selection_change_notification = true;
   clear();
@@ -43,33 +44,33 @@ void NodeScene::set_model(NodeModel* model)
   m_model = model;
   if (m_model != nullptr) {
     m_scene_model_connections = {
-        connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),
-        connect(m_model, &NodeModel::node_removed, this, &NodeScene::remove_node),
+        connect(m_model, &nodes::NodeModel::node_added, this, [this](auto& node) { add_node(node); }),
+        connect(m_model, &nodes::NodeModel::node_removed, this, &NodeScene::remove_node),
         connect(&m_model->compiler(),
-                &AbstractNodeCompiler::compilation_succeeded,
+                &nodes::AbstractNodeCompiler::compilation_succeeded,
                 this,
                 [this]() { update(); }),
         connect(&m_model->compiler(),
-                &AbstractNodeCompiler::compilation_failed,
+                &nodes::AbstractNodeCompiler::compilation_failed,
                 this,
                 [this]() { update(); }),
     };
   }
   if (m_model != nullptr) {
-    for (Node* node : model->nodes()) {
+    for (auto* node : model->nodes()) {
       add_node(*node, false);
     }
   }
   m_block_selection_change_notification = false;
 }
 
-std::set<Node*> NodeScene::selected_nodes() const
+std::set<nodes::Node*> NodeScene::selected_nodes() const
 {
   return ::filter_if(m_model->nodes(),
-                     [this](Node* node) { return node_item(*node).isSelected(); });
+                     [this](auto* node) { return node_item(*node).isSelected(); });
 }
 
-void NodeScene::add_node(Node& node, bool select)
+void NodeScene::add_node(nodes::Node& node, bool select)
 {
   auto node_item = std::make_unique<NodeItem>(node);
   auto& node_item_ref = *node_item;
@@ -83,7 +84,7 @@ void NodeScene::add_node(Node& node, bool select)
   }
 }
 
-void NodeScene::remove_node(Node& node)
+void NodeScene::remove_node(nodes::Node& node)
 {
   auto it = m_node_items.find(&node);
   removeItem(it->second.get());
@@ -96,7 +97,7 @@ void NodeScene::clear()
   QGraphicsScene::clear();
 }
 
-NodeItem& NodeScene::node_item(Node& node) const
+NodeItem& NodeScene::node_item(nodes::Node& node) const
 {
   return *m_node_items.at(&node);
 }

@@ -7,54 +7,35 @@
 #include <QStringList>
 #include <list>
 #include <set>
+#include <memory>
 
-namespace omm
+namespace omm::nodes
 {
+
 class OutputPort;
 class InputPort;
 class Node;
 class AbstractPort;
 class NodeModel;
 
-namespace NodeCompilerTypes
-{
-static constexpr auto INVALID_TYPE = "Invalid";
-static constexpr auto FLOAT_TYPE = "Float";
-static constexpr auto INTEGER_TYPE = "Integer";
-static constexpr auto OPTION_TYPE = "Option";
-static constexpr auto FLOATVECTOR_TYPE = "FloatVector";
-static constexpr auto INTEGERVECTOR_TYPE = "IntegerVector";
-static constexpr auto STRING_TYPE = "String";
-static constexpr auto COLOR_TYPE = "Color";
-static constexpr auto REFERENCE_TYPE = "Reference";
-static constexpr auto BOOL_TYPE = "Bool";
-static constexpr auto SPLINE_TYPE = "Spline";
-
-bool is_numeric(const QString& type);
-bool is_integral(const QString& type);
-bool is_vector(const QString& type);
-}  // namespace NodeCompilerTypes
-
 class AbstractNodeCompiler : public QObject
 {
   Q_OBJECT
 public:
-  enum class Language { Python, GLSL };
-  static std::set<QString> supported_types(Language language);
   [[nodiscard]] QString last_error() const
   {
     return m_last_error;
   }
 
 protected:
-  AbstractNodeCompiler(Language language, const NodeModel& model);
+  AbstractNodeCompiler(BackendLanguage language, const NodeModel& model);
   [[nodiscard]] std::set<Node*> nodes() const;
 
   void generate_statements(std::set<QString>& used_node_types,
                            std::list<std::unique_ptr<Statement>>& statements) const;
 
 public:
-  const Language language;
+  const BackendLanguage language;
   [[nodiscard]] const NodeModel& model() const
   {
     return m_model;
@@ -147,4 +128,4 @@ protected:
   void statements();
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

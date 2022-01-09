@@ -17,7 +17,7 @@ struct Texture;
 
 class Style
     : public PropertyOwner<Kind::Style>
-    , public NodesOwner
+    , public nodes::NodesOwner
 {
   Q_OBJECT
 public:

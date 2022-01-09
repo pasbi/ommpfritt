@@ -1,6 +1,7 @@
 {
   "clazz": "Manager",
   "category": "managers",
+  "namespace": "omm",
   "items": [
     "BoundingBoxManager",
     "CurveManager",

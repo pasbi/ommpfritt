@@ -2,8 +2,9 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 template<PortType> class OrdinaryPort;
 
 class SpyNode : public Node
@@ -25,4 +26,4 @@ private:
   OrdinaryPort<PortType::Input>* m_port;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

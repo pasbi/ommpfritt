@@ -2,8 +2,9 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 template<PortType> class OrdinaryPort;
 
 class DecomposeColorNode : public Node
@@ -24,4 +25,4 @@ public:
   static const Detail detail;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

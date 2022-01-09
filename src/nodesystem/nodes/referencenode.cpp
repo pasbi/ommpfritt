@@ -7,12 +7,13 @@
 #include "variant.h"
 #include <QMenu>
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail ReferenceNode::detail{
     {
-        {AbstractNodeCompiler::Language::Python, ""},
-        {AbstractNodeCompiler::Language::GLSL, ""},
+        {BackendLanguage::Python, ""},
+        {BackendLanguage::GLSL, ""},
     },
     {
         QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
@@ -34,18 +35,18 @@ void ReferenceNode::populate_menu(QMenu& menu)
   if (apo == nullptr) {
     forward_menu->addAction(tr("No properties."))->setEnabled(false);
   } else {
-    const auto supported_types = AbstractNodeCompiler::supported_types(language());
+    const auto supported_types = types::supported_types(language());
     for (auto&& key : apo->properties().keys()) {
       Property* property = apo->property(key);
       if (::contains(supported_types, property->type())) {
-        if (language() == AbstractNodeCompiler::Language::Python) {
+        if (language() == BackendLanguage::Python) {
           auto property_menu = std::make_unique<QMenu>(property->label());
           property_menu->addAction(
               make_property_action(PortType::Input, key, tr("input", "ReferenceNode")).release());
           property_menu->addAction(
               make_property_action(PortType::Output, key, tr("output", "ReferenceNode")).release());
           forward_menu->addMenu(property_menu.release());
-        } else if (language() == AbstractNodeCompiler::Language::GLSL) {
+        } else if (language() == BackendLanguage::GLSL) {
           forward_menu->addAction(
               make_property_action(PortType::Output, key, property->label()).release());
         }
@@ -153,4 +154,4 @@ void ReferenceNode::on_property_value_changed(Property* property)
   return Node::on_property_value_changed(property);
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

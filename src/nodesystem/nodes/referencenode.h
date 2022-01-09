@@ -5,8 +5,9 @@
 
 class QAction;
 
-namespace omm
+namespace omm::nodes
 {
+
 class ReferenceNode : public Node
 {
   Q_OBJECT
@@ -41,4 +42,4 @@ private:
   make_property_action(PortType port_type, const QString& key, const QString& label);
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

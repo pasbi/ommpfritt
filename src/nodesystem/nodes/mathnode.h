@@ -2,8 +2,9 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 class MathNode : public Node
 {
   Q_OBJECT
@@ -30,4 +31,4 @@ private:
   OutputPort* m_output;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

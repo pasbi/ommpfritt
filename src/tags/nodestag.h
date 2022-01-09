@@ -7,11 +7,15 @@
 
 namespace omm
 {
+
+namespace nodes
+{
 class NodeModel;
+}  // namespace nodes
 
 class NodesTag
     : public Tag
-    , public NodesOwner
+    , public nodes::NodesOwner
 {
   Q_OBJECT
 public:
@@ -32,7 +36,7 @@ public:
   void evaluate() override;
   void force_evaluate() override;
   Flag flags() const override;
-  std::set<Node*> nodes() const;
+  std::set<nodes::Node*> nodes() const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
