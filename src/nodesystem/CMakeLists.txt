@@ -3,22 +3,22 @@ target_sources(libommpfritt PRIVATE
   common.h
   node.cpp
   node.h
-  propertyport.cpp
-  propertyport.h
-  nodemodel.cpp
-  nodemodel.h
   nodecompiler.cpp
   nodecompiler.h
+  nodecompilerglsl.cpp
+  nodecompilerglsl.h
   nodecompilerpython.cpp
   nodecompilerpython.h
-  nodecompilerglsl.cpp
-  nodecompilerglsl.cpp
+  nodemodel.cpp
+  nodemodel.h
   nodesowner.cpp
   nodesowner.h
-  port.cpp
-  port.h
   ordinaryport.cpp
   ordinaryport.h
+  port.cpp
+  port.h
+  propertyport.cpp
+  propertyport.h
   statement.cpp
   statement.h
 )
