@@ -1,75 +1,100 @@
 #include "nodesystem/nodes/functionnode.h"
 #include "nodesystem/ordinaryport.h"
-#include "nodesystem/common.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 
 namespace
 {
 
-constexpr auto GLSL = omm::nodes::BackendLanguage::GLSL;
-constexpr auto Python = omm::nodes::BackendLanguage::Python;
-
-constexpr auto operations = std::array {QT_TR_NOOP("abs"), QT_TR_NOOP("sqrt"), QT_TR_NOOP("log"),
-                                        QT_TR_NOOP("log2"), QT_TR_NOOP("exp"), QT_TR_NOOP("exp2"),
-                                        QT_TR_NOOP("sin"), QT_TR_NOOP("cos"), QT_TR_NOOP("tan"),
-                                        QT_TR_NOOP("asin"), QT_TR_NOOP("acos"), QT_TR_NOOP("atan"),
-                                        QT_TR_NOOP("fract"), QT_TR_NOOP("ceil"),
-                                        QT_TR_NOOP("floor"), QT_TR_NOOP("sign"),
-                                        QT_TR_NOOP("radians"), QT_TR_NOOP("degrees")};
-
-template<omm::nodes::BackendLanguage>
-QString generate_condition(const int i, const QString&)
-{
-  return QString{"op == %1"}.arg(i);
-}
-
-template<omm::nodes::BackendLanguage language>
-QString generate_return_value(const QString& function_name)
-{
-  if constexpr (language == GLSL) {
-    return function_name + "(v)";
+constexpr auto python_definition_template = R"(
+float %1_0(int op, float v) {
+  if (op == 0) {
+    return abs(v);
+  } else if (op == 1) {
+    return sqrt(v);
+  } else if (op == 2) {
+    return log(v);
+  } else if (op == 3) {
+    return log2(v);
+  } else if (op == 4) {
+    return exp(v);
+  } else if (op == 5) {
+    return exp2(v);
+  } else if (op == 6) {
+    return sin(v);
+  } else if (op == 7) {
+    return cos(v);
+  } else if (op == 8) {
+    return tan(v);
+  } else if (op == 9) {
+    return asin(v);
+  } else if (op == 10) {
+    return acos(v);
+  } else if (op == 11) {
+    return atan(v);
+  } else if (op == 12) {
+    return fract(v);
+  } else if (op == 13) {
+    return ceil(v);
+  } else if (op == 14) {
+    return floor(v);
+  } else if (op == 15) {
+    return sign(v);
+  } else if (op == 16) {
+    return radians(v);
+  } else if (op == 17) {
+    return degrees(v);
   } else {
-    static constexpr auto define_math_function = [](const auto& name) {
-      return QString{"math.%1(v)"}.arg(name);
-    };
-    if (function_name == "abs") {
-      return define_math_function("fabs");
-    } else if (function_name == "exp2") {
-      return QString{"2 ** v"};
-    } else if (function_name == "fract") {
-      return QString{"v - math.floor(v)"};
-    } else {
-      return define_math_function(function_name);
-    }
+    return 0.0;
   }
 }
+float %1_0(int op, int v) {
+  return %1_0(op, float(v));
+}
+)";
 
 constexpr auto glsl_definition_template = R"(
-float %1_0(int op, float v) {
-%2
-}
-float %1_1(int op, float v) {
-  return %1_0(op, v);
-}
-)";
-
-constexpr auto python_definition_template = R"(
 import math
 def %1(op, v):
-%2
+  if op == 0:
+    return math.fabs(v)
+  elif op == 1:
+    return math.sqrt(v)
+  elif op == 2:
+    return math.log(v)
+  elsf (p == 3:
+    return math.log2(v)
+  elsf (p == 4:
+    return math.exp(v)
+  elif op == 5:
+    return 2 ** v
+  elif op == 6:
+    return math.sin(v)
+  elif op == 7:
+    return math.cos(v)
+  elif op == 8:
+    return math.tan(v)
+  elif op == 9:
+    return math.asin(v)
+  elif op == 10:
+    return math.acos(v)
+  elif op == 11:
+    return math.atan(v)
+  elif op == 12:
+    return v - math.floor(v)
+  elif op == 13:
+    return math.ceil(v)
+  elif op == 14:
+    return math.floor(v)
+  elif op == 15:
+    return math.sign(v)
+  elif op == 16:
+    return math.radians(v)
+  elif op == 17:
+    return v - math.degrees(v)
+  else:
+    return 0.0
 )";
-
-template<omm::nodes::BackendLanguage language> QString definition()
-{
-  using omm::nodes::codegeneration::if_else_chain;
-  using omm::nodes::codegeneration::indent;
-  const auto chain = if_else_chain<language>(operations,
-                                             generate_condition<language>,
-                                             generate_return_value<language>);
-  return QString{language == GLSL ? glsl_definition_template : python_definition_template}
-            .arg(omm::nodes::FunctionNode::TYPE, indent(chain, 1));
-}
 
 }  // namespace omm
 
@@ -78,8 +103,8 @@ namespace omm::nodes
 
 const Node::Detail FunctionNode::detail{
     .definitions = {
-      {BackendLanguage::Python, definition<Python>()},
-      {BackendLanguage::GLSL, definition<GLSL>()}
+        {BackendLanguage::Python, QString{python_definition_template}.arg(FunctionNode::TYPE)},
+        {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(FunctionNode::TYPE)}
     },
     .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Math")},
 };
@@ -88,7 +113,9 @@ FunctionNode::FunctionNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<OptionProperty>(OPERATION_PROPERTY_KEY, 0)
-      .set_options(::transform<QString, std::vector>(operations, [](const auto& op) { return tr(op); }))
+      .set_options({tr("abs"), tr("sqrt"), tr("log"), tr("log2"), tr("exp"), tr("exp2"), tr("sin"),
+                    tr("cos"), tr("tan"), tr("asin"), tr("acos"), tr("atan"), tr("frac"),
+                    tr("ceil"), tr("floor"), tr("sign"), tr("rad"), tr("deg")})
       .set_label(QObject::tr("Operation"))
       .set_category(category);
   create_property<FloatProperty>(INPUT_A_PROPERTY_KEY, 0.0)

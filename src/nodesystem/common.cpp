@@ -2,7 +2,6 @@
 #include "properties/property.h"
 #include "properties/stringproperty.h"
 #include "properties/triggerproperty.h"
-#include "nodesystem/nodecompilerglsl.h"
 
 namespace omm::nodes::types
 {
@@ -37,22 +36,5 @@ std::set<QString> supported_types(BackendLanguage language)
   }
 }
 
+
 }  // namespace omm::nodes::types
-
-
-namespace omm::nodes
-{
-
-QString codegeneration::indent(QString code, int level)
-{
-  const QString base_indentation = "    ";
-  const auto indentation = base_indentation.repeated(level);
-  return indentation + code.replace('\n', "\n" + indentation);
-}
-
-QString codegeneration::translate_type_glsl(std::string_view type)
-{
-  return NodeCompilerGLSL::translate_type(QString::fromStdString(std::string{type}));
-}
-
-}  // namespace omm::nodes

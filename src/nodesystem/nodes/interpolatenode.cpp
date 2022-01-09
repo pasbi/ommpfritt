@@ -39,6 +39,17 @@ struct Overload
   }
 };
 
+template<typename Overload>
+QString generate_overload(QString template_definition, const Overload& overload)
+{
+  for (const auto& type : overload.types()) {
+    const auto qtype = QString::fromStdString(std::string{type});
+    const auto ttype = omm::nodes::NodeCompilerGLSL::translate_type(qtype);
+    template_definition = template_definition.arg(ttype);
+  }
+  return template_definition;
+}
+
 constexpr std::array supported_overloads {
   Overload{.return_type = types::FLOATVECTOR_TYPE, .argument_type = types::FLOATVECTOR_TYPE},
   Overload{.return_type = types::FLOAT_TYPE,       .argument_type = types::INTEGER_TYPE},
@@ -46,6 +57,17 @@ constexpr std::array supported_overloads {
   Overload{.return_type = types::COLOR_TYPE,       .argument_type = types::COLOR_TYPE},
   Overload{.return_type = types::FLOATVECTOR_TYPE, .argument_type = types::INTEGERVECTOR_TYPE}
 };
+
+template<typename Overloads>
+QString overload(const QString& definition_template, const Overloads& overloads)
+{
+  QStringList definitions;
+  definitions.reserve(overloads.size());
+  for (const auto& overload : overloads) {
+    definitions.push_back(generate_overload(definition_template, overload));
+  }
+  return definitions.join("\n");
+}
 
 }  // namespace
 
@@ -55,10 +77,10 @@ namespace omm::nodes
 const Node::Detail InterpolateNode::detail{
     .definitions = {
         {BackendLanguage::Python, QString{python_definition_template}.arg(InterpolateNode::TYPE)},
-        {BackendLanguage::GLSL, codegeneration::overload(QString{glsl_definition_template}
-                                                          .arg(InterpolateNode::TYPE,
-                                                               NodeCompilerGLSL::translate_type(types::SPLINE_TYPE)),
-                                                         supported_overloads)
+        {BackendLanguage::GLSL, overload(QString{glsl_definition_template}
+                                          .arg(InterpolateNode::TYPE,
+                                               NodeCompilerGLSL::translate_type(types::SPLINE_TYPE)),
+                                         supported_overloads)
         }
     },
 

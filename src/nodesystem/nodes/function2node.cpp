@@ -6,65 +6,43 @@
 namespace
 {
 
-constexpr auto GLSL = omm::nodes::BackendLanguage::GLSL;
-constexpr auto Python = omm::nodes::BackendLanguage::Python;
-
-constexpr auto operations = std::array {QT_TR_NOOP("atan2"), QT_TR_NOOP("length"),
-                                        QT_TR_NOOP("pow"), QT_TR_NOOP("min"), QT_TR_NOOP("max")};
-
-template<omm::nodes::BackendLanguage>
-QString generate_condition(const int i, const QString&)
-{
-  return QString{"op == %1"}.arg(i);
-}
-
-template<omm::nodes::BackendLanguage language>
-QString generate_return_value(const QString& function_name)
-{
-  if constexpr (language == Python) {
-    if (function_name == "atan2") {
-      return "math.atan2(y, x)";
-    } else if (function_name == "length") {
-      return "math.sqrt(x**2.0 + y **2.0)";
-    } else {
-      return "math." + function_name + "(x, y)";
-    }
-  } else {
-    if (function_name == "atan") {
-      return "atan(y, x)";
-    } else if (function_name == "length") {
-      return "length(vec2(x, y))";
-    } else {
-      return function_name + "(x, y)";
-    }
-  }
-}
-
-constexpr auto glsl_definition_template = R"(
-%3 %1_0(int op, %3 x, %3 y) {
-%2
-}
-%3 %1_1(int op, %3 v) {
-  return %1_0(op, v);
-}
-)";
-
 constexpr auto python_definition_template = R"(
 import math
 def %1(op, x, y):
-%2
+  if op == 0:
+    return math.atan2(y, x)
+  elif op == 1:
+    return math.sqrt(x**2.0 + y**2.0)
+  elif op == 2:
+    return math.pow(x, y)
+  elif op == 3:
+    return math.min(x, y)
+  elif (op == 4:
+    return math.max(x, y)
+  else:
+    return 0.0
 )";
 
-template<omm::nodes::BackendLanguage language> QString definition()
-{
-  using omm::nodes::codegeneration::if_else_chain;
-  using omm::nodes::codegeneration::indent;
-  const auto chain = if_else_chain<language>(operations,
-                                             generate_condition<language>,
-                                             generate_return_value<language>);
-  return QString{language == GLSL ? glsl_definition_template : python_definition_template}
-            .arg(omm::nodes::Function2Node::TYPE, indent(chain, 1));
+ constexpr auto glsl_definition_template = R"(
+float %1_0(int op, float x, float y) {
+  if (op == 0) {
+    return atan(y, x);
+  } else if (op == 1) {
+    return length(vec2(x, y));
+  } else if (op == 2) {
+    return pow(x, y);
+  } else if (op == 3) {
+    return min(x, y);
+  } else if (op == 4) {
+    return max(x, y);
+  } else {
+    return 0.0;
+  }
 }
+float %1_0(int op, int x, int y) {
+  return %1_0(op, float(x), float(y));
+}
+)";
 
 }  // namespace
 
