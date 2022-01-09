@@ -57,6 +57,7 @@ def %1(op, a, b):
         # unreachable
         return 0.0;
 )";
+
 constexpr auto supported_glsl_types = std::array{types::FLOATVECTOR_TYPE, types::INTEGER_TYPE,
                                                  types::FLOAT_TYPE, types::COLOR_TYPE,
                                                  types::INTEGERVECTOR_TYPE};

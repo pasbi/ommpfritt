@@ -17,6 +17,7 @@
     "MathNode",
     "ReferenceNode",
     "SpyNode",
+    "SwitchNode",
     "VertexNode"
   ],
   "register": [

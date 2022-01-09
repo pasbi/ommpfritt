@@ -27,6 +27,8 @@ target_sources(libommpfritt PRIVATE
   referencenode.h
   spynode.cpp
   spynode.h
+  switchnode.cpp
+  switchnode.h
   vertexnode.cpp
   vertexnode.h
 )
