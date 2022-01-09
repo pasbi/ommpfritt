@@ -8,18 +8,14 @@
 namespace
 {
 
-namespace types = omm::nodes::types;
-const std::set<std::array<QString, 2>> supported_glsl_types {
-  {types::FLOATVECTOR_TYPE, types::FLOATVECTOR_TYPE },
-  {types::FLOAT_TYPE, types::INTEGER_TYPE},
-  {types::FLOAT_TYPE, types::FLOAT_TYPE},
-  {types::COLOR_TYPE, types::COLOR_TYPE},
-  {types::FLOATVECTOR_TYPE, types::INTEGERVECTOR_TYPE}
-};
+constexpr auto python_definition_template = R"(
+def %1(x, y, balance, ramp):
+  t = ramp.value(balance)
+  return (1-t) * x + t * y
+)";
 
-const QString glsl_definition_template
-    = QString(R"(
-%2 %4_0(%3 a, %3 b, float t, %1 spline) {
+constexpr auto glsl_definition_template = R"(
+%3 %1_0(%4 a, %4 b, float t, %2 spline) {
   const int n = SPLINE_SIZE - 1;
   int k = int(t * n);
   int i = clamp(k, 0, n);
@@ -28,8 +24,50 @@ const QString glsl_definition_template
   float s = mix(spline[i], spline[j], r);
   return mix(a, b, s);
 }
-)")
-          .arg(omm::nodes::NodeCompilerGLSL::translate_type(types::SPLINE_TYPE));
+)";
+
+namespace types = omm::nodes::types;
+
+struct Overload
+{
+  std::string_view return_type;
+  std::string_view argument_type;
+
+  auto types() const
+  {
+    return std::array{return_type, argument_type};
+  }
+};
+
+template<typename Overload>
+QString generate_overload(QString template_definition, const Overload& overload)
+{
+  for (const auto& type : overload.types()) {
+    const auto qtype = QString::fromStdString(std::string{type});
+    const auto ttype = omm::nodes::NodeCompilerGLSL::translate_type(qtype);
+    template_definition = template_definition.arg(ttype);
+  }
+  return template_definition;
+}
+
+constexpr std::array supported_overloads {
+  Overload{.return_type = types::FLOATVECTOR_TYPE, .argument_type = types::FLOATVECTOR_TYPE},
+  Overload{.return_type = types::FLOAT_TYPE,       .argument_type = types::INTEGER_TYPE},
+  Overload{.return_type = types::FLOAT_TYPE,       .argument_type = types::FLOAT_TYPE},
+  Overload{.return_type = types::COLOR_TYPE,       .argument_type = types::COLOR_TYPE},
+  Overload{.return_type = types::FLOATVECTOR_TYPE, .argument_type = types::INTEGERVECTOR_TYPE}
+};
+
+template<typename Overloads>
+QString overload(const QString& definition_template, const Overloads& overloads)
+{
+  QStringList definitions;
+  definitions.reserve(overloads.size());
+  for (const auto& overload : overloads) {
+    definitions.push_back(generate_overload(definition_template, overload));
+  }
+  return definitions.join("\n");
+}
 
 }  // namespace
 
@@ -38,25 +76,16 @@ namespace omm::nodes
 
 const Node::Detail InterpolateNode::detail{
     .definitions = {
-        {BackendLanguage::Python,
-         QString(R"(
-def %1(x, y, balance, ramp):
-  t = ramp.value(balance)
-  return (1-t) * x + t * y
-)")
-             .arg(InterpolateNode::TYPE)},
-        {BackendLanguage::GLSL,
-         ::transform<QString, QList>(supported_glsl_types,
-                                     [](auto&& types) {
-                                       const auto& [return_type, arg_type] = types;
-                                       return glsl_definition_template
-                                           .arg(NodeCompilerGLSL::translate_type(return_type))
-                                           .arg(NodeCompilerGLSL::translate_type(arg_type));
-                                     })
-             .join("\n")
-             .arg(InterpolateNode::TYPE)},
+        {BackendLanguage::Python, QString{python_definition_template}.arg(InterpolateNode::TYPE)},
+        {BackendLanguage::GLSL, overload(QString{glsl_definition_template}
+                                          .arg(InterpolateNode::TYPE,
+                                               NodeCompilerGLSL::translate_type(types::SPLINE_TYPE)),
+                                         supported_overloads)
+        }
     },
-    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Interpolation")}};
+
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Interpolation")}
+  };
 
 InterpolateNode::InterpolateNode(NodeModel& model) : Node(model)
 {

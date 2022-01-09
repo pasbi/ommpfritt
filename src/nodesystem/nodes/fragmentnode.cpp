@@ -9,7 +9,7 @@
 namespace omm::nodes
 {
 
-const Node::Detail FragmentNode::detail{
+const Node::Detail FragmentNode::detail {
   .definitions = {{BackendLanguage::GLSL, ""}},
   .menu_path = {}
 };

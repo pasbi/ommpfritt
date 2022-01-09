@@ -6,20 +6,16 @@
 namespace
 {
 
-const std::vector<QString> conversion_options{
+std::vector<QString> conversion_options()
+{
+  return {
     omm::nodes::ColorConvertNode::tr("Identity"),
     omm::nodes::ColorConvertNode::tr("RGBA -> HSVA"),
     omm::nodes::ColorConvertNode::tr("HSVA -> RGBA"),
-};
+  };
+}
 
-}  // namespace
-
-namespace omm::nodes
-{
-
-const Node::Detail ColorConvertNode::detail{
-    .definitions = {{BackendLanguage::Python,
-      QString(R"(
+static constexpr auto python_defintion_template = R"(
 def %1(option, color):
   if option == 0:
     return color
@@ -30,10 +26,9 @@ def %1(option, color):
   else:
     // unreachable
     return [ 0.0, 0.0, 0.0, 1.0 ]
-)")
-          .arg(ColorConvertNode::TYPE)},
-     {BackendLanguage::GLSL,
-      QString(R"(
+)";
+
+static constexpr auto glsl_definition_template = R"(
 vec4 %1_0(int option, vec4 color) {
   if (option == 0) {
     return color;
@@ -56,19 +51,26 @@ vec4 %1_0(int option, vec4 color) {
     // unreachable
     return vec4(0.0, 0.0, 0.0, 1.0);
   }
-})")
-          .arg(ColorConvertNode::TYPE)}},
-    .menu_path = {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
-    },
+})";
 
+}  // namespace
+
+namespace omm::nodes
+{
+
+const Node::Detail ColorConvertNode::detail {
+  .definitions = {
+        {BackendLanguage::Python, QString{python_defintion_template}.arg(TYPE)},
+        {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(ColorConvertNode::TYPE)}
+  },
+  .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Color")},
 };
 
 ColorConvertNode::ColorConvertNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<OptionProperty>(CONVERSION_PROPERTY_KEY)
-      .set_options(conversion_options)
+      .set_options(conversion_options())
       .set_label(tr("conversion"))
       .set_category(category);
   create_property<ColorProperty>(COLOR_PROPERTY_KEY, Color())

@@ -3,12 +3,10 @@
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 
-namespace omm::nodes
+namespace
 {
 
-const Node::Detail Function2Node::detail{
-    .definitions = {{BackendLanguage::Python,
-      QString(R"(
+constexpr auto python_definition_template = R"(
 import math
 def %1(op, x, y):
   if op == 0:
@@ -23,10 +21,9 @@ def %1(op, x, y):
     return math.max(x, y)
   else:
     return 0.0
-)")
-          .arg(Function2Node::TYPE)},
-     {BackendLanguage::GLSL,
-      QString(R"(
+)";
+
+ constexpr auto glsl_definition_template = R"(
 float %1_0(int op, float x, float y) {
   if (op == 0) {
     return atan(y, x);
@@ -45,8 +42,18 @@ float %1_0(int op, float x, float y) {
 float %1_0(int op, int x, int y) {
   return %1_0(op, float(x), float(y));
 }
-)")
-          .arg(Function2Node::TYPE)}},
+)";
+
+}  // namespace
+
+namespace omm::nodes
+{
+
+const Node::Detail Function2Node::detail{
+    .definitions = {
+       {BackendLanguage::Python, QString{python_definition_template}.arg(Function2Node::TYPE)},
+       {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(Function2Node::TYPE)}
+    },
     .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Math")},
 };
 

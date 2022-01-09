@@ -3,22 +3,29 @@
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 
+namespace
+{
+
+constexpr auto python_definition_template = R"(
+def %1(v):
+  return v
+)";
+
+constexpr auto glsl_definition_template = R"(
+float %1_0(vec2 xy) { return xy.x; }
+float %1_1(vec2 xy) { return xy.y; }
+)";
+
+}  // namespace
+
 namespace omm::nodes
 {
 
-const Node::Detail DecomposeNode::detail{
-    .definitions = {{BackendLanguage::Python,
-      QString(R"(
-def %1(v):
-  return v
-)")
-          .arg(DecomposeNode::TYPE)},
-     {BackendLanguage::GLSL,
-      QString(R"(
-float %1_0(vec2 xy) { return xy.x; }
-float %1_1(vec2 xy) { return xy.y; }
-)")
-          .arg(DecomposeNode::TYPE)}},
+const Node::Detail DecomposeNode::detail {
+    .definitions = {
+        {BackendLanguage::Python, QString{python_definition_template}.arg(DecomposeNode::TYPE)},
+        {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(DecomposeNode::TYPE)}
+    },
     .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Vector")},
 };
 

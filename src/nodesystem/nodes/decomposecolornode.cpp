@@ -3,22 +3,31 @@
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
 
-namespace omm::nodes
+namespace
 {
 
-const Node::Detail DecomposeColorNode::detail{
-    .definitions = {{BackendLanguage::Python, QString(R"(
+constexpr auto python_definition_template = R"(
 def %1(c):
     return c
-)")},
-     {BackendLanguage::GLSL,
-      QString(R"(
+)";
+
+constexpr auto glsl_definition_template = R"(
 float %1_0(vec4 c) { return c.r; }
 float %1_1(vec4 c) { return c.g; }
 float %1_2(vec4 c) { return c.b; }
 float %1_3(vec4 c) { return c.a; }
-)")
-          .arg(DecomposeColorNode::TYPE)}},
+)";
+
+}  // namespace
+
+namespace omm::nodes
+{
+
+const Node::Detail DecomposeColorNode::detail {
+    .definitions = {
+      {BackendLanguage::Python, QString{python_definition_template}.arg(DecomposeColorNode::TYPE)},
+      {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(DecomposeColorNode::TYPE)},
+    },
     .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Color")},
 };
 

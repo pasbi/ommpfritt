@@ -3,21 +3,28 @@
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 
+namespace
+{
+
+constexpr auto python_definition_template = R"(
+def %1(a, b):
+  return [a, b]
+)";
+
+constexpr auto glsl_definition_template = R"(
+vec2 %1_0(float a, float b) { return vec2(a, b); }
+)";
+
+}  // namespace
+
 namespace omm::nodes
 {
 
-const Node::Detail ComposeNode::detail{
-    .definitions = {{BackendLanguage::Python,
-      QString(R"(
-def %1(a, b):
-  return [a, b]
-)")
-          .arg(ComposeNode::TYPE)},
-     {BackendLanguage::GLSL,
-      QString(R"(
-vec2 %1_0(float a, float b) { return vec2(a, b); }
-)")
-          .arg(ComposeNode::TYPE)}},
+const Node::Detail ComposeNode::detail {
+    .definitions = {
+      {BackendLanguage::Python, QString{python_definition_template}.arg(ComposeNode::TYPE)},
+      {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(ComposeNode::TYPE)}
+    },
     .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Vector")},
 };
 
