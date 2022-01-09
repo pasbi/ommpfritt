@@ -10,28 +10,95 @@
 namespace
 {
 
+constexpr auto GLSL = omm::nodes::BackendLanguage::GLSL;
+constexpr auto Python = omm::nodes::BackendLanguage::Python;
+
 namespace types = omm::nodes::types;
-constexpr std::array<std::string_view, 5> supported_glsl_types{types::FLOATVECTOR_TYPE,
-                                                               types::INTEGER_TYPE,
-                                                               types::FLOAT_TYPE,
-                                                               types::COLOR_TYPE,
-                                                               types::INTEGERVECTOR_TYPE};
+
+static constexpr auto operations = std::array{QT_TR_NOOP("+"), QT_TR_NOOP("-"), QT_TR_NOOP("*"),
+                                              QT_TR_NOOP("/")};
 
 constexpr auto glsl_definition_template = R"(
-%1 %2_0(int op, %1 a, %1 b) {
-  if (op == 0) {
-    return a + b;
-  } else if (op == 1) {
-    return a - b;
-  } else if (op == 2) {
-    return a * b;
-  } else if (op == 3) {
-    return a / b;
+%3 %1_0(int op, %3 a, %3 b) {
+%2
+}
+%3 %1_1(int op, %3 a, %3 b) {
+  return %1_0(op, v);
+}
+)";
+
+constexpr auto python_definition_template = R"(
+import math
+@listarithm_decorator
+def %1(op, v):
+%2
+)";
+
+constexpr auto python_divide = R"(
+import numpy as np
+def isinteger(v):
+    if isinstance(v, int):
+        return True
+    elif isinstance(v, np.ndarray):
+        return issubclass(v.dtype.type, np.integer)
+    else:
+        return False
+
+if isinstance(a, int) and isinstance(b, int):
+  return int(a / b)
+elif  isinteger(a) and isinteger(b):
+    return (a / b).astype(np.int)
+else:
+  return a / b
+)";
+
+template<omm::nodes::BackendLanguage>
+QString generate_condition(const int i, const QString&)
+{
+  return QString{"op == %1"}.arg(i);
+}
+
+template<omm::nodes::BackendLanguage language>
+QString generate_return_value(const QString& function_name)
+{
+  if (language == Python && function_name == "/") {
+    return python_divide;
   } else {
-    // unreachable
-    return %1(0.0);
+    return QString("a %1 b").arg(function_name);
   }
-})";
+}
+
+template<omm::nodes::BackendLanguage language> QString definition()
+{
+  using omm::nodes::codegeneration::if_else_chain;
+  using omm::nodes::codegeneration::indent;
+  const auto chain = if_else_chain<language>(operations,
+                                             generate_condition<language>,
+                                             generate_return_value<language>);
+  return QString{language == GLSL ? glsl_definition_template : python_definition_template}
+      .arg(omm::nodes::MathNode::TYPE, indent(chain, 1));
+}
+
+struct Overload
+{
+  std::string_view type;
+  auto types() const
+  {
+    return std::array {type};
+  }
+  bool operator==(std::string_view v) const
+  {
+    return v == type;
+  }
+};
+
+constexpr std::array overloads {
+      Overload{.type = types::FLOATVECTOR_TYPE},
+      Overload{.type = types::INTEGER_TYPE},
+      Overload{.type = types::FLOAT_TYPE},
+      Overload{.type = types::COLOR_TYPE},
+      Overload{.type = types::INTEGERVECTOR_TYPE}
+};
 
 }  // namespace
 
@@ -39,45 +106,9 @@ namespace omm::nodes
 {
 
 const Node::Detail MathNode::detail{
-    .definitions = {{BackendLanguage::Python,
-      QString(R"(
-@listarithm_decorator
-def %1(op, a, b):
-    if op == 0:
-        return a + b
-    elif op == 1:
-        return a - b
-    elif op == 2:
-        return a * b
-    elif op == 3:
-      import numpy as np
-      def isinteger(v):
-          if isinstance(v, int):
-              return True
-          elif isinstance(v, np.ndarray):
-              return issubclass(v.dtype.type, np.integer)
-          else:
-              return False
-
-      if isinstance(a, int) and isinstance(b, int):
-        return int(a / b)
-      elif  isinteger(a) and isinteger(b):
-          return (a / b).astype(np.int)
-      else:
-        return a / b
-    else:
-        # unreachable
-        return 0.0;
-)")
-          .arg(MathNode::TYPE)},
-     {BackendLanguage::GLSL,
-      ::transform<QString, QList>(supported_glsl_types,
-                                  [](std::string_view type) {
-                                    return QString{glsl_definition_template}.arg(
-                                        NodeCompilerGLSL::translate_type(QString{type.data()}));
-                                  })
-          .join("\n")
-          .arg(MathNode::TYPE)}
+    .definitions = {
+      {BackendLanguage::Python, definition<Python>()},
+      {BackendLanguage::GLSL, codegeneration::overload(definition<GLSL>(), overloads)}
     },
     .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Math")}};
 
@@ -85,9 +116,9 @@ MathNode::MathNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   auto& operation_property = create_property<OptionProperty>(OPERATION_PROPERTY_KEY, 0.0)
-                                 .set_options({tr("+"), tr("-"), tr("*"), tr("/")})
-                                 .set_label(QObject::tr("Operation"))
-                                 .set_category(category);
+      .set_options(::transform<QString, std::vector>(operations, [](const auto& op) { return tr(op); }))
+      .set_label(QObject::tr("Operation"))
+      .set_category(category);
   create_property<FloatProperty>(A_VALUE_KEY, PortType::Input, 0)
       .set_label(QObject::tr("a"))
       .set_category(category);
@@ -152,7 +183,7 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
     if (other_port.is_connected()) {
       return type == other_port.data_type();
     } else {
-      return ::contains(supported_glsl_types, std::string_view{type.toStdString().c_str()});
+      return ::contains(overloads, std::string_view{type.toStdString().c_str()});
     }
   };
 
