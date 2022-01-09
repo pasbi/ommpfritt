@@ -105,7 +105,9 @@ void Painter::toast(const Vec2f& pos, const QString& text) const
 }
 
 QBrush
-Painter::make_brush(const Style& style, const Object& object, const PainterOptions& options)
+Painter::make_brush(const Style& style,
+                    const Object& object,
+                    const PainterOptions& options)
 {
   if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->value<bool>()) {
     if (style.property("gl-brush")->value<bool>()) {

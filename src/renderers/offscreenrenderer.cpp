@@ -42,6 +42,16 @@ const std::vector<OffscreenRenderer::ShaderInput> OffscreenRenderer::fragment_sh
         QT_TRANSLATE_NOOP("OffscreenRenderer", "view_pos"),
         ShaderInput::Kind::Varying,
     },
+    {
+        Type::Integer,
+        QT_TRANSLATE_NOOP("OffscreenRenderer", "object_id"),
+        ShaderInput::Kind::Uniform,
+    },
+    {
+        Type::Integer,
+        QT_TRANSLATE_NOOP("OffscreenRenderer", "path_id"),
+        ShaderInput::Kind::Uniform,
+    },
 };
 
 QString OffscreenRenderer::ShaderInput::tr_name() const
@@ -70,6 +80,8 @@ uniform mat3 view_transform;
 uniform vec2 view_size;
 uniform vec2 roi_tl;
 uniform vec2 roi_br;
+uniform int object_id;
+uniform int path_id;
 
 vec2 unc(vec2 centered) {
   return (centered + vec2(1.0, 1.0)) / 2.0;
@@ -311,6 +323,8 @@ Texture OffscreenRenderer::render(const Object& object,
   ::set_uniform(*this, "view_size", Vec2f(options.device.width(), options.device.height()));
   ::set_uniform(*this, "roi_tl", Vec2f(roi.topLeft()));
   ::set_uniform(*this, "roi_br", Vec2f(roi.bottomRight()));
+  ::set_uniform(*this, "object_id", options.object_id);
+  ::set_uniform(*this, "path_id", options.path_id);
 
   m_vertices.bind();
 

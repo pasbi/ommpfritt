@@ -18,6 +18,8 @@ struct PainterOptions
   const Style* default_style = nullptr;
   const bool device_is_viewport;
   const QPaintDevice& device;
+  mutable std::size_t object_id;
+  mutable std::size_t path_id = 0;
 };
 
 }  // namespace omm
