@@ -77,7 +77,7 @@ NodeCompilerGLSL::NodeCompilerGLSL(const NodeModel& model) : NodeCompiler(model)
 {
 }
 
-QString NodeCompilerGLSL::generate_header(QStringList& lines) const
+AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::generate_header(QStringList& lines) const
 {
   m_uniform_ports.clear();
   lines.append("#version 330");
@@ -118,16 +118,16 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   for (AbstractPort* port : m_uniform_ports) {
     lines.push_back(QString("uniform %1 %2;").arg(translate_type(port->data_type()), port->uuid()));
   }
-  return "";
+  return {};
 }
 
-QString NodeCompilerGLSL::start_program(QStringList& lines)
+AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::start_program(QStringList& lines)
 {
   lines.append("void main() {");
-  return "";
+  return {};
 }
 
-QString NodeCompilerGLSL::end_program(QStringList& lines) const
+AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::end_program(QStringList& lines) const
 {
   if (const auto nodes = model().nodes(); !nodes.empty()) {
     const auto fragment_nodes
@@ -151,10 +151,10 @@ QString NodeCompilerGLSL::end_program(QStringList& lines) const
 
   lines.append("}");
 
-  return "";
+  return {};
 }
 
-QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines)
+AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines)
 {
   static const auto sort_ports = [](const auto& ports) {
     using PortT = std::decay_t<typename std::decay_t<decltype(ports)>::value_type>;
@@ -218,20 +218,19 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines)
       }
     }
   }
-  return "";
+  return {};
 }
 
-QString
-NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines)
+AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines)
 {
   lines.append(format_connection(ip, op));
-  return "";
+  return {};
 }
 
-QString NodeCompilerGLSL::define_node(const QString& node_type, QStringList& lines) const
+AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::define_node(const QString& node_type, QStringList& lines) const
 {
   lines.append(Node::detail(node_type).definitions.at(language));
-  return "";
+  return {};
 }
 
 std::set<AbstractPort*> NodeCompilerGLSL::uniform_ports() const

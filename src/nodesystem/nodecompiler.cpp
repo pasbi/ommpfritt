@@ -57,12 +57,28 @@ QString AbstractNodeCompiler::error()
   if (m_is_dirty) {
     compile();
   }
-  return m_last_error;
+  return m_last_error.message;
 }
 
 void AbstractNodeCompiler::invalidate()
 {
   m_is_dirty = true;
+}
+
+bool AbstractNodeCompiler::check(const AssemblyError& error)
+{
+  if (error.message.isEmpty()) {
+    return true;
+  } else {
+    m_last_error = error;
+    Q_EMIT compilation_failed(error.message);
+    return false;
+  }
+}
+
+AbstractNodeCompiler::AssemblyError::AssemblyError(const QString& message)
+    : message(message)
+{
 }
 
 }  // namespace omm

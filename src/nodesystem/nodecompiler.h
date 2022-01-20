@@ -24,7 +24,7 @@ class AbstractNodeCompiler : public QObject
 public:
   [[nodiscard]] QString last_error() const
   {
-    return m_last_error;
+    return m_last_error.message;
   }
 
 protected:
@@ -52,12 +52,20 @@ public:
   virtual void invalidate();
 
 protected:
-  QString m_last_error = "";
+  struct AssemblyError
+  {
+    AssemblyError(const QString& message = "");
+    QString message;
+  };
+
+  AssemblyError m_last_error;
   QString m_code = "";
   bool m_is_dirty = true;
+  bool check(const AssemblyError& error);
 
 private:
   const NodeModel& m_model;
+
 };
 
 template<typename ConcreteCompiler> class NodeCompiler : public AbstractNodeCompiler
@@ -66,23 +74,13 @@ public:
   bool compile() override
   {
     m_is_dirty = false;
-    m_code = "";
-    m_last_error = "";
+    m_code.clear();
+    m_last_error = {};
     QStringList lines;
     std::set<QString> used_node_types;
     std::list<std::unique_ptr<Statement>> statements;
     generate_statements(used_node_types, statements);
     const auto& self = static_cast<const ConcreteCompiler&>(*this);
-
-    const auto check = [this](const QString& msg) {
-      if (msg.isEmpty()) {
-        return true;
-      } else {
-        m_last_error = msg;
-        Q_EMIT compilation_failed(msg);
-        return false;
-      }
-    };
 
     if (!check(self.generate_header(lines))) {
       return false;
