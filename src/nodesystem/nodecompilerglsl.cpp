@@ -41,6 +41,68 @@ omm::nodes::AbstractPort* get_sibling(const omm::nodes::AbstractPort* port)
   return nullptr;
 }
 
+template<typename Ports> auto sort_ports(const Ports& ports)
+{
+  using PortT = std::decay_t<typename std::decay_t<decltype(ports)>::value_type>;
+  auto vec = ::transform<PortT, std::vector>(ports, ::identity);
+  std::sort(vec.begin(), vec.end(), [](const auto* p1, const auto* p2) {
+    assert(p1->port_type == p2->port_type && &p1->node == &p2->node);
+    return p1->index < p2->index;
+  });
+  return vec;
+};
+
+void compile_output_ports(const omm::nodes::Node& node, QStringList& lines)
+{
+  auto ips = sort_ports(node.ports<omm::nodes::InputPort>());
+  const QStringList args = ::transform<QString, QList>(ips, [](const auto* ip) {
+    if (!ip->is_connected() && ip->flavor == omm::nodes::PortFlavor::Property) {
+      omm::nodes::AbstractPort* op = get_sibling(ip);
+      if (op != nullptr) {
+        return op->uuid();
+      }
+    }
+    return ip->uuid();
+  });
+
+  auto ordinary_output_ports = ::filter_if(node.ports<omm::nodes::OutputPort>(), [](const auto* op) {
+    return op->flavor == omm::nodes::PortFlavor::Ordinary;
+  });
+  std::size_t i = 0;
+  for (const auto* port : sort_ports(ordinary_output_ports)) {
+    const auto port_data_type = omm::nodes::NodeCompilerGLSL::translate_type(port->data_type());
+    if (const auto& node = port->node; node.type() == omm::nodes::VertexNode::TYPE) {
+      const auto& vertex_node = dynamic_cast<const omm::nodes::VertexNode&>(node);
+      const auto& ports = vertex_node.shader_inputs();
+      const auto it = std::find(ports.begin(), ports.end(), port);
+      if (it != ports.end()) {
+        lines.push_back( QString("%1 %2 = %3;") .arg(port_data_type, port->uuid(), it->input_info.name));
+      }
+    } else {
+      lines.push_back(QString("%1 %2 = %3_%4(%5);")
+                          .arg(port_data_type, port->uuid(), node.type())
+                          .arg(i)
+                          .arg(args.join(", ")));
+    }
+    i += 1;
+  }
+}
+
+void compile_inter_node_connections(const omm::nodes::Node& node, QStringList& lines)
+{
+  for (const auto* op : node.ports<omm::nodes::OutputPort>()) {
+    // only handle some output ports.
+    // The remainding ones represent uniform variables. see NodeCompilerGLSL::header
+    if (op->flavor == omm::nodes::PortFlavor::Property) {
+      const auto* sibling_input_port = get_sibling(op);
+      if (sibling_input_port != nullptr && sibling_input_port->is_connected()) {
+        assert(sibling_input_port->port_type == omm::nodes::PortType::Input);
+        lines.push_back(format_connection(*op, *sibling_input_port));
+      }
+    }
+  }
+}
+
 }  // namespace
 
 namespace omm::nodes
@@ -156,68 +218,8 @@ AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::end_program(QStringList& l
 
 AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines)
 {
-  static const auto sort_ports = [](const auto& ports) {
-    using PortT = std::decay_t<typename std::decay_t<decltype(ports)>::value_type>;
-    auto vec = ::transform<PortT, std::vector>(ports, ::identity);
-    std::sort(vec.begin(), vec.end(), [](const auto* p1, const auto* p2) {
-      assert(p1->port_type == p2->port_type && &p1->node == &p2->node);
-      return p1->index < p2->index;
-    });
-    return vec;
-  };
-
-  {
-    auto ips = sort_ports(node.ports<InputPort>());
-    const QStringList args = ::transform<QString, QList>(ips, [](InputPort* ip) {
-      if (!ip->is_connected() && ip->flavor == PortFlavor::Property) {
-        AbstractPort* op = get_sibling(ip);
-        if (op != nullptr) {
-          return op->uuid();
-        }
-      }
-      return ip->uuid();
-    });
-
-    auto ordinary_output_ports = ::filter_if(node.ports<OutputPort>(), [](OutputPort* op) {
-      return op->flavor == PortFlavor::Ordinary;
-    });
-    std::size_t i = 0;
-    for (OutputPort* port : sort_ports(ordinary_output_ports)) {
-      if (const Node& node = port->node; node.type() == VertexNode::TYPE) {
-        const auto& vertex_node = dynamic_cast<const VertexNode&>(node);
-        const auto& ports = vertex_node.shader_inputs();
-        const auto it = std::find(ports.begin(), ports.end(), port);
-        if (it != ports.end()) {
-          lines.push_back(
-              QString("%1 %2 = %3;")
-                  .arg(translate_type(port->data_type()), port->uuid(), it->input_info.name));
-        }
-      } else {
-        lines.push_back(QString("%1 %2 = %3_%4(%5);")
-                            .arg(translate_type(port->data_type()), port->uuid(), node.type())
-                            .arg(i)
-                            .arg(args.join(", ")));
-      }
-      i += 1;
-    }
-  }
-
-  {
-    auto leftover_property_output_ports = ::filter_if(node.ports<OutputPort>(), [](OutputPort* op) {
-      return op->flavor == PortFlavor::Property && get_sibling(op) != nullptr;
-    });
-    for (OutputPort* op : node.ports<OutputPort>()) {
-      // only handle some output ports.
-      // The remainding ones represent uniform variables. see NodeCompilerGLSL::header
-      if (op->flavor == PortFlavor::Property) {
-        AbstractPort* sibling_input_port = get_sibling(op);
-        if (sibling_input_port != nullptr && sibling_input_port->is_connected()) {
-          assert(sibling_input_port->port_type == PortType::Input);
-          lines.push_back(format_connection(*op, *sibling_input_port));
-        }
-      }
-    }
-  }
+  compile_output_ports(node, lines);
+  compile_inter_node_connections(node, lines);
   return {};
 }
 

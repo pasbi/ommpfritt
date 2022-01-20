@@ -4,7 +4,7 @@
 #include "properties/integerproperty.h"
 #include "properties/floatvectorproperty.h"
 
-namespace omm::nodes
+namespace
 {
 
 constexpr auto glsl_definition_template = R"(
@@ -24,7 +24,6 @@ constexpr auto glsl_definition_template = R"(
 })";
 
 constexpr auto python_definition_template = R"(
-@listarithm_decorator
 def %1(op, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9):
   try:
     return [a0, a1, a2, a3, a4, a5, a6, a7, a8, a9][op]
@@ -42,9 +41,9 @@ constexpr auto n_options = 10;
 auto glsl_definitions()
 {
   QStringList overloads;
-  constexpr auto types = std::array{types::FLOATVECTOR_TYPE, types::INTEGER_TYPE,
-                                    types::FLOAT_TYPE, types::COLOR_TYPE,
-                                    types::INTEGERVECTOR_TYPE};
+  constexpr auto types = std::array{omm::nodes::types::FLOATVECTOR_TYPE, omm::nodes::types::INTEGER_TYPE,
+                                    omm::nodes::types::FLOAT_TYPE, omm::nodes::types::COLOR_TYPE,
+                                    omm::nodes::types::INTEGERVECTOR_TYPE};
   overloads.reserve(types.size());
   const auto template_definition = QString{glsl_definition_template}.arg(omm::nodes::SwitchNode::TYPE);
   for (const auto& type : types) {
@@ -53,6 +52,11 @@ auto glsl_definitions()
   }
   return overloads.join("\n");
 }
+
+}  // namespace
+
+namespace omm::nodes
+{
 
 const Node::Detail SwitchNode::detail{
     .definitions = {
