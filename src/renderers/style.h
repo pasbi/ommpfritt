@@ -9,7 +9,6 @@ namespace omm
 {
 
 class MarkerProperties;
-class NodeModel;
 class OffscreenRenderer;
 class Scene;
 struct PainterOptions;

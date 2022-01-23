@@ -15,7 +15,7 @@ std::vector<QString> conversion_options()
   };
 }
 
-static constexpr auto python_defintion_template = R"(
+constexpr auto python_defintion_template = R"(
 def %1(option, color):
   if option == 0:
     return color
@@ -28,7 +28,7 @@ def %1(option, color):
     return [ 0.0, 0.0, 0.0, 1.0 ]
 )";
 
-static constexpr auto glsl_definition_template = R"(
+constexpr auto glsl_definition_template = R"(
 vec4 %1_0(int option, vec4 color) {
   if (option == 0) {
     return color;

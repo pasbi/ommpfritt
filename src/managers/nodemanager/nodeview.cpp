@@ -179,7 +179,7 @@ void NodeView::paste_from_clipboard()
         = ::filter_if(nodes, [](const auto& node) { return node->copyable(); });
     const auto make_copy = [&model, &copy_map](auto* const node) {
       auto clone = node->clone(model);
-      copy_map[node] = clone.get();
+      copy_map[node] = clone.get();  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
       return clone;
     };
     auto copies = ::transform<std::unique_ptr<nodes::Node>, std::vector>(copyable_nodes, make_copy);

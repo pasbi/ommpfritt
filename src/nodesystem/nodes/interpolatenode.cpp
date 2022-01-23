@@ -33,7 +33,7 @@ struct Overload
   std::string_view return_type;
   std::string_view argument_type;
 
-  auto types() const
+  [[nodiscard]] auto types() const
   {
     return std::array{return_type, argument_type};
   }
