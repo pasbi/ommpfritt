@@ -112,4 +112,39 @@ QString SwitchNode::type() const
   return TYPE;
 }
 
+InputPort* SwitchNode::find_surrogate_for(const InputPort& port) const
+{
+  if (!port.is_connected()) {
+    std::deque<InputPort*> candidates(m_options.begin(), m_options.end());
+    const auto it = std::find(candidates.begin(), candidates.end(), &port);
+    std::rotate(candidates.begin(), it, candidates.end());
+    std::reverse(candidates.begin(), candidates.end());
+    for (auto* other_input_port : candidates) {
+      if (other_input_port->is_connected()) {
+        return other_input_port;
+      }
+    }
+  }
+  return nullptr;
+}
+
+QString SwitchNode::input_data_type(const InputPort& port) const
+{
+  if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
+    return Node::input_data_type(port);
+  } else {
+    return surrogate->data_type();
+  }
+}
+
+QString SwitchNode::dangling_input_port_uuid(const InputPort& port) const
+{
+  if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
+    return Node::dangling_input_port_uuid(port);
+  } else {
+    LINFO << "  surrogate uuid: " << surrogate->label();
+    return surrogate->uuid();
+  }
+}
+
 }  // namespace omm::nodes

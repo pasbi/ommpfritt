@@ -20,10 +20,13 @@ public:
   bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
   QString type() const override;
   static const Detail detail;
+  QString input_data_type(const InputPort& port) const override;
+  virtual QString dangling_input_port_uuid(const InputPort& port) const override;
 
 private:
   OutputPort* m_output_port;
   std::vector<InputPort*> m_options;
+  InputPort* find_surrogate_for(const InputPort& port) const;
 };
 
 }  // namespace omm::nodes

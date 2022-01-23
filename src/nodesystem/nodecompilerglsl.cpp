@@ -55,11 +55,18 @@ template<typename Ports> auto sort_ports(const Ports& ports)
 void compile_output_ports(const omm::nodes::Node& node, QStringList& lines)
 {
   auto ips = sort_ports(node.ports<omm::nodes::InputPort>());
-  const QStringList args = ::transform<QString, QList>(ips, [](const auto* ip) {
-    if (!ip->is_connected() && ip->flavor == omm::nodes::PortFlavor::Property) {
-      omm::nodes::AbstractPort* op = get_sibling(ip);
-      if (op != nullptr) {
-        return op->uuid();
+  const QStringList args = ::transform<QString, QList>(ips, [&node](const auto* ip) {
+    if (!ip->is_connected()) {
+      if (ip->flavor == omm::nodes::PortFlavor::Property) {
+        // simply use the output port instead of the input port.
+        // Property-Output-Ports are always defined.
+        omm::nodes::AbstractPort* op = get_sibling(ip);
+        if (op != nullptr) {
+          return op->uuid();
+        }
+      } else {
+        // If there's no property and the input port is not connected, we ask the node later what to do.
+        return node.dangling_input_port_uuid(*ip);
       }
     }
     return ip->uuid();

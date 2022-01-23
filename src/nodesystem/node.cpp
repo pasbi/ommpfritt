@@ -138,6 +138,11 @@ BackendLanguage Node::language() const
   return model().language();
 }
 
+QString Node::dangling_input_port_uuid(const InputPort& port) const
+{
+  return port.uuid();
+}
+
 std::set<Node*> Node::successors() const
 {
   std::set<Node*> successors;

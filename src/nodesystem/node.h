@@ -56,6 +56,16 @@ public:
 
   BackendLanguage language() const;
 
+  /**
+   * @brief dangling_input_port_uuid When an input port is dangling (not connected and not belonging
+   *  to a property), it's value is not defined.
+   *  The node can return an alternative, defined uuid for this port with this function.
+   *  This functionality is useful in the SwitchNode for example, when one or more ports are not
+   *  connected.
+   *  The base implementation returns the uuid of the input port.
+   */
+  virtual QString dangling_input_port_uuid(const InputPort& port) const;
+
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
   static constexpr auto OUTPUT_PORT_PTR = "out";
