@@ -7,7 +7,7 @@
 namespace omm::nodes
 {
 
-NodesOwner::NodesOwner(BackendLanguage language, Scene& scene)
+NodesOwner::NodesOwner(BackendLanguage language, Scene* scene)
     : m_node_model(NodeModel::make(language, scene))
 {
 }

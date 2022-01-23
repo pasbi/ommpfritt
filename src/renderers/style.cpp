@@ -44,7 +44,7 @@ auto make_default_marker_properties(const QString& prefix, omm::Style& style)
 namespace omm
 {
 Style::Style(Scene* scene)
-    : PropertyOwner(scene), NodesOwner(nodes::BackendLanguage::GLSL, *scene)
+    : PropertyOwner(scene), NodesOwner(nodes::BackendLanguage::GLSL, scene)
     , start_marker(make_default_marker_properties(start_marker_prefix,*this))
     , end_marker(make_default_marker_properties(end_marker_prefix, *this))
     , m_offscreen_renderer(OffscreenRenderer::make())

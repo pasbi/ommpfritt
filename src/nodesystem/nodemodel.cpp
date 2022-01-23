@@ -34,13 +34,13 @@ make_compiler(omm::nodes::BackendLanguage language, omm::nodes::NodeModel& model
 namespace omm::nodes
 {
 
-NodeModel::NodeModel(BackendLanguage language, Scene& scene)
+NodeModel::NodeModel(BackendLanguage language, Scene* scene)
     : m_scene(scene), m_compiler(make_compiler(language, *this))
 {
   init();
 }
 
-std::unique_ptr<NodeModel> NodeModel::make(BackendLanguage language, Scene& scene)
+std::unique_ptr<NodeModel> NodeModel::make(BackendLanguage language, Scene* scene)
 {
   const bool no_opengl = !Application::instance().options().have_opengl;
   if (language == BackendLanguage::GLSL && no_opengl) {
@@ -195,6 +195,11 @@ std::set<AbstractPort*> NodeModel::ports() const
     ports.insert(ps.begin(), ps.end());
   }
   return ports;
+}
+
+Scene* NodeModel::scene() const
+{
+  return m_scene;
 }
 
 AbstractNodeCompiler& NodeModel::compiler() const

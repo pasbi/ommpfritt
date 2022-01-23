@@ -47,7 +47,7 @@ private:
   Node &m_node;
 };
 
-Node::Node(NodeModel& model) : PropertyOwner(&model.scene()), m_model(model)
+Node::Node(NodeModel& model) : PropertyOwner(model.scene()), m_model(model)
 {
 }
 

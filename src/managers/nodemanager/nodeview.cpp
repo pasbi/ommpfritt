@@ -110,7 +110,7 @@ void NodeView::set_model(nodes::NodeModel* model)
     m_node_scene = nullptr;
     setScene(nullptr);
   } else {
-    m_node_scene = std::make_unique<NodeScene>(model->scene());
+    m_node_scene = std::make_unique<NodeScene>(*model->scene());
     m_node_scene->set_model(model);
     m_view_scene_connection = connect(model,
                                       &nodes::NodeModel::topology_changed,
@@ -199,7 +199,7 @@ void NodeView::paste_from_clipboard()
 
     if (!copies.empty()) {
       {
-        Scene& scene = model.scene();
+        Scene& scene = *model.scene();
         auto macro = scene.history().start_macro(tr("Copy Nodes"));
 
         {  // restore connections
@@ -405,7 +405,7 @@ void NodeView::dropEvent(QDropEvent* event)
       pos += QPointF(OFFSET, OFFSET);
       return reference_node;
     });
-    model->scene().submit<AddNodesCommand>(*model, std::move(nodes));
+    model->scene()->submit<AddNodesCommand>(*model, std::move(nodes));
   } else {
     QGraphicsView::dropEvent(event);
   }
@@ -430,7 +430,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
       if (auto* item = itemAt(event->pos()); item != nullptr && item->type() == NodeItem::TYPE) {
         const QPointF current = mapToScene(event->pos());
         const QPointF last = mapToScene(m_last_mouse_position);
-        model->scene().submit<MoveNodesCommand>(selected_nodes(), current - last);
+        model->scene()->submit<MoveNodesCommand>(selected_nodes(), current - last);
       }
     }
   }
@@ -468,10 +468,10 @@ void NodeView::mouseReleaseEvent(QMouseEvent* event)
   if (auto* model = this->model(); model != nullptr) {
     std::unique_ptr<Macro> macro;
     if (commands.size() > 1) {
-      macro = model->scene().history().start_macro(tr("Modify Connections"));
+      macro = model->scene()->history().start_macro(tr("Modify Connections"));
     }
     for (auto&& command : commands) {
-      model->scene().submit(std::move(command));
+      model->scene()->submit(std::move(command));
     }
   }
 
@@ -507,7 +507,7 @@ void NodeView::remove_selection() const
   static const auto can_remove = [](const auto* const n) { return n->type() != nodes::FragmentNode::TYPE; };
   if (auto* model = this->model(); model != nullptr) {
     auto selection = ::filter_if(::transform<nodes::Node*, std::vector>(selected_nodes()), can_remove);
-    model->scene().submit<RemoveNodesCommand>(*model, selection);
+    model->scene()->submit<RemoveNodesCommand>(*model, selection);
   }
 }
 

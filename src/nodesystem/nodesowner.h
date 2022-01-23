@@ -23,7 +23,7 @@ class NodeModel;
 class NodesOwner
 {
 protected:
-  NodesOwner(BackendLanguage language, Scene& scene);
+  NodesOwner(BackendLanguage language, Scene* scene);
   NodesOwner(const NodesOwner& other);
   ~NodesOwner();
   void connect_edit_property(TriggerProperty& property, QObject& self);

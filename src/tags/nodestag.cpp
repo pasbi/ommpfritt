@@ -47,7 +47,7 @@ void populate_locals(py::object& locals, const omm::nodes::NodeModel& model)
 namespace omm
 {
 NodesTag::NodesTag(Object& owner)
-    : Tag(owner), NodesOwner(nodes::BackendLanguage::Python, *owner.scene())
+    : Tag(owner), NodesOwner(nodes::BackendLanguage::Python, owner.scene())
 {
   const QString category = QObject::tr("Basic");
   create_property<OptionProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
