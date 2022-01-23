@@ -3,6 +3,7 @@
 #include "nodesystem/nodemodel.h"
 #include "nodesystem/nodes/constantnode.h"
 #include "nodesystem/nodes/fragmentnode.h"
+#include "nodesystem/nodes/switchnode.h"
 #include "nodesystem/ordinaryport.h"
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
@@ -81,4 +82,18 @@ TEST_F(GLSLNodeTest, incompatible_connection)
 {
   fragment_node().input_port().connect(&create_constant_node_output<omm::FloatProperty>());
   EXPECT_FALSE(compile());
+}
+
+TEST_F(GLSLNodeTest, switch_node)
+{
+  using omm::nodes::OutputPort;
+  using omm::nodes::InputPort;
+  auto& switch_node = m_model.add_node(std::make_unique<omm::nodes::SwitchNode>(m_model));
+  fragment_node().input_port().connect(switch_node.find_port<OutputPort>(1));
+  auto& constant_color_port = create_constant_node_output<omm::ColorProperty>();
+  for (int i = 0; i < 9; ++i) {
+    auto* s_i = switch_node.find_port<InputPort>(i + 1);
+    s_i->connect(&constant_color_port);
+  }
+  EXPECT_TRUE(compile());
 }
