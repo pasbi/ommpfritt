@@ -255,6 +255,16 @@ bool OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
   }
 }
 
+QOpenGLContext& OffscreenRenderer::context()
+{
+  return m_context;
+}
+
+QOpenGLShaderProgram* OffscreenRenderer::program() const
+{
+  return m_program.get();
+}
+
 void OffscreenRenderer::make_current()
 {
   if (!m_context.makeCurrent(&m_surface)) {

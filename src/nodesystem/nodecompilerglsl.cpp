@@ -50,7 +50,7 @@ template<typename Ports> auto sort_ports(const Ports& ports)
     return p1->index < p2->index;
   });
   return vec;
-};
+}
 
 void compile_output_ports(const omm::nodes::Node& node, QStringList& lines)
 {
