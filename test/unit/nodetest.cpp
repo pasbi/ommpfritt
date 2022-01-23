@@ -9,25 +9,11 @@
 #include "properties/floatproperty.h"
 #include "registers.h"
 #include "renderers/offscreenrenderer.h"
-
+#include "testutil.h"
 #include <QApplication>
 
 namespace
 {
-
-class GuiApplication
-{
-private:
-  int m_application_argc = 0;
-  char** m_application_argv = nullptr;
-  QGuiApplication m_application;
-public:
-  explicit GuiApplication()
-      : m_application(m_application_argc, m_application_argv)
-  {
-    omm::register_everything();
-  }
-};
 
 class GLSLNodeTest : public ::testing::Test
 {
@@ -38,7 +24,7 @@ protected:
   {
   }
 
-  GuiApplication m_application;
+  ommtest::GuiApplication m_application;
   omm::nodes::NodeModel m_model;
   omm::nodes::NodeCompilerGLSL m_compiler;
   omm::OffscreenRenderer m_offscreen_renderer;

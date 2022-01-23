@@ -20,7 +20,7 @@ endif()
 
 macro(package_add_test SOURCE_FILE)
     string(REGEX REPLACE "\.[^.]*$" "" TESTNAME "${SOURCE_FILE}")
-    add_executable(${TESTNAME} main.cpp ${SOURCE_FILE} ${compiled_resource_file})
+    add_executable(${TESTNAME} main.cpp testutil.cpp testutil.h ${SOURCE_FILE} ${compiled_resource_file})
     add_dependencies(${TESTNAME} libommpfritt)
     target_link_libraries(${TESTNAME} PRIVATE gtest gmock libommpfritt)
     target_compile_definitions(${TESTNAME} PRIVATE "PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}")
