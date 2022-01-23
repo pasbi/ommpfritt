@@ -42,7 +42,14 @@ protected:
   omm::nodes::NodeCompilerGLSL m_compiler;
   omm::OffscreenRenderer m_offscreen_renderer;
 
-  omm::nodes::FragmentNode& fragment_node() const
+  template<typename Property> auto& create_constant_node_output(const QString& name = "")
+  {
+    auto& node = m_model.add_node(std::make_unique<omm::nodes::ConstantNode>(m_model));
+    const auto& property = node.add_property(name, std::make_unique<Property>());
+    return *node.find_port<omm::nodes::OutputPort>(property);
+  }
+
+  auto& fragment_node() const
   {
     const auto nodes = m_model.nodes();
     static constexpr auto is_fragment_node = [](const omm::nodes::Node* node) {
@@ -66,18 +73,12 @@ TEST_F(GLSLNodeTest, empty_model)
 
 TEST_F(GLSLNodeTest, simple_model)
 {
-  auto& constant_node = m_model.add_node(std::make_unique<omm::nodes::ConstantNode>(m_model));
-  const auto& color_property = constant_node.add_property("", std::make_unique<omm::ColorProperty>());
-  const auto& constant_node_color_port = constant_node.find_port<omm::nodes::OutputPort>(color_property);
-  fragment_node().input_port().connect(constant_node_color_port);
+  fragment_node().input_port().connect(&create_constant_node_output<omm::ColorProperty>());
   EXPECT_TRUE(compile());
 }
 
 TEST_F(GLSLNodeTest, incompatible_connection)
 {
-  auto& constant_node = m_model.add_node(std::make_unique<omm::nodes::ConstantNode>(m_model));
-  const auto& property = constant_node.add_property("", std::make_unique<omm::FloatProperty>());
-  const auto& port = constant_node.find_port<omm::nodes::OutputPort>(property);
-  fragment_node().input_port().connect(port);
+  fragment_node().input_port().connect(&create_constant_node_output<omm::FloatProperty>());
   EXPECT_FALSE(compile());
 }
