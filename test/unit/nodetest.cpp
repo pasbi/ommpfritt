@@ -43,14 +43,14 @@ protected:
   omm::nodes::NodeCompilerGLSL m_compiler;
   omm::OffscreenRenderer m_offscreen_renderer;
 
-  template<typename Property> auto& create_constant_node_output(const QString& name = "")
+  template<typename Property> [[nodiscard]] auto& create_constant_node_output(const QString& name = "")
   {
     auto& node = m_model.add_node(std::make_unique<omm::nodes::ConstantNode>(m_model));
     const auto& property = node.add_property(name, std::make_unique<Property>());
     return *node.find_port<omm::nodes::OutputPort>(property);
   }
 
-  auto& fragment_node() const
+  [[nodiscard]] auto& fragment_node() const
   {
     const auto nodes = m_model.nodes();
     static constexpr auto is_fragment_node = [](const omm::nodes::Node* node) {
@@ -59,7 +59,7 @@ protected:
     return dynamic_cast<omm::nodes::FragmentNode&>(**std::find_if(nodes.begin(), nodes.end(), is_fragment_node));
   }
 
-  bool compile()
+  [[nodiscard]] bool compile()
   {
     return m_offscreen_renderer.set_fragment_shader(m_compiler.code());
   }

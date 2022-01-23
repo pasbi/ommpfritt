@@ -60,4 +60,9 @@ bool DecomposeColorNode::accepts_input_data_type(const QString& type, const Inpu
   return type == types::COLOR_TYPE;
 }
 
+QString DecomposeColorNode::type() const
+{
+  return TYPE;
+}
+
 }  // namespace omm::nodes

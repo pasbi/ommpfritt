@@ -21,6 +21,11 @@ VertexNode::VertexNode(NodeModel& model) : Node(model)
   }
 }
 
+QString VertexNode::type() const
+{
+  return TYPE;
+}
+
 QString VertexNode::output_data_type(const OutputPort& port) const
 {
   const auto it = std::find(m_shader_inputs.begin(), m_shader_inputs.end(), &port);

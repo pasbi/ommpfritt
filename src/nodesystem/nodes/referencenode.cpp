@@ -23,6 +23,11 @@ ReferenceNode::ReferenceNode(NodeModel& model) : Node(model)
       .set_category(category);
 }
 
+QString ReferenceNode::type() const
+{
+  return TYPE;
+}
+
 void ReferenceNode::populate_menu(QMenu& menu)
 {
   auto forward_menu = std::make_unique<QMenu>(tr("Forwarded Ports"));

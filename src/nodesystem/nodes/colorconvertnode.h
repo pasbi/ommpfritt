@@ -16,12 +16,9 @@ public:
   static constexpr auto COLOR_PROPERTY_KEY = "color";
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ColorConvertNode");
 
-  QString output_data_type(const OutputPort& port) const override;
-  QString title() const override;
-  QString type() const override
-  {
-    return TYPE;
-  }
+  [[nodiscard]] QString output_data_type(const OutputPort& port) const override;
+  [[nodiscard]] QString title() const override;
+  [[nodiscard]] QString type() const override;
   static const Detail detail;
 
 private:

@@ -28,13 +28,10 @@ public:
   Node& operator=(const Node&) = delete;
   Node& operator=(Node&&) = delete;
 
-  Flag flags() const override
-  {
-    return Flag::None;
-  }
+  [[nodiscard]] Flag flags() const override;
 
-  std::set<AbstractPort*> ports() const;
-  template<typename PortT> std::set<PortT*> ports() const
+  [[nodiscard]] std::set<AbstractPort*> ports() const;
+  template<typename PortT> [[nodiscard]] std::set<PortT*> ports() const
   {
     const auto predicate = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
     const auto convert = [](AbstractPort* p) { return static_cast<PortT*>(p); };
@@ -45,16 +42,13 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
   void set_pos(const QPointF& pos);
-  QPointF pos() const;
+  [[nodiscard]] QPointF pos() const;
 
-  bool is_free() const;
-  NodeModel& model() const
-  {
-    return m_model;
-  }
-  QString name() const override;
+  [[nodiscard]] bool is_free() const;
+  [[nodiscard]] NodeModel& model() const;
+  [[nodiscard]] QString name() const override;
 
-  BackendLanguage language() const;
+  [[nodiscard]] BackendLanguage language() const;
 
   /**
    * @brief dangling_input_port_uuid When an input port is dangling (not connected and not belonging
@@ -64,7 +58,7 @@ public:
    *  connected.
    *  The base implementation returns the uuid of the input port.
    */
-  virtual QString dangling_input_port_uuid(const InputPort& port) const;
+  [[nodiscard]] virtual QString dangling_input_port_uuid(const InputPort& port) const;
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
@@ -72,8 +66,8 @@ public:
   static constexpr auto INPUT_PORT_PTR = "in";
   static constexpr auto CONNECTED_NODE_PTR = "node";
 
-  std::set<Node*> successors() const;
-  template<typename PortT> PortT* find_port(std::size_t index) const
+  [[nodiscard]] std::set<Node*> successors() const;
+  template<typename PortT> [[nodiscard]] PortT* find_port(std::size_t index) const
   {
     for (auto&& port : m_ports) {
       if (port->index == index && PortT::PORT_TYPE == port->port_type) {
@@ -83,7 +77,7 @@ public:
     return nullptr;
   }
 
-  template<typename PortT> PortT* find_port(const Property& property) const
+  template<typename PortT> [[nodiscard]] PortT* find_port(const Property& property) const
   {
     for (auto&& port : m_ports) {
       if (PortT::PORT_TYPE == port->port_type && port->flavor == PortFlavor::Property) {
@@ -96,21 +90,18 @@ public:
     return nullptr;
   }
 
-  template<typename PortT> PortT* find_port(const QString& key) const
+  template<typename PortT> [[nodiscard]] PortT* find_port(const QString& key) const
   {
     return find_port<PortT>(*property(key));
   }
 
-  virtual void populate_menu(QMenu&)
-  {
-  }
-  virtual QString title() const;
-
-  virtual QString output_data_type(const OutputPort& port) const;
-  virtual QString input_data_type(const InputPort& port) const;
-  virtual bool accepts_input_data_type(const QString& type, const InputPort& port) const;
-  virtual bool is_valid() const;
-  std::unique_ptr<Node> clone(NodeModel& model) const;
+  virtual void populate_menu(QMenu&);
+  [[nodiscard]] virtual QString title() const;
+  [[nodiscard]] virtual QString output_data_type(const OutputPort& port) const;
+  [[nodiscard]] virtual QString input_data_type(const InputPort& port) const;
+  [[nodiscard]] virtual bool accepts_input_data_type(const QString& type, const InputPort& port) const;
+  [[nodiscard]] virtual bool is_valid() const;
+  [[nodiscard]] std::unique_ptr<Node> clone(NodeModel& model) const;
 
 protected:
   template<typename PortT, typename... Args> PortT& add_port(Args&&... args)
@@ -148,10 +139,7 @@ protected:
 public:
   Property& add_property(const QString& key, std::unique_ptr<Property> property) override;
   std::unique_ptr<Property> extract_property(const QString& key) override;
-  virtual bool copyable() const
-  {
-    return true;
-  }
+  [[nodiscard]] virtual bool copyable() const;
 
 Q_SIGNALS:
   void pos_changed(const QPointF& pos);
@@ -171,11 +159,8 @@ public:
     std::vector<const char*> menu_path;
   };
 
-  static const Detail& detail(const QString& name)
-  {
-    return *m_details.at(name);
-  }
-  static QString fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t);
+  [[nodiscard]] static const Detail& detail(const QString& name);
+  [[nodiscard]] static QString fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t);
 
 public:
   // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)

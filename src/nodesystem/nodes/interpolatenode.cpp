@@ -110,6 +110,11 @@ InterpolateNode::InterpolateNode(NodeModel& model) : Node(model)
   m_output = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
+QString InterpolateNode::type() const
+{
+  return TYPE;
+}
+
 QString InterpolateNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output) {

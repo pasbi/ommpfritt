@@ -230,7 +230,8 @@ AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::compile_node(const Node& n
   return {};
 }
 
-AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines)
+AbstractNodeCompiler::AssemblyError
+NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines)
 {
   lines.append(format_connection(ip, op));
   return {};

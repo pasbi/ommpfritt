@@ -15,6 +15,11 @@ SpyNode::SpyNode(NodeModel& model) : Node(model)
   m_port = &add_port<OrdinaryPort<PortType::Input>>(tr("value"));
 }
 
+QString SpyNode::type() const
+{
+  return TYPE;
+}
+
 bool SpyNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   Q_UNUSED(port)

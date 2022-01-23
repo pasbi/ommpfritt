@@ -16,14 +16,11 @@ public:
   static constexpr auto INPUT_A_PROPERTY_KEY = "a";
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "FunctionNode");
 
-  QString output_data_type(const OutputPort&) const override;
-  bool accepts_input_data_type(const QString& type, const InputPort&) const override;
-  QString type() const override
-  {
-    return TYPE;
-  }
+  [[nodiscard]] QString output_data_type(const OutputPort&) const override;
+  [[nodiscard]] bool accepts_input_data_type(const QString& type, const InputPort&) const override;
+  [[nodiscard]] QString type() const override;
   static const Detail detail;
-  QString title() const override;
+  [[nodiscard]] QString title() const override;
 
 private:
   OutputPort* m_output_port;

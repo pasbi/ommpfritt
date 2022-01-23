@@ -92,4 +92,9 @@ QString ColorConvertNode::title() const
   return tr("Convert");
 }
 
+QString ColorConvertNode::type() const
+{
+  return TYPE;
+}
+
 }  // namespace omm::nodes

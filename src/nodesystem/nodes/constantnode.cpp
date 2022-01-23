@@ -19,6 +19,11 @@ ConstantNode::ConstantNode(NodeModel& model) : Node(model)
 {
 }
 
+QString ConstantNode::type() const
+{
+  return TYPE;
+}
+
 void ConstantNode::populate_menu(QMenu& menu)
 {
   QAction* edit_port_action = menu.addAction(tr("Edit ports ..."));

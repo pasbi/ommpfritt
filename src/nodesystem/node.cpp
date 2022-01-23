@@ -51,6 +51,11 @@ Node::Node(NodeModel& model) : PropertyOwner(model.scene()), m_model(model)
 {
 }
 
+Flag Node::flags() const
+{
+  return Flag::None;
+}
+
 Node::~Node() = default;
 
 std::set<AbstractPort*> Node::ports() const
@@ -128,6 +133,11 @@ bool Node::is_free() const
   return true;
 }
 
+NodeModel& Node::model() const
+{
+  return m_model;
+}
+
 QString Node::name() const
 {
   return QCoreApplication::translate("any-context", type().toStdString().c_str());
@@ -155,6 +165,10 @@ std::set<Node*> Node::successors() const
     }
   }
   return successors;
+}
+
+void Node::populate_menu(QMenu&)
+{
 }
 
 QString Node::title() const
@@ -259,6 +273,16 @@ std::unique_ptr<Property> Node::extract_property(const QString& key)
     remove_port(*op);
   }
   return property;
+}
+
+bool Node::copyable() const
+{
+  return true;
+}
+
+const Node::Detail& Node::detail(const QString& name)
+{
+  return *m_details.at(name);
 }
 
 QString Node::fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t)

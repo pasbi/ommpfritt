@@ -56,6 +56,11 @@ LinePatternNode::LinePatternNode(NodeModel& model) : Node(model)
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("lines"));
 }
 
+QString LinePatternNode::type() const
+{
+  return TYPE;
+}
+
 QString LinePatternNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output_port) {

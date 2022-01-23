@@ -11,13 +11,10 @@ class LinePatternNode : public Node
 public:
   explicit LinePatternNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "LinePatternNode");
-  QString type() const override
-  {
-    return TYPE;
-  }
-  QString output_data_type(const OutputPort& port) const override;
-  QString input_data_type(const InputPort& port) const override;
-  QString title() const override;
+  [[nodiscard]] QString type() const override;
+  [[nodiscard]] QString output_data_type(const OutputPort& port) const override;
+  [[nodiscard]] QString input_data_type(const InputPort& port) const override;
+  [[nodiscard]] QString title() const override;
   static const Detail detail;
 
   static constexpr auto FREQUENCY_PROPERTY_KEY = "frequency";

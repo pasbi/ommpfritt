@@ -79,4 +79,9 @@ bool DecomposeNode::accepts_input_data_type(const QString& type, const InputPort
   }
 }
 
+QString DecomposeNode::type() const
+{
+  return TYPE;
+}
+
 }  // namespace omm::nodes

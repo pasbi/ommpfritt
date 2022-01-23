@@ -134,6 +134,11 @@ bool FunctionNode::accepts_input_data_type(const QString& type, const InputPort&
   return types::is_numeric(type);
 }
 
+QString FunctionNode::type() const
+{
+  return TYPE;
+}
+
 QString FunctionNode::title() const
 {
   auto&& opp = dynamic_cast<const OptionProperty&>(*property(OPERATION_PROPERTY_KEY));

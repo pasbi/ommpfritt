@@ -103,6 +103,11 @@ MathNode::MathNode(NodeModel& model) : Node(model)
   m_operation_input = find_port<InputPort>(operation_property);
 }
 
+QString MathNode::type() const
+{
+  return TYPE;
+}
+
 QString MathNode::output_data_type(const OutputPort& port) const
 {
   using types::is_vector;

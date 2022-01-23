@@ -14,11 +14,8 @@ class VertexNode : public Node
 public:
   explicit VertexNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "VertexNode");
-  QString type() const override
-  {
-    return TYPE;
-  }
-  QString output_data_type(const OutputPort& port) const override;
+  [[nodiscard]] QString type() const override;
+  [[nodiscard]] QString output_data_type(const OutputPort& port) const override;
   static const Detail detail;
 
   struct PortInfo {
@@ -35,7 +32,7 @@ public:
     }
   };
 
-  const std::set<PortInfo>& shader_inputs() const
+  [[nodiscard]] const std::set<PortInfo>& shader_inputs() const
   {
     return m_shader_inputs;
   }

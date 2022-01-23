@@ -72,4 +72,9 @@ bool ComposeColorNode::accepts_input_data_type(const QString& type, const InputP
   return types::is_numeric(type);
 }
 
+QString ComposeColorNode::type() const
+{
+  return TYPE;
+}
+
 }  // namespace omm::nodes

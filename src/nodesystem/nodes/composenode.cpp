@@ -68,4 +68,9 @@ bool ComposeNode::accepts_input_data_type(const QString& type, const InputPort& 
   return types::is_numeric(type);
 }
 
+QString ComposeNode::type() const
+{
+  return TYPE;
+}
+
 }  // namespace omm::nodes
