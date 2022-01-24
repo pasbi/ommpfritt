@@ -38,7 +38,7 @@ NodeManager::NodeManager(Scene& scene)
 {
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
-  connect(m_ui->nodeview, &NodeView::customContextMenuRequested, [this](const QPoint& pos) {
+  connect(m_ui->nodeview, &NodeView::customContextMenuRequested, this, [this](const QPoint& pos) {
     auto menu = make_context_menu();
     const QPoint glob_pos = m_ui->nodeview->mapToGlobal(pos);
     menu->move(glob_pos);
@@ -49,7 +49,7 @@ NodeManager::NodeManager(Scene& scene)
   set_widget(std::move(widget));
 
   connect(&scene.mail_box(), &MailBox::selection_changed, this, &NodeManager::set_selection);
-  connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed, [this](const auto& apo) {
+  connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed, this, [this](const auto& apo) {
     const auto* nodes_owner = dynamic_cast<const nodes::NodesOwner*>(&apo);
     const auto* node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
     if (node_model == m_ui->nodeview->model()) {

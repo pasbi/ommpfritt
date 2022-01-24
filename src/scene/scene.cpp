@@ -127,7 +127,7 @@ Scene::Scene(PythonEngine& python_engine)
     m_item_selection[kind] = {};
   }
   connect(&history(), &HistoryModel::index_changed, &mail_box(), &MailBox::filename_changed);
-  connect(&history(), &HistoryModel::index_changed, [this]() {
+  connect(&history(), &HistoryModel::index_changed, this, [this]() {
     const auto keep_in_selection = [this](const auto* apo) { return contains(apo); };
     const auto old_selection = selection();
     const auto new_selection = ::filter_if(old_selection, keep_in_selection);

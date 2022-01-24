@@ -11,7 +11,7 @@ namespace omm
 
 NodeScene::NodeScene(Scene& scene) : scene(scene)
 {
-  connect(this, &NodeScene::selectionChanged, [&scene, this]() {
+  connect(this, &NodeScene::selectionChanged, this, [&scene, this]() {
     if (!m_block_selection_change_notification) {
       scene.set_selection(::transform<AbstractPropertyOwner*>(selected_nodes()));
     }
