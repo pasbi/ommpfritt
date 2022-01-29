@@ -55,23 +55,28 @@ protected:
 
 TEST_F(GLSLNodeTest, empty_model)
 {
+  SKIP_IF_NO_OPENGL;
   EXPECT_TRUE(compile());
 }
 
 TEST_F(GLSLNodeTest, simple_model)
 {
+  SKIP_IF_NO_OPENGL;
   fragment_node().input_port().connect(&create_constant_node_output<omm::ColorProperty>());
   EXPECT_TRUE(compile());
 }
 
 TEST_F(GLSLNodeTest, incompatible_connection)
 {
+  SKIP_IF_NO_OPENGL;
   fragment_node().input_port().connect(&create_constant_node_output<omm::FloatProperty>());
   EXPECT_FALSE(compile());
 }
 
 TEST_F(GLSLNodeTest, switch_node)
 {
+  SKIP_IF_NO_OPENGL;
+
   using omm::nodes::OutputPort;
   using omm::nodes::InputPort;
   auto& switch_node = m_model.add_node(std::make_unique<omm::nodes::SwitchNode>(m_model));

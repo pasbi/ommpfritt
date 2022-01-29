@@ -30,4 +30,8 @@ public:
   QGuiApplication& gui_application();
 };
 
+bool have_opengl();
+
+#define SKIP_IF_NO_OPENGL do { if (!ommtest::have_opengl()) { GTEST_SKIP(); } } while (false)
+
 }  // namespace ommtest
