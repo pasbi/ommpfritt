@@ -57,7 +57,7 @@ constexpr auto vertex_position_attribute_name = "vertex_attr";
 
 using S = omm::OffscreenRenderer;
 constexpr auto vertex_code = R"(
-#version 330
+#version 140
 
 attribute vec4 vertex_attr;
 varying vec2 local_pos;

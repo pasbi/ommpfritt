@@ -149,7 +149,7 @@ NodeCompilerGLSL::NodeCompilerGLSL(const NodeModel& model) : NodeCompiler(model)
 AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::generate_header(QStringList& lines) const
 {
   m_uniform_ports.clear();
-  lines.append("#version 330");
+  lines.append("#version 140");
   lines.append(QString("const int SPLINE_SIZE = %1;").arg(SPLINE_SIZE));
   using Kind = OffscreenRenderer::ShaderInput::Kind;
   static const std::map<Kind, QString> input_kind_identifier_map = {
