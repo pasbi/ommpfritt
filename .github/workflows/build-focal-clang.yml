@@ -102,4 +102,4 @@ jobs:
         with:
           name: build
       - run: tar -xf omm-build.tar
-      - run: ctest --test-dir omm-build --output-on-failure --no-tests=error
+      - run: xvfb-run ctest --test-dir omm-build --output-on-failure --no-tests=error

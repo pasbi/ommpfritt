@@ -18,4 +18,4 @@ jobs:
       - run: cmake --build omm-build
                    --config Release
                    -j4
-      - run: ctest --test-dir omm-build --output-on-failure --no-tests=error
+      - run: xvfb-run ctest --test-dir omm-build --output-on-failure --no-tests=error
