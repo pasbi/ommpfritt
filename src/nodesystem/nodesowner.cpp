@@ -4,9 +4,10 @@
 #include "nodesystem/nodemodel.h"
 #include "properties/triggerproperty.h"
 
-namespace omm
+namespace omm::nodes
 {
-NodesOwner::NodesOwner(AbstractNodeCompiler::Language language, Scene& scene)
+
+NodesOwner::NodesOwner(BackendLanguage language, Scene* scene)
     : m_node_model(NodeModel::make(language, scene))
 {
 }
@@ -37,4 +38,4 @@ NodeModel* NodesOwner::node_model() const
   return m_node_model.get();
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

@@ -12,7 +12,11 @@ namespace omm
 
 class KeyBindings;
 class AbstractPropertyOwner;
+
+namespace nodes
+{
 class NodeModel;
+}  // namespace nodes
 
 class NodeManager : public Manager
 {
@@ -29,7 +33,7 @@ public:
   [[nodiscard]] QString type() const override;
   bool perform_action(const QString& name) override;
 
-  void set_model(NodeModel* model);
+  void set_model(nodes::NodeModel* model);
 
 public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);

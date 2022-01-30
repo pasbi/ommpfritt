@@ -1,6 +1,7 @@
 {
   "clazz": "Property",
   "category": "properties",
+  "namespace": "omm",
   "items": [
     "BoolProperty",
     "ColorProperty",

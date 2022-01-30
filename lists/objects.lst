@@ -1,6 +1,7 @@
 {
   "clazz": "Object",
   "category": "objects",
+  "namespace": "omm",
   "items": [
     "Boolean",
     "Cloner",

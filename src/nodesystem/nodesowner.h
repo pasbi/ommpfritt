@@ -1,20 +1,29 @@
 #pragma once
 
 #include "cachedgetter.h"
-#include "nodesystem/nodecompiler.h"
+#include "nodesystem/common.h"
 #include <memory>
+
+class QObject;
 
 namespace omm
 {
+
 class Scene;
 class Property;
-class NodeModel;
 class TriggerProperty;
+
+}  // namespace omm
+
+namespace omm::nodes
+{
+
+class NodeModel;
 
 class NodesOwner
 {
 protected:
-  NodesOwner(AbstractNodeCompiler::Language language, Scene& scene);
+  NodesOwner(BackendLanguage language, Scene* scene);
   NodesOwner(const NodesOwner& other);
   ~NodesOwner();
   void connect_edit_property(TriggerProperty& property, QObject& self);
@@ -30,4 +39,4 @@ private:
   std::unique_ptr<NodeModel> m_node_model;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

@@ -2,21 +2,19 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 class InterpolateNode : public Node
 {
   Q_OBJECT
 public:
   explicit InterpolateNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "InterpolateNode");
-  QString type() const override
-  {
-    return TYPE;
-  }
-  QString output_data_type(const OutputPort& port) const override;
-  QString input_data_type(const InputPort& port) const override;
-  bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
+  [[nodiscard]] QString type() const override;
+  [[nodiscard]] QString output_data_type(const OutputPort& port) const override;
+  [[nodiscard]] QString input_data_type(const InputPort& port) const override;
+  [[nodiscard]] bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
   static const Detail detail;
 
   static constexpr auto RAMP_PROPERTY_KEY = "ramp";
@@ -28,4 +26,4 @@ private:
   OutputPort* m_output;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

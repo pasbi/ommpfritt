@@ -3,23 +3,29 @@
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 
-namespace omm
+namespace
 {
-const Node::Detail ComposeNode::detail{
-    {{AbstractNodeCompiler::Language::Python,
-      QString(R"(
+
+constexpr auto python_definition_template = R"(
 def %1(a, b):
   return [a, b]
-)")
-          .arg(ComposeNode::TYPE)},
-     {AbstractNodeCompiler::Language::GLSL,
-      QString(R"(
+)";
+
+constexpr auto glsl_definition_template = R"(
 vec2 %1_0(float a, float b) { return vec2(a, b); }
-)")
-          .arg(ComposeNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Vector"),
+)";
+
+}  // namespace
+
+namespace omm::nodes
+{
+
+const Node::Detail ComposeNode::detail {
+    .definitions = {
+      {BackendLanguage::Python, QString{python_definition_template}.arg(ComposeNode::TYPE)},
+      {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(ComposeNode::TYPE)}
     },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Vector")},
 };
 
 ComposeNode::ComposeNode(NodeModel& model) : Node(model)
@@ -36,20 +42,19 @@ ComposeNode::ComposeNode(NodeModel& model) : Node(model)
 
 QString ComposeNode::output_data_type(const OutputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   if (&port == m_output_port) {
     const QString type_a = find_port<InputPort>(*property(INPUT_X_PROPERTY_KEY))->data_type();
     const QString type_b = find_port<InputPort>(*property(INPUT_Y_PROPERTY_KEY))->data_type();
 
-    if (is_integral(type_a) && is_integral(type_b)) {
-      return INTEGERVECTOR_TYPE;
-    } else if (is_numeric(type_a) && is_numeric(type_b)) {
-      return FLOATVECTOR_TYPE;
+    if (types::is_integral(type_a) && types::is_integral(type_b)) {
+      return types::INTEGERVECTOR_TYPE;
+    } else if (types::is_numeric(type_a) && types::is_numeric(type_b)) {
+      return types::FLOATVECTOR_TYPE;
     } else {
-      return INVALID_TYPE;
+      return types::INVALID_TYPE;
     }
   }
-  return INVALID_TYPE;
+  return types::INVALID_TYPE;
 }
 
 QString ComposeNode::title() const
@@ -60,7 +65,12 @@ QString ComposeNode::title() const
 bool ComposeNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   Q_UNUSED(port)
-  return NodeCompilerTypes::is_numeric(type);
+  return types::is_numeric(type);
 }
 
-}  // namespace omm
+QString ComposeNode::type() const
+{
+  return TYPE;
+}
+
+}  // namespace omm::nodes

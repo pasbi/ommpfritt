@@ -11,11 +11,17 @@
 
 namespace omm
 {
+class Scene;
+}  // namespace omm
+
+namespace omm::nodes
+{
+
+class AbstractNodeCompiler;
 class Node;
 class AbstractPort;
 class OutputPort;
 class InputPort;
-class Scene;
 class FragmentNode;
 
 class NodeModel
@@ -24,8 +30,8 @@ class NodeModel
 {
   Q_OBJECT
 public:
-  explicit NodeModel(AbstractNodeCompiler::Language language, Scene& scene);
-  static std::unique_ptr<NodeModel> make(AbstractNodeCompiler::Language language, Scene& scene);
+  explicit NodeModel(BackendLanguage language, Scene* scene);
+  static std::unique_ptr<NodeModel> make(BackendLanguage language, Scene* scene);
   NodeModel(const NodeModel& other);
   ~NodeModel() override;
   NodeModel(NodeModel&&) = delete;
@@ -58,15 +64,12 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), pred), conv);
   }
 
-  [[nodiscard]] AbstractNodeCompiler::Language language() const
+  [[nodiscard]] BackendLanguage language() const
   {
     return m_compiler->language;
   }
 
-  [[nodiscard]] Scene& scene() const
-  {
-    return m_scene;
-  }
+  [[nodiscard]] Scene* scene() const;
 
   [[nodiscard]] AbstractNodeCompiler& compiler() const;
   [[nodiscard]] QString error() const
@@ -95,15 +98,15 @@ public:
 
 Q_SIGNALS:
   void topology_changed();
-  void node_added(omm::Node&);
-  void node_removed(omm::Node&);
+  void node_added(omm::nodes::Node&);
+  void node_removed(omm::nodes::Node&);
 
 public:
   void emit_topology_changed();
 
 private:
   std::set<std::unique_ptr<Node>> m_nodes;
-  Scene& m_scene;
+  Scene* m_scene = nullptr;
   void init();
   std::unique_ptr<AbstractNodeCompiler> m_compiler;
   QString m_error = "";
@@ -111,4 +114,4 @@ private:
   bool m_emit_topology_changed_blocked = false;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

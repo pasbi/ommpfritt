@@ -2,27 +2,25 @@
 
 #include "nodesystem/node.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 class MathNode : public Node
 {
   Q_OBJECT
 public:
   explicit MathNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "MathNode");
-  QString type() const override
-  {
-    return TYPE;
-  }
+  [[nodiscard]] QString type() const override;
 
   static constexpr auto OPERATION_PROPERTY_KEY = "op";
   static constexpr auto A_VALUE_KEY = "a";
   static constexpr auto B_VALUE_KEY = "b";
 
-  QString output_data_type(const OutputPort& port) const override;
-  QString input_data_type(const InputPort& port) const override;
-  bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
-  QString title() const override;
+  [[nodiscard]] QString output_data_type(const OutputPort& port) const override;
+  [[nodiscard]] QString input_data_type(const InputPort& port) const override;
+  [[nodiscard]] bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
+  [[nodiscard]] QString title() const override;
   static const Detail detail;
 
 private:
@@ -30,4 +28,4 @@ private:
   OutputPort* m_output;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

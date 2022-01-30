@@ -5,49 +5,42 @@
 
 namespace omm
 {
+
+namespace nodes
+{
 class ReferenceNode;
+}  // namespace nodes;
+
 class ForwardingPortCommand : public Command
 {
 protected:
   ForwardingPortCommand(const QString& label,
-                        ReferenceNode& node,
-                        PortType port_type,
+                        nodes::ReferenceNode& node,
+                        nodes::PortType port_type,
                         const QString& key);
   void add();
   void remove();
 
 private:
-  ReferenceNode& m_node;
-  const PortType m_port_type;
+  nodes::ReferenceNode& m_node;
+  const nodes::PortType m_port_type;
   const QString m_key;
 };
 
 class RemoveForwardingPortCommand : public ForwardingPortCommand
 {
 public:
-  RemoveForwardingPortCommand(ReferenceNode& node, PortType port_type, const QString& key);
-  void undo() override
-  {
-    add();
-  }
-  void redo() override
-  {
-    remove();
-  }
+  RemoveForwardingPortCommand(nodes::ReferenceNode& node, nodes::PortType port_type, const QString& key);
+  void undo() override;
+  void redo() override;
 };
 
 class AddForwardingPortCommand : public ForwardingPortCommand
 {
 public:
-  AddForwardingPortCommand(ReferenceNode& node, PortType port_type, const QString& key);
-  void undo() override
-  {
-    remove();
-  }
-  void redo() override
-  {
-    add();
-  }
+  AddForwardingPortCommand(nodes::ReferenceNode& node, nodes::PortType port_type, const QString& key);
+  void undo() override;
+  void redo() override;
 };
 
 }  // namespace omm

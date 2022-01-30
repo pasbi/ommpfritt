@@ -3,23 +3,29 @@
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 
-namespace omm
+namespace
 {
-const Node::Detail ComposeColorNode::detail{
-    {{AbstractNodeCompiler::Language::Python,
-      QString(R"(
+
+constexpr auto python_definition_template = R"(
 def %1(r, g, b, a):
   return [r, g, b, a]
-)")
-          .arg(ComposeColorNode::TYPE)},
-     {AbstractNodeCompiler::Language::GLSL,
-      QString(R"(
+)";
+
+constexpr auto glsl_definition_template = R"(
 vec4 %1_0(float r, float g, float b, float a) { return vec4(r, g, b, a); }
-)")
-          .arg(ComposeColorNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
+)";
+
+}  // namespace
+
+namespace omm::nodes
+{
+
+const Node::Detail ComposeColorNode::detail {
+    .definitions = {
+       {BackendLanguage::Python, QString{python_definition_template}.arg(ComposeColorNode::TYPE)},
+       {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(ComposeColorNode::TYPE)}
     },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Color")},
 };
 
 ComposeColorNode::ComposeColorNode(NodeModel& model) : Node(model)
@@ -52,8 +58,7 @@ ComposeColorNode::ComposeColorNode(NodeModel& model) : Node(model)
 QString ComposeColorNode::output_data_type(const OutputPort& port) const
 {
   Q_UNUSED(port)
-  using namespace NodeCompilerTypes;
-  return COLOR_TYPE;
+  return types::COLOR_TYPE;
 }
 
 QString ComposeColorNode::title() const
@@ -64,7 +69,12 @@ QString ComposeColorNode::title() const
 bool ComposeColorNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   Q_UNUSED(port)
-  return NodeCompilerTypes::is_numeric(type);
+  return types::is_numeric(type);
 }
 
-}  // namespace omm
+QString ComposeColorNode::type() const
+{
+  return TYPE;
+}
+
+}  // namespace omm::nodes

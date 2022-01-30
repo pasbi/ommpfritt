@@ -1,6 +1,7 @@
 {
   "clazz": "Node",
   "category": "nodes",
+  "namespace": "omm::nodes",
   "items": [
     "ConstantNode",
     "ComposeNode",
@@ -16,6 +17,7 @@
     "MathNode",
     "ReferenceNode",
     "SpyNode",
+    "SwitchNode",
     "VertexNode"
   ],
   "register": [

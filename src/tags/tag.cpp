@@ -40,4 +40,14 @@ std::unique_ptr<Tag> Tag::clone(Object& owner) const
   return clone;
 }
 
+std::unique_ptr<Tag> Tag::clone() const
+{
+  return AbstractFactory::clone();
+}
+
+void Tag::force_evaluate()
+{
+  evaluate();
+}
+
 }  // namespace omm

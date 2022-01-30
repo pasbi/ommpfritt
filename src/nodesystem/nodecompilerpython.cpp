@@ -3,13 +3,14 @@
 #include "nodesystem/node.h"
 #include "nodesystem/port.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 NodeCompilerPython::NodeCompilerPython(const NodeModel& model) : NodeCompiler(model)
 {
 }
 
-QString NodeCompilerPython::generate_header(QStringList& lines)
+AbstractNodeCompiler::AssemblyError NodeCompilerPython::generate_header(QStringList& lines)
 {
   lines.append(QString(R"(
 def listarithm_decorator(func):
@@ -22,20 +23,20 @@ def listarithm_decorator(func):
       return fr_np(func(*args, **kwargs))
   return wrapper
 )"));
-  return "";
+  return {};
 }
 
-QString NodeCompilerPython::start_program(QStringList&)
+AbstractNodeCompiler::AssemblyError NodeCompilerPython::start_program(QStringList&)
 {
-  return "";
+  return {};
 }
 
-QString NodeCompilerPython::end_program(QStringList&)
+AbstractNodeCompiler::AssemblyError NodeCompilerPython::end_program(QStringList&)
 {
-  return "";
+  return {};
 }
 
-QString NodeCompilerPython::compile_node(const Node& node, QStringList& lines)
+AbstractNodeCompiler::AssemblyError NodeCompilerPython::compile_node(const Node& node, QStringList& lines)
 {
   auto ops = ::filter_if(node.ports<OutputPort>(),
                          [](OutputPort* op) { return op->flavor == PortFlavor::Ordinary; });
@@ -54,21 +55,21 @@ QString NodeCompilerPython::compile_node(const Node& node, QStringList& lines)
         = ::transform<QString, QList>(ops, [](const OutputPort* op) { return op->uuid(); });
     lines.append(QString("%1 = %2(%3)").arg(uuids.join(", "), node.type(), args.join(", ")));
   }
-  return "";
+  return {};
 }
 
-QString NodeCompilerPython::compile_connection(const OutputPort& op,
+AbstractNodeCompiler::AssemblyError NodeCompilerPython::compile_connection(const OutputPort& op,
                                                const InputPort& ip,
                                                QStringList& lines)
 {
   lines.append(QString("%1 = %2").arg(ip.uuid(), op.uuid()));
-  return "";
+  return {};
 }
 
-QString NodeCompilerPython::define_node(const QString& node_type, QStringList& lines) const
+AbstractNodeCompiler::AssemblyError NodeCompilerPython::define_node(const QString& node_type, QStringList& lines) const
 {
   lines.append(Node::detail(node_type).definitions.at(language));
-  return "";
+  return {};
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

@@ -5,36 +5,42 @@
 #include <memory>
 #include <set>
 
-namespace omm
+namespace omm::nodes
 {
+
 class NodeModel;
 class Node;
 class InputPort;
 class OutputPort;
 class AbstractPort;
 
+}  // namespace omm::nodes
+
+namespace omm
+{
+
 class ConnectionCommand : public Command
 {
 protected:
-  ConnectionCommand(const QString& label, AbstractPort& a, AbstractPort& b);
-  ConnectionCommand(const QString& label, OutputPort& out, InputPort& in);
+  ConnectionCommand(const QString& label, nodes::AbstractPort& a, nodes::AbstractPort& b);
+  ConnectionCommand(const QString& label, nodes::OutputPort& out, nodes::InputPort& in);
   void connect();
   void disconnect();
 
 private:
-  Node& m_source_node;
+  nodes::Node& m_source_node;
   const std::size_t m_output_index;
-  Node& m_target_node;
+  nodes::Node& m_target_node;
   const std::size_t m_input_index;
 
-  [[nodiscard]] InputPort& input_port() const;
-  [[nodiscard]] omm::OutputPort& output_port() const;
+  [[nodiscard]] nodes::InputPort& input_port() const;
+  [[nodiscard]] nodes::OutputPort& output_port() const;
 };
 
 class ConnectPortsCommand : public ConnectionCommand
 {
 public:
-  ConnectPortsCommand(AbstractPort& a, AbstractPort& b);
+  ConnectPortsCommand(nodes::AbstractPort& a, nodes::AbstractPort& b);
   void undo() override
   {
     disconnect();
@@ -48,7 +54,7 @@ public:
 class DisconnectPortsCommand : public ConnectionCommand
 {
 public:
-  DisconnectPortsCommand(InputPort& port);
+  DisconnectPortsCommand(nodes::InputPort& port);
   void undo() override
   {
     connect();
@@ -63,23 +69,23 @@ class NodeCommand : public Command
 {
 protected:
   NodeCommand(const QString& label,
-              NodeModel& model,
-              const std::vector<Node*>& refs,
-              std::vector<std::unique_ptr<Node>> owns);
+              nodes::NodeModel& model,
+              const std::vector<nodes::Node*>& refs,
+              std::vector<std::unique_ptr<nodes::Node>> owns);
   void remove();
   void add();
 
 private:
-  std::vector<Node*> m_refs;
-  std::vector<std::unique_ptr<Node>> m_owns;
-  NodeModel& m_model;
+  std::vector<nodes::Node*> m_refs;
+  std::vector<std::unique_ptr<nodes::Node>> m_owns;
+  nodes::NodeModel& m_model;
   std::list<DisconnectPortsCommand> m_destroyed_connections;
 };
 
 class RemoveNodesCommand : public NodeCommand
 {
 public:
-  RemoveNodesCommand(NodeModel& model, const std::vector<Node*>& nodes);
+  RemoveNodesCommand(nodes::NodeModel& model, const std::vector<nodes::Node*>& nodes);
   void undo() override
   {
     add();
@@ -93,7 +99,7 @@ public:
 class AddNodesCommand : public NodeCommand
 {
 public:
-  AddNodesCommand(NodeModel& model, std::vector<std::unique_ptr<Node>> nodes);
+  AddNodesCommand(nodes::NodeModel& model, std::vector<std::unique_ptr<nodes::Node>> nodes);
   void undo() override
   {
     remove();
@@ -107,7 +113,7 @@ public:
 class MoveNodesCommand : public Command
 {
 public:
-  MoveNodesCommand(const std::set<Node*>& nodes, const QPointF& direction);
+  MoveNodesCommand(const std::set<nodes::Node*>& nodes, const QPointF& direction);
   void undo() override;
   void redo() override;
   [[nodiscard]] int id() const override
@@ -117,7 +123,7 @@ public:
   bool mergeWith(const QUndoCommand* command) override;
 
 private:
-  const std::map<Node*, QPointF> m_old_positions;
+  const std::map<nodes::Node*, QPointF> m_old_positions;
   QPointF m_direction;
 };
 

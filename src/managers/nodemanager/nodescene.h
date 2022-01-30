@@ -7,11 +7,17 @@
 
 namespace omm
 {
-class Node;
+
 class NodeItem;
 class PortItem;
+
+namespace nodes
+{
 class AbstractPort;
 class NodeModel;
+class Node;
+}  // namespace nodes
+
 class Scene;
 
 class NodeScene : public QGraphicsScene
@@ -24,24 +30,24 @@ public:
   NodeScene(const NodeScene&) = delete;
   NodeScene& operator=(NodeScene&&) = delete;
   NodeScene& operator=(const NodeScene&) = delete;
-  NodeItem& node_item(Node& node) const;
-  void set_model(omm::NodeModel* model);
-  [[nodiscard]] NodeModel* model() const
+  NodeItem& node_item(nodes::Node& node) const;
+  void set_model(omm::nodes::NodeModel* model);
+  [[nodiscard]] nodes::NodeModel* model() const
   {
     return m_model;
   }
-  [[nodiscard]] std::set<Node*> selected_nodes() const;
+  [[nodiscard]] std::set<nodes::Node*> selected_nodes() const;
   Scene& scene;
 
   void clear();
 
 public:
-  void add_node(omm::Node& node, bool select = true);
-  void remove_node(omm::Node& node);
+  void add_node(omm::nodes::Node& node, bool select = true);
+  void remove_node(omm::nodes::Node& node);
 
 private:
-  std::map<Node*, std::unique_ptr<NodeItem>> m_node_items;
-  NodeModel* m_model = nullptr;
+  std::map<nodes::Node*, std::unique_ptr<NodeItem>> m_node_items;
+  nodes::NodeModel* m_model = nullptr;
   bool m_block_selection_change_notification = false;
   std::list<QMetaObject::Connection> m_scene_model_connections;
 };

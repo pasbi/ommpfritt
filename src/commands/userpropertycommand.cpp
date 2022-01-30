@@ -18,6 +18,7 @@ auto transform(const std::vector<QString>& keys)
 
 namespace omm
 {
+
 UserPropertyCommand ::UserPropertyCommand(
     const std::vector<QString>& deletions,
     std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
@@ -26,16 +27,16 @@ UserPropertyCommand ::UserPropertyCommand(
     : Command(QObject::tr("User Property")), m_deletions(transform(deletions)),
       m_additions(std::move(additions)), m_changes(changes), m_owner(owner)
 {
-  if (Node* node = kind_cast<Node*>(&m_owner); node != nullptr) {
+  if (auto* node = kind_cast<nodes::Node*>(&m_owner); node != nullptr) {
     for (auto&& [key, _] : m_deletions) {
       auto& property = *m_owner.property(key);
-      auto* ip = node->find_port<InputPort>(property);
+      auto* ip = node->find_port<nodes::InputPort>(property);
       if (ip->is_connected()) {
         m_broken_connections.insert(std::make_unique<DisconnectPortsCommand>(*ip));
       }
 
-      auto* op = node->find_port<OutputPort>(property);
-      for (InputPort* ip : op->connected_inputs()) {
+      auto* op = node->find_port<nodes::OutputPort>(property);
+      for (nodes::InputPort* ip : op->connected_inputs()) {
         m_broken_connections.insert(std::make_unique<DisconnectPortsCommand>(*ip));
       }
     }

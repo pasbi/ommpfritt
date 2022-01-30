@@ -3,8 +3,9 @@
 #include <QStringList>
 #include <set>
 
-namespace omm
+namespace omm::nodes
 {
+
 class AbstractPort;
 class Node;
 class OutputPort;
@@ -24,7 +25,7 @@ public:
   [[nodiscard]] virtual bool is_connection() const = 0;
   [[nodiscard]] virtual std::set<const AbstractPort*> defines() const = 0;
   [[nodiscard]] virtual std::set<const AbstractPort*> uses() const = 0;
-  QString to_string() const;
+  [[nodiscard]] QString to_string() const;
 };
 
 class NodeStatement : public Statement
@@ -52,4 +53,4 @@ private:
   [[nodiscard]] std::set<const AbstractPort*> uses() const override;
 };
 
-}  // namespace omm
+}  // namespace omm::nodes

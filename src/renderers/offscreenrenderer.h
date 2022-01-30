@@ -35,18 +35,9 @@ public:
                  const QRectF& roi,
                  const PainterOptions& options);
   bool set_fragment_shader(const QString& fragment_code);
-  QOpenGLContext& context()
-  {
-    return m_context;
-  }
-
-  [[nodiscard]] QOpenGLShaderProgram* program() const
-  {
-    return m_program.get();
-  }
-
+  QOpenGLContext& context();
+  [[nodiscard]] QOpenGLShaderProgram* program() const;
   void make_current();
-
   void set_uniform(const QString& name, const variant_type& value);
 
   struct ShaderInput {

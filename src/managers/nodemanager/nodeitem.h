@@ -5,20 +5,25 @@
 
 namespace omm
 {
+
+class PortItem;
 class PropertyWidgetItem;
+class Property;
+class NodeScene;
+class NodeView;
+
+namespace nodes
+{
 class Node;
 class PropertyOutputPort;
 class PropertyInputPort;
 template<PortType> class OrdinaryPort;
-class Property;
-class PortItem;
-class NodeScene;
-class NodeView;
+}  // namespace nodes
 
 class NodeItem : public QGraphicsItem
 {
 public:
-  explicit NodeItem(Node& node);
+  explicit NodeItem(nodes::Node& node);
   ~NodeItem() override;
   NodeItem(NodeItem&&) = delete;
   NodeItem(const NodeItem&) = delete;
@@ -26,7 +31,7 @@ public:
   NodeItem& operator=(const NodeItem&) = delete;
   [[nodiscard]] QRectF boundingRect() const override;
   void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* widget) override;
-  [[nodiscard]] PortItem* port_item(const AbstractPort& port) const;
+  [[nodiscard]] PortItem* port_item(const nodes::AbstractPort& port) const;
   static constexpr auto TYPE = QGraphicsItem::UserType + 2;
   static constexpr double small_slot_height = 13.0;
   static constexpr double large_slot_height = 30.0;
@@ -34,7 +39,7 @@ public:
   {
     return TYPE;
   }
-  Node& node;
+  nodes::Node& node;
   void toggle_expanded();
 
 protected:
@@ -60,14 +65,14 @@ private:
 
   void clear_ports();
   void align_ports();
-  void add_port(PropertyInputPort* ip, PropertyOutputPort* op, double pos_y);
-  void add_port(AbstractPort& p, double pos_y);
+  void add_port(nodes::PropertyInputPort* ip, nodes::PropertyOutputPort* op, double pos_y);
+  void add_port(nodes::AbstractPort& p, double pos_y);
   void add_property_widget(Property& property, double pos_y, double height);
   void adjust_port_pos();
   [[nodiscard]] NodeScene* scene() const;
   [[nodiscard]] bool can_expand() const;
 
-  std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
+  std::map<nodes::PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
   std::set<std::unique_ptr<PropertyWidgetItem>> m_property_items;
 
   struct Slot {

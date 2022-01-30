@@ -3,24 +3,32 @@
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
 
-namespace omm
+namespace
 {
-const Node::Detail DecomposeColorNode::detail{
-    {{AbstractNodeCompiler::Language::Python, QString(R"(
+
+constexpr auto python_definition_template = R"(
 def %1(c):
     return c
-)")},
-     {AbstractNodeCompiler::Language::GLSL,
-      QString(R"(
+)";
+
+constexpr auto glsl_definition_template = R"(
 float %1_0(vec4 c) { return c.r; }
 float %1_1(vec4 c) { return c.g; }
 float %1_2(vec4 c) { return c.b; }
 float %1_3(vec4 c) { return c.a; }
-)")
-          .arg(DecomposeColorNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
+)";
+
+}  // namespace
+
+namespace omm::nodes
+{
+
+const Node::Detail DecomposeColorNode::detail {
+    .definitions = {
+      {BackendLanguage::Python, QString{python_definition_template}.arg(DecomposeColorNode::TYPE)},
+      {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(DecomposeColorNode::TYPE)},
     },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Color")},
 };
 
 DecomposeColorNode::DecomposeColorNode(NodeModel& model) : Node(model)
@@ -37,9 +45,8 @@ DecomposeColorNode::DecomposeColorNode(NodeModel& model) : Node(model)
 
 QString DecomposeColorNode::output_data_type(const OutputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   Q_UNUSED(port)
-  return FLOAT_TYPE;
+  return types::FLOAT_TYPE;
 }
 
 QString DecomposeColorNode::title() const
@@ -49,9 +56,13 @@ QString DecomposeColorNode::title() const
 
 bool DecomposeColorNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   Q_UNUSED(port)
-  return type == COLOR_TYPE;
+  return type == types::COLOR_TYPE;
 }
 
-}  // namespace omm
+QString DecomposeColorNode::type() const
+{
+  return TYPE;
+}
+
+}  // namespace omm::nodes

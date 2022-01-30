@@ -2,10 +2,11 @@
 #include "nodesystem/ordinaryport.h"
 #include "properties/floatproperty.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail LinePatternNode::detail{
-    {{AbstractNodeCompiler::Language::GLSL,
+    .definitions = {{BackendLanguage::GLSL,
       QString(R"(
 float %1_0(float frequency, float ratio, float left_ramp, float right_ramp, float v) {
   float lambda = 1.0 / frequency;
@@ -25,9 +26,7 @@ float %1_0(float frequency, float ratio, float left_ramp, float right_ramp, floa
 }
 )")
           .arg(LinePatternNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Pattern"),
-    },
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Pattern")},
 };
 
 LinePatternNode::LinePatternNode(NodeModel& model) : Node(model)
@@ -57,12 +56,17 @@ LinePatternNode::LinePatternNode(NodeModel& model) : Node(model)
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("lines"));
 }
 
+QString LinePatternNode::type() const
+{
+  return TYPE;
+}
+
 QString LinePatternNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output_port) {
-    return NodeCompilerTypes::FLOAT_TYPE;
+    return types::FLOAT_TYPE;
   } else {
-    return NodeCompilerTypes::INVALID_TYPE;
+    return types::INVALID_TYPE;
   }
 }
 
@@ -71,9 +75,9 @@ QString LinePatternNode::input_data_type(const InputPort& port) const
   if (port.flavor == PortFlavor::Property) {
     return dynamic_cast<const PropertyPort<PortType::Input>&>(port).data_type();
   } else if (&port == m_position_port) {
-    return NodeCompilerTypes::FLOAT_TYPE;
+    return types::FLOAT_TYPE;
   } else {
-    return NodeCompilerTypes::INVALID_TYPE;
+    return types::INVALID_TYPE;
   }
 }
 
@@ -82,4 +86,4 @@ QString LinePatternNode::title() const
   return tr("Line Pattern");
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

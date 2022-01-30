@@ -5,13 +5,18 @@
 
 namespace omm
 {
+
 class NodeItem;
+
+namespace nodes
+{
 class AbstractPort;
+}  // namespace nodes
 
 class PortItem : public QGraphicsItem
 {
 public:
-  explicit PortItem(AbstractPort& port, NodeItem& parent);
+  explicit PortItem(nodes::AbstractPort& port, NodeItem& parent);
 
   void paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget) override;
   [[nodiscard]] QRectF boundingRect() const override;
@@ -22,7 +27,7 @@ public:
     return TYPE;
   }
   NodeItem& node_item;
-  AbstractPort& port;
+  nodes::AbstractPort& port;
 };
 
 }  // namespace omm

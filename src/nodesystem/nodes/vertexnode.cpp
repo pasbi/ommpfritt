@@ -5,13 +5,12 @@
 #include "scene/scene.h"
 #include "variant.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 const Node::Detail VertexNode::detail{
-    {{AbstractNodeCompiler::Language::GLSL, ""}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
-    },
+    .definitions = {{BackendLanguage::GLSL, ""}},
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "General")},
 };
 
 VertexNode::VertexNode(NodeModel& model) : Node(model)
@@ -20,6 +19,11 @@ VertexNode::VertexNode(NodeModel& model) : Node(model)
     auto& port = add_port<OrdinaryPort<PortType::Output>>(shader_input.tr_name());
     m_shader_inputs.insert({shader_input, &port});
   }
+}
+
+QString VertexNode::type() const
+{
+  return TYPE;
 }
 
 QString VertexNode::output_data_type(const OutputPort& port) const
@@ -34,4 +38,4 @@ bool VertexNode::PortInfo::operator==(const AbstractPort* port) const
   return port == this->port;
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

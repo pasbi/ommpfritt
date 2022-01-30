@@ -8,6 +8,7 @@
 
 namespace omm
 {
+
 class Object;
 class Scene;
 
@@ -25,16 +26,10 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tag", "Tag");
   std::unique_ptr<Tag> clone(Object& owner) const;
-  std::unique_ptr<Tag> clone() const
-  {
-    return AbstractFactory::clone();
-  }
+  std::unique_ptr<Tag> clone() const;
   Object* owner;
   virtual void evaluate() = 0;
-  virtual void force_evaluate()
-  {
-    evaluate();
-  }
+  virtual void force_evaluate();
   Flag flags() const override;
   QString to_string() const override;
 };

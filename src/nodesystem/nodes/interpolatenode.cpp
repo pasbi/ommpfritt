@@ -7,19 +7,15 @@
 
 namespace
 {
-using namespace omm::NodeCompilerTypes;
-const std::set<std::array<QString, 2>> supported_glsl_types{{FLOATVECTOR_TYPE, FLOATVECTOR_TYPE},
-                                                            {FLOAT_TYPE, INTEGER_TYPE},
-                                                            {FLOAT_TYPE, FLOAT_TYPE},
-                                                            {
-                                                                COLOR_TYPE,
-                                                                COLOR_TYPE,
-                                                            },
-                                                            {FLOATVECTOR_TYPE, INTEGERVECTOR_TYPE}};
 
-const QString glsl_definition_template
-    = QString(R"(
-%2 %4_0(%3 a, %3 b, float t, %1 spline) {
+constexpr auto python_definition_template = R"(
+def %1(x, y, balance, ramp):
+  t = ramp.value(balance)
+  return (1-t) * x + t * y
+)";
+
+constexpr auto glsl_definition_template = R"(
+%3 %1_0(%4 a, %4 b, float t, %2 spline) {
   const int n = SPLINE_SIZE - 1;
   int k = int(t * n);
   int i = clamp(k, 0, n);
@@ -28,37 +24,68 @@ const QString glsl_definition_template
   float s = mix(spline[i], spline[j], r);
   return mix(a, b, s);
 }
-)")
-          .arg(omm::NodeCompilerGLSL::translate_type(SPLINE_TYPE));
+)";
+
+namespace types = omm::nodes::types;
+
+struct Overload
+{
+  std::string_view return_type;
+  std::string_view argument_type;
+
+  [[nodiscard]] auto types() const
+  {
+    return std::array{return_type, argument_type};
+  }
+};
+
+template<typename Overload>
+QString generate_overload(QString template_definition, const Overload& overload)
+{
+  for (const auto& type : overload.types()) {
+    const auto qtype = QString::fromStdString(std::string{type});
+    const auto ttype = omm::nodes::NodeCompilerGLSL::translate_type(qtype);
+    template_definition = template_definition.arg(ttype);
+  }
+  return template_definition;
+}
+
+constexpr std::array supported_overloads {
+  Overload{.return_type = types::FLOATVECTOR_TYPE, .argument_type = types::FLOATVECTOR_TYPE},
+  Overload{.return_type = types::FLOAT_TYPE,       .argument_type = types::INTEGER_TYPE},
+  Overload{.return_type = types::FLOAT_TYPE,       .argument_type = types::FLOAT_TYPE},
+  Overload{.return_type = types::COLOR_TYPE,       .argument_type = types::COLOR_TYPE},
+  Overload{.return_type = types::FLOATVECTOR_TYPE, .argument_type = types::INTEGERVECTOR_TYPE}
+};
+
+template<typename Overloads>
+QString overload(const QString& definition_template, const Overloads& overloads)
+{
+  QStringList definitions;
+  definitions.reserve(overloads.size());
+  for (const auto& overload : overloads) {
+    definitions.push_back(generate_overload(definition_template, overload));
+  }
+  return definitions.join("\n");
+}
 
 }  // namespace
 
-namespace omm
+namespace omm::nodes
 {
-using namespace omm::NodeCompilerTypes;
+
 const Node::Detail InterpolateNode::detail{
-    {
-        {AbstractNodeCompiler::Language::Python,
-         QString(R"(
-def %1(x, y, balance, ramp):
-  t = ramp.value(balance)
-  return (1-t) * x + t * y
-)")
-             .arg(InterpolateNode::TYPE)},
-        {AbstractNodeCompiler::Language::GLSL,
-         ::transform<QString, QList>(supported_glsl_types,
-                                     [](auto&& types) {
-                                       const auto& [return_type, arg_type] = types;
-                                       return glsl_definition_template
-                                           .arg(NodeCompilerGLSL::translate_type(return_type))
-                                           .arg(NodeCompilerGLSL::translate_type(arg_type));
-                                     })
-             .join("\n")
-             .arg(InterpolateNode::TYPE)},
+    .definitions = {
+        {BackendLanguage::Python, QString{python_definition_template}.arg(InterpolateNode::TYPE)},
+        {BackendLanguage::GLSL, overload(QString{glsl_definition_template}
+                                          .arg(InterpolateNode::TYPE,
+                                               NodeCompilerGLSL::translate_type(types::SPLINE_TYPE)),
+                                         supported_overloads)
+        }
     },
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Interpolation"),
-    }};
+
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Interpolation")}
+  };
 
 InterpolateNode::InterpolateNode(NodeModel& model) : Node(model)
 {
@@ -83,39 +110,44 @@ InterpolateNode::InterpolateNode(NodeModel& model) : Node(model)
   m_output = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
+QString InterpolateNode::type() const
+{
+  return TYPE;
+}
+
 QString InterpolateNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output) {
     const QString type_a = find_port<InputPort>(LEFT_VALUE_KEY)->data_type();
     const QString type_b = find_port<InputPort>(RIGHT_VALUE_KEY)->data_type();
     switch (language()) {
-    case AbstractNodeCompiler::Language::GLSL:
-      if (is_numeric(type_a) && is_numeric(type_b)) {
-        return FLOAT_TYPE;
-      } else if (is_vector(type_a) && is_vector(type_b)) {
-        return FLOATVECTOR_TYPE;
-      } else if (type_a == COLOR_TYPE && type_b == COLOR_TYPE) {
-        return COLOR_TYPE;
+    case BackendLanguage::GLSL:
+      if (types::is_numeric(type_a) && types::is_numeric(type_b)) {
+        return types::FLOAT_TYPE;
+      } else if (types::is_vector(type_a) && types::is_vector(type_b)) {
+        return types::FLOATVECTOR_TYPE;
+      } else if (type_a == types::COLOR_TYPE && type_b == types::COLOR_TYPE) {
+        return types::COLOR_TYPE;
       } else {
-        return INVALID_TYPE;
+        return types::INVALID_TYPE;
       }
-    case AbstractNodeCompiler::Language::Python:
-      if (is_numeric(type_a) && is_numeric(type_b)) {
-        return FLOAT_TYPE;
-      } else if ((is_vector(type_a) || is_numeric(type_a))
-                 && (is_vector(type_b) || is_numeric(type_b))) {
-        return FLOATVECTOR_TYPE;
-      } else if ((type_a == COLOR_TYPE || is_numeric(type_a))
-                 && (type_b == COLOR_TYPE || is_numeric(type_b))) {
-        return COLOR_TYPE;
+    case BackendLanguage::Python:
+      if (types::is_numeric(type_a) && types::is_numeric(type_b)) {
+        return types::FLOAT_TYPE;
+      } else if ((types::is_vector(type_a) || types::is_numeric(type_a))
+                 && (types::is_vector(type_b) || types::is_numeric(type_b))) {
+        return types::FLOATVECTOR_TYPE;
+      } else if ((type_a == types::COLOR_TYPE || types::is_numeric(type_a))
+                 && (type_b == types::COLOR_TYPE || types::is_numeric(type_b))) {
+        return types::COLOR_TYPE;
       } else {
-        return INVALID_TYPE;
+        return types::INVALID_TYPE;
       }
     default:
       Q_UNREACHABLE();
     }
   }
-  return INVALID_TYPE;
+  return types::INVALID_TYPE;
 }
 
 QString InterpolateNode::input_data_type(const InputPort& port) const
@@ -123,7 +155,7 @@ QString InterpolateNode::input_data_type(const InputPort& port) const
   Q_UNUSED(port)
   const auto ports
       = std::vector{find_port<InputPort>(LEFT_VALUE_KEY), find_port<InputPort>(RIGHT_VALUE_KEY)};
-  return fst_con_ptype(ports, NodeCompilerTypes::FLOAT_TYPE);
+  return fst_con_ptype(ports, types::FLOAT_TYPE);
 }
 
 bool InterpolateNode::accepts_input_data_type(const QString& type, const InputPort& port) const
@@ -133,9 +165,9 @@ bool InterpolateNode::accepts_input_data_type(const QString& type, const InputPo
     return port.data_type() == type;
   } else {
     switch (language()) {
-    case AbstractNodeCompiler::Language::Python:
+    case BackendLanguage::Python:
       [[fallthrough]];
-    case AbstractNodeCompiler::Language::GLSL:
+    case BackendLanguage::GLSL:
       return true;
     default:
       Q_UNREACHABLE();
@@ -144,4 +176,4 @@ bool InterpolateNode::accepts_input_data_type(const QString& type, const InputPo
   }
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

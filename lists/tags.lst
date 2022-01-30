@@ -1,6 +1,7 @@
 {
   "clazz": "Tag",
   "category": "tags",
+  "namespace": "omm",
   "items": [
     "PathTag",
     "NodesTag",

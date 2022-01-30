@@ -2,8 +2,9 @@
 #include "nodesystem/node.h"
 #include "nodesystem/nodemodel.h"
 
-namespace omm
+namespace omm::nodes
 {
+
 InputPort::InputPort(Node& node, std::size_t index) : InputPort(PortFlavor::Ordinary, node, index)
 {
 }
@@ -121,4 +122,4 @@ void OutputPort::connect(InputPort* port, InputPort::Tag)
   m_connections.insert(port);
 }
 
-}  // namespace omm
+}  // namespace omm::nodes

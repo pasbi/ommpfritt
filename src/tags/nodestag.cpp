@@ -24,13 +24,15 @@ namespace py = pybind11;
 
 namespace
 {
-template<omm::PortType port_type>
-void populate_locals(py::object& locals, const omm::NodeModel& model)
+
+template<omm::nodes::PortType port_type>
+void populate_locals(py::object& locals, const omm::nodes::NodeModel& model)
 {
-  using PortT = omm::Port<port_type>;
-  for (PortT* port : model.ports<PortT>()) {
-    if (port->flavor == omm::PortFlavor::Property) {
-      omm::Property* property = static_cast<omm::PropertyPort<port_type>*>(port)->property();
+  using PortT = omm::nodes::Port<port_type>;
+  for (const auto* const port : model.ports<PortT>()) {
+    if (port->flavor == omm::nodes::PortFlavor::Property) {
+      using PropertyPort = omm::nodes::PropertyPort<port_type>;
+      const auto* const property = static_cast<const PropertyPort*>(port)->property();
       if (property != nullptr) {
         const auto var_name = py::cast(port->uuid().toStdString());
         const auto var = variant_to_python(property->variant_value());
@@ -45,7 +47,7 @@ void populate_locals(py::object& locals, const omm::NodeModel& model)
 namespace omm
 {
 NodesTag::NodesTag(Object& owner)
-    : Tag(owner), NodesOwner(AbstractNodeCompiler::Language::Python, *owner.scene())
+    : Tag(owner), NodesOwner(nodes::BackendLanguage::Python, owner.scene())
 {
   const QString category = QObject::tr("Basic");
   create_property<OptionProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
@@ -77,7 +79,7 @@ Flag NodesTag::flags() const
   return Tag::flags() | Flag::HasPythonNodes;
 }
 
-std::set<Node*> NodesTag::nodes() const
+std::set<nodes::Node*> NodesTag::nodes() const
 {
   return node_model()->nodes();
 }
@@ -111,15 +113,15 @@ void NodesTag::force_evaluate()
   using namespace py::literals;
 
   auto locals = py::dict();
-  NodeModel& model = *node_model();
-  populate_locals<PortType::Input>(locals, model);
-  populate_locals<PortType::Output>(locals, model);
+  auto& model = *node_model();
+  populate_locals<nodes::PortType::Input>(locals, model);
+  populate_locals<nodes::PortType::Output>(locals, model);
 
   const auto code = model.compiler().code();
   if (Application::instance().python_engine->exec(code, locals, this)) {
-    for (InputPort* port : model.ports<InputPort>()) {
-      if (port->node.type() == SpyNode::TYPE) {
-        auto& spy_node = dynamic_cast<SpyNode&>(port->node);
+    for (auto* const port : model.ports<nodes::InputPort>()) {
+      if (port->node.type() == nodes::SpyNode::TYPE) {
+        auto& spy_node = dynamic_cast<nodes::SpyNode&>(port->node);
         const auto py_var_name = py::cast(port->uuid().toStdString());
         if (locals.contains(py_var_name)) {
           py::object val = locals[py_var_name];
@@ -129,8 +131,9 @@ void NodesTag::force_evaluate()
           spy_node.set_text(tr("nil"));
         }
       }
-      if (port->flavor == PortFlavor::Property && port->is_connected()) {
-        Property* property = dynamic_cast<PropertyPort<PortType::Input>*>(port)->property();
+      if (port->flavor == nodes::PortFlavor::Property && port->is_connected()) {
+        using InputPropertyPort = nodes::PropertyPort<nodes::PortType::Input>;
+        auto* const property = dynamic_cast<InputPropertyPort*>(port)->property();
         if (property != nullptr) {
           const auto var_name = port->uuid();
           const auto py_var_name = py::cast(var_name.toStdString());

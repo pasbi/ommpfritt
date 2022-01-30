@@ -5,19 +5,17 @@
 
 namespace
 {
-const std::vector<QString> conversion_options{
-    omm::ColorConvertNode::tr("Identity"),
-    omm::ColorConvertNode::tr("RGBA -> HSVA"),
-    omm::ColorConvertNode::tr("HSVA -> RGBA"),
-};
 
+std::vector<QString> conversion_options()
+{
+  return {
+    omm::nodes::ColorConvertNode::tr("Identity"),
+    omm::nodes::ColorConvertNode::tr("RGBA -> HSVA"),
+    omm::nodes::ColorConvertNode::tr("HSVA -> RGBA"),
+  };
 }
 
-namespace omm
-{
-const Node::Detail ColorConvertNode::detail{
-    {{AbstractNodeCompiler::Language::Python,
-      QString(R"(
+constexpr auto python_defintion_template = R"(
 def %1(option, color):
   if option == 0:
     return color
@@ -28,10 +26,9 @@ def %1(option, color):
   else:
     // unreachable
     return [ 0.0, 0.0, 0.0, 1.0 ]
-)")
-          .arg(ColorConvertNode::TYPE)},
-     {AbstractNodeCompiler::Language::GLSL,
-      QString(R"(
+)";
+
+constexpr auto glsl_definition_template = R"(
 vec4 %1_0(int option, vec4 color) {
   if (option == 0) {
     return color;
@@ -54,19 +51,26 @@ vec4 %1_0(int option, vec4 color) {
     // unreachable
     return vec4(0.0, 0.0, 0.0, 1.0);
   }
-})")
-          .arg(ColorConvertNode::TYPE)}},
-    {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
-    },
+})";
 
+}  // namespace
+
+namespace omm::nodes
+{
+
+const Node::Detail ColorConvertNode::detail {
+  .definitions = {
+        {BackendLanguage::Python, QString{python_defintion_template}.arg(TYPE)},
+        {BackendLanguage::GLSL, QString{glsl_definition_template}.arg(ColorConvertNode::TYPE)}
+  },
+  .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Color")},
 };
 
 ColorConvertNode::ColorConvertNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<OptionProperty>(CONVERSION_PROPERTY_KEY)
-      .set_options(conversion_options)
+      .set_options(conversion_options())
       .set_label(tr("conversion"))
       .set_category(category);
   create_property<ColorProperty>(COLOR_PROPERTY_KEY, Color())
@@ -77,11 +81,10 @@ ColorConvertNode::ColorConvertNode(NodeModel& model) : Node(model)
 
 QString ColorConvertNode::output_data_type(const OutputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   if (&port == m_vector_output_port) {
-    return COLOR_TYPE;
+    return types::COLOR_TYPE;
   }
-  return INVALID_TYPE;
+  return types::INVALID_TYPE;
 }
 
 QString ColorConvertNode::title() const
@@ -89,4 +92,9 @@ QString ColorConvertNode::title() const
   return tr("Convert");
 }
 
-}  // namespace omm
+QString ColorConvertNode::type() const
+{
+  return TYPE;
+}
+
+}  // namespace omm::nodes

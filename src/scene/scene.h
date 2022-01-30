@@ -23,7 +23,6 @@ class Command;
 class HistoryModel;
 class MailBox;
 class NamedColors;
-class Node;
 class ObjectTree;
 class PointSelection;
 class Project;
@@ -32,6 +31,11 @@ class StyleList;
 class ToolBox;
 struct ExportOptions;
 class DisjointPathPointSetForest;
+
+namespace nodes
+{
+class Node;
+}  // namespace nodes
 
 template<typename> struct SceneStructure;
 template<> struct SceneStructure<Object> {
@@ -158,8 +162,8 @@ public:
 
   // === Nodes ===
 public:
-  [[nodiscard]] std::set<Node*> collect_nodes() const;
-  [[nodiscard]] static std::set<Node*>
+  [[nodiscard]] std::set<nodes::Node*> collect_nodes() const;
+  [[nodiscard]] static std::set<nodes::Node*>
   collect_nodes(const std::set<AbstractPropertyOwner*>& owners);
 
   // === Styles ===

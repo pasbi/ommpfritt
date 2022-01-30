@@ -7,54 +7,35 @@
 #include <QStringList>
 #include <list>
 #include <set>
+#include <memory>
 
-namespace omm
+namespace omm::nodes
 {
+
 class OutputPort;
 class InputPort;
 class Node;
 class AbstractPort;
 class NodeModel;
 
-namespace NodeCompilerTypes
-{
-static constexpr auto INVALID_TYPE = "Invalid";
-static constexpr auto FLOAT_TYPE = "Float";
-static constexpr auto INTEGER_TYPE = "Integer";
-static constexpr auto OPTION_TYPE = "Option";
-static constexpr auto FLOATVECTOR_TYPE = "FloatVector";
-static constexpr auto INTEGERVECTOR_TYPE = "IntegerVector";
-static constexpr auto STRING_TYPE = "String";
-static constexpr auto COLOR_TYPE = "Color";
-static constexpr auto REFERENCE_TYPE = "Reference";
-static constexpr auto BOOL_TYPE = "Bool";
-static constexpr auto SPLINE_TYPE = "Spline";
-
-bool is_numeric(const QString& type);
-bool is_integral(const QString& type);
-bool is_vector(const QString& type);
-}  // namespace NodeCompilerTypes
-
 class AbstractNodeCompiler : public QObject
 {
   Q_OBJECT
 public:
-  enum class Language { Python, GLSL };
-  static std::set<QString> supported_types(Language language);
   [[nodiscard]] QString last_error() const
   {
-    return m_last_error;
+    return m_last_error.message;
   }
 
 protected:
-  AbstractNodeCompiler(Language language, const NodeModel& model);
+  AbstractNodeCompiler(BackendLanguage language, const NodeModel& model);
   [[nodiscard]] std::set<Node*> nodes() const;
 
   void generate_statements(std::set<QString>& used_node_types,
                            std::list<std::unique_ptr<Statement>>& statements) const;
 
 public:
-  const Language language;
+  const BackendLanguage language;
   [[nodiscard]] const NodeModel& model() const
   {
     return m_model;
@@ -71,12 +52,20 @@ public:
   virtual void invalidate();
 
 protected:
-  QString m_last_error = "";
+  struct AssemblyError
+  {
+    AssemblyError(const QString& message = "");
+    QString message;
+  };
+
+  AssemblyError m_last_error;
   QString m_code = "";
   bool m_is_dirty = true;
+  bool check(const AssemblyError& error);
 
 private:
   const NodeModel& m_model;
+
 };
 
 template<typename ConcreteCompiler> class NodeCompiler : public AbstractNodeCompiler
@@ -85,23 +74,13 @@ public:
   bool compile() override
   {
     m_is_dirty = false;
-    m_code = "";
-    m_last_error = "";
+    m_code.clear();
+    m_last_error = {};
     QStringList lines;
     std::set<QString> used_node_types;
     std::list<std::unique_ptr<Statement>> statements;
     generate_statements(used_node_types, statements);
     const auto& self = static_cast<const ConcreteCompiler&>(*this);
-
-    const auto check = [this](const QString& msg) {
-      if (msg.isEmpty()) {
-        return true;
-      } else {
-        m_last_error = msg;
-        Q_EMIT compilation_failed(msg);
-        return false;
-      }
-    };
 
     if (!check(self.generate_header(lines))) {
       return false;
@@ -147,4 +126,4 @@ protected:
   void statements();
 };
 
-}  // namespace omm
+}  // namespace omm::nodes
