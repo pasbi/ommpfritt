@@ -23,7 +23,7 @@ def %1(op, x, y):
     return 0.0
 )";
 
- constexpr auto glsl_definition_template = R"(
+constexpr auto glsl_definition_template = R"(
 float %1_0(int op, float x, float y) {
   if (op == 0) {
     return atan(y, x);

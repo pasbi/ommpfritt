@@ -86,10 +86,8 @@ void compile_output_ports(const omm::nodes::Node& node, QStringList& lines)
         lines.push_back( QString("%1 %2 = %3;") .arg(port_data_type, port->uuid(), it->input_info.name));
       }
     } else {
-      lines.push_back(QString("%1 %2 = %3_%4(%5);")
-                          .arg(port_data_type, port->uuid(), node.type())
-                          .arg(i)
-                          .arg(args.join(", ")));
+      lines.push_back(QString("%1 %2 = %3(%4);")
+                          .arg(port_data_type, port->uuid(), node.function_name(i), args.join(", ")));
     }
     i += 1;
   }

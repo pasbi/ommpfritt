@@ -102,6 +102,7 @@ public:
   [[nodiscard]] virtual bool accepts_input_data_type(const QString& type, const InputPort& port) const;
   [[nodiscard]] virtual bool is_valid() const;
   [[nodiscard]] std::unique_ptr<Node> clone(NodeModel& model) const;
+  [[nodiscard]] virtual QString function_name(std::size_t i) const;
 
 protected:
   template<typename PortT, typename... Args> PortT& add_port(Args&&... args)

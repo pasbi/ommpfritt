@@ -3,6 +3,12 @@
   "category": "nodes",
   "namespace": "omm::nodes",
   "items": [
+    "CastToFloatNode",
+    "CastToIntegerNode",
+    "CastToFloatVectorNode",
+    "CastToIntegerVectorNode",
+    "CastToBoolNode",
+    "CastToOptionNode",
     "ConstantNode",
     "ComposeNode",
     "ColorConvertNode",

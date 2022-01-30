@@ -1,4 +1,18 @@
 target_sources(libommpfritt PRIVATE
+  castnode.cpp
+  castnode.h
+  casttoboolnode.cpp
+  casttoboolnode.h
+  casttofloatnode.cpp
+  casttofloatnode.h
+  casttofloatvectornode.cpp
+  casttofloatvectornode.h
+  casttointegernode.cpp
+  casttointegernode.h
+  casttointegervectornode.cpp
+  casttointegervectornode.h
+  casttooptionnode.cpp
+  casttooptionnode.h
   constantnode.cpp
   constantnode.h
   composenode.cpp

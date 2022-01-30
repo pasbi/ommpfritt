@@ -217,6 +217,11 @@ std::unique_ptr<Node> Node::clone(NodeModel& model) const
   return clone;
 }
 
+QString Node::function_name(std::size_t i) const
+{
+  return QString("%1_%2").arg(type()).arg(i);
+}
+
 AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
 {
   auto& ref = *port;
