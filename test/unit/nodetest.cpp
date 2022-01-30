@@ -15,19 +15,19 @@
 namespace
 {
 
-class GLSLNodeTest : public ::testing::Test
+class GLSLNodeTest
 {
-protected:
+public:
   GLSLNodeTest()
       : m_model(omm::nodes::NodeModel(omm::nodes::BackendLanguage::GLSL, nullptr))
       , m_compiler(m_model)
   {
   }
 
-  ommtest::GuiApplication m_application;
-  omm::nodes::NodeModel m_model;
-  omm::nodes::NodeCompilerGLSL m_compiler;
-  omm::OffscreenRenderer m_offscreen_renderer;
+  omm::nodes::NodeModel& model()
+  {
+    return m_model;
+  }
 
   template<typename Property> [[nodiscard]] auto& create_constant_node_output(const QString& name = "")
   {
@@ -49,42 +49,53 @@ protected:
   {
     return m_offscreen_renderer.set_fragment_shader(m_compiler.code());
   }
+
+  ommtest::GuiApplication m_application;
+  omm::nodes::NodeModel m_model;
+  omm::nodes::NodeCompilerGLSL m_compiler;
+  omm::OffscreenRenderer m_offscreen_renderer;
+
 };
 
 }  // namespace
 
-TEST_F(GLSLNodeTest, empty_model)
+TEST(GLSLNodeTest, empty_model)
 {
   SKIP_IF_NO_OPENGL;
-  EXPECT_TRUE(compile());
+  GLSLNodeTest test;
+  EXPECT_TRUE(test.compile());
 }
 
-TEST_F(GLSLNodeTest, simple_model)
+TEST(GLSLNodeTest, simple_model)
 {
   SKIP_IF_NO_OPENGL;
-  fragment_node().input_port().connect(&create_constant_node_output<omm::ColorProperty>());
-  EXPECT_TRUE(compile());
+  GLSLNodeTest test;
+  auto& color_property = test.create_constant_node_output<omm::ColorProperty>();
+  test.fragment_node().input_port().connect(&color_property);
+  EXPECT_TRUE(test.compile());
 }
 
-TEST_F(GLSLNodeTest, incompatible_connection)
+TEST(GLSLNodeTest, incompatible_connection)
 {
   SKIP_IF_NO_OPENGL;
-  fragment_node().input_port().connect(&create_constant_node_output<omm::FloatProperty>());
-  EXPECT_FALSE(compile());
+  GLSLNodeTest test;
+  test.fragment_node().input_port().connect(&test.create_constant_node_output<omm::FloatProperty>());
+  EXPECT_FALSE(test.compile());
 }
 
-TEST_F(GLSLNodeTest, switch_node)
+TEST(GLSLNodeTest, switch_node)
 {
   SKIP_IF_NO_OPENGL;
+  GLSLNodeTest test;
 
   using omm::nodes::OutputPort;
   using omm::nodes::InputPort;
-  auto& switch_node = m_model.add_node(std::make_unique<omm::nodes::SwitchNode>(m_model));
-  fragment_node().input_port().connect(switch_node.find_port<OutputPort>(1));
-  auto& constant_color_port = create_constant_node_output<omm::ColorProperty>();
+  auto& switch_node = test.model().add_node(std::make_unique<omm::nodes::SwitchNode>(test.model()));
+  test.fragment_node().input_port().connect(switch_node.find_port<OutputPort>(1));
+  auto& constant_color_port = test.create_constant_node_output<omm::ColorProperty>();
   for (int i = 0; i < 9; ++i) {
     auto* s_i = switch_node.find_port<InputPort>(i + 1);
     s_i->connect(&constant_color_port);
   }
-  EXPECT_TRUE(compile());
+  EXPECT_TRUE(test.compile());
 }
