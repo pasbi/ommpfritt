@@ -5,12 +5,13 @@ namespace omm::nodes
 
 const Node::Detail CastToIntegerVectorNode::detail {
   .definitions = {{BackendLanguage::GLSL, ""}},
-  .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Conversion")},
-};
+    .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Conversion")},
+    };
 
-QString CastToIntegerVectorNode::type() const
+CastToIntegerVectorNode::CastToIntegerVectorNode(NodeModel& model)
+    : CastNode(model, TYPE, types::INTEGERVECTOR_TYPE)
 {
-  return TYPE;
+
 }
 
 }  // namespace omm::nodes

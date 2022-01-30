@@ -3,13 +3,12 @@
 namespace omm::nodes
 {
 
-class CastToOptionNode : public CastNode<types::OPTION_TYPE>
+class CastToOptionNode : public CastNode
 {
   Q_OBJECT
 public:
-  using CastNode::CastNode;
+  explicit CastToOptionNode(NodeModel& model);
   static const Detail detail;
-  QString type() const override;
   static constexpr auto TYPE = "CastToOptionNode";
 };
 

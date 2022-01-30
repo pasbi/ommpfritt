@@ -3,13 +3,12 @@
 namespace omm::nodes
 {
 
-class CastToBoolNode : public CastNode<types::BOOL_TYPE>
+class CastToBoolNode : public CastNode
 {
   Q_OBJECT
 public:
-  using CastNode::CastNode;
+  CastToBoolNode(NodeModel& model);
   static const Detail detail;
-  QString type() const override;
   static constexpr auto TYPE = "CastToBoolNode";
 };
 

@@ -3,13 +3,12 @@
 namespace omm::nodes
 {
 
-class CastToFloatNode : public CastNode<types::FLOAT_TYPE>
+class CastToFloatNode : public CastNode
 {
   Q_OBJECT
 public:
-  using CastNode::CastNode;
+  explicit CastToFloatNode(NodeModel& model);
   static const Detail detail;
-  QString type() const override;
   static constexpr auto TYPE = "CastToFloatNode";
 };
 

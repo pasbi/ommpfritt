@@ -8,9 +8,9 @@ const Node::Detail CastToBoolNode::detail {
   .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Conversion")},
 };
 
-QString CastToBoolNode::type() const
+CastToBoolNode::CastToBoolNode(NodeModel& model)
+    : CastNode(model, TYPE, types::BOOL_TYPE)
 {
-  return TYPE;
 }
 
 }  // namespace omm::nodes

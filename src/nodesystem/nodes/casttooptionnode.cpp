@@ -8,9 +8,9 @@ const Node::Detail CastToOptionNode::detail {
   .menu_path = {QT_TRANSLATE_NOOP("NodeMenuPath", "Conversion")},
 };
 
-QString CastToOptionNode::type() const
+CastToOptionNode::CastToOptionNode(NodeModel& model)
+    : CastNode(model, TYPE, types::OPTION_TYPE)
 {
-  return TYPE;
 }
 
 }  // namespace omm::nodes

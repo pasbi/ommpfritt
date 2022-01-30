@@ -3,13 +3,12 @@
 namespace omm::nodes
 {
 
-class CastToIntegerVectorNode : public CastNode<types::INTEGERVECTOR_TYPE>
+class CastToIntegerVectorNode : public CastNode
 {
   Q_OBJECT
 public:
-  using CastNode::CastNode;
+  explicit CastToIntegerVectorNode(NodeModel& model);
   static const Detail detail;
-  QString type() const override;
   static constexpr auto TYPE = "CastToIntegerVectorNode";
 };
 
