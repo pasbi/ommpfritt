@@ -20,6 +20,7 @@ constexpr auto glsl_definition_template = R"(
   case 7: return a7;
   case 8: return a8;
   case 9: return a9;
+  default: return a0;
   }
 })";
 
