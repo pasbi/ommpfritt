@@ -25,9 +25,11 @@ constexpr char SPLINE_TYPE[] = "Spline";
 constexpr auto valid_types = std::array{FLOAT_TYPE, INTEGER_TYPE, OPTION_TYPE, FLOATVECTOR_TYPE,
                                         INTEGERVECTOR_TYPE, STRING_TYPE, COLOR_TYPE, REFERENCE_TYPE,
                                         BOOL_TYPE, SPLINE_TYPE};
+bool is_scalar(const QString& type);
 bool is_numeric(const QString& type);
 bool is_integral(const QString& type);
 bool is_vector(const QString& type);
+bool is_color(const QString& type);
 std::set<QString> supported_types(BackendLanguage language);
 
 }  // namespace omm::nodes::types

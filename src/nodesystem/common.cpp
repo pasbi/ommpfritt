@@ -11,7 +11,7 @@ bool is_integral(const QString& type)
   return type == BOOL_TYPE || type == INTEGER_TYPE || type == OPTION_TYPE;
 }
 
-bool is_numeric(const QString& type)
+bool is_scalar(const QString& type)
 {
   return is_integral(type) || type == FLOAT_TYPE;
 }
@@ -19,6 +19,11 @@ bool is_numeric(const QString& type)
 bool is_vector(const QString& type)
 {
   return type == INTEGERVECTOR_TYPE || type == FLOATVECTOR_TYPE;
+}
+
+bool is_color(const QString& type)
+{
+  return type == COLOR_TYPE;
 }
 
 std::set<QString> supported_types(BackendLanguage language)
@@ -34,6 +39,11 @@ std::set<QString> supported_types(BackendLanguage language)
     Q_UNREACHABLE();
     return std::set<QString>();
   }
+}
+
+bool is_numeric(const QString& type)
+{
+  return is_scalar(type);
 }
 
 
