@@ -17,7 +17,7 @@ public:
 
   [[nodiscard]] Type output_data_type(const OutputPort& port) const override;
   [[nodiscard]] QString title() const override;
-  [[nodiscard]] bool accepts_input_data_type(Type type, const InputPort& port) const override;
+  [[nodiscard]] bool accepts_input_data_type(Type type, const InputPort& port, bool with_cast) const override;
   [[nodiscard]] QString type() const override;
   static const Detail detail;
   [[nodiscard]] Type input_data_type(const InputPort& port) const override;
@@ -25,6 +25,7 @@ public:
 
 private:
   OutputPort* m_output_port;
+  InputPort* m_key_input_port;
   std::vector<InputPort*> m_options;
   [[nodiscard]] InputPort* find_surrogate_for(const InputPort& port) const;
 };

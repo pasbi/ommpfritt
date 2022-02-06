@@ -148,9 +148,9 @@ Type MathNode::input_data_type(const InputPort& port) const
   return fst_con_ptype(ports, Type::Float);
 }
 
-bool MathNode::accepts_input_data_type(const Type type, const InputPort& port) const
+bool MathNode::accepts_input_data_type(const Type type, const InputPort& port, bool with_cast) const
 {
-  const auto glsl_accepts_type = [this, type, &port]() {
+  const auto glsl_accepts_type = [with_cast, this, type, &port]() {
     auto* const a_input = find_port<InputPort>(A_VALUE_KEY);
     auto* const b_input = find_port<InputPort>(B_VALUE_KEY);
     if (a_input == nullptr || b_input == nullptr) {
@@ -159,7 +159,11 @@ bool MathNode::accepts_input_data_type(const Type type, const InputPort& port) c
     const InputPort& other_port = &port == a_input ? *b_input : *a_input;
     assert((std::set{&port, &other_port} == std::set<const InputPort*>{a_input, b_input}));
     if (other_port.is_connected()) {
-      return type == other_port.data_type();
+      if (with_cast) {
+        return NodeCompilerGLSL::can_cast(type, other_port.data_type());
+      } else {
+        return type == other_port.data_type();
+      }
     } else {
       return model().compiler().supported_types().contains(type);
     }

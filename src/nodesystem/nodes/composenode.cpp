@@ -62,9 +62,10 @@ QString ComposeNode::title() const
   return tr("Compose");
 }
 
-bool ComposeNode::accepts_input_data_type(Type type, const InputPort& port) const
+bool ComposeNode::accepts_input_data_type(Type type, const InputPort& port, bool with_cast) const
 {
   Q_UNUSED(port)
+  Q_UNUSED(with_cast)
   return is_numeric(type);
 }
 

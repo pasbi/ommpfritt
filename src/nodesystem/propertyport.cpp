@@ -19,11 +19,7 @@ namespace omm::nodes
 {
 template<> Type PropertyPort<PortType::Input>::data_type() const
 {
-  if (OutputPort* op = connected_output(); op != nullptr) {
-    return op->data_type();
-  } else {
-    return ::data_type(property());
-  }
+  return ::data_type(property());
 }
 
 template<> Type PropertyPort<PortType::Output>::data_type() const

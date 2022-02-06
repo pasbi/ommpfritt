@@ -69,7 +69,7 @@ public:
   }
   bool is_connected(const AbstractPort* other) const;
   [[nodiscard]] bool is_connected() const;
-  [[nodiscard]] bool accepts_data_type(Type type) const;
+  [[nodiscard]] bool accepts_data_type(Type type, bool with_cast) const;
 
   class Tag
   {

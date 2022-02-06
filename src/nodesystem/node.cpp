@@ -192,8 +192,10 @@ Type Node::input_data_type(const InputPort& port) const
   }
 }
 
-bool Node::accepts_input_data_type(Type type, const InputPort& port) const
+bool Node::accepts_input_data_type(Type type, const InputPort& port, const bool with_cast) const
 {
+  Q_UNUSED(with_cast)
+
   // do not perform any type conversions by default.
   // If you want your node to be more flexible, override this method.
   return port.data_type() == type;

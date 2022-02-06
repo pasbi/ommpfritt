@@ -99,7 +99,7 @@ public:
   [[nodiscard]] virtual QString title() const;
   [[nodiscard]] virtual Type output_data_type(const OutputPort& port) const;
   [[nodiscard]] virtual Type input_data_type(const InputPort& port) const;
-  [[nodiscard]] virtual bool accepts_input_data_type(Type type, const InputPort& port) const;
+  [[nodiscard]] virtual bool accepts_input_data_type(Type type, const InputPort& port, bool with_cast) const;
   [[nodiscard]] virtual bool is_valid() const;
   [[nodiscard]] std::unique_ptr<Node> clone(NodeModel& model) const;
   [[nodiscard]] virtual QString function_name(std::size_t i) const;

@@ -14,10 +14,59 @@ namespace
 
 constexpr auto output_variable_name = "out_color";
 
+QStringList arguments_for_cast(const QString& name, const omm::Type actual_type, const omm::Type expected_type)
+{
+  if (omm::is_scalar(actual_type)) {
+    if (omm::is_scalar(expected_type)) {
+      return {name};
+    } else if (omm::is_vector(expected_type)) {
+      return {name, name};
+    } else if (omm::is_color(expected_type)) {
+      return {name, name, name, "1.0"};
+    }
+  } else if (omm::is_vector(actual_type) || omm::is_color(actual_type)) {
+    if (is_scalar(expected_type)) {
+      return {name + ".x"};
+    } else if (omm::is_vector(expected_type)) {
+      return {name + ".x", name + ".y"};
+    } else if (omm::is_color(expected_type)) {
+      return {name + ".x", name + ".y", "0.0", "1.0"};
+    }
+  }
+  return {name};
+}
+
+omm::Type target_type(const omm::Type actual_type, const omm::nodes::InputPort& ip)
+{
+  if (ip.accepts_data_type(actual_type, false)) {
+    return actual_type;  // no cast required
+  } else {
+    return ip.data_type();
+  }
+}
+
+QString decorate_with_cast(const QString& name, const omm::Type actual_type, const omm::Type expected_type)
+{
+  if (actual_type == expected_type) {
+    return name;   // no cast required
+  }
+  const auto args = arguments_for_cast(name, actual_type, expected_type);
+  return QString{"%1(%2)"}.arg(omm::nodes::NodeCompilerGLSL::type_name(expected_type), args.join(", "));
+}
+
 QString format_connection(const omm::nodes::AbstractPort& lhs, const omm::nodes::AbstractPort& rhs)
 {
-  const auto type = omm::nodes::NodeCompilerGLSL::type_name(lhs.data_type());
-  return QString("%1 %2 = %3;").arg(type, lhs.uuid(), rhs.uuid());
+  assert(lhs.port_type != rhs.port_type);
+  if (lhs.port_type == omm::nodes::PortType::Input) {
+    const auto actual_type = rhs.data_type();
+    const auto expected_type = target_type(actual_type, dynamic_cast<const omm::nodes::InputPort&>(lhs));
+    const auto casted = decorate_with_cast(rhs.uuid(), actual_type, expected_type);
+    const auto expected_type_name = omm::nodes::NodeCompilerGLSL::type_name(expected_type);
+    return QString("%1 %2 = %3;  // connection").arg(expected_type_name, lhs.uuid(), casted);
+  } else {
+    const auto type = omm::nodes::NodeCompilerGLSL::type_name(lhs.data_type());
+    return QString("%1 %2 = %3;  // inter-node").arg(type, lhs.uuid(), rhs.uuid());
+  }
 }
 
 omm::nodes::AbstractPort* get_sibling(const omm::nodes::AbstractPort* port)

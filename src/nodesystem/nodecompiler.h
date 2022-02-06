@@ -44,6 +44,7 @@ public:
   QString code();
   QString error();
   virtual bool compile() = 0;
+  static bool can_cast(Type from, Type to);
 
 Q_SIGNALS:
   void compilation_succeeded(const QString& code);

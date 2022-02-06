@@ -233,7 +233,7 @@ bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 
 bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const
 {
-  return !find_path(b.node, a.node) && b.accepts_data_type(a.data_type());
+  return !find_path(b.node, a.node) && b.accepts_data_type(a.data_type(), true);
 }
 
 NodeModel::TopologyChangeSignalBlocker::TopologyChangeSignalBlocker(NodeModel& model)

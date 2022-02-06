@@ -70,7 +70,7 @@ const Node::Detail SwitchNode::detail{
 SwitchNode::SwitchNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
-  create_property<IntegerProperty>(KEY_KEY, 0)
+  const auto& key_property = create_property<IntegerProperty>(KEY_KEY, 0)
       .set_label(tr("key"))
       .set_category(category);
   m_options.reserve(n_options);
@@ -78,6 +78,7 @@ SwitchNode::SwitchNode(NodeModel& model) : Node(model)
     m_options.push_back(&add_port<OrdinaryPort<PortType::Input>>(input_name(i)));
   }
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
+  m_key_input_port = find_port<InputPort>(key_property);
 }
 
 Type SwitchNode::output_data_type(const OutputPort& port) const
@@ -102,10 +103,17 @@ QString SwitchNode::title() const
   return tr("Compose");
 }
 
-bool SwitchNode::accepts_input_data_type(const Type type, const InputPort& port) const
+bool SwitchNode::accepts_input_data_type(const Type type, const InputPort& port, const bool with_cast) const
 {
-  Q_UNUSED(port)
-  return type != Type::Invalid;
+  if (&port == m_key_input_port) {
+    if (with_cast) {
+      return NodeCompilerGLSL::can_cast(type, Type::Integer);
+    } else {
+      return type == Type::Integer;
+    }
+  } else {
+    return type != Type::Invalid;
+  }
 }
 
 QString SwitchNode::type() const
@@ -131,7 +139,9 @@ InputPort* SwitchNode::find_surrogate_for(const InputPort& port) const
 
 Type SwitchNode::input_data_type(const InputPort& port) const
 {
-  if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
+  if (&port == m_key_input_port) {
+    return Type::Integer;
+  } else if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
     return Node::input_data_type(port);
   } else {
     return surrogate->data_type();
@@ -143,7 +153,6 @@ QString SwitchNode::dangling_input_port_uuid(const InputPort& port) const
   if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
     return Node::dangling_input_port_uuid(port);
   } else {
-    LINFO << "  surrogate uuid: " << surrogate->label();
     return surrogate->uuid();
   }
 }

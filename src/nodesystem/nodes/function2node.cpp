@@ -79,8 +79,9 @@ Type Function2Node::output_data_type(const OutputPort& port) const
   return Type::FloatVector;
 }
 
-bool Function2Node::accepts_input_data_type(const Type type, const InputPort& port) const
+bool Function2Node::accepts_input_data_type(const Type type, const InputPort& port, bool with_cast) const
 {
+  Q_UNUSED(with_cast)
   Q_UNUSED(port)
   return is_numeric(type);
 }

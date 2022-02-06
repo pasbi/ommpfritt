@@ -28,9 +28,9 @@ bool InputPort::is_connected() const
   return m_connected_output != nullptr;
 }
 
-bool InputPort::accepts_data_type(const Type type) const
+bool InputPort::accepts_data_type(const Type type, bool with_cast) const
 {
-  return node.accepts_input_data_type(type, *this);
+  return node.accepts_input_data_type(type, *this, with_cast);
 }
 
 void InputPort::connect(OutputPort* port)

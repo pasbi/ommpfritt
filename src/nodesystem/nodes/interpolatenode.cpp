@@ -155,8 +155,9 @@ Type InterpolateNode::input_data_type(const InputPort& port) const
   return fst_con_ptype(ports, Type::Float);
 }
 
-bool InterpolateNode::accepts_input_data_type(const Type type, const InputPort& port) const
+bool InterpolateNode::accepts_input_data_type(const Type type, const InputPort& port, bool with_cast) const
 {
+  Q_UNUSED(with_cast)
   if (&port == find_port<InputPort>(RAMP_PROPERTY_KEY)
       || &port == find_port<InputPort>(BALANCE_PROPERTY_KEY)) {
     return port.data_type() == type;

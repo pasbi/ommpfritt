@@ -64,8 +64,9 @@ QString DecomposeNode::title() const
   return tr("Decompose");
 }
 
-bool DecomposeNode::accepts_input_data_type(const Type type, const InputPort& port) const
+bool DecomposeNode::accepts_input_data_type(const Type type, const InputPort& port, bool with_cast) const
 {
+  Q_UNUSED(with_cast)
   Q_UNUSED(port)
   switch (language()) {
   case BackendLanguage::Python:

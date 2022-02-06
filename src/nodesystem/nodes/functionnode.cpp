@@ -129,8 +129,9 @@ Type FunctionNode::output_data_type(const OutputPort&) const
   return Type::Float;
 }
 
-bool FunctionNode::accepts_input_data_type(const Type type, const InputPort&) const
+bool FunctionNode::accepts_input_data_type(const Type type, const InputPort&, bool with_cast) const
 {
+  Q_UNUSED(with_cast)
   return is_numeric(type);
 }
 

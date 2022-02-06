@@ -54,8 +54,9 @@ QString DecomposeColorNode::title() const
   return tr("Decompose Color");
 }
 
-bool DecomposeColorNode::accepts_input_data_type(const Type type, const InputPort& port) const
+bool DecomposeColorNode::accepts_input_data_type(const Type type, const InputPort& port, bool with_cast) const
 {
+  Q_UNUSED(with_cast)
   Q_UNUSED(port)
   return type == Type::Color;
 }
