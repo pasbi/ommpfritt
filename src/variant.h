@@ -106,12 +106,7 @@ constexpr std::string_view variant_type_name(const Type type) noexcept
   return {};
 }
 
-constexpr Type get_variant_type(const std::string_view& v)
-{
-  return *std::find_if(variant_types.begin(), variant_types.end(), [v](const auto& type) {
-    return variant_type_name(type) == v;
-  });
-}
+Type get_variant_type(const std::string_view& v);
 
 template<typename T> constexpr Type get_variant_type() noexcept
 {

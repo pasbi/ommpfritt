@@ -77,4 +77,13 @@ template<> SplineType null_value<SplineType>()
   return SplineType();
 }
 
+// This should be constexpr.
+// however, currently used libs do not have constexpr `std::find_if`.
+Type get_variant_type(const std::string_view& v)
+{
+  return *std::find_if(variant_types.begin(), variant_types.end(), [v](const auto& type) {
+    return variant_type_name(type) == v;
+  });
+}
+
 }  // namespace omm
