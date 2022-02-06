@@ -42,6 +42,11 @@ private:
   std::unique_ptr<Ui::NodeManager> m_ui;
   std::unique_ptr<QMenu> make_add_nodes_menu(KeyBindings& kb);
   std::unique_ptr<QMenu> make_context_menu();
+  std::unique_ptr<QMenu> create_quick_constant_node_actions_menu(nodes::NodeModel& model) const;
+  void create_node_actions(const omm::nodes::NodeModel& model,
+                           const KeyBindings& kb,
+                           QMenu& root_menu,
+                           std::map<QString, QMenu*>& sub_menus);
 };
 
 }  // namespace omm
