@@ -9,7 +9,7 @@ const Node::Detail CastToIntegerVectorNode::detail {
     };
 
 CastToIntegerVectorNode::CastToIntegerVectorNode(NodeModel& model)
-    : CastNode(model, TYPE, types::INTEGERVECTOR_TYPE)
+    : CastNode(model, TYPE, Type::IntegerVector)
 {
 
 }

@@ -168,17 +168,18 @@ bool NodeManager::perform_action(const QString& name)
 std::unique_ptr<QMenu> NodeManager::create_quick_constant_node_actions_menu(omm::nodes::NodeModel& model) const
 {
   auto quick_constant_node_actions_menu = std::make_unique<QMenu>(tr("Constant ..."));
-  const auto types = nodes::types::supported_types(model.language());
+  const auto types = model.compiler().supported_types();
 
-  for (const QString& type : types) {
-    const QString label = QApplication::translate("Property", type.toStdString().c_str());
+  for (const Type& type : types) {
+    const QString label = QApplication::translate("Property", variant_type_name(type).data());
     auto action = std::make_unique<QAction>(label);
     connect(action.get(), &QAction::triggered, &model, [type, &model, label, this]() {
       auto node = std::make_unique<nodes::ConstantNode>(model);
-      auto property = Property::make(type);
+      const auto property_name = Property::property_type(type);
+      auto property = Property::make(property_name);
       property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
       property->set_label(label);
-      node->add_property(type, std::move(property));
+      node->add_property(property_name, std::move(property));
       std::vector<std::unique_ptr<nodes::Node>> nodes;
       node->set_pos(m_ui->nodeview->node_insert_pos());
       nodes.push_back(std::move(node));

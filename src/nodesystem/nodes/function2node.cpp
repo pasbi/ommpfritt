@@ -73,16 +73,16 @@ Function2Node::Function2Node(NodeModel& model) : Node(model)
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
-QString Function2Node::output_data_type(const OutputPort& port) const
+Type Function2Node::output_data_type(const OutputPort& port) const
 {
   Q_UNUSED(port)
-  return types::FLOAT_TYPE;
+  return Type::FloatVector;
 }
 
-bool Function2Node::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool Function2Node::accepts_input_data_type(const Type type, const InputPort& port) const
 {
   Q_UNUSED(port)
-  return types::is_numeric(type);
+  return is_numeric(type);
 }
 
 QString Function2Node::type() const

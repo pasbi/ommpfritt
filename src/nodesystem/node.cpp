@@ -176,23 +176,23 @@ QString Node::title() const
   return QCoreApplication::translate("any-context", type().toStdString().c_str());
 }
 
-QString Node::output_data_type(const OutputPort& port) const
+Type Node::output_data_type(const OutputPort& port) const
 {
   Q_UNUSED(port)
   Q_UNREACHABLE();
-  return types::INVALID_TYPE;
+  return Type::Invalid;
 }
 
-QString Node::input_data_type(const InputPort& port) const
+Type Node::input_data_type(const InputPort& port) const
 {
   if (OutputPort* op = port.connected_output(); op != nullptr) {
     return op->data_type();
   } else {
-    return types::INVALID_TYPE;
+    return Type::Invalid;
   }
 }
 
-bool Node::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool Node::accepts_input_data_type(Type type, const InputPort& port) const
 {
   // do not perform any type conversions by default.
   // If you want your node to be more flexible, override this method.
@@ -202,7 +202,7 @@ bool Node::accepts_input_data_type(const QString& type, const InputPort& port) c
 bool Node::is_valid() const
 {
   for (const auto& p : m_ports) {
-    if (p->data_type() == types::INVALID_TYPE) {
+    if (p->data_type() == Type::Invalid) {
       return false;
     }
   }
@@ -290,7 +290,7 @@ const Node::Detail& Node::detail(const QString& name)
   return *m_details.at(name);
 }
 
-QString Node::fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t)
+Type Node::fst_con_ptype(const std::vector<InputPort*>& ports, const Type default_t)
 {
   const auto get_connected_output = [](const InputPort* ip) { return ip->connected_output(); };
   return ::find_if(

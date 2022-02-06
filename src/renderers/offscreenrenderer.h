@@ -42,7 +42,7 @@ public:
 
   struct ShaderInput {
     enum class Kind { Uniform, Varying };
-    const QString type;
+    const Type type;
     const char* name;
     const Kind kind;
     [[nodiscard]] QString tr_name() const;

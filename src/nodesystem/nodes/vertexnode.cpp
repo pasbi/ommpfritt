@@ -26,16 +26,31 @@ QString VertexNode::type() const
   return TYPE;
 }
 
-QString VertexNode::output_data_type(const OutputPort& port) const
+Type VertexNode::output_data_type(const OutputPort& port) const
 {
   const auto it = std::find(m_shader_inputs.begin(), m_shader_inputs.end(), &port);
   assert(it != m_shader_inputs.end());
   return it->input_info.type;
 }
 
+const std::set<VertexNode::PortInfo>& VertexNode::shader_inputs() const
+{
+  return m_shader_inputs;
+}
+
 bool VertexNode::PortInfo::operator==(const AbstractPort* port) const
 {
   return port == this->port;
+}
+
+bool VertexNode::PortInfo::operator<(const PortInfo& other) const
+{
+  return this->port < other.port;
+}
+
+bool VertexNode::PortInfo::operator==(const PortInfo& other) const
+{
+  return other.port == this->port;
 }
 
 }  // namespace omm::nodes

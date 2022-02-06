@@ -97,9 +97,9 @@ public:
 
   virtual void populate_menu(QMenu&);
   [[nodiscard]] virtual QString title() const;
-  [[nodiscard]] virtual QString output_data_type(const OutputPort& port) const;
-  [[nodiscard]] virtual QString input_data_type(const InputPort& port) const;
-  [[nodiscard]] virtual bool accepts_input_data_type(const QString& type, const InputPort& port) const;
+  [[nodiscard]] virtual Type output_data_type(const OutputPort& port) const;
+  [[nodiscard]] virtual Type input_data_type(const InputPort& port) const;
+  [[nodiscard]] virtual bool accepts_input_data_type(Type type, const InputPort& port) const;
   [[nodiscard]] virtual bool is_valid() const;
   [[nodiscard]] std::unique_ptr<Node> clone(NodeModel& model) const;
   [[nodiscard]] virtual QString function_name(std::size_t i) const;
@@ -161,7 +161,7 @@ public:
   };
 
   [[nodiscard]] static const Detail& detail(const QString& name);
-  [[nodiscard]] static QString fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t);
+  [[nodiscard]] static Type fst_con_ptype(const std::vector<InputPort*>& ports, Type default_t);
 
 public:
   // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)

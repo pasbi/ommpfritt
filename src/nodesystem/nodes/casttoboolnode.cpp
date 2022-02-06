@@ -9,7 +9,7 @@ const Node::Detail CastToBoolNode::detail {
 };
 
 CastToBoolNode::CastToBoolNode(NodeModel& model)
-    : CastNode(model, TYPE, types::BOOL_TYPE)
+    : CastNode(model, TYPE, Type::Bool)
 {
 }
 

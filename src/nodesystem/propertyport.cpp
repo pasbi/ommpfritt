@@ -4,10 +4,10 @@
 namespace
 {
 
-QString data_type(const omm::Property* property)
+omm::Type data_type(const omm::Property* property)
 {
   if (property == nullptr) {
-    return omm::nodes::types::INVALID_TYPE;
+    return omm::Type::Invalid;
   } else {
     return property->data_type();
   }
@@ -17,7 +17,7 @@ QString data_type(const omm::Property* property)
 
 namespace omm::nodes
 {
-template<> QString PropertyPort<PortType::Input>::data_type() const
+template<> Type PropertyPort<PortType::Input>::data_type() const
 {
   if (OutputPort* op = connected_output(); op != nullptr) {
     return op->data_type();
@@ -26,7 +26,7 @@ template<> QString PropertyPort<PortType::Input>::data_type() const
   }
 }
 
-template<> QString PropertyPort<PortType::Output>::data_type() const
+template<> Type PropertyPort<PortType::Output>::data_type() const
 {
   return ::data_type(property());
 }

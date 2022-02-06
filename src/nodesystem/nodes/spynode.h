@@ -15,7 +15,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SpyNode");
   [[nodiscard]] QString type() const override;
 
-  [[nodiscard]] bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
+  [[nodiscard]] bool accepts_input_data_type(Type type, const InputPort& port) const override;
   void set_text(const QString& text);
   static const Detail detail;
 

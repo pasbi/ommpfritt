@@ -1,5 +1,6 @@
 #include "nodesystem/nodes/mathnode.h"
 #include "nodesystem/nodecompilerglsl.h"
+#include "nodesystem/nodemodel.h"
 #include "nodesystem/ordinaryport.h"
 #include "nodesystem/propertyport.h"
 #include "properties/floatproperty.h"
@@ -9,8 +10,6 @@
 
 namespace
 {
-
-namespace types = omm::nodes::types;
 
 constexpr auto glsl_definition_template = R"(
 %2 %1_0(int op, %2 a, %2 b) {
@@ -58,9 +57,10 @@ def %1(op, a, b):
         return 0.0;
 )";
 
-constexpr auto supported_glsl_types = std::array{types::FLOATVECTOR_TYPE, types::INTEGER_TYPE,
-                                                 types::FLOAT_TYPE, types::COLOR_TYPE,
-                                                 types::INTEGERVECTOR_TYPE};
+constexpr auto supported_glsl_types = std::array{
+    omm::Type::Float, omm::Type::Integer,
+    omm::Type::FloatVector, omm::Type::IntegerVector, omm::Type::Color
+};
 
 auto glsl_definitions()
 {
@@ -69,7 +69,7 @@ auto glsl_definitions()
   const auto template_definition = QString{glsl_definition_template}.arg(omm::nodes::MathNode::TYPE);
   for (const auto& type : supported_glsl_types) {
     using omm::nodes::NodeCompilerGLSL;
-    overloads.push_back(template_definition.arg(NodeCompilerGLSL::translate_type(type)));
+    overloads.push_back(template_definition.arg(NodeCompilerGLSL::type_name(type)));
   }
   return overloads.join("\n");
 }
@@ -108,48 +108,47 @@ QString MathNode::type() const
   return TYPE;
 }
 
-QString MathNode::output_data_type(const OutputPort& port) const
+Type MathNode::output_data_type(const OutputPort& port) const
 {
-  using types::is_vector;
   if (&port == m_output) {
-    QString type_a = find_port<InputPort>(A_VALUE_KEY)->data_type();
-    const QString type_b = find_port<InputPort>(B_VALUE_KEY)->data_type();
+    auto type_a = find_port<InputPort>(A_VALUE_KEY)->data_type();
+    const auto type_b = find_port<InputPort>(B_VALUE_KEY)->data_type();
     switch (language()) {
     case BackendLanguage::GLSL:
       return type_a;
     case BackendLanguage::Python:
-      if (types::is_integral(type_a) && types::is_integral(type_b)) {
-        return types::INTEGER_TYPE;
-      } else if (types::is_numeric(type_a) && types::is_numeric(type_b)) {
-        return types::FLOAT_TYPE;
-      } else if ((type_a == types::INTEGERVECTOR_TYPE || types::is_integral(type_a))
-                 && (type_b == types::INTEGERVECTOR_TYPE || types::is_integral(type_b))) {
-        return types::INTEGERVECTOR_TYPE;
-      } else if ((is_vector(type_a) || types::is_numeric(type_a))
-                 && (is_vector(type_b) || types::is_numeric(type_b))) {
-        return types::FLOATVECTOR_TYPE;
-      } else if ((type_a == types::COLOR_TYPE || types::is_numeric(type_a))
-                 && (type_b == types::COLOR_TYPE || types::is_numeric(type_b))) {
-        return types::COLOR_TYPE;
+      if (is_integral(type_a) && is_integral(type_b)) {
+        return Type::Integer;
+      } else if (is_numeric(type_a) && is_numeric(type_b)) {
+        return Type::Float;
+      } else if ((type_a == Type::IntegerVector || is_integral(type_a))
+                 && (type_b == Type::IntegerVector || is_integral(type_b))) {
+        return Type::IntegerVector;
+      } else if ((is_vector(type_a) || is_numeric(type_a))
+                 && (is_vector(type_b) || is_numeric(type_b))) {
+        return Type::FloatVector;
+      } else if ((type_a == Type::Color || is_numeric(type_a))
+                 && (type_b == Type::Color || is_numeric(type_b))) {
+        return Type::Color;
       } else {
-        return types::INVALID_TYPE;
+        return Type::Invalid;
       }
     default:
       Q_UNREACHABLE();
     }
   }
-  return types::INVALID_TYPE;
+  return Type::Invalid;
 }
 
-QString MathNode::input_data_type(const InputPort& port) const
+Type MathNode::input_data_type(const InputPort& port) const
 {
   Q_UNUSED(port)
   const auto ports
       = std::vector{find_port<InputPort>(A_VALUE_KEY), find_port<InputPort>(B_VALUE_KEY)};
-  return fst_con_ptype(ports, types::FLOAT_TYPE);
+  return fst_con_ptype(ports, Type::Float);
 }
 
-bool MathNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool MathNode::accepts_input_data_type(const Type type, const InputPort& port) const
 {
   const auto glsl_accepts_type = [this, type, &port]() {
     auto* const a_input = find_port<InputPort>(A_VALUE_KEY);
@@ -162,7 +161,7 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
     if (other_port.is_connected()) {
       return type == other_port.data_type();
     } else {
-      return ::contains(supported_glsl_types, std::string_view{type.toStdString().c_str()});
+      return model().compiler().supported_types().contains(type);
     }
   };
 
@@ -174,7 +173,7 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
     case BackendLanguage::GLSL:
       return glsl_accepts_type();
     case BackendLanguage::Python:
-      return types::is_numeric(type) || types::is_vector(type) || type == types::COLOR_TYPE;
+      return is_numeric(type) || is_vector(type) || is_color(type);
     default:
       Q_UNREACHABLE();
       return true;

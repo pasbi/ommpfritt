@@ -42,14 +42,14 @@ constexpr auto n_options = 10;
 auto glsl_definitions()
 {
   QStringList overloads;
-  constexpr auto types = std::array{omm::nodes::types::FLOATVECTOR_TYPE, omm::nodes::types::INTEGER_TYPE,
-                                    omm::nodes::types::FLOAT_TYPE, omm::nodes::types::COLOR_TYPE,
-                                    omm::nodes::types::INTEGERVECTOR_TYPE};
+  constexpr auto types = std::array{omm::Type::FloatVector, omm::Type::Integer,
+                                    omm::Type::Float, omm::Type::Color,
+                                    omm::Type::IntegerVector};
   overloads.reserve(types.size());
   const auto template_definition = QString{glsl_definition_template}.arg(omm::nodes::SwitchNode::TYPE);
   for (const auto& type : types) {
     using omm::nodes::NodeCompilerGLSL;
-    overloads.push_back(template_definition.arg(NodeCompilerGLSL::translate_type(type)));
+    overloads.push_back(template_definition.arg(NodeCompilerGLSL::type_name(type)));
   }
   return overloads.join("\n");
 }
@@ -80,19 +80,19 @@ SwitchNode::SwitchNode(NodeModel& model) : Node(model)
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
-QString SwitchNode::output_data_type(const OutputPort& port) const
+Type SwitchNode::output_data_type(const OutputPort& port) const
 {
   if (&port != m_output_port) {
-    return types::INVALID_TYPE;
+    return Type::Invalid;
   }
 
-  auto types = ::transform<QString, std::set>(m_options, [](const InputPort* ip) {
+  auto types = ::transform<Type, std::set>(m_options, [](const InputPort* ip) {
     return ip->data_type();
   });
-  types.erase(types::INVALID_TYPE);
+  types.erase(Type::Invalid);
 
   if (types.size() != 1) {
-    return types::INVALID_TYPE;  // ambiguous type
+    return Type::Invalid;  // ambiguous type
   }
   return *types.begin();
 }
@@ -102,10 +102,10 @@ QString SwitchNode::title() const
   return tr("Compose");
 }
 
-bool SwitchNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool SwitchNode::accepts_input_data_type(const Type type, const InputPort& port) const
 {
   Q_UNUSED(port)
-  return type != types::INVALID_TYPE;
+  return type != Type::Invalid;
 }
 
 QString SwitchNode::type() const
@@ -129,7 +129,7 @@ InputPort* SwitchNode::find_surrogate_for(const InputPort& port) const
   return nullptr;
 }
 
-QString SwitchNode::input_data_type(const InputPort& port) const
+Type SwitchNode::input_data_type(const InputPort& port) const
 {
   if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
     return Node::input_data_type(port);

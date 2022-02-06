@@ -15,6 +15,7 @@ std::map<QString, const Property::PropertyDetail*> Property::m_details;
 // NOLINTNEXTLINE(readability-redundant-member-init)
 Property::Property() = default;
 
+// NOLINTNEXTLINE(readability-redundant-member-init,-warnings-as-errors)
 Property::Property(const Property& other) : QObject(), configuration(other.configuration)
 {
 }
@@ -47,7 +48,7 @@ void Property::serialize(AbstractSerializer& serializer, const Pointer& root) co
   }
 }
 
-void Property ::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void Property::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   Serializable::deserialize(deserializer, root);
 
@@ -150,12 +151,13 @@ QString Property::channel_name(std::size_t channel) const
   return m_details.at(type())->channel_name(*this, channel);
 }
 
-QString Property::data_type() const
+Type Property::data_type() const
 {
   const QString type = this->type();
   static const QString suffix = "Property";
   assert(type.endsWith(suffix));
-  return type.mid(0, type.size() - suffix.size());
+  const auto data_type = type.mid(0, type.size() - suffix.size());
+  return get_variant_type(data_type.toStdString());
 }
 
 void Property::set_enabledness(bool enabled)

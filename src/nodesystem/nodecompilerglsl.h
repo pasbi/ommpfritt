@@ -17,9 +17,10 @@ public:
   static AssemblyError compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines);
   AssemblyError define_node(const QString& node_type, QStringList& lines) const;
   std::set<AbstractPort*> uniform_ports() const;
-  static QString translate_type(const QString& type);
   void invalidate() override;
   static constexpr std::size_t SPLINE_SIZE = 256;
+  static QString type_name(Type type);
+  [[nodiscard]] std::set<Type> supported_types() const override;
 
 private:
   mutable std::set<AbstractPort*> m_uniform_ports;

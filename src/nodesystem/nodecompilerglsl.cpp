@@ -16,7 +16,7 @@ constexpr auto output_variable_name = "out_color";
 
 QString format_connection(const omm::nodes::AbstractPort& lhs, const omm::nodes::AbstractPort& rhs)
 {
-  const auto type = omm::nodes::NodeCompilerGLSL::translate_type(lhs.data_type());
+  const auto type = omm::nodes::NodeCompilerGLSL::type_name(lhs.data_type());
   return QString("%1 %2 = %3;").arg(type, lhs.uuid(), rhs.uuid());
 }
 
@@ -72,7 +72,7 @@ QString compile_argument(const omm::nodes::InputPort& ip, const omm::nodes::Node
 
 QString compile_output_port(const omm::nodes::OutputPort& port, const QStringList& args, const std::size_t index)
 {
-  const auto port_data_type = omm::nodes::NodeCompilerGLSL::translate_type(port.data_type());
+  const auto port_data_type = omm::nodes::NodeCompilerGLSL::type_name(port.data_type());
   if (const auto& node = port.node; node.type() == omm::nodes::VertexNode::TYPE) {
     const auto& vertex_node = dynamic_cast<const omm::nodes::VertexNode&>(node);
     const auto& ports = vertex_node.shader_inputs();
@@ -127,31 +127,46 @@ void compile_inter_node_connections(const omm::nodes::Node& node, QStringList& l
 namespace omm::nodes
 {
 
-QString NodeCompilerGLSL::translate_type(const QString& type)
-{
-  static const std::map<QString, QString> dict{
-      {nodes::types::COLOR_TYPE, "vec4"},
-      {nodes::types::REFERENCE_TYPE, "uint"},
-      {nodes::types::BOOL_TYPE, "bool"},
-      {nodes::types::FLOAT_TYPE, "float"},
-      {nodes::types::INTEGER_TYPE, "int"},
-      {nodes::types::FLOATVECTOR_TYPE, "vec2"},
-      {nodes::types::INTEGERVECTOR_TYPE, "ivec2"},
-      {nodes::types::OPTION_TYPE, "int"},
-      {nodes::types::SPLINE_TYPE, "float[SPLINE_SIZE]"}};
-
-  const auto it = dict.find(type);
-  if (it == dict.end()) {
-    return QString("INVALID[%1]").arg(type);
-  } else {
-    return dict.at(type);
-  }
-}
-
 void NodeCompilerGLSL::invalidate()
 {
   AbstractNodeCompiler::invalidate();
   compile();
+}
+
+QString NodeCompilerGLSL::type_name(const Type type)
+{
+  switch (type) {
+  case Type::Invalid:
+    return "Invalid";
+  case Type::Float:
+    return "float";
+  case Type::Integer:
+    return "int";
+  case Type::Option:
+    return "int";
+  case Type::FloatVector:
+    return "vec2";
+  case Type::IntegerVector:
+    return "ivec2";
+  case Type::Color:
+    return "vec4";
+  case Type::Reference:
+    return "int";
+  case Type::Bool:
+    return "bool";
+  case Type::Spline:
+    return "float[SPLINE_SIZE]";
+  default:
+    return QString{"INVALID_%1"}.arg(variant_type_name(type).data());
+  }
+}
+
+std::set<Type> NodeCompilerGLSL::supported_types() const
+{
+  return {
+    Type::Bool, Type::Color, Type::Float, Type::FloatVector,
+    Type::Integer, Type::IntegerVector, Type::Option, Type::Reference
+  };
 }
 
 NodeCompilerGLSL::NodeCompilerGLSL(const NodeModel& model) : NodeCompiler(model)
@@ -171,7 +186,7 @@ AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::generate_header(QStringLis
   for (const auto& shader_input : OffscreenRenderer::fragment_shader_inputs) {
     lines.append(QString("%1 %2 %3;")
                      .arg(input_kind_identifier_map.at(shader_input.kind),
-                          translate_type(shader_input.type),
+                          type_name(shader_input.type),
                           shader_input.name));
   }
   lines.append(QString("out vec4 %1;").arg(output_variable_name));
@@ -197,7 +212,8 @@ AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::generate_header(QStringLis
     }
   }
   for (AbstractPort* port : m_uniform_ports) {
-    lines.push_back(QString("uniform %1 %2;").arg(translate_type(port->data_type()), port->uuid()));
+    const auto type = port->data_type();
+    lines.push_back(QString("uniform %1 %2;").arg(type_name(type), port->uuid()));
   }
   return {};
 }

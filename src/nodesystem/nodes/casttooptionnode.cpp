@@ -9,7 +9,7 @@ const Node::Detail CastToOptionNode::detail {
 };
 
 CastToOptionNode::CastToOptionNode(NodeModel& model)
-    : CastNode(model, TYPE, types::OPTION_TYPE)
+    : CastNode(model, TYPE, Type::Option)
 {
 }
 

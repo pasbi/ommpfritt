@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../common.h"
+#include "variant.h"
 #include <QPoint>
 #include <QString>
 #include <memory>
@@ -34,7 +35,7 @@ public:
   Node& node;
   const std::size_t index;
   [[nodiscard]] virtual QString label() const = 0;
-  [[nodiscard]] virtual QString data_type() const = 0;
+  [[nodiscard]] virtual Type data_type() const = 0;
   [[nodiscard]] QString uuid() const;
   [[nodiscard]] std::set<AbstractPort*> connected_ports() const;
 };
@@ -68,7 +69,7 @@ public:
   }
   bool is_connected(const AbstractPort* other) const;
   [[nodiscard]] bool is_connected() const;
-  [[nodiscard]] bool accepts_data_type(const QString& type) const;
+  [[nodiscard]] bool accepts_data_type(Type type) const;
 
   class Tag
   {

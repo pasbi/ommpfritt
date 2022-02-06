@@ -14,7 +14,7 @@ public:
   explicit FragmentNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "FragmentNode");
   [[nodiscard]] QString type() const override;
-  [[nodiscard]] bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
+  [[nodiscard]] bool accepts_input_data_type(Type type, const InputPort& port) const override;
 
   static constexpr auto COLOR_PROPERTY_KEY = "color";
 

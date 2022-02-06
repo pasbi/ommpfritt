@@ -8,6 +8,7 @@
 #include <list>
 #include <set>
 #include <memory>
+#include "variant.h"
 
 namespace omm::nodes
 {
@@ -50,6 +51,7 @@ Q_SIGNALS:
 
 public:
   virtual void invalidate();
+  [[nodiscard]] virtual std::set<Type> supported_types() const = 0;
 
 protected:
   struct AssemblyError

@@ -43,7 +43,7 @@ QString to_string(const variant_type& var)
   }, var);
 
   const auto type_string = std::visit([](const auto& var) {
-    return variant_type_name<std::decay_t<decltype(var)>>();
+    return variant_type_name(get_variant_type<std::decay_t<decltype(var)>>());
   }, var);
   return QObject::tr("%1[%2]").arg(type_string.data(), value_string);
 }

@@ -43,10 +43,10 @@ DecomposeColorNode::DecomposeColorNode(NodeModel& model) : Node(model)
   add_port<OrdinaryPort<PortType::Output>>(tr("A"));
 }
 
-QString DecomposeColorNode::output_data_type(const OutputPort& port) const
+Type DecomposeColorNode::output_data_type(const OutputPort& port) const
 {
   Q_UNUSED(port)
-  return types::FLOAT_TYPE;
+  return Type::Float;
 }
 
 QString DecomposeColorNode::title() const
@@ -54,10 +54,10 @@ QString DecomposeColorNode::title() const
   return tr("Decompose Color");
 }
 
-bool DecomposeColorNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool DecomposeColorNode::accepts_input_data_type(const Type type, const InputPort& port) const
 {
   Q_UNUSED(port)
-  return type == types::COLOR_TYPE;
+  return type == Type::Color;
 }
 
 QString DecomposeColorNode::type() const

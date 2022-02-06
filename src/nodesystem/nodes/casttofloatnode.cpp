@@ -9,7 +9,7 @@ const Node::Detail CastToFloatNode::detail {
     };
 
 CastToFloatNode::CastToFloatNode(NodeModel& model)
-    : CastNode(model, TYPE, types::FLOAT_TYPE)
+    : CastNode(model, TYPE, Type::Float)
 {
 }
 

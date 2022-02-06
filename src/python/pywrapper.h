@@ -14,7 +14,7 @@ namespace omm
 class Style;
 
 py::object variant_to_python(const variant_type& variant);
-variant_type python_to_variant(const py::object& object, const QString& type);
+variant_type python_to_variant(const py::object& object, Type type);
 
 py::object wrap(Object& object);
 py::object wrap(Tag& tag);

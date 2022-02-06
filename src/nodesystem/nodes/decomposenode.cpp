@@ -39,25 +39,24 @@ DecomposeNode::DecomposeNode(NodeModel& model) : Node(model)
   m_output_y_port = &add_port<OrdinaryPort<PortType::Output>>(tr("y"));
 }
 
-QString DecomposeNode::output_data_type(const OutputPort& port) const
+Type DecomposeNode::output_data_type(const OutputPort& port) const
 {
   switch (language()) {
   case BackendLanguage::Python:
     if (&port == m_output_x_port || &port == m_output_y_port) {
-      const QString type = find_port<InputPort>(*property(INPUT_PROPERTY_KEY))->data_type();
-      if (type == types::INTEGERVECTOR_TYPE) {
-        return types::INTEGER_TYPE;
-      } else if (type == types::FLOATVECTOR_TYPE) {
-        return types::FLOAT_TYPE;
+      const auto type = find_port<InputPort>(*property(INPUT_PROPERTY_KEY))->data_type();
+      if (type == Type::IntegerVector) {
+        return Type::Integer;
+      } else if (type == Type::FloatVector) {
+        return Type::Float;
       }
     }
-    return types::INVALID_TYPE;
+    return Type::Invalid;
   case BackendLanguage::GLSL:
-    return types::FLOAT_TYPE;
-  default:
-    Q_UNREACHABLE();
-    return types::INVALID_TYPE;
+    return Type::Float;
   }
+  Q_UNREACHABLE();
+  return Type::Invalid;
 }
 
 QString DecomposeNode::title() const
@@ -65,14 +64,14 @@ QString DecomposeNode::title() const
   return tr("Decompose");
 }
 
-bool DecomposeNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool DecomposeNode::accepts_input_data_type(const Type type, const InputPort& port) const
 {
   Q_UNUSED(port)
   switch (language()) {
   case BackendLanguage::Python:
-    return types::is_vector(type);
+    return is_vector(type);
   case BackendLanguage::GLSL:
-    return type == types::FLOATVECTOR_TYPE;
+    return type == Type::FloatVector;
   default:
     Q_UNREACHABLE();
     return false;

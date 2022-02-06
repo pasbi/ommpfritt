@@ -7,15 +7,15 @@
 namespace omm::nodes
 {
 
-bool CastNode::is_convertible(const QString& from, const QString& to)
+bool CastNode::is_convertible(const Type from, const Type to)
 {
-  static const std::set<QString> scalar {types::INTEGER_TYPE, types::OPTION_TYPE, types::FLOAT_TYPE, types::BOOL_TYPE};
-  static const std::set<QString> two_dim {types::FLOATVECTOR_TYPE, types::INTEGERVECTOR_TYPE};
+  static const std::set<Type> scalar {Type::Integer, Type::Option, Type::Float, Type::Bool};
+  static const std::set<Type> two_dim {Type::FloatVector, Type::IntegerVector};
 
   return (scalar.contains(from) && scalar.contains(to)) || (two_dim.contains(from) && two_dim.contains(to));
 }
 
-CastNode::CastNode(NodeModel& model, const QString& type, const QString& target_type)
+CastNode::CastNode(NodeModel& model, const QString& type, const Type target_type)
     : Node(model)
     , m_type(type)
     , m_target_type(target_type)
@@ -24,13 +24,13 @@ CastNode::CastNode(NodeModel& model, const QString& type, const QString& target_
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr(""));
 }
 
-QString CastNode::output_data_type(const OutputPort& port) const
+Type CastNode::output_data_type(const OutputPort& port) const
 {
-  Q_UNUSED(port);
+  Q_UNUSED(port)
   return m_target_type;
 }
 
-bool CastNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool CastNode::accepts_input_data_type(Type type, const InputPort& port) const
 {
   Q_UNUSED(port)
   return is_convertible(type, m_target_type);
@@ -39,12 +39,12 @@ bool CastNode::accepts_input_data_type(const QString& type, const InputPort& por
 QString CastNode::function_name(const std::size_t i) const
 {
   Q_UNUSED(i)
-  return NodeCompilerGLSL::translate_type(m_target_type);
+  return QString::fromStdString(std::string{variant_type_name(m_target_type)});
 }
 
 QString CastNode::title() const
 {
-  return CastNode::tr("Cast to %1").arg(m_target_type);
+  return CastNode::tr("Cast to %1").arg(variant_type_name(m_target_type).data());
 }
 
 QString CastNode::type() const

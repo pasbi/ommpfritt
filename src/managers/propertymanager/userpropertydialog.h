@@ -19,7 +19,7 @@ class UserPropertyDialog : public QDialog
   Q_OBJECT
 public:
   explicit UserPropertyDialog(AbstractPropertyOwner& owner,
-                              const std::set<QString>& disabled_types,
+                              const std::set<QString>& types,
                               QWidget* parent = nullptr);
 
 public:

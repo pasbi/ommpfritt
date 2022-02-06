@@ -33,7 +33,7 @@ public:
 
   static QString TYPE()
   {
-    return QString::fromStdString(std::string(variant_type_name<ValueT>())) + "Property";
+    return Property::property_type(get_variant_type<ValueT>());
   }
 
   [[nodiscard]] QString type() const override

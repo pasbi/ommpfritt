@@ -22,7 +22,37 @@ public:
   {
     return false;
   }
+}
+;
+enum class Type{
+  Invalid, Float, Integer, Option, FloatVector,
+  IntegerVector, String, Color, Reference, Bool, Spline, Trigger
 };
+
+constexpr bool is_integral(const Type type)
+{
+  return type == Type::Integer || type == Type::Bool || type == Type::Option || type == Type::Reference;
+}
+
+constexpr bool is_scalar(const Type type)
+{
+  return type == Type::Float || is_integral(type);
+}
+
+constexpr bool is_numeric(const Type type)
+{
+  return is_scalar(type);
+}
+
+constexpr bool is_vector(const Type type)
+{
+  return type == Type::FloatVector || type == Type::IntegerVector;
+}
+
+constexpr bool is_color(const Type type)
+{
+  return type == Type::Color;
+}
 
 using variant_type = std::variant<bool,
                                   double,
@@ -38,30 +68,77 @@ using variant_type = std::variant<bool,
 
 template<typename T> T null_value();
 
-template<typename T> constexpr std::string_view variant_type_name() noexcept
+constexpr auto variant_types = std::array{
+      Type::Bool, Type::Float, Type::Color, Type::Integer, Type::IntegerVector,
+      Type::FloatVector, Type::Reference, Type::String, Type::Option, Type::Trigger,
+      Type::FloatVector, Type::IntegerVector, Type::Spline, Type::Invalid
+};
+
+constexpr std::string_view variant_type_name(const Type type) noexcept
+{
+  switch (type) {
+  case Type::Bool:
+    return QT_TRANSLATE_NOOP("DataType", "Bool");
+  case Type::Float:
+    return QT_TRANSLATE_NOOP("DataType", "Float");
+  case Type::Color:
+    return QT_TRANSLATE_NOOP("DataType", "Color");
+  case Type::Integer:
+    return QT_TRANSLATE_NOOP("DataType", "Integer");
+  case Type::Reference:
+    return QT_TRANSLATE_NOOP("DataType", "Reference");
+  case Type::String:
+    return QT_TRANSLATE_NOOP("DataType", "String");
+  case Type::Option:
+    return QT_TRANSLATE_NOOP("DataType", "Option");
+  case Type::Trigger:
+    return QT_TRANSLATE_NOOP("DataType", "Trigger");
+  case Type::FloatVector:
+    return QT_TRANSLATE_NOOP("DataType", "FloatVector");
+  case Type::IntegerVector:
+    return QT_TRANSLATE_NOOP("DataType", "IntegerVector");
+  case Type::Spline:
+    return QT_TRANSLATE_NOOP("DataType", "Spline");
+  case Type:: Invalid:
+    return QT_TRANSLATE_NOOP("DataType", "Invalid");
+  }
+  Q_UNREACHABLE();
+  return {};
+}
+
+constexpr Type get_variant_type(const std::string_view& v)
+{
+  return *std::find_if(variant_types.begin(), variant_types.end(), [v](const auto& type) {
+    return variant_type_name(type) == v;
+  });
+}
+
+template<typename T> constexpr Type get_variant_type() noexcept
 {
   if constexpr (std::is_same_v<T, bool>) {
-    return QT_TRANSLATE_NOOP("DataType", "Bool");
+    return Type::Bool;
   } else if constexpr (std::is_same_v<T, double>) {
-    return QT_TRANSLATE_NOOP("DataType", "Float");
+    return Type::Float;
   } else if constexpr (std::is_same_v<T, Color>) {
-    return QT_TRANSLATE_NOOP("DataType", "Color");
+    return Type::Color;
   } else if constexpr (std::is_same_v<T, int>) {
-    return QT_TRANSLATE_NOOP("DataType", "Integer");
+    return Type::Integer;
   } else if constexpr (std::is_same_v<T, AbstractPropertyOwner*>) {
-    return QT_TRANSLATE_NOOP("DataType", "Reference");
+    return Type::Reference;
   } else if constexpr (std::is_same_v<T, QString>) {
-    return QT_TRANSLATE_NOOP("DataType", "String");
+    return Type::String;
   } else if constexpr (std::is_same_v<T, std::size_t>) {
-    return QT_TRANSLATE_NOOP("DataType", "Option");
+    return Type::Option;
   } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
-    return QT_TRANSLATE_NOOP("DataType", "Trigger");
+    return Type::Trigger;
   } else if constexpr (std::is_same_v<T, Vec2f>) {
-    return QT_TRANSLATE_NOOP("DataType", "FloatVector");
+    return Type::FloatVector;
   } else if constexpr (std::is_same_v<T, Vec2i>) {
-    return QT_TRANSLATE_NOOP("DataType", "IntegerVector");
+    return Type::IntegerVector;
   } else if constexpr (std::is_same_v<T, SplineType>) {
-    return QT_TRANSLATE_NOOP("DataType", "Spline");
+    return Type::Spline;
+  } else {
+    return Type::Invalid;
   }
 }
 

@@ -26,12 +26,10 @@ constexpr auto glsl_definition_template = R"(
 }
 )";
 
-namespace types = omm::nodes::types;
-
 struct Overload
 {
-  std::string_view return_type;
-  std::string_view argument_type;
+  omm::Type return_type;
+  omm::Type argument_type;
 
   [[nodiscard]] auto types() const
   {
@@ -43,19 +41,18 @@ template<typename Overload>
 QString generate_overload(QString template_definition, const Overload& overload)
 {
   for (const auto& type : overload.types()) {
-    const auto qtype = QString::fromStdString(std::string{type});
-    const auto ttype = omm::nodes::NodeCompilerGLSL::translate_type(qtype);
-    template_definition = template_definition.arg(ttype);
+    const auto type_name = omm::nodes::NodeCompilerGLSL::type_name(type);
+    template_definition = template_definition.arg(type_name);
   }
   return template_definition;
 }
 
 constexpr std::array supported_overloads {
-  Overload{.return_type = types::FLOATVECTOR_TYPE, .argument_type = types::FLOATVECTOR_TYPE},
-  Overload{.return_type = types::FLOAT_TYPE,       .argument_type = types::INTEGER_TYPE},
-  Overload{.return_type = types::FLOAT_TYPE,       .argument_type = types::FLOAT_TYPE},
-  Overload{.return_type = types::COLOR_TYPE,       .argument_type = types::COLOR_TYPE},
-  Overload{.return_type = types::FLOATVECTOR_TYPE, .argument_type = types::INTEGERVECTOR_TYPE}
+  Overload{.return_type = omm::Type::FloatVector, .argument_type = omm::Type::FloatVector},
+  Overload{.return_type = omm::Type::Float,       .argument_type = omm::Type::Integer},
+  Overload{.return_type = omm::Type::Float,       .argument_type = omm::Type::Float},
+  Overload{.return_type = omm::Type::Color,       .argument_type = omm::Type::Color},
+  Overload{.return_type = omm::Type::FloatVector, .argument_type = omm::Type::IntegerVector}
 };
 
 template<typename Overloads>
@@ -79,7 +76,7 @@ const Node::Detail InterpolateNode::detail{
         {BackendLanguage::Python, QString{python_definition_template}.arg(InterpolateNode::TYPE)},
         {BackendLanguage::GLSL, overload(QString{glsl_definition_template}
                                           .arg(InterpolateNode::TYPE,
-                                               NodeCompilerGLSL::translate_type(types::SPLINE_TYPE)),
+                                               NodeCompilerGLSL::type_name(Type::Spline)),
                                          supported_overloads)
         }
     },
@@ -115,50 +112,50 @@ QString InterpolateNode::type() const
   return TYPE;
 }
 
-QString InterpolateNode::output_data_type(const OutputPort& port) const
+Type InterpolateNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output) {
-    const QString type_a = find_port<InputPort>(LEFT_VALUE_KEY)->data_type();
-    const QString type_b = find_port<InputPort>(RIGHT_VALUE_KEY)->data_type();
+    const auto type_a = find_port<InputPort>(LEFT_VALUE_KEY)->data_type();
+    const auto type_b = find_port<InputPort>(RIGHT_VALUE_KEY)->data_type();
     switch (language()) {
     case BackendLanguage::GLSL:
-      if (types::is_numeric(type_a) && types::is_numeric(type_b)) {
-        return types::FLOAT_TYPE;
-      } else if (types::is_vector(type_a) && types::is_vector(type_b)) {
-        return types::FLOATVECTOR_TYPE;
-      } else if (type_a == types::COLOR_TYPE && type_b == types::COLOR_TYPE) {
-        return types::COLOR_TYPE;
+      if (is_numeric(type_a) && is_numeric(type_b)) {
+        return Type::Float;
+      } else if (is_vector(type_a) && is_vector(type_b)) {
+        return Type::FloatVector;
+      } else if (type_a == Type::Color && type_b == Type::Color) {
+        return Type::Color;
       } else {
-        return types::INVALID_TYPE;
+        return Type::Invalid;
       }
     case BackendLanguage::Python:
-      if (types::is_numeric(type_a) && types::is_numeric(type_b)) {
-        return types::FLOAT_TYPE;
-      } else if ((types::is_vector(type_a) || types::is_numeric(type_a))
-                 && (types::is_vector(type_b) || types::is_numeric(type_b))) {
-        return types::FLOATVECTOR_TYPE;
-      } else if ((type_a == types::COLOR_TYPE || types::is_numeric(type_a))
-                 && (type_b == types::COLOR_TYPE || types::is_numeric(type_b))) {
-        return types::COLOR_TYPE;
+      if (is_numeric(type_a) && is_numeric(type_b)) {
+        return Type::Float;
+      } else if ((is_vector(type_a) || is_numeric(type_a))
+                 && (is_vector(type_b) || is_numeric(type_b))) {
+        return Type::FloatVector;
+      } else if ((type_a == Type::Color || is_numeric(type_a))
+                 && (type_b == Type::Color || is_numeric(type_b))) {
+        return Type::Color;
       } else {
-        return types::INVALID_TYPE;
+        return Type::Invalid;
       }
     default:
       Q_UNREACHABLE();
     }
   }
-  return types::INVALID_TYPE;
+  return Type::Invalid;
 }
 
-QString InterpolateNode::input_data_type(const InputPort& port) const
+Type InterpolateNode::input_data_type(const InputPort& port) const
 {
   Q_UNUSED(port)
   const auto ports
       = std::vector{find_port<InputPort>(LEFT_VALUE_KEY), find_port<InputPort>(RIGHT_VALUE_KEY)};
-  return fst_con_ptype(ports, types::FLOAT_TYPE);
+  return fst_con_ptype(ports, Type::Float);
 }
 
-bool InterpolateNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool InterpolateNode::accepts_input_data_type(const Type type, const InputPort& port) const
 {
   if (&port == find_port<InputPort>(RAMP_PROPERTY_KEY)
       || &port == find_port<InputPort>(BALANCE_PROPERTY_KEY)) {

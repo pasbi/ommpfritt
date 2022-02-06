@@ -43,7 +43,11 @@ public:
   static constexpr auto IS_ANIMATED_POINTER = "animated";
 
   [[nodiscard]] QString widget_type() const;
-  [[nodiscard]] QString data_type() const;
+  [[nodiscard]] Type data_type() const;
+  static QString property_type(const Type data_type)
+  {
+    return QString::fromStdString(std::string{variant_type_name(data_type)}) + "Property";
+  }
 
   template<typename ResultT, typename PropertyT, typename MemFunc>
   static ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)

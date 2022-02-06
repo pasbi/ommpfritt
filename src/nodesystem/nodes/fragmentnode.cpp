@@ -24,11 +24,11 @@ QString FragmentNode::type() const
   return TYPE;
 }
 
-bool FragmentNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool FragmentNode::accepts_input_data_type(const Type type, const InputPort& port) const
 {
   Q_UNUSED(port)
   assert(&port == m_input_port);
-  return type == types::COLOR_TYPE;
+  return type == Type::Color;
 }
 
 OrdinaryPort<PortType::Input>& FragmentNode::input_port() const
