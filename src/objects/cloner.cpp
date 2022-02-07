@@ -275,8 +275,8 @@ void Cloner::update_property_visibility(Mode mode)
       {Mode::Grid, {COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY}}};
 
   for (const QString& pk : properties) {
-    if (::contains(properties, pk)) {
-      property(pk)->set_visible(::contains(visibility_map.at(mode), pk));
+    if (properties.contains(pk)) {
+      property(pk)->set_visible(visibility_map.at(mode).contains(pk));
     }
   }
   Q_EMIT property_visibility_changed();

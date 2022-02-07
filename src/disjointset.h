@@ -19,7 +19,7 @@ template<typename T> void swap(DisjointSetForest<T>& a, DisjointSetForest<T>& b)
 template<typename T> class DisjointSetForest
 {
 public:
-  using Joint = std::set<T>;
+  using Joint = ::transparent_set<T>;
   DisjointSetForest(std::deque<Joint>&& forest = {})
     : m_forest(forest)
   {
@@ -72,7 +72,7 @@ public:
   template<typename K> Joint get(const K& key) const
   {
     for (const auto& set : m_forest) {
-      if (::contains(set, key)) {
+      if (set.contains(key)) {
         return set;
       }
     }

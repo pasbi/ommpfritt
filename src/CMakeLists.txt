@@ -26,6 +26,7 @@ target_sources(libommpfritt PRIVATE
   syncpalettedecorator.h
   translator.cpp
   translator.h
+  transparentset.h
   variant.cpp
   variant.h
 )

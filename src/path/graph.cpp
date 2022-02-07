@@ -13,7 +13,7 @@ namespace
 
 struct Vertex
 {
-  std::set<omm::PathPoint*> points;
+  ::transparent_set<omm::PathPoint*> points;
   [[nodiscard]] QString debug_id() const { return (*points.begin())->debug_id(); }
 };
 
@@ -52,7 +52,7 @@ class Graph::Impl : public adjacency_list<vecS,
                                          >
 {
 public:
-  using Joint = std::set<PathPoint*>;
+  using Joint = ::transparent_set<PathPoint*>;
   using VertexIndexMap = std::map<const PathPoint*, int>;
   using JointMap = std::deque<Joint>;
   using EdgeDescriptor = boost::detail::edge_desc_impl<boost::undirected_tag, std::size_t>;
@@ -141,9 +141,9 @@ std::vector<Face> Graph::compute_faces() const
 void Graph::Impl::add_vertex(PathPoint* path_point)
 {
   // if a point is not joined, we need a set containing only that lonely point.
-  const auto vertex_points = [path_point]() {
+  const auto vertex_points = [path_point]() -> ::transparent_set<PathPoint*> {
     if (auto set = path_point->joined_points(); set.empty()) {
-      return std::set{path_point};
+      return {path_point};
     } else {
       return set;
     }
@@ -211,10 +211,10 @@ PolarCoordinates Graph::Impl::get_direction_at(const Edge& edge, VertexDescripto
     }
   };
   const auto& joint = m_joint_map.at(vertex);
-  if (::contains(joint, edge.a)) {
+  if (joint.contains(edge.a)) {
     return compute_edge_direction(edge.a->geometry(), edge.b->geometry(), std::mem_fn(&Point::left_tangent));
   } else {
-    assert(::contains(joint, edge.b));
+    assert(joint.contains(edge.b));
     return compute_edge_direction(edge.b->geometry(), edge.a->geometry(), std::mem_fn(&Point::right_tangent));
   }
 }

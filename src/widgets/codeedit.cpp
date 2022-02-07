@@ -27,7 +27,7 @@ namespace omm
 void TextEdit::keyPressEvent(QKeyEvent* event)
 {
   const auto captioned_keys = std::set{Qt::Key_Return, Qt::Key_Down, Qt::Key_Up};
-  if (::contains(captioned_keys, static_cast<Qt::Key>(event->key()))) {
+  if (captioned_keys.contains(static_cast<Qt::Key>(event->key()))) {
     if (event->modifiers() == caption_modifiers) {
       event->setModifiers(Qt::NoModifier);
       QTextEdit::keyPressEvent(event);

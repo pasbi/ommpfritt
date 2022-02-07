@@ -21,7 +21,7 @@ template<typename T> void remove_duplicates(std::list<T>& ls)
 {
   std::set<T> occurences;
   ls.remove_if([&occurences](const T& item) {
-    if (::contains(occurences, item)) {
+    if (occurences.contains(item)) {
       return true;
     } else {
       occurences.insert(item);
@@ -92,9 +92,9 @@ void ToolBox::set_scene_mode(SceneMode mode)
   }
 }
 
-std::set<Tool*> ToolBox::tools() const
+::transparent_set<Tool*> ToolBox::tools() const
 {
-  return ::transform<Tool*, std::set>(m_tools, [](auto&& pair) { return pair.second.get(); });
+  return ::transform<Tool*, ::transparent_set>(m_tools, [](auto&& pair) { return pair.second.get(); });
 }
 
 void ToolBox::activate_default_tool()

@@ -531,7 +531,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 
     std::map<Object*, std::set<Tag*>> tag_map;
     for (Tag* tag : kind_cast<Tag>(selection)) {
-      if (!::contains(selection, tag->owner)) {
+      if (!selection.contains(tag->owner)) {
         tag_map[tag->owner].insert(tag);
       }
     }
@@ -586,7 +586,7 @@ bool Scene::contains(const AbstractPropertyOwner* apo) const
   case Kind::Style:
     return styles().contains(dynamic_cast<const Style&>(*apo));
   case Kind::Tool:
-    return ::contains(m_tool_box->tools(), apo);
+    return m_tool_box->tools().contains(apo);
   default:
     return false;
   }

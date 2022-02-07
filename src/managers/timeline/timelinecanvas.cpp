@@ -442,7 +442,7 @@ bool TimelineCanvas::is_selected(int frame) const
   return std::all_of(relevant_tracks.begin(), relevant_tracks.end(), [this, frame](Track* track) {
     const auto is_selected = [frame, track](auto&& selection) {
       const auto it = selection.find(track);
-      return it != selection.end() && ::contains(it->second, frame);
+      return it != selection.end() && it->second.contains(frame);
     };
     return is_selected(m_selection) || is_selected(m_rubber_band_selection);
   });

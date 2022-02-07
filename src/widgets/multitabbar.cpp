@@ -110,7 +110,7 @@ void MultiTabBar::set_current_indices(const std::set<int>& indices)
     for (std::size_t i = 0; i < m_tabs.size(); ++i) {
       QAbstractButton* button = m_tabs[i].get();
       QSignalBlocker blocker(button);
-      button->setChecked(::contains(indices, i));
+      button->setChecked(indices.contains(i));
     }
   }
 }

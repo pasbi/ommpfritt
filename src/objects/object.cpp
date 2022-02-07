@@ -173,7 +173,7 @@ Object::~Object()
   if (const Scene* scene = this->scene(); scene != nullptr) {
     // the object must not be selected when it gets deleted.
     // Bad things will happen otherwise.
-    assert(!::contains(scene->selection(), this));
+    assert(!scene->selection().contains(this));
   }
 }
 

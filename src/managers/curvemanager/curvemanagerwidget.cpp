@@ -542,13 +542,13 @@ void CurveManagerWidget::set_selection(const std::set<AbstractPropertyOwner*>& s
     const auto old_tracks = m_tracks;
 
     for (Track* track : old_tracks) {
-      if (!::contains(new_tracks, track)) {
+      if (!new_tracks.contains(track)) {
         remove_track(*track);
       }
     }
 
     for (Track* track : new_tracks) {
-      if (!::contains(m_tracks, track)) {
+      if (!m_tracks.contains(track)) {
         add_track(*track);
       }
     }

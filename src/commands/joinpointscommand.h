@@ -36,7 +36,7 @@ private:
   DisjointPathPointSetForest m_old_forest;
   std::map<PathPoint*, Point> m_old_positions;
 
-  static Vec2f compute_position(const std::set<PathPoint*>& points);
+  static Vec2f compute_position(const::transparent_set<PathPoint*>& points);
 };
 
 class DisjoinPointsCommand : public AbstractJoinPointsCommand

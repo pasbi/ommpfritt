@@ -207,7 +207,7 @@ void NodeView::paste_from_clipboard()
             for (const auto* const o_input : o_target->ports<nodes::InputPort>()) {
               if (const auto* const o_output = o_input->connected_output(); o_output != nullptr) {
                 const auto& o_source = o_output->node;
-                if (::contains(copy_map, &o_source)) {
+                if (copy_map.contains(&o_source)) {
                   const auto& c_source = *copy_map.at(&o_source);
                   auto& c_output = *c_source.find_port<nodes::OutputPort>(o_output->index);
                   auto& c_input = *c_target->find_port<nodes::InputPort>(o_input->index);

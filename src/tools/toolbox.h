@@ -25,7 +25,7 @@ public:
   void set_active_tool(Tool& tool);
   void activate_previous_tool();
   void set_scene_mode(SceneMode mode);
-  [[nodiscard]] std::set<Tool*> tools() const;
+  [[nodiscard]] ::transparent_set<Tool* > tools() const;
   void activate_default_tool();
 
 Q_SIGNALS:

@@ -34,8 +34,7 @@ void AbstractNumericEdit::focusOutEvent(QFocusEvent* e)
 
 void AbstractNumericEdit::focusInEvent(QFocusEvent* e)
 {
-  const auto areasons = {Qt::TabFocusReason, Qt::BacktabFocusReason};
-  if (::contains(areasons, e->reason())) {
+  if (e->reason() == Qt::TabFocusReason || e->reason() == Qt::BacktabFocusReason) {
     setReadOnly(false);
   }
   QLineEdit::focusInEvent(e);

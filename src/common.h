@@ -1,5 +1,6 @@
 #pragma once
 
+#include "transparentset.h"
 #include <QString>
 #include <algorithm>
 #include <cassert>

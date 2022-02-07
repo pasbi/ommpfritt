@@ -147,7 +147,7 @@ void MoveKeyFrameCommand::redo()
       int new_frame = frame + m_shift;
       // do not remove frames that are being shifted itself.
       // the `shift_keyframes`-methods handles such cases.
-      if (track->has_keyframe(new_frame) && !::contains(m_old_frames, new_frame)) {
+      if (track->has_keyframe(new_frame) && !m_old_frames.contains(new_frame)) {
         auto knot = m_animator.remove_knot(*track, new_frame);
         m_removed_values.insert({new_frame, std::move(knot)});
       }

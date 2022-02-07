@@ -19,7 +19,7 @@ bool CurveManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex&
   switch (Animator::index_type(source_parent)) {
   case Animator::IndexType::None:
     assert(Animator::index_type(source_index) == Animator::IndexType::Owner);
-    return ::contains(m_animator.scene.selection(), Animator::owner(source_index));
+    return m_animator.scene.selection().contains(Animator::owner(source_index));
   case Animator::IndexType::Owner:
     assert(Animator::index_type(source_index) == Animator::IndexType::Property);
     return n_channels(Animator::property(source_index)->variant_value()) > 0;

@@ -12,7 +12,7 @@ using namespace omm;
 
 bool same_point(const PathPoint* p1, const PathPoint* p2)
 {
-  return p1 == p2 || ::contains(p1->joined_points(), p2);
+  return p1 == p2 || p1->joined_points().contains(p2);
 }
 
 bool align_last_edge(const Edge& second_last, Edge& last)

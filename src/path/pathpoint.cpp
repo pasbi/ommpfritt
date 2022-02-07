@@ -19,12 +19,12 @@ PathPoint::PathPoint(Path& path)
 {
 }
 
-std::set<PathPoint*> PathPoint::joined_points() const
+::transparent_set<PathPoint*> PathPoint::joined_points() const
 {
   return path_vector()->joined_points().get(this);
 }
 
-void PathPoint::join(std::set<PathPoint*> buddies)
+void PathPoint::join(::transparent_set<PathPoint*> buddies)
 {
   buddies.insert(this);
   path_vector()->joined_points().insert(buddies);

@@ -386,7 +386,7 @@ bool ToolBarItemModel::canDropMimeData(const QMimeData* data,
                                        [[maybe_unused]] const QModelIndex& parent) const
 {
   if (data->hasFormat(ToolBarDialog::mime_type)) {
-    return ::contains(std::set{Qt::MoveAction, Qt::LinkAction}, action);
+    return action == Qt::MoveAction || action == Qt::LinkAction;
   } else {
     return false;
   }

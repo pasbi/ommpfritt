@@ -254,7 +254,7 @@ void PathVector::join_points_by_position(const std::vector<Vec2f>& positions) co
   const auto points = this->points();
   LINFO << "===";
   for (const auto pos : positions) {
-    std::set<PathPoint*> joint;
+    ::transparent_set<PathPoint*> joint;
     for (auto* point : points) {
       const auto d2 = (point->geometry().position() - pos).euclidean_norm2();
       LINFO << "d2: " << d2 << "   " << point->geometry().position().to_string() << " " << pos.to_string();
