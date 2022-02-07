@@ -1,6 +1,7 @@
 #pragma once
 
 #include "geometry/point.h"
+#include <set>
 
 namespace omm
 {

@@ -18,27 +18,27 @@ namespace omm
 {
 const std::vector<OffscreenRenderer::ShaderInput> OffscreenRenderer::fragment_shader_inputs = {
     {
-        nodes::types::FLOATVECTOR_TYPE,
+        Type::FloatVector,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos"),
         ShaderInput::Kind::Varying,
     },
     {
-        nodes::types::FLOATVECTOR_TYPE,
+        Type::FloatVector,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "global_pos"),
         ShaderInput::Kind::Varying,
     },
     {
-        nodes::types::FLOATVECTOR_TYPE,
+        Type::FloatVector,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "local_normalized_pos"),
         ShaderInput::Kind::Varying,
     },
     {
-        nodes::types::FLOATVECTOR_TYPE,
+        Type::FloatVector,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "object_size"),
         ShaderInput::Kind::Uniform,
     },
     {
-        nodes::types::FLOATVECTOR_TYPE,
+        Type::FloatVector,
         QT_TRANSLATE_NOOP("OffscreenRenderer", "view_pos"),
         ShaderInput::Kind::Varying,
     },

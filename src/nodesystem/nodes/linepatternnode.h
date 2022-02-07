@@ -12,8 +12,8 @@ public:
   explicit LinePatternNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "LinePatternNode");
   [[nodiscard]] QString type() const override;
-  [[nodiscard]] QString output_data_type(const OutputPort& port) const override;
-  [[nodiscard]] QString input_data_type(const InputPort& port) const override;
+  [[nodiscard]] Type output_data_type(const OutputPort& port) const override;
+  [[nodiscard]] Type input_data_type(const InputPort& port) const override;
   [[nodiscard]] QString title() const override;
   static const Detail detail;
 

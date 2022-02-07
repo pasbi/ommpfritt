@@ -40,21 +40,21 @@ ComposeNode::ComposeNode(NodeModel& model) : Node(model)
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("vector"));
 }
 
-QString ComposeNode::output_data_type(const OutputPort& port) const
+Type ComposeNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output_port) {
-    const QString type_a = find_port<InputPort>(*property(INPUT_X_PROPERTY_KEY))->data_type();
-    const QString type_b = find_port<InputPort>(*property(INPUT_Y_PROPERTY_KEY))->data_type();
+    const auto type_a = find_port<InputPort>(*property(INPUT_X_PROPERTY_KEY))->data_type();
+    const auto type_b = find_port<InputPort>(*property(INPUT_Y_PROPERTY_KEY))->data_type();
 
-    if (types::is_integral(type_a) && types::is_integral(type_b)) {
-      return types::INTEGERVECTOR_TYPE;
-    } else if (types::is_numeric(type_a) && types::is_numeric(type_b)) {
-      return types::FLOATVECTOR_TYPE;
+    if (is_integral(type_a) && is_integral(type_b)) {
+      return Type::IntegerVector;
+    } else if (is_numeric(type_a) && is_numeric(type_b)) {
+      return Type::FloatVector;
     } else {
-      return types::INVALID_TYPE;
+      return Type::Invalid;
     }
   }
-  return types::INVALID_TYPE;
+  return Type::Invalid;
 }
 
 QString ComposeNode::title() const
@@ -62,10 +62,11 @@ QString ComposeNode::title() const
   return tr("Compose");
 }
 
-bool ComposeNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool ComposeNode::accepts_input_data_type(Type type, const InputPort& port, bool with_cast) const
 {
   Q_UNUSED(port)
-  return types::is_numeric(type);
+  Q_UNUSED(with_cast)
+  return is_numeric(type);
 }
 
 QString ComposeNode::type() const

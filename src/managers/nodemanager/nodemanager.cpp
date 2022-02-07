@@ -29,6 +29,24 @@ bool accept_node(const nodes::NodeModel& model, const QString& name)
   return ::contains(nodes::Node::detail(name).definitions, model.language());
 }
 
+QMenu& find_menu(QMenu* root, std::map<QString, QMenu*>& sub_menus, const std::vector<const char*>& path)
+{
+  for (const char* token : path) {
+    auto it = sub_menus.find(token);
+    if (it == sub_menus.end()) {
+      const QString tr_menu_name = QApplication::translate("NodeMenuPath", token);
+      auto menu = std::make_unique<QMenu>(tr_menu_name);
+      QMenu& ref = *menu;
+      sub_menus.insert({token, &ref});
+      root->addMenu(menu.release());
+      root = &ref;
+    } else {
+      root = it->second;
+    }
+  }
+  return *root;
+}
+
 }  // namespace
 
 namespace omm
@@ -147,59 +165,54 @@ bool NodeManager::perform_action(const QString& name)
   return true;
 }
 
+std::unique_ptr<QMenu> NodeManager::create_quick_constant_node_actions_menu(omm::nodes::NodeModel& model) const
+{
+  auto quick_constant_node_actions_menu = std::make_unique<QMenu>(tr("Constant ..."));
+  const auto types = model.compiler().supported_types();
+
+  for (const Type& type : types) {
+    const QString label = QApplication::translate("Property", variant_type_name(type).data());
+    auto action = std::make_unique<QAction>(label);
+    connect(action.get(), &QAction::triggered, &model, [type, &model, label, this]() {
+      auto node = std::make_unique<nodes::ConstantNode>(model);
+      const auto property_name = Property::property_type(type);
+      auto property = Property::make(property_name);
+      property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
+      property->set_label(label);
+      node->add_property(property_name, std::move(property));
+      std::vector<std::unique_ptr<nodes::Node>> nodes;
+      node->set_pos(m_ui->nodeview->node_insert_pos());
+      nodes.push_back(std::move(node));
+      scene().submit<AddNodesCommand>(model, std::move(nodes));
+    });
+    quick_constant_node_actions_menu->addAction(action.release());
+  }
+  return quick_constant_node_actions_menu;
+}
+
+void NodeManager::create_node_actions(const omm::nodes::NodeModel& model,
+                                      const KeyBindings& kb,
+                                      QMenu& root_menu,
+                                      std::map<QString, QMenu*>& sub_menus)
+{
+  for (const QString& name : nodes::Node::keys()) {
+    if (accept_node(model, name)) {
+      if (const auto menu_path = nodes::Node::detail(name).menu_path; !menu_path.empty()) {
+        auto action = kb.make_menu_action(*this, name);
+        QMenu& menu = find_menu(&root_menu, sub_menus, menu_path);
+        menu.addAction(action.release());
+      }
+    }
+  }
+}
+
 std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
 {
   auto root_menu = std::make_unique<QMenu>(tr("Add Node ..."));
-  std::map<QString, QMenu*> sub_menus;
-  const auto find_menu = [&sub_menus](QMenu* root, const auto& path) -> QMenu& {
-    for (const char* token : path) {
-      auto it = sub_menus.find(token);
-      if (it == sub_menus.end()) {
-        const QString tr_menu_name = QApplication::translate("NodeMenuPath", token);
-        auto menu = std::make_unique<QMenu>(tr_menu_name);
-        QMenu& ref = *menu;
-        sub_menus.insert({token, &ref});
-        root->addMenu(menu.release());
-        root = &ref;
-      } else {
-        root = it->second;
-      }
-    }
-    return *root;
-  };
-
   if (auto* const model = m_ui->nodeview->model(); model != nullptr) {
-    for (const QString& name : nodes::Node::keys()) {
-      if (accept_node(*model, name)) {
-        if (const auto menu_path = nodes::Node::detail(name).menu_path; !menu_path.empty()) {
-          auto action = kb.make_menu_action(*this, name);
-          QMenu& menu = find_menu(root_menu.get(), menu_path);
-          menu.addAction(action.release());
-        }
-      }
-    }
-
-    {
-      auto quick_constant_node_actions_menu = std::make_unique<QMenu>(tr("Constant ..."));
-      const auto types = nodes::types::supported_types(model->language());
-      for (const QString& type : types) {
-        const QString label = QApplication::translate("Property", type.toStdString().c_str());
-        auto action = std::make_unique<QAction>(label);
-        connect(action.get(), &QAction::triggered, model, [type, model, label, this]() {
-          auto node = std::make_unique<nodes::ConstantNode>(*model);
-          auto property = Property::make(type);
-          property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
-          property->set_label(label);
-          node->add_property(type, std::move(property));
-          std::vector<std::unique_ptr<nodes::Node>> nodes;
-          node->set_pos(m_ui->nodeview->node_insert_pos());
-          nodes.push_back(std::move(node));
-          scene().submit<AddNodesCommand>(*model, std::move(nodes));
-        });
-        quick_constant_node_actions_menu->addAction(action.release());
-      }
-      root_menu->addMenu(quick_constant_node_actions_menu.release());
-    }
+    std::map<QString, QMenu*> sub_menus;
+    create_node_actions(*model, kb, *root_menu, sub_menus);
+    root_menu->addMenu(create_quick_constant_node_actions_menu(*model).release());
   }
   return root_menu;
 }

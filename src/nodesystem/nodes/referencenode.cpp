@@ -2,9 +2,9 @@
 #include "commands/forwardingportcommand.h"
 #include "nodesystem/nodemodel.h"
 #include "properties/referenceproperty.h"
+#include "propertytypeenum.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
-#include "variant.h"
 #include <QMenu>
 
 namespace omm::nodes
@@ -35,10 +35,9 @@ void ReferenceNode::populate_menu(QMenu& menu)
   if (apo == nullptr) {
     forward_menu->addAction(tr("No properties."))->setEnabled(false);
   } else {
-    const auto supported_types = types::supported_types(language());
     for (auto&& key : apo->properties().keys()) {
       Property* property = apo->property(key);
-      if (::contains(supported_types, property->type())) {
+      if (model().compiler().supported_types().contains(property->data_type())) {
         if (language() == BackendLanguage::Python) {
           auto property_menu = std::make_unique<QMenu>(property->label());
           property_menu->addAction(

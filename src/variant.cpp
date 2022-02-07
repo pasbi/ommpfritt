@@ -43,7 +43,7 @@ QString to_string(const variant_type& var)
   }, var);
 
   const auto type_string = std::visit([](const auto& var) {
-    return variant_type_name<std::decay_t<decltype(var)>>();
+    return variant_type_name(get_variant_type<std::decay_t<decltype(var)>>());
   }, var);
   return QObject::tr("%1[%2]").arg(type_string.data(), value_string);
 }
@@ -75,6 +75,15 @@ template<> Vec2i null_value<Vec2i>()
 template<> SplineType null_value<SplineType>()
 {
   return SplineType();
+}
+
+// This should be constexpr.
+// however, currently used libs do not have constexpr `std::find_if`.
+Type get_variant_type(const std::string_view& v)
+{
+  return *std::find_if(variant_types.begin(), variant_types.end(), [v](const auto& type) {
+    return variant_type_name(type) == v;
+  });
 }
 
 }  // namespace omm

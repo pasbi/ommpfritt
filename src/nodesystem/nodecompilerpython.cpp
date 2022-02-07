@@ -72,4 +72,11 @@ AbstractNodeCompiler::AssemblyError NodeCompilerPython::define_node(const QStrin
   return {};
 }
 
+std::set<Type> NodeCompilerPython::supported_types() const
+{
+  return {
+      Type::Bool, Type::Color, Type::Float, Type::FloatVector, Type::Spline,
+      Type::Integer, Type::IntegerVector, Type::Option, Type::Reference, Type::String
+  };
+}
 }  // namespace omm::nodes

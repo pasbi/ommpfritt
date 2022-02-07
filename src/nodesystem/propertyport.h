@@ -41,7 +41,7 @@ public:
     }
   }
 
-  [[nodiscard]] QString data_type() const override;
+  [[nodiscard]] Type data_type() const override;
 
 private:
   const std::function<Property*()> m_get_property;

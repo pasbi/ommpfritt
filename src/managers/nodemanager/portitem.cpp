@@ -27,7 +27,8 @@ void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
 
   QPainterPath path;
   path.addEllipse(ellipse);
-  QBrush brush(ui_color(*widget, "NodeView", QString("port-%1").arg(port.data_type())));
+  const auto type_name = QString::fromStdString(std::string{variant_type_name(port.data_type())});
+  QBrush brush(ui_color(*widget, "NodeView", QString("port-%1").arg(type_name)));
   painter->fillPath(path, brush);
   QPen pen;
   pen.setColor(Qt::black);

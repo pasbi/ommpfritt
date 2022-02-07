@@ -61,23 +61,23 @@ QString LinePatternNode::type() const
   return TYPE;
 }
 
-QString LinePatternNode::output_data_type(const OutputPort& port) const
+Type LinePatternNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output_port) {
-    return types::FLOAT_TYPE;
+    return Type::Float;
   } else {
-    return types::INVALID_TYPE;
+    return Type::Invalid;
   }
 }
 
-QString LinePatternNode::input_data_type(const InputPort& port) const
+Type LinePatternNode::input_data_type(const InputPort& port) const
 {
   if (port.flavor == PortFlavor::Property) {
     return dynamic_cast<const PropertyPort<PortType::Input>&>(port).data_type();
   } else if (&port == m_position_port) {
-    return types::FLOAT_TYPE;
+    return Type::Float;
   } else {
-    return types::INVALID_TYPE;
+    return Type::Invalid;
   }
 }
 

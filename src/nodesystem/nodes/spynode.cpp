@@ -20,10 +20,11 @@ QString SpyNode::type() const
   return TYPE;
 }
 
-bool SpyNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool SpyNode::accepts_input_data_type(const Type type, const InputPort& port, bool with_cast) const
 {
+  Q_UNUSED(with_cast)
   Q_UNUSED(port)
-  return type != types::INVALID_TYPE;
+  return type != Type::Invalid;
 }
 
 void SpyNode::set_text(const QString& text)

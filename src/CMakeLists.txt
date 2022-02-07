@@ -1,31 +1,33 @@
 target_sources(libommpfritt PRIVATE
   ${CMAKE_BINARY_DIR}/config.cpp
   ${CMAKE_BINARY_DIR}/config.h
+  abstractfactory.h
   cache.h
   cachedgetter.h
   common.cpp
   common.h
-  enumnames.cpp
-  enumnames.h
   disjointset.h
   dnf.cpp
   dnf.h
+  enumnames.cpp
+  enumnames.h
   logging.cpp
   logging.h
   maybeowner.h
   menuhelper.h
   orderedmap.h
-  variant.cpp
-  variant.h
-  splinetype.cpp
-  splinetype.h
-  abstractfactory.h
+  propertytypeenum.cpp
+  propertytypeenum.h
   registers.cpp
   registers.h
-  translator.cpp
-  translator.h
+  splinetype.cpp
+  splinetype.h
   syncpalettedecorator.cpp
   syncpalettedecorator.h
+  translator.cpp
+  translator.h
+  variant.cpp
+  variant.h
 )
 
 add_subdirectory(animation)

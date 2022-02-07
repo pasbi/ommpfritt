@@ -55,10 +55,10 @@ ComposeColorNode::ComposeColorNode(NodeModel& model) : Node(model)
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("color"));
 }
 
-QString ComposeColorNode::output_data_type(const OutputPort& port) const
+Type ComposeColorNode::output_data_type(const OutputPort& port) const
 {
   Q_UNUSED(port)
-  return types::COLOR_TYPE;
+  return Type::Color;
 }
 
 QString ComposeColorNode::title() const
@@ -66,10 +66,11 @@ QString ComposeColorNode::title() const
   return tr("Compose Color");
 }
 
-bool ComposeColorNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool ComposeColorNode::accepts_input_data_type(const Type type, const InputPort& port, bool with_cast) const
 {
+  Q_UNUSED(with_cast)
   Q_UNUSED(port)
-  return types::is_numeric(type);
+  return is_numeric(type);
 }
 
 QString ComposeColorNode::type() const

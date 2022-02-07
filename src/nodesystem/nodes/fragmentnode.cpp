@@ -2,9 +2,8 @@
 #include "nodesystem/ordinaryport.h"
 #include "nodesystem/propertyport.h"
 #include "properties/floatproperty.h"
-#include "properties/optionproperty.h"
+#include "propertytypeenum.h"
 #include "scene/scene.h"
-#include "variant.h"
 
 namespace omm::nodes
 {
@@ -24,11 +23,12 @@ QString FragmentNode::type() const
   return TYPE;
 }
 
-bool FragmentNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool FragmentNode::accepts_input_data_type(const Type type, const InputPort& port, bool with_cast) const
 {
+  Q_UNUSED(with_cast)
   Q_UNUSED(port)
   assert(&port == m_input_port);
-  return type == types::COLOR_TYPE;
+  return type == Type::Color;
 }
 
 OrdinaryPort<PortType::Input>& FragmentNode::input_port() const

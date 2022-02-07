@@ -20,6 +20,7 @@ constexpr auto glsl_definition_template = R"(
   case 7: return a7;
   case 8: return a8;
   case 9: return a9;
+  default: return a0;
   }
 })";
 
@@ -41,14 +42,14 @@ constexpr auto n_options = 10;
 auto glsl_definitions()
 {
   QStringList overloads;
-  constexpr auto types = std::array{omm::nodes::types::FLOATVECTOR_TYPE, omm::nodes::types::INTEGER_TYPE,
-                                    omm::nodes::types::FLOAT_TYPE, omm::nodes::types::COLOR_TYPE,
-                                    omm::nodes::types::INTEGERVECTOR_TYPE};
+  constexpr auto types = std::array{omm::Type::FloatVector, omm::Type::Integer,
+                                    omm::Type::Float, omm::Type::Color,
+                                    omm::Type::IntegerVector};
   overloads.reserve(types.size());
   const auto template_definition = QString{glsl_definition_template}.arg(omm::nodes::SwitchNode::TYPE);
   for (const auto& type : types) {
     using omm::nodes::NodeCompilerGLSL;
-    overloads.push_back(template_definition.arg(NodeCompilerGLSL::translate_type(type)));
+    overloads.push_back(template_definition.arg(NodeCompilerGLSL::type_name(type)));
   }
   return overloads.join("\n");
 }
@@ -69,7 +70,7 @@ const Node::Detail SwitchNode::detail{
 SwitchNode::SwitchNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
-  create_property<IntegerProperty>(KEY_KEY, 0)
+  const auto& key_property = create_property<IntegerProperty>(KEY_KEY, 0)
       .set_label(tr("key"))
       .set_category(category);
   m_options.reserve(n_options);
@@ -77,21 +78,22 @@ SwitchNode::SwitchNode(NodeModel& model) : Node(model)
     m_options.push_back(&add_port<OrdinaryPort<PortType::Input>>(input_name(i)));
   }
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
+  m_key_input_port = find_port<InputPort>(key_property);
 }
 
-QString SwitchNode::output_data_type(const OutputPort& port) const
+Type SwitchNode::output_data_type(const OutputPort& port) const
 {
   if (&port != m_output_port) {
-    return types::INVALID_TYPE;
+    return Type::Invalid;
   }
 
-  auto types = ::transform<QString, std::set>(m_options, [](const InputPort* ip) {
+  auto types = ::transform<Type, std::set>(m_options, [](const InputPort* ip) {
     return ip->data_type();
   });
-  types.erase(types::INVALID_TYPE);
+  types.erase(Type::Invalid);
 
   if (types.size() != 1) {
-    return types::INVALID_TYPE;  // ambiguous type
+    return Type::Invalid;  // ambiguous type
   }
   return *types.begin();
 }
@@ -101,10 +103,17 @@ QString SwitchNode::title() const
   return tr("Compose");
 }
 
-bool SwitchNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+bool SwitchNode::accepts_input_data_type(const Type type, const InputPort& port, const bool with_cast) const
 {
-  Q_UNUSED(port)
-  return type != types::INVALID_TYPE;
+  if (&port == m_key_input_port) {
+    if (with_cast) {
+      return NodeCompilerGLSL::can_cast(type, Type::Integer);
+    } else {
+      return type == Type::Integer;
+    }
+  } else {
+    return type != Type::Invalid;
+  }
 }
 
 QString SwitchNode::type() const
@@ -128,9 +137,11 @@ InputPort* SwitchNode::find_surrogate_for(const InputPort& port) const
   return nullptr;
 }
 
-QString SwitchNode::input_data_type(const InputPort& port) const
+Type SwitchNode::input_data_type(const InputPort& port) const
 {
-  if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
+  if (&port == m_key_input_port) {
+    return Type::Integer;
+  } else if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
     return Node::input_data_type(port);
   } else {
     return surrogate->data_type();
@@ -142,7 +153,6 @@ QString SwitchNode::dangling_input_port_uuid(const InputPort& port) const
   if (const auto* surrogate = find_surrogate_for(port); surrogate == nullptr) {
     return Node::dangling_input_port_uuid(port);
   } else {
-    LINFO << "  surrogate uuid: " << surrogate->label();
     return surrogate->uuid();
   }
 }

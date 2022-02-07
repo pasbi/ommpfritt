@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "nodesystem/statement.h"
+#include "propertytypeenum.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -43,6 +44,7 @@ public:
   QString code();
   QString error();
   virtual bool compile() = 0;
+  static bool can_cast(Type from, Type to);
 
 Q_SIGNALS:
   void compilation_succeeded(const QString& code);
@@ -50,6 +52,7 @@ Q_SIGNALS:
 
 public:
   virtual void invalidate();
+  [[nodiscard]] virtual std::set<Type> supported_types() const = 0;
 
 protected:
   struct AssemblyError

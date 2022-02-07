@@ -79,12 +79,12 @@ ColorConvertNode::ColorConvertNode(NodeModel& model) : Node(model)
   m_vector_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("color"));
 }
 
-QString ColorConvertNode::output_data_type(const OutputPort& port) const
+Type ColorConvertNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_vector_output_port) {
-    return types::COLOR_TYPE;
+    return Type::Color;
   }
-  return types::INVALID_TYPE;
+  return Type::Invalid;
 }
 
 QString ColorConvertNode::title() const

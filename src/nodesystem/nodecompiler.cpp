@@ -59,6 +59,17 @@ QString AbstractNodeCompiler::error()
   return m_last_error.message;
 }
 
+bool AbstractNodeCompiler::can_cast(const Type from, const Type to)
+{
+  const auto is_convertible_type = [](const Type t) {
+    return is_scalar(t) || is_vector(t) || is_color(t);
+  };
+
+  // Scalar, vector and color are all convertable into each other.
+  // Other types are not convertable into anything else.
+  return is_convertible_type(from) && is_convertible_type(to);
+}
+
 void AbstractNodeCompiler::invalidate()
 {
   m_is_dirty = true;

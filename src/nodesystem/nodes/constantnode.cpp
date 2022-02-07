@@ -3,8 +3,8 @@
 #include "nodesystem/nodemodel.h"
 #include "properties/optionproperty.h"
 #include "properties/stringproperty.h"
+#include "propertytypeenum.h"
 #include "scene/scene.h"
-#include "variant.h"
 #include <QMenu>
 
 namespace omm::nodes
@@ -28,8 +28,11 @@ void ConstantNode::populate_menu(QMenu& menu)
 {
   QAction* edit_port_action = menu.addAction(tr("Edit ports ..."));
   connect(edit_port_action, &QAction::triggered, this, [this, &menu]() {
-    const auto types = types::supported_types(model().language());
-    auto dialog = UserPropertyDialog(*this, types, &menu);
+    const auto types = model().compiler().supported_types();
+    const auto type_names = ::transform<QString>(types, [](const Type type) {
+      return QString{"%1"}.arg(variant_type_name(type).data());
+    });
+    auto dialog = UserPropertyDialog(*this, type_names, &menu);
     dialog.exec();
   });
 }

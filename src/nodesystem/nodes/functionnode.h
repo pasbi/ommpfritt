@@ -16,8 +16,8 @@ public:
   static constexpr auto INPUT_A_PROPERTY_KEY = "a";
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "FunctionNode");
 
-  [[nodiscard]] QString output_data_type(const OutputPort&) const override;
-  [[nodiscard]] bool accepts_input_data_type(const QString& type, const InputPort&) const override;
+  [[nodiscard]] Type output_data_type(const OutputPort&) const override;
+  [[nodiscard]] bool accepts_input_data_type(Type type, const InputPort&, bool with_cast) const override;
   [[nodiscard]] QString type() const override;
   static const Detail detail;
   [[nodiscard]] QString title() const override;
