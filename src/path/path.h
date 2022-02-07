@@ -1,8 +1,10 @@
 #pragma once
 
+#include "aspects/serializable.h"
+#include "common.h"
+#include "geometry/vec2.h"
 #include <deque>
 #include <memory>
-#include "aspects/serializable.h"
 #include <QPainterPath>
 
 namespace omm

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../common.h"
-#include "variant.h"
+#include "propertytypeenum.h"
 #include <QPoint>
 #include <QString>
 #include <memory>

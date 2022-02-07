@@ -1,6 +1,5 @@
 #pragma once
 
-#include "variant.h"
 #include <QString>
 #include <cassert>
 #include <memory>

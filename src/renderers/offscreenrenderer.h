@@ -1,6 +1,7 @@
 #pragma once
 
 #include "logging.h"
+#include "propertytypeenum.h"
 #include "variant.h"
 #include <QOffscreenSurface>
 #include <QOpenGLBuffer>

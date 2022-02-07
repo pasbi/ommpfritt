@@ -3,7 +3,6 @@
 #include "animation/track.h"
 #include "aspects/serializable.h"
 #include "cachedgetter.h"
-#include "variant.h"
 #include <QAbstractItemModel>
 #include <QObject>
 #include <QTimer>

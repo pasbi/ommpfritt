@@ -3,8 +3,8 @@
 #include "nodesystem/nodemodel.h"
 #include "properties/optionproperty.h"
 #include "properties/stringproperty.h"
+#include "propertytypeenum.h"
 #include "scene/scene.h"
-#include "variant.h"
 #include <QMenu>
 
 namespace omm::nodes

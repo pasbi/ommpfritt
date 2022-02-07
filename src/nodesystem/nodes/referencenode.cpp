@@ -2,9 +2,9 @@
 #include "commands/forwardingportcommand.h"
 #include "nodesystem/nodemodel.h"
 #include "properties/referenceproperty.h"
+#include "propertytypeenum.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
-#include "variant.h"
 #include <QMenu>
 
 namespace omm::nodes

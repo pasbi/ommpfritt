@@ -2,13 +2,13 @@
 
 #include "common.h"
 #include "nodesystem/statement.h"
+#include "propertytypeenum.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <list>
 #include <set>
 #include <memory>
-#include "variant.h"
 
 namespace omm::nodes
 {

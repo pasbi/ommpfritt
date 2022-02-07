@@ -2,9 +2,8 @@
 #include "nodesystem/ordinaryport.h"
 #include "nodesystem/propertyport.h"
 #include "properties/floatproperty.h"
-#include "properties/optionproperty.h"
+#include "propertytypeenum.h"
 #include "scene/scene.h"
-#include "variant.h"
 
 namespace omm::nodes
 {

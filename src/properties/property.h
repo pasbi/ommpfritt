@@ -13,6 +13,7 @@
 #include "logging.h"
 #include "propertyconfiguration.h"
 #include "variant.h"
+#include "propertytypeenum.h"
 
 namespace omm
 {

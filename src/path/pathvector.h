@@ -1,7 +1,8 @@
 #pragma once
 
 #include "aspects/serializable.h"
-#include <variant>
+#include "geometry/vec2.h"
+#include <deque>
 
 class QPainterPath;
 

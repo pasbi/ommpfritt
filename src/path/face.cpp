@@ -1,7 +1,9 @@
 #include "path/face.h"
+#include "common.h"
 #include "geometry/point.h"
 #include "path/pathpoint.h"
 #include "path/edge.h"
+#include <QStringList>
 
 namespace
 {
