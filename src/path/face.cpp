@@ -107,7 +107,7 @@ double Face::compute_aabb_area() const
 
 QString Face::to_string() const
 {
-  const auto edges = ::transform<QString, QList>(m_edges, std::mem_fn(&Edge::label));
+  const auto edges = util::transform<QList>(m_edges, std::mem_fn(&Edge::label));
   return static_cast<QStringList>(edges).join(", ");
 }
 

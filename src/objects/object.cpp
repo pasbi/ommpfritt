@@ -227,8 +227,7 @@ void Object::set_global_axis_transformation(const ObjectTransformation& global_t
                                             Space space)
 {
   const auto get_glob_trans = [space](const auto* c) { return c->global_transformation(space); };
-  const auto child_transformations
-      = ::transform<ObjectTransformation>(tree_children(), get_glob_trans);
+  const auto child_transformations = util::transform(tree_children(), get_glob_trans);
   set_global_transformation(global_transformation, space);
   for (std::size_t i = 0; i < child_transformations.size(); ++i) {
     tree_children()[i]->set_global_transformation(child_transformations[i], space);
@@ -552,7 +551,7 @@ std::vector<const omm::Style*> Object::find_styles() const
   };
 
   const auto tags = this->tags.ordered_items();
-  return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
+  return ::filter_if(util::transform(tags, get_style), ::is_not_null);
 }
 
 Point Object::pos(const Geom::PathVectorTime& t) const

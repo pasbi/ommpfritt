@@ -57,7 +57,7 @@ void PropertyManagerTab::add_properties(
     const std::map<AbstractPropertyOwner*, Property*>& property_map)
 {
   assert(!property_map.empty());
-  const auto properties = ::transform<Property*, std::set>(property_map, [](const auto& pair) {
+  const auto properties = util::transform<std::set>(property_map, [](const auto& pair) {
     return pair.second;
   });
   if ((*properties.begin())->is_visible()) {

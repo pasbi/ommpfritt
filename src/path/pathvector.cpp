@@ -152,7 +152,9 @@ QPainterPath PathVector::outline() const
   for (const Path* path : paths()) {
     const auto points = path->points();
     if (!points.empty()) {
-      outline.addPath(Path::to_painter_path(::transform<Point>(points, std::mem_fn(&PathPoint::geometry))));
+      outline.addPath(Path::to_painter_path(util::transform(points, [](const PathPoint* p) {
+        return p->geometry();
+      })));
     }
   }
   return outline;
@@ -179,7 +181,7 @@ std::size_t PathVector::point_count() const
 
 std::deque<Path*> PathVector::paths() const
 {
-  return ::transform<Path*>(m_paths, std::mem_fn(&std::unique_ptr<Path>::get));
+  return util::transform(m_paths, std::mem_fn(&std::unique_ptr<Path>::get));
 }
 
 Path* PathVector::find_path(const PathPoint& point) const

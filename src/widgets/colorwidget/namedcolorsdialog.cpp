@@ -49,7 +49,7 @@ public:
                << "' to prevent name clash.";
     } else {
       const auto cprops = scene().find_named_color_holders(old_name);
-      const auto props = ::transform<omm::Property*>(cprops);
+      const auto props = util::transform<omm::Property*>(cprops);
 
       auto cmd = std::make_unique<omm::ChangeNamedColorNameCommand>(old_name, new_name);
       auto macro = scene().history().start_macro(cmd->actionText());

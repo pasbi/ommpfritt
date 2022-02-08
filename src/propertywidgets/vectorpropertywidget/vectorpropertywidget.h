@@ -67,8 +67,8 @@ protected:
     QSignalBlocker x_blocker(m_x_edit);
     QSignalBlocker y_blocker(m_y_edit);
     const auto values = this->get_properties_values();
-    m_x_edit->set_values(::transform<elem_type>(values, [](const auto& vec) { return vec.x; }));
-    m_y_edit->set_values(::transform<elem_type>(values, [](const auto& vec) { return vec.y; }));
+    m_x_edit->set_values(util::transform(values, [](const auto& vec) { return vec.x; }));
+    m_y_edit->set_values(util::transform(values, [](const auto& vec) { return vec.y; }));
   }
 
   template<std::size_t dim> void set_properties_value(const elem_type& value)

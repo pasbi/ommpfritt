@@ -157,7 +157,7 @@ void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target,
                                             CopiedProperties flags) const
 {
   const auto keys = [](const AbstractPropertyOwner& o) {
-    return ::transform<QString, std::set>(o.properties().keys(), ::identity);
+    return util::transform<std::set>(o.properties().keys());
   };
 
   const auto target_keys = keys(target);

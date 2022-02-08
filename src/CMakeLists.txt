@@ -27,6 +27,7 @@ target_sources(libommpfritt PRIVATE
   translator.cpp
   translator.h
   transparentset.h
+  transform.h
   variant.cpp
   variant.h
 )

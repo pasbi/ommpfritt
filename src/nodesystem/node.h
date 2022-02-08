@@ -35,7 +35,7 @@ public:
   {
     const auto predicate = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
     const auto convert = [](AbstractPort* p) { return static_cast<PortT*>(p); };
-    return ::transform<PortT*>(::filter_if(ports(), predicate), convert);
+    return util::transform(::filter_if(ports(), predicate), convert);
   }
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;

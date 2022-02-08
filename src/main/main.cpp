@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 
   level = args.get<QString>(CommandLineParser::VERBOSITY_KEY);
   if (!omm::LogLevel::loglevels.contains(level)) {
-    const auto levels = ::transform<QString, QList>(::get_keys(omm::LogLevel::loglevels));
+    const auto levels = util::transform<QList>(::get_keys(omm::LogLevel::loglevels));
     std::cerr << "Unknown log level '" << level.toStdString()
               << "'. Use " << levels.join("|").toStdString() << ".\n"
               << std::flush;

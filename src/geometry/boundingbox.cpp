@@ -52,8 +52,8 @@ std::set<omm::Vec2f> get_all_points(const std::set<omm::BoundingBox>& bbs)
 namespace omm
 {
 BoundingBox::BoundingBox(const std::set<Vec2f>& points)
-    : BoundingBox(::transform<double>(points, [](const Vec2f& v) { return v.x; }),
-                  ::transform<double>(points, [](const Vec2f& v) { return v.y; }))
+    : BoundingBox(util::transform(points, [](const Vec2f& v) { return v.x; }),
+                  util::transform(points, [](const Vec2f& v) { return v.y; }))
 {
 }
 

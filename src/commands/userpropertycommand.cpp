@@ -11,7 +11,7 @@ namespace
 auto transform(const std::vector<QString>& keys)
 {
   using pair_type = std::pair<QString, std::unique_ptr<omm::Property>>;
-  return ::transform<pair_type>(keys, [](const QString& key) { return pair_type{key, nullptr}; });
+  return util::transform(keys, [](const QString& key) { return pair_type{key, nullptr}; });
 }
 
 }  // namespace
@@ -24,8 +24,11 @@ UserPropertyCommand ::UserPropertyCommand(
     std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
     const std::map<Property*, PropertyConfiguration>& changes,
     AbstractPropertyOwner& owner)
-    : Command(QObject::tr("User Property")), m_deletions(transform(deletions)),
-      m_additions(std::move(additions)), m_changes(changes), m_owner(owner)
+    : Command(QObject::tr("User Property"))
+    , m_deletions(transform(deletions))
+    , m_additions(std::move(additions))
+    , m_changes(changes)
+    , m_owner(owner)
 {
   if (auto* node = kind_cast<nodes::Node*>(&m_owner); node != nullptr) {
     for (auto&& [key, _] : m_deletions) {

@@ -12,7 +12,7 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner& owner,
                                        const std::set<QString>& types,
                                        QWidget* parent)
     : QDialog(parent), m_ui(new Ui::UserPropertyDialog),
-      m_property_types(::transform<QString, std::vector>(types)), m_owner(owner),
+      m_property_types(util::transform<std::vector>(types)), m_owner(owner),
       m_user_property_list_model(owner)
 {
   m_ui->setupUi(this);
@@ -24,7 +24,7 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner& owner,
             m_ui->listView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
           });
 
-  m_ui->cb_type->addItems(::transform<QString, QList>(m_property_types, [](const QString& s) {
+  m_ui->cb_type->addItems(util::transform<QList>(m_property_types, [](const QString& s) {
     return tr(s.toUtf8().constData(), "Property");
   }));
   connect(m_ui->cb_type, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {

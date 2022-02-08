@@ -1,6 +1,7 @@
 #pragma once
 
 #include "transparentset.h"
+#include "transform.h"
 #include <QString>
 #include <algorithm>
 #include <cassert>
@@ -88,44 +89,6 @@ template<typename T, template<typename...> class Container, typename S>
 auto make_container(const Container<S>&)
 {
   return Container<T>();
-}
-
-template<typename T, typename ContainerS, typename F> auto transform(ContainerS&& ss, F&& mapper)
-{
-  auto ts = make_container<T>(ss);
-  if constexpr (is_vector<std::decay_t<decltype(ts)>>::value) {
-    reserve(ts, ss.size());
-  }
-  std::transform(std::begin(ss),
-                 std::end(ss),
-                 std::inserter(ts, std::end(ts)),
-                 std::forward<F>(mapper));
-  return ts;
-}
-
-template<typename T, typename ContainerS> auto transform(ContainerS&& ss)
-{
-  return ::transform<T, ContainerS>(std::forward<ContainerS>(ss), ::identity);
-}
-
-template<typename T, template<typename...> class ContainerT, typename ContainerS, typename F>
-auto transform(ContainerS&& ss, F&& mapper = ::identity)
-{
-  ContainerT<T> ts;
-  if constexpr (is_vector<std::decay_t<decltype(ts)>>::value) {
-    reserve(ts, ss.size());
-  }
-  std::transform(std::begin(ss),
-                 std::end(ss),
-                 std::inserter(ts, std::end(ts)),
-                 std::forward<F>(mapper));
-  return ts;
-}
-
-template<typename T, template<typename...> class ContainerT, typename ContainerS>
-auto transform(ContainerS&& ss)
-{
-  return ::transform<T, ContainerT>(std::forward<ContainerS>(ss), ::identity);
 }
 
 template<typename Ts, typename F> bool any_of(const Ts& ts, const F& f)
@@ -239,7 +202,7 @@ template<typename S, typename... Ts> bool contains(const std::map<Ts...>& map, S
   }
 }
 
-template<typename T> struct is_unique_ptr : std::true_type {
+template<typename T> struct is_unique_ptr : std::false_type {
 };
 template<typename... T> struct is_unique_ptr<std::unique_ptr<T...>> : std::true_type {
 };
@@ -260,10 +223,9 @@ template<typename T, template<typename...> class ContainerT>
 ContainerT<std::unique_ptr<T>> copy(const ContainerT<std::unique_ptr<T>>& other)
 {
   if constexpr (HasCloneMethod<T>::value) {
-    return ::transform<std::unique_ptr<T>>(other, [](const auto& i) { return i->clone(); });
+    return util::transform(other, [](const auto& i) { return i->clone(); });
   } else {
-    return ::transform<std::unique_ptr<T>>(other,
-                                           [](const auto& i) { return std::make_unique<T>(*i); });
+    return util::transform(other, [](const auto& i) { return std::make_unique<T>(*i); });
   }
 }
 
@@ -316,7 +278,7 @@ template<typename T, typename S> decltype(auto) type_cast(S&& s)
 template<typename T, template<typename...> class Container, typename S>
 Container<T> type_casts(const Container<S>& apos)
 {
-  const auto casted = ::transform<T>(apos, [](S apo) { return type_cast<T>(apo); });
+  const auto casted = util::transform(apos, [](S apo) { return type_cast<T>(apo); });
   return ::filter_if(casted, ::is_not_null);
 }
 

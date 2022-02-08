@@ -87,7 +87,7 @@ Type SwitchNode::output_data_type(const OutputPort& port) const
     return Type::Invalid;
   }
 
-  auto types = ::transform<Type, std::set>(m_options, [](const InputPort* ip) {
+  auto types = util::transform<std::set>(m_options, [](const InputPort* ip) {
     return ip->data_type();
   });
   types.erase(Type::Invalid);

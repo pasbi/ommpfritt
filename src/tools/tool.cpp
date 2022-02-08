@@ -140,7 +140,7 @@ void Tool::clear()
 
 std::deque<Handle*> Tool::handles() const
 {
-  return ::transform<Handle*>(m_handles, [](const auto& handle) { return handle.get(); });
+  return util::transform(m_handles, [](const auto& handle) { return handle.get(); });
 }
 
 void Tool::push_handle(std::unique_ptr<Handle> handle)

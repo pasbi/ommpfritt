@@ -100,7 +100,7 @@ std::set<AbstractPort*> AbstractPort::connected_ports() const
       return {};
     }
   case PortType::Output:
-    return ::transform<AbstractPort*>(dynamic_cast<const OutputPort*>(this)->connected_inputs());
+    return util::transform<AbstractPort*>(dynamic_cast<const OutputPort*>(this)->connected_inputs());
   default:
     Q_UNREACHABLE();
     return {};

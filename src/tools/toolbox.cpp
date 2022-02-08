@@ -94,7 +94,7 @@ void ToolBox::set_scene_mode(SceneMode mode)
 
 ::transparent_set<Tool*> ToolBox::tools() const
 {
-  return ::transform<Tool*, ::transparent_set>(m_tools, [](auto&& pair) { return pair.second.get(); });
+  return util::transform<::transparent_set>(m_tools, [](auto&& pair) { return pair.second.get(); });
 }
 
 void ToolBox::activate_default_tool()

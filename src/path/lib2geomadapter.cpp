@@ -39,7 +39,7 @@ Geom::Path omm_to_geom(const Path& path, InterpolationMode interpolation)
     const auto cps = Path::compute_control_points(self->at(i).geometry(),
                                                   self->at(i + 1).geometry(),
                                                   interpolation);
-    bzs.emplace_back(::transform<Geom::Point>(cps, std::mem_fn(&Vec2f::to_geom_point)));
+    bzs.emplace_back(util::transform(cps, std::mem_fn(&Vec2f::to_geom_point)));
   }
 
   return {bzs.begin(), bzs.end()};

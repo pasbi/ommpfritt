@@ -229,7 +229,7 @@ PreferencesTreeGroupItem* PreferencesTree::group(const QString& name) const
 
 std::vector<PreferencesTreeGroupItem*> PreferencesTree::groups() const
 {
-  return ::transform<PreferencesTreeGroupItem*>(m_groups, [](const auto& g) { return g.get(); });
+  return util::transform(m_groups, [](const auto& g) { return g.get(); });
 }
 
 PreferencesTreeValueItem* PreferencesTree::value(const QString& group_name,

@@ -60,8 +60,7 @@ Node::~Node() = default;
 
 std::set<AbstractPort*> Node::ports() const
 {
-  return ::transform<AbstractPort*>(m_ports,
-                                    [](const std::unique_ptr<AbstractPort>& p) { return p.get(); });
+  return util::transform(m_ports, [](const std::unique_ptr<AbstractPort>& p) { return p.get(); });
 }
 
 void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
@@ -296,7 +295,7 @@ Type Node::fst_con_ptype(const std::vector<InputPort*>& ports, const Type defaul
 {
   const auto get_connected_output = [](const InputPort* ip) { return ip->connected_output(); };
   return ::find_if(
-      ::transform<OutputPort*>(ports, get_connected_output),
+      util::transform(ports, get_connected_output),
       [](const OutputPort* op) { return op != nullptr; },
       [](const OutputPort* op) { return op->data_type(); },
       default_t);

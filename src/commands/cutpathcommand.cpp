@@ -16,7 +16,7 @@ std::deque<std::unique_ptr<PathPoint>> cut(PathPoint& a, PathPoint& b,
                                            std::map<PathPoint*, Point>& modified_points)
 {
   const auto control_points = Path::compute_control_points(a.geometry(), b.geometry(), interpolation);
-  const auto geom_control_points = ::transform<Geom::Point>(control_points, std::mem_fn(&Vec2f::to_geom_point));
+  const auto geom_control_points = util::transform(control_points, std::mem_fn(&Vec2f::to_geom_point));
   const auto curve = std::unique_ptr<Geom::BezierCurve>(Geom::BezierCurve::create(geom_control_points));
   assert(std::is_sorted(positions.begin(), positions.end()));
   assert(!positions.empty());

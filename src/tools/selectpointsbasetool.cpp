@@ -101,10 +101,9 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   static const auto remove_tangents = [](const Point& point) { return point.nibbed(); };
   switch (property(BOUNDING_BOX_MODE_PROPERTY_KEY)->value<BoundingBoxMode>()) {
   case BoundingBoxMode::IncludeTangents:
-    return BoundingBox(::transform<Point>(scene()->point_selection->points(Space::Viewport)));
+    return BoundingBox(scene()->point_selection->points(Space::Viewport));
   case BoundingBoxMode::ExcludeTangents:
-    return BoundingBox(
-        ::transform<Point>(scene()->point_selection->points(Space::Viewport), remove_tangents));
+    return BoundingBox{util::transform(scene()->point_selection->points(Space::Viewport), remove_tangents)};
   case BoundingBoxMode::None:
     [[fallthrough]];
   default:

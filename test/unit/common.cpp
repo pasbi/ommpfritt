@@ -82,7 +82,7 @@ test_case_type cycle_test_case()
 
 template<typename T> std::set<Vertex*> get_vertices(const std::map<T, std::unique_ptr<Vertex>>& map)
 {
-  return ::transform<Vertex*, std::set>(map, [](auto&& p) { return p.second.get(); });
+  return util::transform<std::set>(map, [](auto&& p) { return p.second.get(); });
 }
 
 std::set<Vertex*> get_successors(const Vertex* v)

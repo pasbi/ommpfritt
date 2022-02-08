@@ -185,7 +185,7 @@ Knot& Track::knot(int frame) const
 
 std::vector<int> Track::key_frames() const
 {
-  return ::transform<int, std::vector>(m_knots, [](const auto& p) { return p.first; });
+  return util::transform<std::vector>(m_knots, [](auto&& v) { return v.first; });
 }
 
 void Track::apply(int frame) const

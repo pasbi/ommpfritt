@@ -61,7 +61,7 @@ public:
   {
     static const auto pred = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
     static const auto conv = [](AbstractPort* p) { return static_cast<PortT*>(p); };
-    return ::transform<PortT*>(::filter_if(ports(), pred), conv);
+    return util::transform(::filter_if(ports(), pred), conv);
   }
 
   [[nodiscard]] BackendLanguage language() const

@@ -194,7 +194,7 @@ void Cloner::update()
 
 PathVector Cloner::compute_path_vector() const
 {
-  return join(::transform<Object*>(m_clones, [](const auto& up) { return up.get(); }));
+  return join(util::transform(m_clones, [](const auto& up) { return up.get(); }));
 }
 
 void Cloner::on_property_value_changed(Property* property)

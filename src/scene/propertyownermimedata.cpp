@@ -21,7 +21,7 @@ template<typename ItemType>
 std::vector<ItemType*> filter(const std::vector<omm::AbstractPropertyOwner*>& items)
 {
   const auto filtered = filter(items, ItemType::KIND);
-  return ::transform<ItemType*>(filtered, [](auto item) { return static_cast<ItemType*>(item); });
+  return util::transform(filtered, [](auto item) { return static_cast<ItemType*>(item); });
 }
 
 }  // namespace

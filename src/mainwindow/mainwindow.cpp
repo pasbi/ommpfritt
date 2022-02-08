@@ -263,7 +263,7 @@ void MainWindow::restore_state()
 
 std::vector<QDockWidget*> MainWindow::dock_widgets() const
 {
-  return ::transform<QDockWidget*, std::vector>(findChildren<QDockWidget*>(), ::identity);
+  return util::transform<std::vector>(findChildren<QDockWidget*>());
 }
 
 void MainWindow::restore_default_layout()
@@ -313,13 +313,13 @@ Viewport& MainWindow::viewport() const
 
 void MainWindow::assign_unique_objectname(Manager& manager) const
 {
-  const auto blacklist = ::transform<QString, std::set>(dock_widgets(), get_object_name);
+  const auto blacklist = util::transform<std::set>(dock_widgets(), get_object_name);
   manager.setObjectName(make_unique(manager.type(), blacklist));
 }
 
 void MainWindow::assign_unique_objectname(ToolBar& toolbar) const
 {
-  const auto blacklist = ::transform<QString, std::set>(findChildren<QToolBar*>(), get_object_name);
+  const auto blacklist = util::transform<std::set>(findChildren<QToolBar*>(), get_object_name);
   toolbar.setObjectName(make_unique(toolbar.type(), blacklist));
 }
 

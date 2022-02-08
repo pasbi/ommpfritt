@@ -45,7 +45,7 @@ template<typename T> void TreeElement<T>::reset_parent(T& new_parent)
 
 template<typename T> std::vector<T*> TreeElement<T>::tree_children() const
 {
-  return ::transform<T*>(m_children, [](const auto& up) { return up.get(); });
+  return util::transform(m_children, [](const auto& up) { return up.get(); });
 }
 
 template<typename T> std::size_t TreeElement<T>::n_children() const

@@ -20,14 +20,14 @@ auto copy(const std::deque<std::unique_ptr<PathPoint>>& vs, Path& path)
 
 auto to_path_points(std::vector<Point>&& points, Path& path)
 {
-  return ::transform<std::unique_ptr<PathPoint>, std::deque>(std::move(points), [&path](auto&& point) {
+  return util::transform<std::deque>(std::move(points), [&path](auto&& point) {
     return std::make_unique<PathPoint>(point, path);
   });
 }
 
 auto to_path_points(std::deque<Point>&& points, Path& path)
 {
-  return ::transform<std::unique_ptr<PathPoint>>(std::move(points), [&path](auto&& point) {
+  return util::transform(std::move(points), [&path](auto&& point) {
     return std::make_unique<PathPoint>(point, path);
   });
 }
@@ -182,7 +182,7 @@ Point Path::smoothen_point(std::size_t i) const
 
 std::deque<PathPoint*> Path::points() const
 {
-  return ::transform<PathPoint*>(m_points, [](const auto& pt) { return pt.get(); });
+  return util::transform(m_points, [](const auto& pt) { return pt.get(); });
 }
 
 void Path::insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint>>&& points)

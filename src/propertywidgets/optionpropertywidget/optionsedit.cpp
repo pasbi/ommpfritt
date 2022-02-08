@@ -62,7 +62,7 @@ OptionsEdit::OptionsEdit(QWidget* parent) : PrefixComboBox(parent)
 void OptionsEdit::set_options(const std::vector<QString>& options)
 {
   clear();
-  addItems(::transform<QString, QList>(options, ::identity));
+  addItems(util::transform<QList>(options));
 }
 
 void PrefixComboBox::paintEvent(QPaintEvent*)

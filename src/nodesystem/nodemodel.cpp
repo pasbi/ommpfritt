@@ -114,7 +114,7 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
 
 std::set<Node*> NodeModel::nodes() const
 {
-  return ::transform<Node*>(m_nodes, [](const std::unique_ptr<Node>& node) { return node.get(); });
+  return util::transform(m_nodes, [](const std::unique_ptr<Node>& node) { return node.get(); });
 }
 
 void NodeModel::serialize(AbstractSerializer& serializer, const Serializable::Pointer& ptr) const

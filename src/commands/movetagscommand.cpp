@@ -7,13 +7,12 @@ namespace
 {
 auto make_old_contextes(std::vector<omm::Tag*> tags)
 {
-  return ::transform<omm::MoveTagContext>(tags,
-                                          [](omm::Tag* tag) { return omm::MoveTagContext(*tag); });
+  return util::transform(tags, [](omm::Tag* tag) { return omm::MoveTagContext(*tag); });
 }
 
 auto make_new_contextes(std::vector<omm::Tag*> tags, omm::Object& owner, omm::Tag* predecessor)
 {
-  return ::transform<omm::MoveTagContext>(tags, [&predecessor, &owner](omm::Tag* tag) {
+  return util::transform(tags, [&predecessor, &owner](omm::Tag* tag) {
     const auto context = omm::MoveTagContext(*tag, owner, predecessor);
     return context;
   });

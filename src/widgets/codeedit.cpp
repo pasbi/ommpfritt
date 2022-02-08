@@ -106,7 +106,7 @@ QSize CodeEdit::sizeHint() const
 {
   const auto font_metrics = m_text_edit->fontMetrics();
   const auto lines = m_text_edit->toPlainText().split("\n");
-  const auto widths = ::transform<int, std::vector>(lines, [&font_metrics](const QString& line) {
+  const auto widths = util::transform<std::vector>(lines, [&font_metrics](const QString& line) {
     return font_metrics.horizontalAdvance(line);
   });
   const auto max_width = *std::max_element(widths.begin(), widths.end());

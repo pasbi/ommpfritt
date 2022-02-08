@@ -101,7 +101,7 @@ PathVector ProceduralPath::compute_path_vector() const
 
   try {
     for (const auto& index_set : m_joined_points) {
-      pv.joined_points().insert(::transform<PathPoint*, ::transparent_set>(index_set, [&pv](const int i) {
+      pv.joined_points().insert(util::transform<::transparent_set>(index_set, [&pv](const int i) {
         return &pv.point_at_index(i);
       }));
     }

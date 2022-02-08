@@ -66,7 +66,7 @@ void modify_tangents(InterpolationMode mode, Application& app)
   }
 
   constexpr auto bezier_mode = static_cast<std::size_t>(InterpolationMode::Bezier);
-  const auto interpolation_properties = ::transform<Property*>(paths, [](PathObject* path) {
+  const auto interpolation_properties = util::transform(paths, [](PathObject* path) {
     return path->property(PathObject::INTERPOLATION_PROPERTY_KEY);
   });
 
@@ -115,7 +115,7 @@ std::set<Object*> convert_objects_recursively(Application& app, std::set<Object*
       ref.set_object_tree(app.scene->object_tree());
       assert(!c->is_root());
       ObjectTreeOwningContext context(ref, c->tree_parent(), c);
-      const auto properties = ::transform<Property*>(app.scene->find_reference_holders(*c));
+      const auto properties = util::transform<Property*>(app.scene->find_reference_holders(*c));
       if (!properties.empty()) {
         app.scene->submit<PropertiesCommand<ReferenceProperty>>(properties, &ref);
       }
@@ -140,7 +140,7 @@ std::set<Object*> convert_objects_recursively(Application& app, std::set<Object*
     app.scene->template submit<MoveCommand<ObjectTree>>(
         app.scene->object_tree(),
         std::vector(move_contextes.begin(), move_contextes.end()));
-    const auto selection = ::transform<Object*, std::set>(convertibles, ::identity);
+    const auto selection = util::transform<Object*>(convertibles);
     using remove_command = RemoveCommand<ObjectTree>;
     app.scene->template submit<remove_command>(app.scene->object_tree(), selection);
 

@@ -103,7 +103,7 @@ protected:
 
   auto get_properties_values() const
   {
-    return ::transform<value_type>(m_properties, [](const auto* property) {
+    return util::transform(m_properties, [](const auto* property) {
       return property->template value<value_type>();
     });
   }

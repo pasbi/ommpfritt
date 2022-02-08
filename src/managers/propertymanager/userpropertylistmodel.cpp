@@ -74,9 +74,7 @@ bool UserPropertyListModel::setData(const QModelIndex& index, const QVariant& da
 
 std::vector<const UserPropertyListItem*> UserPropertyListModel::items() const
 {
-  return ::transform<const UserPropertyListItem*>(m_items, [](const UserPropertyListItem& item) {
-    return &item;
-  });
+  return util::transform(m_items, [](const UserPropertyListItem& item) { return &item; });
 }
 
 bool UserPropertyListModel::contains(const Property* p) const

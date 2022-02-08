@@ -55,11 +55,11 @@ Point PathPoint::compute_joined_point_geometry(PathPoint& joined) const
 
 QString PathPoint::debug_id() const
 {
-  auto joins = ::transform<const PathPoint*>(joined_points());
+  auto joins = util::transform<const PathPoint*, ::transparent_set>(joined_points());
   if (joins.empty()) {
     joins = {this};
   }
-  QStringList ids = ::transform<QString, QList>(joins, [](const auto* p) {
+  QStringList ids = util::transform<QList>(joins, [](const auto* p) {
     return QString("%1").arg(p->index());
   });
   std::sort(ids.begin(), ids.end());
