@@ -163,6 +163,10 @@ Point Path::smoothen_point(std::size_t i) const
   const std::size_t n = m_points.size();
   PathPoint* left = nullptr;
   PathPoint* right = nullptr;
+  Point copy = m_points[i]->geometry();
+  if (m_points.size() < 2) {
+    return copy;
+  }
   if (i == 0) {
     left = m_points.at(0).get();
     right = m_points.at(1).get();
@@ -173,7 +177,6 @@ Point Path::smoothen_point(std::size_t i) const
     left = m_points.at(i - 1).get();
     right = m_points.at(i + 1).get();
   }
-  Point copy = m_points[i]->geometry();
   const Vec2f d = (left->geometry().position() - right->geometry().position()) / 6.0;
   copy.set_right_tangent(PolarCoordinates(-d));
   copy.set_left_tangent(PolarCoordinates(d));
