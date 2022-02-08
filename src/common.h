@@ -52,65 +52,9 @@ enum class SceneMode { Object, Vertex };
 
 enum class Stream { stdout_, stderr_ };
 
-template<typename T> struct is_vector : std::false_type {};
-template<typename T> struct is_vector<std::vector<T>> : std::true_type {};
-
-/*
- * passes ownership of `object` to `consumer` and returns a reference to `object`
- */
-template<typename T, typename F> T& transfer(std::unique_ptr<T> object, F consumer)
-{
-  T& ref = *object;
-  consumer(std::move(object));
-  return ref;
-}
-
-template<typename T, template<typename...> class Container> void reserve(Container<T>&, std::size_t)
-{
-  // for most containers, reserving is a no op.
-}
-
-template<typename T> void reserve(std::vector<T>& c, std::size_t n)
-{
-  c.reserve(n);
-}
-
-static constexpr struct identity_t {
-  template<typename T> constexpr decltype(auto) operator()(T&& t) const noexcept
-  {
-    return std::forward<T>(t);
-  }
-} identity{};
-
-/**
- * @brief makes a container similar to `Container<S>` but with `value_type T`.
- */
-template<typename T, template<typename...> class Container, typename S>
-auto make_container(const Container<S>&)
-{
-  return Container<T>();
-}
-
 template<typename Ts, typename F> bool any_of(const Ts& ts, const F& f)
 {
   return std::any_of(begin(ts), end(ts), f);
-}
-
-template<typename Ts, typename F = identity_t, typename EqualT = std::equal_to<>>
-auto is_uniform(const Ts& container,
-                const F& mapper = ::identity,
-                const EqualT& equal_to = std::equal_to<>())
-{
-  if (container.size() == 0) {
-    return true;
-  }
-  decltype(auto) first = mapper(*std::begin(container));
-  for (const auto& v : container) {
-    if (!equal_to(mapper(v), first)) {
-      return false;
-    }
-  }
-  return true;
 }
 
 template<typename T, template<typename...> class ContainerT>
@@ -295,23 +239,9 @@ template<typename S, typename T, typename... Ts> constexpr bool typelist_contain
 
 template<typename K, typename V> std::set<K> get_keys(const std::map<K, V>& map)
 {
-  std::set<K> keys;
-  for (auto&& [k, v] : map) {
-    (void)v;
-    keys.insert(k);
-  }
-  return keys;
-}
-
-template<typename Map1, typename Map2> bool same_keys(const Map1& m1, const Map2& m2)
-{
-  if (m1.size() != m2.size()) {
-    return false;
-  } else {
-    return std::equal(m1.begin(), m1.end(), m2.begin(), [](const auto& a, const auto& b) {
-      return a.first == b.first;
-    });
-  }
+  return util::transform<std::set>(map, [](const auto& key_value) {
+    return key_value.first;
+  });
 }
 
 template<typename R, typename Ts, typename P, typename F>

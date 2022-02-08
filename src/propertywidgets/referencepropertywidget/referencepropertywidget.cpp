@@ -17,7 +17,7 @@ ReturnT get(const std::set<omm::Property*>& properties, const F& getter)
     return static_cast<const PropertyT*>(property);
   });
   const auto values = util::transform(typed_properties, getter);
-  assert(::is_uniform(values));
+  assert(std::set(values.begin(), values.end()).size() <= 1);
   return *values.begin();
 }
 
