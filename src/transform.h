@@ -93,7 +93,7 @@ template<typename ValueType,
          typename F, std::size_t N>
 auto transform(Container<ValueType, N>&& cs, const F& f = F{})
 {
-  return transform_helper<ValueType, ReturnContainer, Container<ValueType, N>, F>(const_cast<Container<ValueType, N>&>(cs), f);
+  return transform_helper<ValueType, ReturnContainer, Container<ValueType, N>, F>(cs, f);
 }
 
 // overload for explicit return value type
@@ -124,7 +124,7 @@ auto transform(Container&& cs, const F& f)
 template<template<typename...> typename ReturnContainer, typename Container>
 auto transform(Container&& cs)
 {
-  constexpr auto f = [](auto&& v) { return v; };
+  constexpr auto f = [](auto&& v) { return std::forward<decltype(v)>(v); };
   using value_type = typename std::decay_t<Container>::value_type;
   return transform_helper<value_type, ReturnContainer>(std::forward<Container>(cs), f);
 }

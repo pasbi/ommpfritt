@@ -157,7 +157,7 @@ void UiColors::apply()
   private:
     const UiColors& self;
   };
-  QApplication::setStyle(new Style(*this));  // ownership is tranferred
+  QApplication::setStyle(std::make_unique<Style>(*this).release());
 }
 
 QStringList UiColors::skin_names() const
