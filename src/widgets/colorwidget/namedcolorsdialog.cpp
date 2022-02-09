@@ -81,7 +81,7 @@ NamedColorsDialog::NamedColorsDialog(QWidget* parent)
           &QItemSelectionModel::currentChanged,
           this,
           &NamedColorsDialog::setCurrent);
-  connect(m_ui->w_colorwidget, &ColorWidget::color_changed, [this](const Color& color) {
+  connect(m_ui->w_colorwidget, &ColorWidget::color_changed, this, [this](const Color& color) {
     const QModelIndex index = m_ui->listView->currentIndex();
     if (index.isValid()) {
       const QString name = model().name(m_proxy->mapToSource(index));

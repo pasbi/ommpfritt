@@ -66,7 +66,7 @@ CodeEdit::CodeEdit(QWidget* parent) : QWidget(parent)
   // set the tab stop with double-precision
   m_text_edit->setTabStopDistance(tab_width_char * single_char_width_double);
 
-  connect(m_text_edit, &QTextEdit::textChanged, [this]() {
+  connect(m_text_edit, &QTextEdit::textChanged, this, [this]() {
     Q_EMIT this->code_changed(code());
     this->updateGeometry();
   });

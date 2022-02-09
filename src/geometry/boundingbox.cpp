@@ -84,7 +84,7 @@ bool BoundingBox::contains(const BoundingBox& other) const
 
 QString BoundingBox::to_string() const
 {
-  return QString{"BoundingBox[%1, %2]"}.arg(top_left().to_string()).arg(bottom_right().to_string());
+  return QString{"BoundingBox[%1, %2]"}.arg(top_left().to_string(), bottom_right().to_string());
 }
 
 BoundingBox& BoundingBox::operator|=(const BoundingBox& other)

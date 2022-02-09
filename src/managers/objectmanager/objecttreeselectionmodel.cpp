@@ -98,7 +98,7 @@ void ObjectTreeSelectionModel::extend_selection(Tag& tag)
     auto begin = std::find(tags.begin(), tags.end(), &tag);
     auto end = std::find(tags.begin(), tags.end(), m_current_tag);
     assert(begin != tags.end() && end != tags.end());
-    if (end < begin) {
+    if (end < begin) {  // NOLINT(modernize-use-nullptr)
       std::swap(begin, end);
     }
     std::advance(end, 1);

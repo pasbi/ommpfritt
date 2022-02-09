@@ -14,7 +14,7 @@ MultiTabBar::MultiTabBar() : m_layout(std::make_unique<QHBoxLayout>())
   m_change_current_on_drag_delay_timer.setInterval(
       style()->styleHint(QStyle::SH_TabBar_ChangeCurrentDelay));
   m_change_current_on_drag_delay_timer.setSingleShot(true);
-  connect(&m_change_current_on_drag_delay_timer, &QTimer::timeout, [this]() {
+  connect(&m_change_current_on_drag_delay_timer, &QTimer::timeout, this, [this]() {
     assert(m_drag_activated_index >= 0);
     auto selection = current_indices();
     if (extend_selection()) {
@@ -38,6 +38,7 @@ void MultiTabBar::add_tab(const QString& text)
   tab->setCheckable(true);
   connect(tab.get(),
           &QAbstractButton::clicked,
+          this,
           [tab = tab.get(), i = m_tabs.size(), this](bool checked) {
             if (!checked && current_indices().empty()) {
               set_current_indices({});

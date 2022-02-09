@@ -235,6 +235,8 @@ bool operator<(const PathView& a, const PathView& b)
   static constexpr auto as_tuple = [](const PathView& a) {
     return std::tuple{a.path, a.index};
   };
+
+  // NOLINTNEXTLINE(modernize-use-nullptr)
   return as_tuple(a) < as_tuple(b);
 }
 

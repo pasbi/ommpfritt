@@ -15,6 +15,7 @@
 
 namespace
 {
+
 const std::map<QPalette::ColorRole, QString> role_map{
     {QPalette::Window, "window"},
     {QPalette::WindowText, "window text"},

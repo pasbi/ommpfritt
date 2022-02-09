@@ -17,32 +17,31 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner& owner,
 {
   m_ui->setupUi(this);
   m_ui->listView->setModel(&m_user_property_list_model);
-  connect(m_ui->listView->selectionModel(),
-          &QItemSelectionModel::currentChanged,
-          [this](const QModelIndex& index) {
-            update_property_config_page(m_user_property_list_model.item(index));
-            m_ui->listView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
-          });
+  const auto select_only_current = [this](const QModelIndex& index) {
+    update_property_config_page(m_user_property_list_model.item(index));
+    m_ui->listView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
+  };
+  connect(m_ui->listView->selectionModel(), &QItemSelectionModel::currentChanged, this, select_only_current);
 
   m_ui->cb_type->addItems(util::transform<QList>(m_property_types, [](const QString& s) {
     return tr(s.toUtf8().constData(), "Property");
   }));
-  connect(m_ui->cb_type, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
+  connect(m_ui->cb_type, qOverload<int>(&QComboBox::currentIndexChanged), this, [this](int index) {
     m_current_item->configuration.set("type", m_property_types[index]);
     update_property_config_page(m_current_item);
   });
-  connect(m_ui->cb_animatable, &QCheckBox::toggled, [this](bool checked) {
+  connect(m_ui->cb_animatable, &QCheckBox::toggled, this, [this](bool checked) {
     m_current_item->configuration.set(Property::ANIMATABLE_POINTER, checked);
   });
 
-  connect(m_ui->pb_add, &QPushButton::clicked, [this]() {
+  connect(m_ui->pb_add, &QPushButton::clicked, this, [this]() {
     m_user_property_list_model.add_property(m_ui->cb_type->currentText());
     const int n = m_user_property_list_model.rowCount(QModelIndex());
     const QModelIndex index = m_user_property_list_model.index(n - 1, 0);
     m_ui->listView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
     m_ui->listView->edit(index);
   });
-  connect(m_ui->pb_del, &QPushButton::clicked, [this]() {
+  connect(m_ui->pb_del, &QPushButton::clicked, this, [this]() {
     m_user_property_list_model.del_property(m_ui->listView->currentIndex());
   });
   connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &UserPropertyDialog::submit);
@@ -121,9 +120,9 @@ void UserPropertyDialog::update_property_config_page(UserPropertyListItem* item)
     auto config_widget = AbstractPropertyConfigWidget::make(config_widget_type);
     connect(config_widget.get(),
             &AbstractPropertyConfigWidget::hidden,
+            this,
             [this, config_widget = config_widget.get()]() {
-              UserPropertyListItem* item
-                  = m_user_property_list_model.item(m_ui->listView->currentIndex());
+              UserPropertyListItem* item = m_user_property_list_model.item(m_ui->listView->currentIndex());
               config_widget->update(item->configuration);
             });
     m_current_config_widget = config_widget.get();
