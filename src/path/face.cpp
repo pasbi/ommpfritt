@@ -12,7 +12,7 @@ using namespace omm;
 
 bool same_point(const PathPoint* p1, const PathPoint* p2)
 {
-  return p1 == p2 || ::contains(p1->joined_points(), p2);
+  return p1 == p2 || p1->joined_points().contains(p2);
 }
 
 bool align_last_edge(const Edge& second_last, Edge& last)
@@ -107,7 +107,7 @@ double Face::compute_aabb_area() const
 
 QString Face::to_string() const
 {
-  const auto edges = ::transform<QString, QList>(m_edges, std::mem_fn(&Edge::label));
+  const auto edges = util::transform<QList>(m_edges, std::mem_fn(&Edge::label));
   return static_cast<QStringList>(edges).join(", ");
 }
 

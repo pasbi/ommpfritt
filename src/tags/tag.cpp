@@ -20,7 +20,7 @@ Tag::Tag(Object& owner) : PropertyOwner(owner.scene()), owner(&owner)
 
 Tag::~Tag()
 {
-  assert(!::contains(owner->scene()->selection(), this));
+  assert(!owner->scene()->selection().contains(this));
 }
 
 QString Tag::to_string() const

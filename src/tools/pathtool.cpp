@@ -142,7 +142,7 @@ private:
   std::unique_ptr<Macro> m_macro;
   PathPoint* m_target_point = nullptr;
   std::deque<AddPointsCommand::OwnedLocatedPath> m_located_paths;
-  std::set<PathPoint*> m_points_to_join;
+  ::transparent_set<PathPoint*> m_points_to_join;
 };
 
 }  // namespace

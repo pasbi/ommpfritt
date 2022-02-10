@@ -516,7 +516,7 @@ Object& Application::insert_object(const QString& key, InsertionMode mode) const
       // This assertion is enforced by the conditions before.
       LFATAL("Unexpected Condition.");
     }
-    const auto move_contextes = ::transform<move_context_t>(children, [&ref](auto* c) {
+    const auto move_contextes = util::transform(children, [&ref](auto* c) {
       return move_context_t(*c, ref, nullptr);
     });
     scene->submit<move_command_t>(scene->object_tree(), move_contextes);

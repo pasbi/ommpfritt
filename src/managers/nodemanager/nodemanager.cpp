@@ -26,7 +26,7 @@ using namespace omm;
 
 bool accept_node(const nodes::NodeModel& model, const QString& name)
 {
-  return ::contains(nodes::Node::detail(name).definitions, model.language());
+  return nodes::Node::detail(name).definitions.contains(model.language());
 }
 
 QMenu& find_menu(QMenu* root, std::map<QString, QMenu*>& sub_menus, const std::vector<const char*>& path)
@@ -151,7 +151,7 @@ bool NodeManager::perform_action(const QString& name)
     m_ui->nodeview->remove_selection();
   } else if (name == "paste") {
     m_ui->nodeview->paste_from_clipboard();
-  } else if (::contains(nodes::Node::keys(), name)) {
+  } else if (nodes::Node::keys().contains(name)) {
     std::vector<std::unique_ptr<nodes::Node>> nodes;
     auto& model = *m_ui->nodeview->model();
     auto node = nodes::Node::make(name, model);

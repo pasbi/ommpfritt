@@ -56,7 +56,7 @@ void StyleListView::update_text_height()
   const QRect rectangle(QPoint(0, 0), QSize(m_icon_size.width(), large_number));
   // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   if (const auto* model = this->model(); model != nullptr) {
-    const auto heights = ::transform<int>(model->items(), [&painter, &rectangle](auto&& item) {
+    const auto heights = util::transform(model->items(), [&painter, &rectangle](auto&& item) {
       QRect actual_rectangle;
       const QString text = item->name();
       painter.drawText(rectangle, text_flags, text, &actual_rectangle);

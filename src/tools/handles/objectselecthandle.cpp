@@ -20,7 +20,7 @@ bool ObjectSelectHandle::contains_global(const Vec2f& point) const
 
 void ObjectSelectHandle::draw(QPainter& painter) const
 {
-  const auto is_selected = ::contains(m_scene.item_selection<Object>(), &m_object);
+  const auto is_selected = m_scene.item_selection<Object>().contains(&m_object);
 
   const auto pos = transformation().null();
   const auto r = draw_epsilon();
@@ -54,7 +54,7 @@ void ObjectSelectHandle::set_selected(bool selected)
 
 bool ObjectSelectHandle::is_selected() const
 {
-  return ::contains(m_scene.item_selection<Object>(), &m_object);
+  return m_scene.item_selection<Object>().contains(&m_object);
 }
 
 }  // namespace omm

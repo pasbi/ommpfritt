@@ -85,7 +85,7 @@ void Slider::TimelineCanvasC::enable_context_menu()
 
 QRect Slider::TimelineCanvasC::track_rect(Track& track)
 {
-  if (::contains(tracks, &track)) {
+  if (tracks.contains(&track)) {
     return m_self.rect();
   } else {
     return QRect();

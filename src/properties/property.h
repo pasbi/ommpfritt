@@ -53,7 +53,7 @@ public:
   template<typename ResultT, typename PropertyT, typename MemFunc>
   static ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
   {
-    const auto values = ::transform<ResultT>(properties, [&f](const Property* property) {
+    const auto values = util::transform(properties, [&f](const Property* property) {
       return f(static_cast<const PropertyT&>(*property));
     });
 

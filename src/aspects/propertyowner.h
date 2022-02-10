@@ -25,13 +25,13 @@ template<typename T, typename S> T kind_cast(S s)
 template<typename T, template<typename...> class ContainerT>
 ContainerT<T*> kind_cast(const ContainerT<AbstractPropertyOwner*>& ss)
 {
-  return ::filter_if(::transform<T*>(ss, [](auto* s) { return kind_cast<T*>(s); }), ::is_not_null);
+  return ::filter_if(util::transform(ss, [](auto* s) { return kind_cast<T*>(s); }), ::is_not_null);
 }
 
 template<typename T, template<typename...> class ContainerT>
 ContainerT<AbstractPropertyOwner*> down_cast(const ContainerT<T*>& ss)
 {
-  return ::transform<AbstractPropertyOwner*>(ss, ::identity);
+  return util::transform<AbstractPropertyOwner*>(ss);
 }
 
 }  // namespace omm

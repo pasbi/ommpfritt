@@ -1,5 +1,4 @@
 target_sources(libommpfritt PRIVATE
-  common.cpp
   common.h
   node.cpp
   node.h

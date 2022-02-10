@@ -172,7 +172,7 @@ void NodeView::paste_from_clipboard()
     auto& model = *this->model();
     auto blocker = std::make_unique<nodes::NodeModel::TopologyChangeSignalBlocker>(model);
     const auto nodes
-        = ::transform<nodes::Node*, std::vector>(dynamic_cast<const NodeMimeData&>(mime_data).nodes());
+        = util::transform<std::vector>(dynamic_cast<const NodeMimeData&>(mime_data).nodes());
 
     std::map<const nodes::Node*, nodes::Node*> copy_map;
     const auto copyable_nodes
@@ -182,7 +182,7 @@ void NodeView::paste_from_clipboard()
       copy_map[node] = clone.get();  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
       return clone;
     };
-    auto copies = ::transform<std::unique_ptr<nodes::Node>, std::vector>(copyable_nodes, make_copy);
+    auto copies = util::transform<std::vector>(copyable_nodes, make_copy);
 
     {  // set position
       const auto old_center
@@ -207,7 +207,7 @@ void NodeView::paste_from_clipboard()
             for (const auto* const o_input : o_target->ports<nodes::InputPort>()) {
               if (const auto* const o_output = o_input->connected_output(); o_output != nullptr) {
                 const auto& o_source = o_output->node;
-                if (::contains(copy_map, &o_source)) {
+                if (copy_map.contains(&o_source)) {
                   const auto& c_source = *copy_map.at(&o_source);
                   auto& c_output = *c_source.find_port<nodes::OutputPort>(o_output->index);
                   auto& c_input = *c_target->find_port<nodes::InputPort>(o_input->index);
@@ -219,7 +219,7 @@ void NodeView::paste_from_clipboard()
         }
 
         // insert nodes
-        auto references = ::transform<nodes::Node*>(copies, [](const auto& node_uptr) {
+        auto references = util::transform(copies, [](const auto& node_uptr) {
           return node_uptr.get();
         });
         scene.submit<AddNodesCommand>(model, std::move(copies));
@@ -397,7 +397,7 @@ void NodeView::dropEvent(QDropEvent* event)
 {
   if (auto* model = this->model(); model != nullptr && can_drop(*event)) {
     QPointF pos = mapToScene(event->pos());
-    auto nodes = ::transform<std::unique_ptr<nodes::Node>>(::items(*event), [&pos, model](auto* apo) {
+    auto nodes = util::transform(::items(*event), [&pos, model](auto* apo) -> std::unique_ptr<omm::nodes::Node> {
       auto reference_node = std::make_unique<nodes::ReferenceNode>(*model);
       reference_node->property(nodes::ReferenceNode::REFERENCE_PROPERTY_KEY)->set(apo);
       reference_node->set_pos(pos);
@@ -506,7 +506,7 @@ void NodeView::remove_selection() const
 {
   static const auto can_remove = [](const auto* const n) { return n->type() != nodes::FragmentNode::TYPE; };
   if (auto* model = this->model(); model != nullptr) {
-    auto selection = ::filter_if(::transform<nodes::Node*, std::vector>(selected_nodes()), can_remove);
+    auto selection = ::filter_if(util::transform<std::vector>(selected_nodes()), can_remove);
     model->scene()->submit<RemoveNodesCommand>(*model, selection);
   }
 }

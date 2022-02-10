@@ -12,7 +12,7 @@ ObjectTreeSelectionModel::ObjectTreeSelectionModel(ObjectTree& adapter)
 
 bool ObjectTreeSelectionModel::is_selected(Tag& tag) const
 {
-  return ::contains(m_selected_tags, &tag);
+  return m_selected_tags.contains(&tag);
 }
 
 void ObjectTreeSelectionModel::select(Tag& tag, QItemSelectionModel::SelectionFlags command)
@@ -76,7 +76,7 @@ std::vector<Tag*> ObjectTreeSelectionModel::selected_tags_ordered(Scene& scene) 
     stack.pop();
 
     for (Tag* tag : object->tags.ordered_items()) {
-      if (::contains(m_selected_tags, tag)) {
+      if (m_selected_tags.contains(tag)) {
         selected_tags.push_back(tag);
       }
     }
@@ -98,7 +98,7 @@ void ObjectTreeSelectionModel::extend_selection(Tag& tag)
     auto begin = std::find(tags.begin(), tags.end(), &tag);
     auto end = std::find(tags.begin(), tags.end(), m_current_tag);
     assert(begin != tags.end() && end != tags.end());
-    if (end < begin) {
+    if (end < begin) {  // NOLINT(modernize-use-nullptr)
       std::swap(begin, end);
     }
     std::advance(end, 1);

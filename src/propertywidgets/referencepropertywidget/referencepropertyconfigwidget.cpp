@@ -10,9 +10,7 @@ namespace
 {
 template<typename MapT> auto keys(const MapT& map)
 {
-  return ::transform<typename MapT::value_type::second_type, std::set>(map, [](const auto& kv) {
-    return kv.first;
-  });
+  return util::transform<std::set>(map, [](const auto& kv) { return kv.first; });
 }
 
 template<typename E> auto make_checkboxes()

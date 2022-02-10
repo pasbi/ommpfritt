@@ -9,7 +9,7 @@ namespace
 
 void print_tree(const omm::Object& root, const QString& prefix = "")
 {
-  const auto tags = ::transform<QString, QList>(root.tags.items(), [](const omm::Tag* tag) {
+  const auto tags = util::transform<QList>(root.tags.items(), [](const omm::Tag* tag) {
                       return tag->type();
                     }).join(", ");
   const auto label = QString("%1[%2] (%3)").arg(root.type(), root.name(), tags);

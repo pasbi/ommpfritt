@@ -49,7 +49,7 @@ public:
                << "' to prevent name clash.";
     } else {
       const auto cprops = scene().find_named_color_holders(old_name);
-      const auto props = ::transform<omm::Property*>(cprops);
+      const auto props = util::transform<omm::Property*>(cprops);
 
       auto cmd = std::make_unique<omm::ChangeNamedColorNameCommand>(old_name, new_name);
       auto macro = scene().history().start_macro(cmd->actionText());
@@ -81,7 +81,7 @@ NamedColorsDialog::NamedColorsDialog(QWidget* parent)
           &QItemSelectionModel::currentChanged,
           this,
           &NamedColorsDialog::setCurrent);
-  connect(m_ui->w_colorwidget, &ColorWidget::color_changed, [this](const Color& color) {
+  connect(m_ui->w_colorwidget, &ColorWidget::color_changed, this, [this](const Color& color) {
     const QModelIndex index = m_ui->listView->currentIndex();
     if (index.isValid()) {
       const QString name = model().name(m_proxy->mapToSource(index));

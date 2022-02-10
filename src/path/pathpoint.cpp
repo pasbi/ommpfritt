@@ -19,12 +19,12 @@ PathPoint::PathPoint(Path& path)
 {
 }
 
-std::set<PathPoint*> PathPoint::joined_points() const
+::transparent_set<PathPoint*> PathPoint::joined_points() const
 {
   return path_vector()->joined_points().get(this);
 }
 
-void PathPoint::join(std::set<PathPoint*> buddies)
+void PathPoint::join(::transparent_set<PathPoint*> buddies)
 {
   buddies.insert(this);
   path_vector()->joined_points().insert(buddies);
@@ -55,11 +55,11 @@ Point PathPoint::compute_joined_point_geometry(PathPoint& joined) const
 
 QString PathPoint::debug_id() const
 {
-  auto joins = ::transform<const PathPoint*>(joined_points());
+  auto joins = util::transform<const PathPoint*, ::transparent_set>(joined_points());
   if (joins.empty()) {
     joins = {this};
   }
-  QStringList ids = ::transform<QString, QList>(joins, [](const auto* p) {
+  QStringList ids = util::transform<QList>(joins, [](const auto* p) {
     return QString("%1").arg(p->index());
   });
   std::sort(ids.begin(), ids.end());

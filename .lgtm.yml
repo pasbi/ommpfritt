@@ -7,7 +7,8 @@ extraction:
     prepare:
       packages:
         - build-essential
-        - gcc
+        - g++-10
+        - gcc-10
         - libffi-dev
         - libgl-dev
         - libpoppler-qt5-dev
@@ -32,6 +33,8 @@ extraction:
         - cd lib2geom; git checkout 37876ed4; cd ..
         - cmake
             -S lib2geom
+            -DCMAKE_CXX_COMPILER=g++-10
+            -DCMAKE_C_COMPILER=gcc-10
             -B build-lib2geom
             -GNinja
             -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
@@ -43,6 +46,8 @@ extraction:
             -S fmt
             -B build-fmt
             -GNinja
+            -DCMAKE_CXX_COMPILER=g++-10
+            -DCMAKE_C_COMPILER=gcc-10
             -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
         - cmake --build build-fmt --target install
         - cmake
@@ -51,6 +56,8 @@ extraction:
             -DBUILD_TRANSLATION=OFF
             -DUSE_QT_5_12=ON
             -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_CXX_COMPILER=g++-10
+            -DCMAKE_C_COMPILER=gcc-10
             -DCMAKE_INSTALL_PREFIX=$LGTM_WORKSPACE/install
             -DCMAKE_PREFIX_PATH=$LGTM_WORKSPACE/install
     index:

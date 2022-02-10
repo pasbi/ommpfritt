@@ -1,6 +1,7 @@
 #pragma once
 
 #include "geometry/point.h"
+#include "transparentset.h"
 #include <set>
 
 namespace omm
@@ -36,8 +37,8 @@ public:
   PathPoint& operator=(PathPoint&& other) = delete;
   ~PathPoint() = default;
 
-  [[nodiscard]] std::set<PathPoint*> joined_points() const;
-  void join(std::set<PathPoint*> buddies);
+  [[nodiscard]] ::transparent_set<PathPoint*> joined_points() const;
+  void join(::transparent_set<PathPoint*> buddies);
   void disjoin();
   [[nodiscard]] PathVector* path_vector() const;
   [[nodiscard]] Point compute_joined_point_geometry(PathPoint& joined) const;

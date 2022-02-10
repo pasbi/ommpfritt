@@ -12,12 +12,12 @@ NodeStatement::NodeStatement(const Node& node) : node(node)
 
 std::set<const AbstractPort*> NodeStatement::defines() const
 {
-  return ::transform<const AbstractPort*>(node.ports<OutputPort>(), ::identity);
+  return util::transform<const AbstractPort*>(node.ports<OutputPort>());
 }
 
 std::set<const AbstractPort*> NodeStatement::uses() const
 {
-  return ::transform<const AbstractPort*>(node.ports<InputPort>(), ::identity);
+  return util::transform<const AbstractPort*>(node.ports<InputPort>());
 }
 
 bool NodeStatement::is_connection() const
@@ -78,7 +78,7 @@ bool Statement::operator<(const Statement& other) const
 QString Statement::to_string() const
 {
   const auto format = [](const auto& set) -> QStringList {
-    return ::transform<QString, QList>(set, [](const auto* port) { return port->uuid(); });
+    return util::transform<QList>(set, [](const auto* port) { return port->uuid(); });
   };
   return QString("%1[%2 <= %3]")
                  .arg(is_connection() ? "connection" : "node",

@@ -17,7 +17,7 @@ auto make_old_contextes(const StructureT& structure,
     return context_type<StructureT>(new_context.subject,
                                     structure.predecessor(new_context.subject));
   };
-  return ::transform<context_type<StructureT>>(new_contextes, make_old_context);
+  return util::transform(new_contextes, make_old_context);
 }
 
 }  // namespace

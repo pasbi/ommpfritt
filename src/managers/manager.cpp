@@ -61,7 +61,7 @@ void Manager::set_widget(std::unique_ptr<QWidget> widget)
 
 void Manager::keyPressEvent(QKeyEvent* e)
 {
-  if (!::contains(Application::keyboard_modifiers, e->key()) && isFloating()) {
+  if (!Application::keyboard_modifiers.contains(e->key()) && isFloating()) {
     // MainWindow is not a parent, hence the manager must handle the key event itself.
     if (Application::instance().dispatch_key(e->key(), e->modifiers(), *this)) {
       QDockWidget::keyPressEvent(e);

@@ -63,7 +63,7 @@ private:
   template<typename Properties>
   static auto get_bi_states(const Properties& properties, const value_type& new_value)
   {
-    return ::transform<PropertyBiState>(properties, [new_value](const auto& property) {
+    return util::transform(properties, [new_value](const auto& property) {
       return PropertyBiState(property, new_value);
     });
   }
@@ -118,7 +118,7 @@ private:
   template<typename Properties>
   static auto get_bi_states(const Properties& properties, const elem_type& new_value)
   {
-    return ::transform<PropertyBiState>(properties, [new_value](const auto& property) {
+    return util::transform(properties, [new_value](const auto& property) {
       auto new_vector_value = property->template value<value_type>();
       new_vector_value[dim] = new_value;
       return PropertyBiState(property, new_vector_value);

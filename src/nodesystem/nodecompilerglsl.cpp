@@ -92,8 +92,7 @@ omm::nodes::AbstractPort* get_sibling(const omm::nodes::AbstractPort* port)
 
 template<typename Ports> auto sort_ports(const Ports& ports)
 {
-  using PortT = std::decay_t<typename std::decay_t<decltype(ports)>::value_type>;
-  auto vec = ::transform<PortT, std::vector>(ports, ::identity);
+  auto vec = util::transform<std::vector>(ports);
   std::sort(vec.begin(), vec.end(), [](const auto* p1, const auto* p2) {
     assert(p1->port_type == p2->port_type && &p1->node == &p2->node);
     return p1->index < p2->index;
@@ -142,7 +141,7 @@ QString compile_output_port(const omm::nodes::OutputPort& port, const QStringLis
 void compile_output_ports(const omm::nodes::Node& node, QStringList& lines)
 {
   auto ips = sort_ports(node.ports<omm::nodes::InputPort>());
-  const QStringList args = ::transform<QString, QList>(ips, [&node](const auto* ip) {
+  const QStringList args = util::transform<QList>(ips, [&node](const auto* ip) {
     return compile_argument(*ip, node);
   });
 

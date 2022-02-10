@@ -43,7 +43,7 @@ make_contextes(const ItemModelAdapterT& adapter,
   if (property_owner_mime_data == nullptr) {
     return contextes;
   }
-  auto items = ::transform<item_type*, std::set>(property_owner_mime_data->items<item_type>());
+  auto items = util::transform<std::set>(property_owner_mime_data->items<item_type>());
   if (items.empty()) {
     return contextes;
   }
@@ -230,12 +230,14 @@ ItemModelAdapter<StructureT, ItemT, ItemModel>::mimeData(const QModelIndexList& 
   if (indexes.isEmpty()) {
     return nullptr;
   } else {
-    const auto f = [this](const QModelIndex& index) { return &this->item_at(index); };
+    const auto f = [this](const QModelIndex& index) {
+      return static_cast<AbstractPropertyOwner*>(&this->item_at(index));
+    };
 
     auto sorted_indexes = indexes;
     // TODO replace this very inefficient approach with topological_context_sort
     std::sort(sorted_indexes.begin(), sorted_indexes.end(), model_index_tree_position_compare);
-    const auto items = ::transform<AbstractPropertyOwner*, std::vector>(sorted_indexes, f);
+    const auto items = util::transform<std::vector>(sorted_indexes, f);
     return std::make_unique<PropertyOwnerMimeData>(items).release();
   }
 }

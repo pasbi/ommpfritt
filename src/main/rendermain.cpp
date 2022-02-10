@@ -23,7 +23,7 @@ template<typename T> T& find(Scene& scene, const QString& name)
       = ::filter_if(type_matches, [name](const auto* c) { return c->name() == name; });
   if (name_type_matches.empty()) {
     const QStringList view_names
-        = ::transform<QString, QList>(type_matches, [](const auto* v) { return v->name(); });
+        = util::transform<QList>(type_matches, [](const auto* v) { return v->name(); });
     LINFO << QString("There are %1 objects of type [%2] in this scene:\n%3")
                  .arg(view_names.size())
                  .arg(T::TYPE)

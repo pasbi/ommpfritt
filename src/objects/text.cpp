@@ -39,7 +39,7 @@ BoundingBox Text::bounding_box(const ObjectTransformation& transformation) const
   if (is_active()) {
     const std::set ps{Vec2f(0, 0), Vec2f(100, 100)};
     // TODO something smarter would be great.
-    return BoundingBox(::transform<Vec2f>(ps, [&transformation](const Vec2f& v) {
+    return BoundingBox(util::transform(ps, [&transformation](const Vec2f& v) {
       return transformation.apply_to_position(v);
     }));
   } else {

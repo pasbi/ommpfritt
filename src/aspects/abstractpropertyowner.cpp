@@ -157,7 +157,7 @@ void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target,
                                             CopiedProperties flags) const
 {
   const auto keys = [](const AbstractPropertyOwner& o) {
-    return ::transform<QString, std::set>(o.properties().keys(), ::identity);
+    return util::transform<std::set>(o.properties().keys());
   };
 
   const auto target_keys = keys(target);
@@ -174,7 +174,7 @@ void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target,
 
   for (const auto& key : this_keys) {
     const auto& p = *property(key);
-    if (!::contains(target_keys, key)) {
+    if (!target_keys.contains(key)) {
       const bool is_new = !!(flags & CopiedProperties::New);
       const bool is_user = !!(flags & CopiedProperties::User) && p.is_user_property();
       if (is_new || is_user) {

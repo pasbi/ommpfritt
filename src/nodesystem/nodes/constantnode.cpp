@@ -29,7 +29,7 @@ void ConstantNode::populate_menu(QMenu& menu)
   QAction* edit_port_action = menu.addAction(tr("Edit ports ..."));
   connect(edit_port_action, &QAction::triggered, this, [this, &menu]() {
     const auto types = model().compiler().supported_types();
-    const auto type_names = ::transform<QString>(types, [](const Type type) {
+    const auto type_names = util::transform(types, [](const Type type) {
       return QString{"%1"}.arg(variant_type_name(type).data());
     });
     auto dialog = UserPropertyDialog(*this, type_names, &menu);

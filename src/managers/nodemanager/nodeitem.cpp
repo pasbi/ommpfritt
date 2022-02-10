@@ -249,7 +249,7 @@ void NodeItem::update_children()
   std::list<PropertyPorts> property_ports;
   std::list<nodes::OrdinaryPort<nodes::PortType::Input>*> ordinary_inputs;
   std::list<nodes::OrdinaryPort<nodes::PortType::Output>*> ordinary_outputs;
-  auto ports = ::transform<nodes::AbstractPort*, std::vector>(node.ports());
+  auto ports = util::transform<std::vector>(node.ports());
   std::sort(ports.begin(), ports.end(), [](const auto* const a, const auto* const b) {
     return a->index < b->index;
   });

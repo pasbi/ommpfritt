@@ -27,9 +27,7 @@ make_tree(int depth, int breadth, item_map& items, const QString& path = "root")
 
 template<typename ItemTs> auto get_items(const item_map& item_names, ItemTs&& items)
 {
-  return ::transform<omm::TreeTestItem*>(items, [&item_names](const QString& name) {
-    return item_names.at(name);
-  });
+  return util::transform(items, [&item_names](const QString& name) { return item_names.at(name); });
 }
 
 }  // namespace

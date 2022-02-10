@@ -59,7 +59,7 @@ T get_t(const nlohmann::json& json, const nlohmann::json::json_pointer& pointer)
         // get inf properly
         return get_double(value);
       } else if constexpr (std::is_same_v<T, std::vector<double>>) {
-        return ::transform<double, std::vector>(value, get_double);
+        return util::transform<std::vector>(static_cast<std::vector<nlohmann::json>>(value), get_double);
       } else if constexpr (std::is_same_v<T, QString>) {
         return QString::fromStdString(value);
       } else {

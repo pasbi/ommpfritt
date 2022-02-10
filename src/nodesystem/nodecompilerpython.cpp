@@ -38,21 +38,19 @@ AbstractNodeCompiler::AssemblyError NodeCompilerPython::end_program(QStringList&
 
 AbstractNodeCompiler::AssemblyError NodeCompilerPython::compile_node(const Node& node, QStringList& lines)
 {
-  auto ops = ::filter_if(node.ports<OutputPort>(),
-                         [](OutputPort* op) { return op->flavor == PortFlavor::Ordinary; });
+  const auto ops = ::filter_if(node.ports<OutputPort>(), [](OutputPort* op) {
+    return op->flavor == PortFlavor::Ordinary;
+  });
 
-  std::vector<InputPort*> ips
-      = ::transform<InputPort*, std::vector>(node.ports<InputPort>(), ::identity);
+  auto ips = util::transform<std::vector>(node.ports<InputPort>());
   std::sort(ips.begin(), ips.end(), [](InputPort* ip1, InputPort* ip2) {
     return ip1->index < ip2->index;
   });
 
-  const QStringList args
-      = ::transform<QString, QList>(ips, [](InputPort* ip) { return ip->uuid(); });
+  const QStringList args = util::transform<QList>(ips, [](InputPort* ip) { return ip->uuid(); });
 
   if (!ops.empty()) {
-    const QStringList uuids
-        = ::transform<QString, QList>(ops, [](const OutputPort* op) { return op->uuid(); });
+    const QStringList uuids = util::transform<QList>(ops, [](const OutputPort* op) { return op->uuid(); });
     lines.append(QString("%1 = %2(%3)").arg(uuids.join(", "), node.type(), args.join(", ")));
   }
   return {};

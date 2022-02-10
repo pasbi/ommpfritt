@@ -172,12 +172,12 @@ BoundingBox BoundingBoxManager::update_manager()
   const BoundingBox bb = [this]() {
     switch (m_current_mode) {
     case Mode::Points:
-      return BoundingBox(::transform<Point>(scene().point_selection->points(Space::Scene)));
+      return BoundingBox{scene().point_selection->points(Space::Scene)};
     case Mode::Objects:
-      return BoundingBox(
-          ::transform<BoundingBox>(scene().item_selection<Object>(), [](const Object* o) {
+      return BoundingBox{
+          util::transform(scene().item_selection<Object>(), [](const Object* o) {
             return o->recursive_bounding_box(o->global_transformation(Space::Scene));
-          }));
+          })};
     default:
       return BoundingBox();
     }

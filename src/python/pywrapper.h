@@ -25,8 +25,7 @@ py::object wrap(SplineType& spline);
 template<typename Ts> py::object wrap(const Ts& items)
 {
   using item_type = typename Ts::value_type;
-  return py::cast(
-      ::transform<py::object, std::list>(items, [](item_type item) { return wrap(*item); }));
+  return py::cast( util::transform<std::list>(items, [](item_type item) { return wrap(*item); }));
 }
 
 class AbstractPyWrapper

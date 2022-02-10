@@ -165,7 +165,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     m_icon_label->setVisible(!selection.empty());
     m_selection_label->setVisible(!selection.empty());
     if (!selection.empty()) {
-      const auto types = ::transform<QString>(selection, [](AbstractPropertyOwner* owner) {
+      const auto types = util::transform(selection, [](AbstractPropertyOwner* owner) {
         return owner->type();
       });
       std::list<QString> tokens;
@@ -175,7 +175,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       }
       tokens.push_back(types.size() == 1 ? *types.begin() : "");
       const auto names
-          = ::transform<QString, std::list>(selection, [](AbstractPropertyOwner* owner) {
+          = util::transform<std::list>(selection, [](AbstractPropertyOwner* owner) {
               return owner->name();
             });
       static constexpr auto s2s = [](const QString& s) { return s; };

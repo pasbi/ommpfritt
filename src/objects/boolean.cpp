@@ -37,7 +37,7 @@ private:
   const F m_f;
 };
 
-const auto dispatcher = std::array {
+constexpr auto dispatcher = std::array {
     BooleanOperation{"Union", &Geom::PathIntersectionGraph::getUnion},
     BooleanOperation{"Intersection", &Geom::PathIntersectionGraph::getIntersection},
     BooleanOperation{"Exclusive Or", &Geom::PathIntersectionGraph::getXOR},
@@ -52,7 +52,7 @@ namespace omm
 Boolean::Boolean(Scene* scene) : Object(scene)
 {
   create_property<OptionProperty>(MODE_PROPERTY_KEY)
-      .set_options(::transform<QString, std::vector>(dispatcher, std::mem_fn(&BooleanOperation::label)))
+      .set_options(util::transform<std::vector>(dispatcher, [](const auto& op) { return op.label(); }))
       .set_label(QObject::tr("mode"))
       .set_category(QObject::tr("Boolean"));
   polish();
@@ -106,7 +106,7 @@ PathVector Boolean::compute_path_vector() const
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
       auto path_vector = *geom_to_omm(dispatcher.at(i).compute(pig));
-      path_vector.join_points_by_position(::transform<Vec2f>(pig.intersectionPoints(), [](const auto& p) {
+      path_vector.join_points_by_position(util::transform(pig.intersectionPoints(), [](const auto& p) {
         return Vec2f{p};
       }));
       return path_vector;

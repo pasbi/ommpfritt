@@ -59,7 +59,7 @@ bool KnifeTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEve
     for (auto&& path_object : ::type_casts<PathObject*>(scene()->item_selection<Object>())) {
       const auto global_path_vector = get_global_path_vector(*path_object);
       const auto intersections = compute_cut_points(global_path_vector, m_mouse_press_pos, m_mouse_move_pos);
-      const auto points = ::transform<Vec2f>(intersections, [](const auto& t) {
+      const auto points = util::transform(intersections, [](const auto& t) {
         const Geom::Point p{t};
         return Vec2f{p.x(), p.y()};
       });
@@ -94,7 +94,7 @@ void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
       for (auto&& path_object : path_objects) {
         const auto global_path_vector = get_global_path_vector(*path_object);
         const auto intersections = compute_cut_points(global_path_vector, m_mouse_press_pos, m_mouse_move_pos);
-        const auto ts = ::transform<Geom::PathVectorTime>(intersections, [](const auto& piv) { return piv.first; });
+        const auto ts = util::transform(intersections, [](const auto& piv) { return piv.first; });
         if (!ts.empty()) {
           if (!macro) {
             macro = scene()->history().start_macro(QObject::tr("Cut Path"));

@@ -5,15 +5,14 @@
 
 namespace
 {
-auto make_old_contextes(std::vector<omm::Tag*> tags)
+auto make_old_contextes(const std::vector<omm::Tag*>& tags)
 {
-  return ::transform<omm::MoveTagContext>(tags,
-                                          [](omm::Tag* tag) { return omm::MoveTagContext(*tag); });
+  return util::transform(tags, [](omm::Tag* tag) { return omm::MoveTagContext(*tag); });
 }
 
-auto make_new_contextes(std::vector<omm::Tag*> tags, omm::Object& owner, omm::Tag* predecessor)
+auto make_new_contextes(const std::vector<omm::Tag*>& tags, omm::Object& owner, omm::Tag* predecessor)
 {
-  return ::transform<omm::MoveTagContext>(tags, [&predecessor, &owner](omm::Tag* tag) {
+  return util::transform(tags, [&predecessor, &owner](omm::Tag* tag) {
     const auto context = omm::MoveTagContext(*tag, owner, predecessor);
     return context;
   });
@@ -54,6 +53,7 @@ MoveTagContext::MoveTagContext(Tag& tag, Object& owner, Tag* predecessor)
 
 void MoveTagContext::assert_is_valid() const
 {
+  (void) subject;  // "use" one member, so static code checker don't think this method can be static.
   assert(subject != nullptr);
   assert(owner != nullptr);
   assert(predecessor == nullptr || predecessor->owner == subject->owner);

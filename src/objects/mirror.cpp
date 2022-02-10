@@ -35,9 +35,10 @@ ObjectTransformation get_mirror_t(Mirror::Direction direction)
 std::list<Geom::CubicBezier>
 transform_path(const ObjectTransformation& t, const Geom::Path& path, bool reverse)
 {
-  return ::transform<Geom::CubicBezier, std::list>(path, [t, reverse](const auto& curve) {
+  std::list<Geom::CubicBezier> segments;
+  std::transform(path.begin(), path.end(), std::back_insert_iterator(segments), [t, reverse](const auto& curve) {
     const auto& cubic = dynamic_cast<const Geom::CubicBezier&>(curve);
-    auto control_points = ::transform<Geom::Point>(cubic.controlPoints(), [t](const auto& point) {
+    auto control_points = util::transform(cubic.controlPoints(), [t](const auto& point) {
       return t.apply(point);
     });
     if (reverse) {
@@ -45,6 +46,7 @@ transform_path(const ObjectTransformation& t, const Geom::Path& path, bool rever
     }
     return Geom::CubicBezier(control_points);
   });
+  return segments;
 }
 
 Geom::PathVector reflect(const Geom::PathVector& pv,

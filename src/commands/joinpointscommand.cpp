@@ -39,7 +39,7 @@ void JoinPointsCommand::redo()
   update_affected_paths();
 }
 
-Vec2f JoinPointsCommand::compute_position(const std::set<PathPoint*>& points)
+Vec2f JoinPointsCommand::compute_position(const ::transparent_set<PathPoint*>& points)
 {
   Vec2f pos{0.F, 0.F};
   for (const auto* p : points) {

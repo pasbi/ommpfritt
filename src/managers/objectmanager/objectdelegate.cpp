@@ -31,7 +31,7 @@ void ObjectDelegate::paint(QPainter* painter,
   {  // background
     const bool is_selected = [this, index]() {
       const bool is_selected = m_selection_model.isSelected(index);
-      const bool is_tmp_selected = ::contains(tmp_selection, index);
+      const bool is_tmp_selected = tmp_selection.contains(index);
       switch (selection_flag) {
       case QItemSelectionModel::Select:
         return is_selected || is_tmp_selected;

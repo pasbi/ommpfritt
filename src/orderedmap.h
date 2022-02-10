@@ -39,13 +39,9 @@ public:
   auto values() const
   {
     if constexpr (::is_unique_ptr<mapped_type>::value) {
-      return ::transform<typename mapped_type::pointer>(keys(), [this](const KeyT& key) {
-        return m_values.at(key).get();
-      });
+      return util::transform(keys(), [this](const KeyT& key) { return m_values.at(key).get(); });
     } else {
-      return ::transform<std::add_pointer_t<mapped_type>>(keys(), [this](const KeyT& key) {
-        return &m_values.at(key);
-      });
+      return util::transform(keys(), [this](const KeyT& key) { return &m_values.at(key); });
     }
   }
 

@@ -16,7 +16,6 @@ target_sources(libommpfritt PRIVATE
   maybeowner.h
   menuhelper.h
   orderedmap.h
-  propertytypeenum.cpp
   propertytypeenum.h
   registers.cpp
   registers.h
@@ -26,6 +25,8 @@ target_sources(libommpfritt PRIVATE
   syncpalettedecorator.h
   translator.cpp
   translator.h
+  transparentset.h
+  transform.h
   variant.cpp
   variant.h
 )

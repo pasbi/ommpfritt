@@ -97,10 +97,11 @@ void ManagerItemView<ItemViewT, ItemModelT>::focusInEvent(QFocusEvent* e)
 template<typename ItemViewT, typename ItemModelT>
 std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selected_items() const
 {
-  const auto get_object = [this](const QModelIndex& index) { return &model()->item_at(index); };
-
+  const auto get_object = [this](const QModelIndex& index) {
+    return static_cast<AbstractPropertyOwner*>(&model()->item_at(index));
+  };
   const auto selected_indexes = this->selectionModel()->selectedIndexes();
-  return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);
+  return util::transform<std::set>(selected_indexes, get_object);
 }
 
 template class ManagerItemView<QListView, StyleList>;

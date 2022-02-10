@@ -10,7 +10,7 @@ namespace
 template<typename T>
 std::vector<std::unique_ptr<T>> copy_items(const std::vector<std::unique_ptr<T>>& items)
 {
-  return ::transform<std::unique_ptr<T>>(items, [](const auto& i) { return i->clone(); });
+  return util::transform(items, [](const auto& i) { return i->clone(); });
 }
 
 }  // namespace
@@ -24,12 +24,12 @@ List<T>::List(const List<T>& other) : Structure<T>(), m_items(copy_items(other.m
 
 template<typename T> std::set<T*> List<T>::items() const
 {
-  return ::transform<T*, std::set>(m_items, [](const auto& item) { return item.get(); });
+  return util::transform<std::set>(m_items, [](const auto& item) { return item.get(); });
 }
 
 template<typename T> std::vector<T*> List<T>::ordered_items() const
 {
-  return ::transform<T*>(m_items, [](const auto& item) { return item.get(); });
+  return util::transform(m_items, [](const auto& item) { return item.get(); });
 }
 
 template<typename T> T& List<T>::item(std::size_t i) const

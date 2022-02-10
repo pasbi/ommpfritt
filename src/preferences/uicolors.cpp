@@ -15,6 +15,7 @@
 
 namespace
 {
+
 const std::map<QPalette::ColorRole, QString> role_map{
     {QPalette::Window, "window"},
     {QPalette::WindowText, "window text"},
@@ -157,13 +158,12 @@ void UiColors::apply()
   private:
     const UiColors& self;
   };
-  QApplication::setStyle(new Style(*this));  // ownership is tranferred
+  QApplication::setStyle(std::make_unique<Style>(*this).release());
 }
 
 QStringList UiColors::skin_names() const
 {
-  return ::transform<QString, QList>(m_skins,
-                                     [](const SkinInfo& info) { return info.display_name; });
+  return util::transform<QList>(m_skins, [](const SkinInfo& info) { return info.display_name; });
 }
 
 void UiColors::set_skin(std::size_t index)

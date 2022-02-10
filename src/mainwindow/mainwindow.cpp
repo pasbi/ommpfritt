@@ -78,7 +78,7 @@ QString make_unique(const QString& base, const std::set<QString>& blacklist)
 {
   std::size_t i = 0;
   QString name = base;
-  while (::contains(blacklist, name)) {
+  while (blacklist.contains(name)) {
     name = base + QString("_%1").arg(i);
     i++;
   }
@@ -263,7 +263,7 @@ void MainWindow::restore_state()
 
 std::vector<QDockWidget*> MainWindow::dock_widgets() const
 {
-  return ::transform<QDockWidget*, std::vector>(findChildren<QDockWidget*>(), ::identity);
+  return util::transform<std::vector>(findChildren<QDockWidget*>());
 }
 
 void MainWindow::restore_default_layout()
@@ -299,7 +299,7 @@ bool omm::MainWindow::eventFilter(QObject* o, QEvent* e)
 
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
-  const bool is_modifier = ::contains(Application::keyboard_modifiers, e->key());
+  const bool is_modifier = Application::keyboard_modifiers.contains(e->key());
   const bool is_dispatched = !is_modifier && !Application::instance().dispatch_key(e->key(), e->modifiers());
   if (is_modifier || is_dispatched) {
     QMainWindow::keyPressEvent(e);
@@ -313,13 +313,13 @@ Viewport& MainWindow::viewport() const
 
 void MainWindow::assign_unique_objectname(Manager& manager) const
 {
-  const auto blacklist = ::transform<QString, std::set>(dock_widgets(), get_object_name);
+  const auto blacklist = util::transform<std::set>(dock_widgets(), get_object_name);
   manager.setObjectName(make_unique(manager.type(), blacklist));
 }
 
 void MainWindow::assign_unique_objectname(ToolBar& toolbar) const
 {
-  const auto blacklist = ::transform<QString, std::set>(findChildren<QToolBar*>(), get_object_name);
+  const auto blacklist = util::transform<std::set>(findChildren<QToolBar*>(), get_object_name);
   toolbar.setObjectName(make_unique(toolbar.type(), blacklist));
 }
 
@@ -437,7 +437,7 @@ void MainWindow::save_managers(QSettings& settings)
   settings.beginWriteArray(MANAGER_SETTINGS_KEY);
   const auto managers = findChildren<Manager*>();
   for (const Manager* manager : managers) {
-    if (const QString name = manager->objectName(); !::contains(names, name)) {
+    if (const QString name = manager->objectName(); !names.contains(name)) {
       settings.setArrayIndex(static_cast<int>(names.size()));
       settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
       settings.setValue(MANAGER_NAME_SETTINGS_KEY, name);
@@ -453,7 +453,7 @@ void MainWindow::save_toolbars(QSettings& settings)
   settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
   const auto tools = findChildren<ToolBar*>();
   for (const ToolBar* toolbar : tools) {
-    if (const QString name = toolbar->objectName(); !::contains(names, name)) {
+    if (const QString name = toolbar->objectName(); !names.contains(name)) {
       settings.setArrayIndex(static_cast<int>(names.size()));
       settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
       settings.setValue(TOOLBAR_NAME_SETTINGS_KEY, name);
@@ -486,7 +486,7 @@ void MainWindow::update_recent_scenes_menu()
     const QString abs_file_path = file_info.absoluteFilePath();
     if (file_info.exists() && file_info.isFile()
         && QFileInfo(scene.filename()).absoluteFilePath() != abs_file_path
-        && !::contains(filenames, abs_file_path)) {
+        && !filenames.contains(abs_file_path)) {
       filenames.insert(abs_file_path);
       auto action = std::make_unique<QAction>(file_info.fileName());
       action->setToolTip(fn);

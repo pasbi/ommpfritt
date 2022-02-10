@@ -27,7 +27,7 @@ namespace omm
 void TextEdit::keyPressEvent(QKeyEvent* event)
 {
   const auto captioned_keys = std::set{Qt::Key_Return, Qt::Key_Down, Qt::Key_Up};
-  if (::contains(captioned_keys, static_cast<Qt::Key>(event->key()))) {
+  if (captioned_keys.contains(static_cast<Qt::Key>(event->key()))) {
     if (event->modifiers() == caption_modifiers) {
       event->setModifiers(Qt::NoModifier);
       QTextEdit::keyPressEvent(event);
@@ -66,7 +66,7 @@ CodeEdit::CodeEdit(QWidget* parent) : QWidget(parent)
   // set the tab stop with double-precision
   m_text_edit->setTabStopDistance(tab_width_char * single_char_width_double);
 
-  connect(m_text_edit, &QTextEdit::textChanged, [this]() {
+  connect(m_text_edit, &QTextEdit::textChanged, this, [this]() {
     Q_EMIT this->code_changed(code());
     this->updateGeometry();
   });
@@ -106,7 +106,7 @@ QSize CodeEdit::sizeHint() const
 {
   const auto font_metrics = m_text_edit->fontMetrics();
   const auto lines = m_text_edit->toPlainText().split("\n");
-  const auto widths = ::transform<int, std::vector>(lines, [&font_metrics](const QString& line) {
+  const auto widths = util::transform<std::vector>(lines, [&font_metrics](const QString& line) {
     return font_metrics.horizontalAdvance(line);
   });
   const auto max_width = *std::max_element(widths.begin(), widths.end());
