@@ -16,7 +16,6 @@ target_sources(libommpfritt PRIVATE
   maybeowner.h
   menuhelper.h
   orderedmap.h
-  propertytypeenum.cpp
   propertytypeenum.h
   registers.cpp
   registers.h
