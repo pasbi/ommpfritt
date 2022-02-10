@@ -228,25 +228,4 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   }
 }
 
-PathView::PathView(Path& path, std::size_t index, std::size_t size)
-  : path(&path), index(index), size(size)
-{
-}
-
-bool operator<(const PathView& a, const PathView& b)
-{
-  static constexpr auto as_tuple = [](const PathView& a) {
-    return std::tuple{a.path, a.index};
-  };
-
-  // NOLINTNEXTLINE(modernize-use-nullptr)
-  return as_tuple(a) < as_tuple(b);
-}
-
-std::ostream& operator<<(std::ostream& ostream, const PathView& path_view)
-{
-  ostream << "Path[" << path_view.path << " " << path_view.index << " " << path_view.size << "]";
-  return ostream;
-}
-
 }  // namespace omm

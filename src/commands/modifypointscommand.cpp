@@ -5,6 +5,7 @@
 #include "path/path.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
+#include "path/pathview.h"
 
 namespace omm
 {
@@ -116,6 +117,8 @@ void AbstractPointsCommand::remove()
   m_path_object.scene()->update_tool();
 }
 
+AbstractPointsCommand::~AbstractPointsCommand() = default;
+
 AddPointsCommand::AddPointsCommand(PathObject& path_object, std::deque<OwnedLocatedPath>&& added_points)
     : AbstractPointsCommand(static_label(), path_object, std::move(added_points))
 {
@@ -165,6 +168,8 @@ AbstractPointsCommand::OwnedLocatedPath::OwnedLocatedPath(std::unique_ptr<Path> 
 {
   assert(m_owned_path != nullptr);
 }
+
+AbstractPointsCommand::OwnedLocatedPath::~OwnedLocatedPath() = default;
 
 PathView AbstractPointsCommand::OwnedLocatedPath::insert_into(PathVector& path_vector)
 {
