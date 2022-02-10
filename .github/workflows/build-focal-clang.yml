@@ -63,7 +63,7 @@ jobs:
           if [ -z "$files" ]; then
             echo "Skip clazy: No relevant files have changed."
           else
-            clazy --standalone -p ../omm-build --ignore-included-files $files
+            clazy --standalone -p ../omm-build --ignore-included-files $files --checks "$(build-scripts/list-clazy-checks.py)"
           fi
   clang-tidy:
     runs-on: ubuntu-latest
