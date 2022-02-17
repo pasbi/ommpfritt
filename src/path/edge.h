@@ -13,7 +13,6 @@ class Edge
 {
 public:
   Edge() = default;
-  [[nodiscard]] std::vector<PathPoint*> points() const;
   [[nodiscard]] QString label() const;
 
   [[nodiscard]] Point start_geometry() const;
