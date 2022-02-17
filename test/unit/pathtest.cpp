@@ -13,7 +13,7 @@ namespace
 class EdgeLoop
 {
 public:
-  EdgeLoop(const std::size_t n)
+  explicit EdgeLoop(const std::size_t n)
     : m_path(m_path_vector.add_path(std::make_unique<omm::Path>()))
     , m_edges(create_edge_loop(n))
   {
