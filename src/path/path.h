@@ -16,17 +16,6 @@ class PathPoint;
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path;
 
-struct PathView
-{
-public:
-  explicit PathView(Path& path, std::size_t index, std::size_t size);
-  friend bool operator<(const PathView& a, const PathView& b);
-  friend std::ostream& operator<<(std::ostream& ostream, const PathView& path_view);
-  Path* path;
-  std::size_t index;
-  std::size_t size;
-};
-
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class PathVector;
 

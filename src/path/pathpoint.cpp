@@ -53,6 +53,22 @@ Point PathPoint::compute_joined_point_geometry(PathPoint& joined) const
   return geometry;
 }
 
+bool PathPoint::is_dangling() const
+{
+  if (path_vector() == nullptr || !path().contains(*this)) {
+    return true;
+  }
+  if (!::contains(path_vector()->paths(), &path())) {
+    return false;
+  }
+  const auto* const path_object = path_vector()->path_object();
+  if (path_object == nullptr) {
+    return false;
+  }
+  const auto* const scene = path_object->scene();
+  return scene == nullptr || !scene->contains(path_object);
+}
+
 QString PathPoint::debug_id() const
 {
   auto joins = util::transform<const PathPoint*, ::transparent_set>(joined_points());

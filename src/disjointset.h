@@ -95,6 +95,12 @@ public:
 
 protected:
   std::deque<Joint> m_forest;
+  void remove_empty_sets()
+  {
+    m_forest.erase(std::remove_if(m_forest.begin(), m_forest.end(), [](const auto& set) {
+      return set.empty();
+    }), m_forest.end());
+  }
 };
 
 template<typename T> void swap(DisjointSetForest<T>& a, DisjointSetForest<T>& b) noexcept

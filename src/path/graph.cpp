@@ -6,7 +6,8 @@
 #include "path/path.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/planar_face_traversal.hpp>
-#include <boost/graph/boyer_myrvold_planar_test.hpp>
+#include <boost/graph/biconnected_components.hpp>
+#include <boost/property_map/property_map.hpp>
 
 namespace
 {
@@ -87,7 +88,6 @@ Graph::Graph(const PathVector& path_vector)
       last_path_point = point;
     }
   }
-  identify_edges(*m_impl);
 }
 
 std::vector<Face> Graph::compute_faces() const
@@ -121,6 +121,7 @@ std::vector<Face> Graph::compute_faces() const
     const Impl& m_impl;
   };
 
+  identify_edges(*m_impl);
   const auto embedding = m_impl->compute_embedding();
   Visitor visitor{*m_impl, faces};
   boost::planar_face_traversal(*m_impl, &embedding[0], visitor);
@@ -135,7 +136,9 @@ std::vector<Face> Graph::compute_faces() const
   faces.erase(std::next(faces.begin(), largest_face_i));
 
   // NOLINTNEXTLINE(modernize-return-braced-init-list)
-  return std::vector(faces.begin(), faces.end());
+  std::vector vfaces(faces.begin(), faces.end());
+  vfaces.erase(std::unique(vfaces.begin(), vfaces.end()), vfaces.end());
+  return vfaces;
 }
 
 void Graph::Impl::add_vertex(PathPoint* path_point)
@@ -259,6 +262,22 @@ QString Graph::to_dot() const
   }
   dot += "}";
   return dot;\
+}
+
+void Graph::remove_articulation_edges() const
+{
+//  auto components = get(boost::edge_index, *m_impl);
+//  const auto n = boost::biconnected_components(*m_impl, components);
+//  LINFO << "Found " << n << " biconnected components.";
+  std::set<std::size_t> art_points;
+  boost::articulation_points(*m_impl, std::inserter(art_points, art_points.end()));
+  const auto edge_between_articulation_points = [&art_points, this](const Impl::edge_descriptor& e) {
+    const auto o = [&art_points, this](const Impl::vertex_descriptor& v) {
+      return degree(v, *m_impl) <= 1 || art_points.contains(v);
+    };
+    return o(e.m_source) && o(e.m_target);
+  };
+  boost::remove_edge_if(edge_between_articulation_points, *m_impl);
 }
 
 }  // namespace omm

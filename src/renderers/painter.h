@@ -43,7 +43,9 @@ public:
 
   void toast(const Vec2f& pos, const QString& text) const;
 
-  static QBrush make_brush(const Style& style, const Object& object, const PainterOptions& options);
+  static QBrush make_brush(const Style& style,
+                           const Object& object,
+                           const PainterOptions& options);
   static QPen make_pen(const Style& style, const Object& object);
 
   static QBrush make_simple_brush(const Style& style);

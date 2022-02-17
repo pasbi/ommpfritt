@@ -42,6 +42,7 @@ public:
   void disjoin();
   [[nodiscard]] PathVector* path_vector() const;
   [[nodiscard]] Point compute_joined_point_geometry(PathPoint& joined) const;
+  [[nodiscard]] bool is_dangling() const;
 
   /**
    * @brief debug_id returns an string to identify the point uniquely at this point in time

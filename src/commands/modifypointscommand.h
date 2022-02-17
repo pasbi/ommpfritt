@@ -3,6 +3,7 @@
 #include "commands/command.h"
 #include <deque>
 #include <memory>
+#include "path/pathview.h"
 
 namespace omm
 {
@@ -37,6 +38,11 @@ public:
   public:
     explicit OwnedLocatedPath(Path* path, std::size_t index, std::deque<std::unique_ptr<PathPoint>>&& points);
     explicit OwnedLocatedPath(std::unique_ptr<Path> path);
+    ~OwnedLocatedPath();
+    OwnedLocatedPath(OwnedLocatedPath&& other) = default;
+    OwnedLocatedPath& operator=(OwnedLocatedPath&& other) = default;
+    OwnedLocatedPath(const OwnedLocatedPath& other) = delete;
+    OwnedLocatedPath& operator=(const OwnedLocatedPath& other) = delete;
     PathView insert_into(PathVector& path_vector);
     friend bool operator<(const OwnedLocatedPath& a, const OwnedLocatedPath& b);
 
@@ -58,6 +64,13 @@ protected:
   void remove();
 
   [[nodiscard]] Scene& scene() const;
+  ~AbstractPointsCommand() override;
+
+public:
+  AbstractPointsCommand(const AbstractPointsCommand&) = delete;
+  AbstractPointsCommand(AbstractPointsCommand&&) = delete;
+  AbstractPointsCommand& operator=(const AbstractPointsCommand&) = delete;
+  AbstractPointsCommand& operator=(AbstractPointsCommand&&) = delete;
 
 private:
   PathObject& m_path_object;

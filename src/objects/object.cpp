@@ -666,25 +666,26 @@ void Object::draw_object(Painter& renderer,
                          const Style& style,
                          const PainterOptions& options) const
 {
+  options.object_id = id();
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     const auto& path_vector = this->path_vector();
     const auto faces = path_vector.faces();
     const auto& outline = path_vector.outline();
     if (!faces.empty() || !outline.isEmpty()) {
-      renderer.set_style(style, *this, options);
-      auto& painter = *renderer.painter;
 
-      for (const auto& face : faces) {
-        painter.save();
-        painter.setPen(Qt::NoPen);
-        painter.drawPath(face);
-        painter.restore();
+      for (std::size_t f = 0; f < faces.size(); ++f) {
+        options.path_id = f;
+        renderer.set_style(style, *this, options);
+        painter->save();
+        painter->setPen(Qt::NoPen);
+        painter->drawPath(faces.at(f));
+        painter->restore();
       }
 
-      painter.save();
+      painter->save();
       renderer.painter->setBrush(Qt::NoBrush);
-      painter.drawPath(outline);
-      painter.restore();
+      painter->drawPath(outline);
+      painter->restore();
 
       const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
       const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();

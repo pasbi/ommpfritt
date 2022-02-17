@@ -86,24 +86,15 @@ void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer, const
 
 void DisjointPathPointSetForest::remove_dangling_points()
 {
-  for (auto& set : m_forest) {
-    std::erase_if(set, [](const PathPoint* point) {
-      static constexpr auto is_part_of_scene = [](const PathPoint* point) {
-        const auto* const path_object = point->path_vector()->path_object();
-        return path_object->scene() != nullptr && path_object->scene()->contains(path_object);
-      };
-      return point == nullptr
-          || point->path_vector() == nullptr
-          || !point->path().contains(*point)
-          || !::contains(point->path_vector()->paths(), &point->path())
-          || point->path_vector()->path_object() == nullptr
-          || !is_part_of_scene(point);
-    });
-  }
+  remove_if(std::mem_fn(&PathPoint::is_dangling));
+}
 
-  m_forest.erase(std::remove_if(m_forest.begin(), m_forest.end(), [](const auto& set) {
-    return set.empty();
-  }), m_forest.end());
+void DisjointPathPointSetForest::remove_if(const std::function<bool (const PathPoint*)>& predicate)
+{
+  for (auto& set : m_forest) {
+    std::erase_if(set, predicate);
+  }
+  remove_empty_sets();
 }
 
 void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>& dict)
@@ -117,10 +108,7 @@ void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>&
     }
     old_set = new_set;
   }
-
-  m_forest.erase(remove_if(m_forest.begin(), m_forest.end(), [](const auto& set) {
-    return set.empty();
-  }), m_forest.end());
+  remove_empty_sets();
 }
 
 void DisjointPathPointSetForest::serialize_impl(AbstractSerializer& serializer, const Pointer& root) const
