@@ -190,6 +190,7 @@ bool operator<(const AbstractPointsCommand::OwnedLocatedPath& a,
     return std::tuple{ola.m_path, ola.m_owned_path.get(), ola.m_index};
   };
 
+  // NOLINTNEXTLINE(modernize-use-nullptr)
   return as_tuple(a) < as_tuple(b);
 }
 
