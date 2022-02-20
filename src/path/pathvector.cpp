@@ -112,15 +112,13 @@ PathVector::~PathVector() = default;
 void PathVector::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   const auto paths_pointer = make_pointer(root, SEGMENTS_POINTER);
-  serializer.start_array(m_paths.size(), paths_pointer);
-  for (std::size_t i = 0; i < m_paths.size(); ++i) {
-    if (m_paths.empty()) {
+  serializer.set_value(m_paths, paths_pointer, [&serializer](const auto& path, const auto& root) {
+    if (path->size() == 0) {
       LWARNING << "Ignoring empty sub-path.";
     } else {
-      m_paths[i]->serialize(serializer, make_pointer(paths_pointer, i));
+      path->serialize(serializer, root);
     }
-  }
-  serializer.end_array();
+  });
 }
 
 void PathVector::deserialize(AbstractDeserializer& deserializer, const Pointer& root)

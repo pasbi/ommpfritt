@@ -276,24 +276,16 @@ void Object::serialize(AbstractSerializer& serializer, const Pointer& root) cons
   PropertyOwner::serialize(serializer, root);
 
   const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
-  serializer.start_array(n_children(), children_pointer);
-  for (std::size_t i = 0; i < n_children(); ++i) {
-    const auto& child = this->tree_child(i);
-    const auto child_pointer = make_pointer(children_pointer, i);
-    serializer.set_value(child.type(), make_pointer(child_pointer, TYPE_POINTER));
-    child.serialize(serializer, child_pointer);
-  }
-  serializer.end_array();
+  serializer.set_value(tree_children(), children_pointer, [&serializer](const auto* child, const auto& root) {
+    serializer.set_value(child->type(), make_pointer(root, TYPE_POINTER));
+    child->serialize(serializer, root);
+  });
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
-  serializer.start_array(tags.size(), tags_pointer);
-  for (std::size_t i = 0; i < tags.size(); ++i) {
-    const auto& tag = tags.item(i);
-    const auto tag_pointer = make_pointer(tags_pointer, i);
-    serializer.set_value(tag.type(), make_pointer(tag_pointer, TYPE_POINTER));
-    tag.serialize(serializer, tag_pointer);
-  }
-  serializer.end_array();
+  serializer.set_value(tags.ordered_items(), tags_pointer, [&serializer](const auto* tag, const auto& root) {
+    serializer.set_value(tag->type(), make_pointer(root, TYPE_POINTER));
+    tag->serialize(serializer, root);
+  });
 }
 
 void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root)

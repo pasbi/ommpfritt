@@ -119,15 +119,11 @@ std::set<Node*> NodeModel::nodes() const
 
 void NodeModel::serialize(AbstractSerializer& serializer, const Serializable::Pointer& ptr) const
 {
-  serializer.start_array(m_nodes.size(), Serializable::make_pointer(ptr, NODES_POINTER));
-  std::size_t i = 0;
-  for (auto&& node : m_nodes) {
-    const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);
-    node->serialize(serializer, node_ptr);
-    serializer.set_value(node->type(), make_pointer(node_ptr, TYPE_POINTER));
-    i += 1;
-  }
-  serializer.end_array();
+  const auto nodes_ptr = Serializable::make_pointer(ptr, NODES_POINTER);
+  serializer.set_value(m_nodes, nodes_ptr, [&serializer](const auto& node, const auto& root) {
+    node->serialize(serializer, root);
+    serializer.set_value(node->type(), make_pointer(root, TYPE_POINTER));
+  });
 }
 
 void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& ptr)

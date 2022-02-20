@@ -111,23 +111,22 @@ void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>&
   remove_empty_sets();
 }
 
+void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer,
+                                           const Joint& joint,
+                                           const Pointer& root) const
+{
+  serializer.set_value(joint, root, [&serializer](const auto* p, const auto& root) {
+    serializer.set_value(p->index(), make_pointer(root, INDEX_POINTER));
+    serializer.set_value(p->path_vector()->path_object()->id(), make_pointer(root, PATH_ID_POINTER));
+  });
+}
+
 void DisjointPathPointSetForest::serialize_impl(AbstractSerializer& serializer, const Pointer& root) const
 {
-  const auto forest_ptr = make_pointer(root, FOREST_POINTER);
-  serializer.start_array(m_forest.size(), forest_ptr);
-  for (std::size_t i = 0; i < m_forest.size(); ++i) {
-    const auto set_ptr = make_pointer(forest_ptr, i);
-    serializer.start_array(m_forest[i].size(), set_ptr);
-    std::size_t j = 0;
-    for (auto* p : m_forest[i]) {
-      const auto ptr = make_pointer(set_ptr, j);
-      serializer.set_value(p->index(), make_pointer(ptr, INDEX_POINTER));
-      serializer.set_value(p->path_vector()->path_object()->id(), make_pointer(ptr, PATH_ID_POINTER));
-      j += 1;
-    }
-    serializer.end_array();
-  }
-  serializer.end_array();
+  const auto ptr = make_pointer(root, FOREST_POINTER);
+  serializer.set_value(m_forest, ptr, [&serializer, this](const auto& joint, const auto& root) {
+    serialize(serializer, joint, root);
+  });
 }
 
 }  // namespace omm

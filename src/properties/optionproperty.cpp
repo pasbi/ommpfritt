@@ -37,11 +37,10 @@ void OptionProperty::serialize(AbstractSerializer& serializer, const Pointer& ro
     serializer.set_value(default_value(),
                          make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER));
     const auto options = this->options();
-    serializer.start_array(options.size(), make_pointer(root, OPTIONS_POINTER));
-    for (std::size_t i = 0; i < options.size(); ++i) {
-      serializer.set_value(options[i], make_pointer(root, OPTIONS_POINTER, i));
-    }
-    serializer.end_array();
+    const auto ptr = make_pointer(root, OPTIONS_POINTER);
+    serializer.set_value(options, ptr, [&serializer](const auto& option, const auto& root) {
+      serializer.set_value(option, root);
+    });
   }
 }
 

@@ -78,16 +78,12 @@ void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer
   }
   connection_inputs.shrink_to_fit();
   const auto connections_ptr = make_pointer(root, CONNECTIONS_PTR);
-  serializer.start_array(connection_inputs.size(), connections_ptr);
-  for (std::size_t i = 0; i < connection_inputs.size(); ++i) {
-    const auto iptr = make_pointer(connections_ptr, i);
-    const InputPort& input = *connection_inputs.at(i);
-    const OutputPort& output = *input.connected_output();
-    serializer.set_value(input.index, make_pointer(iptr, INPUT_PORT_PTR));
-    serializer.set_value(output.index, make_pointer(iptr, OUTPUT_PORT_PTR));
-    serializer.set_value(&output.node, make_pointer(iptr, CONNECTED_NODE_PTR));
-  }
-  serializer.end_array();
+  serializer.set_value(connection_inputs, connections_ptr, [&serializer](const auto& input, const auto& root) {
+    const OutputPort& output = *input->connected_output();
+    serializer.set_value(input->index, make_pointer(root, INPUT_PORT_PTR));
+    serializer.set_value(output.index, make_pointer(root, OUTPUT_PORT_PTR));
+    serializer.set_value(&output.node, make_pointer(root, CONNECTED_NODE_PTR));
+  });
 }
 
 void Node::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
