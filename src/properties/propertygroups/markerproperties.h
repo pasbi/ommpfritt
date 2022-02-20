@@ -26,7 +26,7 @@ public:
   static constexpr auto ASPECT_RATIO_PROPERTY_KEY = "aspectratio";
   static constexpr auto REVERSE_PROPERTY_KEY = "reverse";
 
-  static std::vector<QString> shapes();
+  static std::deque<QString> shapes();
   std::vector<Point> shape(double width) const;
   static std::vector<Point> arrow(const Vec2f& size);
   static std::vector<Point> bar(const Vec2f& size);

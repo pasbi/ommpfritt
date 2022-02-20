@@ -63,7 +63,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
   p.restore();
 }
 
-std::vector<QString> MarkerProperties::shapes()
+std::deque<QString> MarkerProperties::shapes()
 {
   return {QObject::tr("None"),
           QObject::tr("Arrow"),

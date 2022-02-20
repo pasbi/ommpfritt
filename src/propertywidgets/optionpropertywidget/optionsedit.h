@@ -2,6 +2,7 @@
 
 #include "propertywidgets/multivalueedit.h"
 #include <QComboBox>
+#include <deque>
 
 namespace omm
 {
@@ -31,7 +32,7 @@ class OptionsEdit
 {
 public:
   explicit OptionsEdit(QWidget* parent = nullptr);
-  void set_options(const std::vector<QString>& options);
+  void set_options(const std::deque<QString>& options);
   void set_value(const value_type& value) override;
   [[nodiscard]] value_type value() const override;
   void wheelEvent(QWheelEvent* event) override;

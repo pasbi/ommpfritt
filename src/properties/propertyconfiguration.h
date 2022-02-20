@@ -20,7 +20,7 @@ public:
                                   Vec2f,
                                   std::size_t,
                                   QString,
-                                  std::vector<QString>,
+                                  std::deque<QString>,
                                   PropertyFilter>;
 
 private:

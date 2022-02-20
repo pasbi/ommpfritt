@@ -317,8 +317,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
   std::size_t n_tags = deserializer.array_size(tags_pointer);
-  std::vector<std::unique_ptr<Tag>> tags;
-  tags.reserve(n_tags);
+  std::deque<std::unique_ptr<Tag>> tags;
   for (std::size_t i = 0; i < n_tags; ++i) {
     const auto tag_pointer = make_pointer(tags_pointer, i);
     const auto tag_type = deserializer.get_string(make_pointer(tag_pointer, TYPE_POINTER));
@@ -529,7 +528,7 @@ bool Object::is_visible(bool viewport) const
   return m_visibility_cache_value;
 }
 
-std::vector<const omm::Style*> Object::find_styles() const
+std::deque<const omm::Style*> Object::find_styles() const
 {
   const auto get_style = [](const omm::Tag* tag) -> const omm::Style* {
     if (tag->type() == omm::StyleTag::TYPE) {

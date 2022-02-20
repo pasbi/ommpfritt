@@ -4,7 +4,7 @@
 #include "scene/structure.h"
 #include <memory>
 #include <set>
-#include <vector>
+#include <deque>
 
 namespace omm
 {
@@ -23,10 +23,10 @@ public:
   std::unique_ptr<T> remove(T& item) override;
   virtual void move(ListMoveContext<T>& context);
   T& item(std::size_t i) const;
-  virtual std::vector<std::unique_ptr<T>> set(std::vector<std::unique_ptr<T>> items);
+  virtual std::deque<std::unique_ptr<T>> set(std::deque<std::unique_ptr<T> > items);
 
   std::set<T*> items() const override;
-  std::vector<T*> ordered_items() const;
+  std::deque<T*> ordered_items() const;
   const T* predecessor(const T& item) const override;
   using Structure<T>::predecessor;
   std::size_t position(const T& item) const override;
@@ -35,7 +35,7 @@ public:
   bool contains(const T& item) const;
 
 private:
-  std::vector<std::unique_ptr<T>> m_items;
+  std::deque<std::unique_ptr<T>> m_items;
 };
 
 }  // namespace omm

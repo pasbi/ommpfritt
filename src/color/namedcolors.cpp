@@ -158,7 +158,6 @@ void NamedColors::deserialize(AbstractDeserializer& deserializer, const Serializ
   const std::size_t n = deserializer.array_size(make_pointer(p));
   beginResetModel();
   m_named_colors.clear();
-  m_named_colors.reserve(n);
   for (std::size_t i = 0; i < n; ++i) {
     const auto name = deserializer.get_string(make_pointer(p, i, "name"));
     const auto color = deserializer.get_color(make_pointer(p, i, "color"));

@@ -55,7 +55,7 @@ void StyleList::move(ListMoveContext<Style>& context)
   Q_EMIT scene.mail_box().style_moved(context.get_subject());
 }
 
-std::vector<std::unique_ptr<Style>> StyleList::set(std::vector<std::unique_ptr<Style>> items)
+std::deque<std::unique_ptr<Style> > StyleList::set(std::deque<std::unique_ptr<Style> > items)
 {
   beginResetModel();
   auto old_items = List::set(std::move(items));

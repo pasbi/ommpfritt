@@ -172,7 +172,7 @@ void Scene::prepare_reset()
 
   auto root = make_root();
   object_tree().replace_root(std::move(root));
-  styles().set(std::vector<std::unique_ptr<Style>>{});
+  styles().set(std::deque<std::unique_ptr<Style>>{});
   tool_box().active_tool().reset();
 }
 
@@ -281,8 +281,7 @@ bool Scene::load_from(const QString& filename)
     new_root->deserialize(deserializer, ROOT_POINTER);
 
     const auto n_styles = deserializer.array_size(Serializable::make_pointer(STYLES_POINTER));
-    std::vector<std::unique_ptr<Style>> styles;
-    styles.reserve(n_styles);
+    std::deque<std::unique_ptr<Style>> styles;
     for (std::size_t i = 0; i < n_styles; ++i) {
       const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
       auto style = std::make_unique<Style>(this);
@@ -324,7 +323,7 @@ void Scene::reset()
   history().reset();
   history().set_saved_index();
   object_tree().replace_root(make_root());
-  styles().set(std::vector<std::unique_ptr<Style>>{});
+  styles().set({});
   m_filename.clear();
   animator().invalidate();
   m_named_colors->clear();

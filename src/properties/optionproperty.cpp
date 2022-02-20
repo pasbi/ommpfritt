@@ -19,7 +19,6 @@ void OptionProperty::deserialize(AbstractDeserializer& deserializer, const Point
       // if options are already there, don't overwrite them because they are probably already
       //  translated.
       const std::size_t n_options = deserializer.array_size(make_pointer(root, OPTIONS_POINTER));
-      options.reserve(n_options);
       for (std::size_t i = 0; i < n_options; ++i) {
         const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
         options.push_back(option);
@@ -54,16 +53,16 @@ void OptionProperty::set(const variant_type& variant)
   }
 }
 
-std::vector<QString> OptionProperty::options() const
+std::deque<QString> OptionProperty::options() const
 {
   if (configuration.count(OPTIONS_POINTER) > 0) {
-    return configuration.get<std::vector<QString>>(OPTIONS_POINTER);
+    return configuration.get<std::deque<QString>>(OPTIONS_POINTER);
   } else {
-    return std::vector<QString>();
+    return {};
   }
 }
 
-OptionProperty& OptionProperty::set_options(const std::vector<QString>& options)
+OptionProperty& OptionProperty::set_options(const std::deque<QString>& options)
 {
   configuration.set(OPTIONS_POINTER, options);
   assert(!options.empty());

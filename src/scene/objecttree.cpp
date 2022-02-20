@@ -17,7 +17,7 @@ namespace
 {
 using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
 
-template<typename T> T* last(const std::vector<T*>& ts)
+template<typename T> T* last(const std::deque<T*>& ts)
 {
   return ts.empty() ? nullptr : ts.back();
 }

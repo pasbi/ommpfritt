@@ -75,7 +75,7 @@ public:
   Flag flags() const override;
   bool is_active() const;
   bool is_visible(bool viewport) const;
-  virtual std::vector<const omm::Style*> find_styles() const;
+  virtual std::deque<const Style*> find_styles() const;
 
   virtual Point pos(const Geom::PathVectorTime& t) const;
   virtual bool contains(const Vec2f& point) const;
