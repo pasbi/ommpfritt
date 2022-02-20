@@ -18,11 +18,10 @@ void OptionProperty::deserialize(AbstractDeserializer& deserializer, const Point
     if (options.empty()) {
       // if options are already there, don't overwrite them because they are probably already
       //  translated.
-      const std::size_t n_options = deserializer.array_size(make_pointer(root, OPTIONS_POINTER));
-      for (std::size_t i = 0; i < n_options; ++i) {
-        const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
+      deserializer.get_items(make_pointer(root, OPTIONS_POINTER), [&deserializer, &options](const auto& root) {
+        const auto option = deserializer.get_string(root);
         options.push_back(option);
-      }
+      });
       configuration.set(OPTIONS_POINTER, options);
     }
   }

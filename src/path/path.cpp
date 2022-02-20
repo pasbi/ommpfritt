@@ -218,12 +218,11 @@ void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
 void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   const auto points_ptr = make_pointer(root, POINTS_POINTER);
-  const auto size = deserializer.array_size(points_ptr);
-  for (std::size_t i = 0; i < size; ++i) {
+  deserializer.get_items(points_ptr, [&deserializer, this](const auto& root) {
     Point geometry;
-    geometry.deserialize(deserializer, make_pointer(points_ptr, i));
+    geometry.deserialize(deserializer, root);
     m_points.emplace_back(std::make_unique<PathPoint>(geometry, *this));
-  }
+  });
 }
 
 }  // namespace omm

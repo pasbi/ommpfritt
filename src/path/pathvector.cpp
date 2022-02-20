@@ -124,12 +124,11 @@ void PathVector::serialize(AbstractSerializer& serializer, const Pointer& root) 
 void PathVector::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   const auto paths_pointer = make_pointer(root, SEGMENTS_POINTER);
-  const std::size_t n_paths = deserializer.array_size(paths_pointer);
   m_paths.clear();
-  for (std::size_t i = 0; i < n_paths; ++i) {
+  deserializer.get_items(paths_pointer, [&deserializer, this](const auto& root) {
     Path& path = *m_paths.emplace_back(std::make_unique<Path>(this));
-    path.deserialize(deserializer, make_pointer(paths_pointer, i));
-  }
+    path.deserialize(deserializer, root);
+  });
 }
 
 PathPoint& PathVector::point_at_index(std::size_t index) const

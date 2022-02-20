@@ -61,19 +61,15 @@ void DisjointPathPointSetForest::deserialize(AbstractDeserializer& deserializer,
 {
   std::deque<std::list<PathPointId>> joined_point_indices;
   const auto forest_ptr = make_pointer(root, FOREST_POINTER);
-  const auto forest_size = deserializer.array_size(forest_ptr);
-  for (std::size_t i = 0; i < forest_size; ++i) {
-    const auto set_ptr = make_pointer(forest_ptr, i);
-    const auto set_size = deserializer.array_size(set_ptr);
+  deserializer.get_items(forest_ptr, [&deserializer, &joined_point_indices](const auto& root) {
     std::list<PathPointId> point_set;
-    for (std::size_t j = 0; j < set_size; ++j) {
-      const auto ptr = make_pointer(set_ptr, j);
-      const auto point_index = deserializer.get_size_t(make_pointer(ptr, INDEX_POINTER));
-      const auto path_id = deserializer.get_size_t(make_pointer(ptr, PATH_ID_POINTER));
+    deserializer.get_items(root, [&deserializer, &point_set](const auto& root) {
+      const auto point_index = deserializer.get_size_t(make_pointer(root, INDEX_POINTER));
+      const auto path_id = deserializer.get_size_t(make_pointer(root, PATH_ID_POINTER));
       point_set.emplace_back(path_id, point_index);
-    }
+    });
     joined_point_indices.push_back(point_set);
-  }
+  });
   deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(joined_point_indices, *this));
 }
 

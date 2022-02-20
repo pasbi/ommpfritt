@@ -92,16 +92,14 @@ void Node::deserialize(AbstractDeserializer& deserializer, const Serializable::P
   m_pos = deserializer.get_vec2f(make_pointer(root, POS_PTR)).to_pointf();
 
   const auto connections_ptr = make_pointer(root, CONNECTIONS_PTR);
-  const std::size_t n = deserializer.array_size(connections_ptr);
   std::list<ConnectionIds> connection_idss;
-  for (std::size_t i = 0; i < n; ++i) {
-    const auto iptr = make_pointer(connections_ptr, i);
+  deserializer.get_items(connections_ptr, [&deserializer, &connection_idss](const auto& root) {
     ConnectionIds connection_ids{};
-    connection_ids.input_port = deserializer.get_size_t(make_pointer(iptr, INPUT_PORT_PTR));
-    connection_ids.output_port = deserializer.get_size_t(make_pointer(iptr, OUTPUT_PORT_PTR));
-    connection_ids.node_id = deserializer.get_size_t(make_pointer(iptr, CONNECTED_NODE_PTR));
+    connection_ids.input_port = deserializer.get_size_t(make_pointer(root, INPUT_PORT_PTR));
+    connection_ids.output_port = deserializer.get_size_t(make_pointer(root, OUTPUT_PORT_PTR));
+    connection_ids.node_id = deserializer.get_size_t(make_pointer(root, CONNECTED_NODE_PTR));
     connection_idss.push_back(connection_ids);
-  }
+  });
   deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(std::move(connection_idss), *this));
 }
 

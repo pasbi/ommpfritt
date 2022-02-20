@@ -128,22 +128,20 @@ void NodeModel::serialize(AbstractSerializer& serializer, const Serializable::Po
 
 void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& ptr)
 {
-  {
-    QSignalBlocker blocker(this);
-    const auto n = deserializer.array_size(Serializable::make_pointer(ptr, NODES_POINTER));
-    for (std::size_t i = 0; i < n; ++i) {
-      const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);
-      const auto type = deserializer.get_string(make_pointer(node_ptr, TYPE_POINTER));
-      if (type == FragmentNode::TYPE) {
-        assert(m_fragment_node != nullptr);
-        m_fragment_node->deserialize(deserializer, node_ptr);
-      } else {
-        auto node = Node::make(type, *this);
-        node->deserialize(deserializer, node_ptr);
-        add_node(std::move(node));
-      }
+  QSignalBlocker blocker(this);
+  const auto nodes_pointer = Serializable::make_pointer(ptr, NODES_POINTER);
+  deserializer.get_items(nodes_pointer, [&deserializer, this](const auto& root) {
+    const auto type = deserializer.get_string(make_pointer(root, TYPE_POINTER));
+    if (type == FragmentNode::TYPE) {
+      assert(m_fragment_node != nullptr);
+      m_fragment_node->deserialize(deserializer, root);
+    } else {
+      auto node = Node::make(type, *this);
+      node->deserialize(deserializer, root);
+      add_node(std::move(node));
     }
-  }
+  });
+
   // Nodes are not yet connected. They will be connected when the Deserializer gets destroyed.
   connect(&deserializer, &AbstractDeserializer::destroyed, this, &NodeModel::emit_topology_changed);
 }

@@ -293,16 +293,14 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   PropertyOwner::deserialize(deserializer, root);
 
   const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
-  std::size_t n_children = deserializer.array_size(children_pointer);
-  for (std::size_t i = 0; i < n_children; ++i) {
-    const auto child_pointer = make_pointer(children_pointer, i);
-    const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
+  deserializer.get_items(children_pointer, [&deserializer, this](const auto& root) {
+    const auto child_type = deserializer.get_string(make_pointer(root, TYPE_POINTER));
     try {
       auto child = Object::make(child_type, static_cast<Scene*>(scene()));
       if (auto* scene = this->scene(); scene != nullptr) {
         child->set_object_tree(scene->object_tree());
       }
-      child->deserialize(deserializer, child_pointer);
+      child->deserialize(deserializer, root);
 
       // TODO adopt sets the global transformation which is reverted by setting the local
       //  transformation immediately afterwards. That can be optimized.
@@ -313,18 +311,16 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
       LERROR << message;
       throw AbstractDeserializer::DeserializeError(message.toStdString());
     }
-  }
+  });
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
-  std::size_t n_tags = deserializer.array_size(tags_pointer);
   std::deque<std::unique_ptr<Tag>> tags;
-  for (std::size_t i = 0; i < n_tags; ++i) {
-    const auto tag_pointer = make_pointer(tags_pointer, i);
-    const auto tag_type = deserializer.get_string(make_pointer(tag_pointer, TYPE_POINTER));
+  deserializer.get_items(tags_pointer, [&deserializer, &tags, this](const auto& root) {
+    const auto tag_type = deserializer.get_string(make_pointer(root, TYPE_POINTER));
     auto tag = Tag::make(tag_type, *this);
-    tag->deserialize(deserializer, tag_pointer);
+    tag->deserialize(deserializer, root);
     tags.push_back(std::move(tag));
-  }
+  });
   this->tags.set(std::move(tags));
 }
 

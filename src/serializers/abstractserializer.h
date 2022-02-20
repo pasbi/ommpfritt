@@ -132,7 +132,6 @@ public:
   void add_references(const std::set<AbstractPropertyOwner*>& existing_references);
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  [[nodiscard]] virtual std::size_t array_size(const Pointer& pointer) = 0;
   [[nodiscard]] virtual bool get_bool(const Pointer& pointer) = 0;
   [[nodiscard]] virtual int get_int(const Pointer& pointer) = 0;
   [[nodiscard]] virtual double get_double(const Pointer& pointer) = 0;
@@ -190,6 +189,14 @@ public:
     }
   }
 
+  template<typename F> void get_items(const Pointer& root, const F& deserializer)
+  {
+    const auto array_size = this->array_size(root);
+    for (std::size_t i = 0; i < array_size; ++i) {
+      deserializer(Serializable::make_pointer(root, i));
+    }
+  }
+
   void get(Serializable& serializable, const Pointer& pointer);
 
   variant_type get(const Pointer& pointer, const QString& type);
@@ -199,6 +206,9 @@ public:
   public:
     using runtime_error::runtime_error;
   };
+
+protected:
+  [[nodiscard]] virtual std::size_t array_size(const Pointer& pointer) = 0;
 
 private:
   // maps old stored hash to new ref

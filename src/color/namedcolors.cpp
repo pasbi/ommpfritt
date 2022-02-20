@@ -155,14 +155,13 @@ void NamedColors::serialize(AbstractSerializer& serializer, const Serializable::
 
 void NamedColors::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& p)
 {
-  const std::size_t n = deserializer.array_size(make_pointer(p));
   beginResetModel();
   m_named_colors.clear();
-  for (std::size_t i = 0; i < n; ++i) {
-    const auto name = deserializer.get_string(make_pointer(p, i, "name"));
-    const auto color = deserializer.get_color(make_pointer(p, i, "color"));
+  deserializer.get_items(make_pointer(p), [&deserializer, this](const auto& root) {
+    const auto name = deserializer.get_string(make_pointer(root, "name"));
+    const auto color = deserializer.get_color(make_pointer(root, "color"));
     m_named_colors.emplace_back(name, color);
-  }
+  });
   endResetModel();
 }
 
