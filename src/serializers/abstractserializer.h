@@ -90,7 +90,7 @@ public:
   template<SizeIterable Vs> void set_value(const Vs& vs, const Pointer& ptr)
   {
     set_value(vs, ptr, [this](const auto& v, const auto& root) {
-      set_value(v, root);
+      this->set_value(v, root);
     });
   }
 
