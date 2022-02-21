@@ -4,7 +4,6 @@ target_sources(libommpfritt PRIVATE
   abstractfactory.h
   cache.h
   cachedgetter.h
-  common.cpp
   common.h
   disjointset.h
   dnf.cpp
