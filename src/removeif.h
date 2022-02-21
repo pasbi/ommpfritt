@@ -11,9 +11,14 @@ namespace util
 namespace remove_if_detail
 {
 
+struct Predicate
+{
+  bool operator()(const auto&) const noexcept;
+};
+
 template<typename Container> concept erase_if_compatible = requires(Container c)
 {
-  { std::erase_if(c, [](const auto&) { return true; }) };
+  { std::erase_if(c, Predicate{}) };
 };
 
 }  // namespace remove_if_detail
