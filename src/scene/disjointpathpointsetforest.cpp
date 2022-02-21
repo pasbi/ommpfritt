@@ -109,7 +109,7 @@ void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>&
 
 void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer,
                                            const Joint& joint,
-                                           const Pointer& root) const
+                                           const Pointer& root)
 {
   serializer.set_value(joint, root, [&serializer](const auto* p, const auto& root) {
     serializer.set_value(p->index(), make_pointer(root, INDEX_POINTER));
@@ -120,7 +120,7 @@ void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer,
 void DisjointPathPointSetForest::serialize_impl(AbstractSerializer& serializer, const Pointer& root) const
 {
   const auto ptr = make_pointer(root, FOREST_POINTER);
-  serializer.set_value(m_forest, ptr, [&serializer, this](const auto& joint, const auto& root) {
+  serializer.set_value(m_forest, ptr, [&serializer](const auto& joint, const auto& root) {
     serialize(serializer, joint, root);
   });
 }

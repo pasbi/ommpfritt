@@ -13,6 +13,7 @@ OptionPropertyWidget::OptionPropertyWidget(Scene& scene, const std::set<Property
   auto options_edit = std::make_unique<OptionsEdit>();
   connect(options_edit.get(),
           static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+          this,
           [this](int value) { set_properties_value(value); });
   m_options_edit = options_edit.get();
   const auto get_options = std::mem_fn(&OptionProperty::options);
