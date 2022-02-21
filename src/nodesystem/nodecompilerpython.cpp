@@ -2,6 +2,7 @@
 #include "common.h"
 #include "nodesystem/node.h"
 #include "nodesystem/port.h"
+#include "removeif.h"
 
 namespace omm::nodes
 {
@@ -38,8 +39,8 @@ AbstractNodeCompiler::AssemblyError NodeCompilerPython::end_program(QStringList&
 
 AbstractNodeCompiler::AssemblyError NodeCompilerPython::compile_node(const Node& node, QStringList& lines)
 {
-  const auto ops = ::filter_if(node.ports<OutputPort>(), [](OutputPort* op) {
-    return op->flavor == PortFlavor::Ordinary;
+  const auto ops = util::remove_if(node.ports<OutputPort>(), [](OutputPort* op) {
+    return op->flavor != PortFlavor::Ordinary;
   });
 
   auto ips = util::transform<std::vector>(node.ports<InputPort>());

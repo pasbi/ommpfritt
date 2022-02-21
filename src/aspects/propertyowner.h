@@ -25,7 +25,9 @@ template<typename T, typename S> T kind_cast(S s)
 template<typename T, template<typename...> class ContainerT>
 ContainerT<T*> kind_cast(const ContainerT<AbstractPropertyOwner*>& ss)
 {
-  return ::filter_if(util::transform(ss, [](auto* s) { return kind_cast<T*>(s); }), ::is_not_null);
+  auto casted = util::transform(ss, [](auto* s) { return kind_cast<T*>(s); });
+  std::erase_if(casted, [](const auto* p) { return p == nullptr; });
+  return casted;
 }
 
 template<typename T, template<typename...> class ContainerT>

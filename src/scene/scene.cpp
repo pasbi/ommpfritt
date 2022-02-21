@@ -7,6 +7,7 @@
 #include <random>
 #include <variant>
 
+#include "removeif.h"
 #include "commands/command.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
@@ -93,7 +94,7 @@ auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& sele
 
 template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const QString& name)
 {
-  return ::filter_if(set, [name](const T* t) { return t->name() == name; });
+  return util::remove_if(set, [name](const T* t) { return t->name() != name; });
 }
 
 std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scene& scene)
@@ -128,9 +129,10 @@ Scene::Scene(PythonEngine& python_engine)
   }
   connect(&history(), &HistoryModel::index_changed, &mail_box(), &MailBox::filename_changed);
   connect(&history(), &HistoryModel::index_changed, this, [this]() {
-    const auto keep_in_selection = [this](const auto* apo) { return contains(apo); };
     const auto old_selection = selection();
-    const auto new_selection = ::filter_if(old_selection, keep_in_selection);
+    const auto new_selection = util::remove_if(old_selection, [this](const auto* apo) {
+      return !contains(apo);
+    });
     if (old_selection.size() > new_selection.size()) {
       set_selection(new_selection);
     }
@@ -407,8 +409,9 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
       m_item_selection.at(kind).clear();
       emit_selection_changed(m_selection, kind);
     } else {
-      const auto item_selection
-          = ::filter_if(selection, [kind](const auto* apo) { return apo->kind == kind; });
+      const auto item_selection = util::remove_if(selection, [kind](const auto* apo) {
+        return apo->kind != kind;
+      });
       if (item_selection.empty()) {
         // selection is not empty but does not contain objects. Do not touch the object selection.
       } else {

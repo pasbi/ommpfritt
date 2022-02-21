@@ -25,6 +25,7 @@
 #include "serializers/jsonserializer.h"
 #include "tags/styletag.h"
 #include "tags/tag.h"
+#include "removeif.h"
 
 #include <QObject>
 #include <QPen>
@@ -538,7 +539,9 @@ std::deque<const omm::Style*> Object::find_styles() const
   };
 
   const auto tags = this->tags.ordered_items();
-  return ::filter_if(util::transform(tags, get_style), ::is_not_null);
+  return util::remove_if(util::transform(tags, get_style), [](const auto* const p) {
+    return p == nullptr;
+  });
 }
 
 Point Object::pos(const Geom::PathVectorTime& t) const

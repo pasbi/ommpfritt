@@ -14,6 +14,7 @@
 #include "path/graph.h"
 #include "path/face.h"
 #include "scene/mailbox.h"
+#include "removeif.h"
 #include <QObject>
 
 namespace
@@ -238,7 +239,7 @@ std::deque<PathPoint*> PathVector::points() const
 
 std::deque<PathPoint*> PathVector::selected_points() const
 {
-  return ::filter_if(points(), std::mem_fn(&PathPoint::is_selected));
+  return util::remove_if(points(), [](const auto& p) { return !p->is_selected(); });
 }
 
 void PathVector::deselect_all_points() const

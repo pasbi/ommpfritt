@@ -4,6 +4,7 @@
 #include "nodesystem/nodemodel.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
+#include "removeif.h"
 #include <QTimer>
 
 namespace omm
@@ -66,8 +67,9 @@ void NodeScene::set_model(nodes::NodeModel* model)
 
 std::set<nodes::Node*> NodeScene::selected_nodes() const
 {
-  return ::filter_if(m_model->nodes(),
-                     [this](auto* node) { return node_item(*node).isSelected(); });
+  return util::remove_if(m_model->nodes(), [this](auto* node) {
+    return !node_item(*node).isSelected();
+  });
 }
 
 void NodeScene::add_node(nodes::Node& node, bool select)
