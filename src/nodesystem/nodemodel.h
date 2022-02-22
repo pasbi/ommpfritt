@@ -59,9 +59,9 @@ public:
   [[nodiscard]] std::set<AbstractPort*> ports() const;
   template<typename PortT> std::set<PortT*> ports() const
   {
-    static const auto pred = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
-    static const auto conv = [](AbstractPort* p) { return static_cast<PortT*>(p); };
-    return util::transform(::filter_if(ports(), pred), conv);
+    auto ports = this->ports();
+    std::erase_if(ports, [](AbstractPort* p) { return p->port_type != PortT::PORT_TYPE; });
+    return util::transform(ports, [](AbstractPort* p) { return static_cast<PortT*>(p); });
   }
 
   [[nodiscard]] BackendLanguage language() const

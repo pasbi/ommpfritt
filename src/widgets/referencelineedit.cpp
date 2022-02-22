@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QTimer>
 
+#include "removeif.h"
 #include "objects/object.h"
 #include "properties/referenceproperty.h"
 #include "renderers/style.h"
@@ -184,9 +185,9 @@ bool ReferenceLineEdit::drop(QDropEvent& event)
   if (can_drop(event)) {
     const auto& mime_data = *event.mimeData();
     const auto& property_owner_mime_data = *qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
-    const auto items
-        = ::filter_if(property_owner_mime_data.items(),
-                      [this](const AbstractPropertyOwner* apo) { return m_filter.accepts(*apo); });
+    const auto items = util::remove_if(property_owner_mime_data.items(), [this](const AbstractPropertyOwner* apo) {
+      return !m_filter.accepts(*apo);
+    });
     assert(!items.empty());
     set_value(items.front());
     return true;
@@ -220,11 +221,8 @@ std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
   merge(m_scene->object_tree().items());
   merge(m_scene->tags());
   merge(m_scene->styles().items());
-
-  candidates = ::filter_if(candidates, [this](const AbstractPropertyOwner* apo) {
-    return m_filter.accepts(*apo);
-  });
-  candidates.push_back(nullptr);
+  std::erase_if(candidates, [this](const AbstractPropertyOwner* apo) { return !m_filter.accepts(*apo); });
+  candidates.push_back(nullptr);  // No reference is always an option.
   return candidates;
 }
 

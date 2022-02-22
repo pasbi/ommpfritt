@@ -9,6 +9,7 @@
 #include "propertywidgets/optionpropertywidget/optionpropertywidget.h"
 #include "propertywidgets/optionpropertywidget/optionsedit.h"
 #include "propertywidgets/propertywidget.h"
+#include "removeif.h"
 #include <QAbstractItemView>
 #include <QApplication>
 #include <QGraphicsProxyWidget>
@@ -58,10 +59,10 @@ protected:
 
 void stack_before_siblings(QGraphicsItem& item)
 {
-  const auto is_top_level_item = [](const auto* item) { return item->parentItem() == nullptr; };
-  const auto siblings = is_top_level_item(&item)
-                            ? ::filter_if(item.scene()->items(), is_top_level_item)
-                            : item.parentItem()->childItems();
+  const auto is_not_top_level_item = [](const auto* item) { return item->parentItem() != nullptr; };
+  const auto siblings = is_not_top_level_item(&item)
+                            ? item.parentItem()->childItems()
+                            : util::remove_if(item.scene()->items(), is_not_top_level_item);
   for (QGraphicsItem* sibling : siblings) {
     sibling->stackBefore(&item);
   }

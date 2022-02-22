@@ -52,7 +52,7 @@ namespace omm
 Boolean::Boolean(Scene* scene) : Object(scene)
 {
   create_property<OptionProperty>(MODE_PROPERTY_KEY)
-      .set_options(util::transform<std::vector>(dispatcher, [](const auto& op) { return op.label(); }))
+      .set_options(util::transform<std::deque>(dispatcher, [](const auto& op) { return op.label(); }))
       .set_label(QObject::tr("mode"))
       .set_category(QObject::tr("Boolean"));
   polish();

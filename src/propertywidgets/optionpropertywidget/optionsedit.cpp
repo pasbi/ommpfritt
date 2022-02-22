@@ -59,7 +59,7 @@ OptionsEdit::OptionsEdit(QWidget* parent) : PrefixComboBox(parent)
   setFocusPolicy(Qt::StrongFocus);
 }
 
-void OptionsEdit::set_options(const std::vector<QString>& options)
+void OptionsEdit::set_options(const std::deque<QString>& options)
 {
   clear();
   addItems(util::transform<QList>(options));

@@ -103,9 +103,9 @@ public:
   std::enable_if_t<!std::is_same_v<typename ItemT::factory_item_type, ItemT>, std::set<ItemT*>>
   item_selection() const
   {
-    static const auto type_matches = [](const auto* v) { return v->type() == ItemT::TYPE; };
-    const auto items = item_selection<typename ItemT::factory_item_type>();
-    return type_casts<ItemT*>(::filter_if(items, type_matches));
+    auto items = item_selection<typename ItemT::factory_item_type>();
+    std::erase_if(items, [](const auto* v) { return v->type() == ItemT::TYPE; });
+    return type_casts<ItemT*>(items);
   }
 
   void emit_selection_changed_signal();

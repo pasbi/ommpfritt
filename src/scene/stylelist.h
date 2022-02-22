@@ -18,7 +18,7 @@ public:
   void remove(ListOwningContext<Style>& context) override;
   std::unique_ptr<Style> remove(Style& t) override;
   void move(ListMoveContext<Style>& context) override;
-  std::vector<std::unique_ptr<Style>> set(std::vector<std::unique_ptr<Style>> items) override;
+  std::deque<std::unique_ptr<Style>> set(std::deque<std::unique_ptr<Style>> items) override;
 
   [[nodiscard]] int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;

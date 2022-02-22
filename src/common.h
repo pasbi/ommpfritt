@@ -80,15 +80,6 @@ std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, const T& o
   return uptr;
 }
 
-template<typename Ts, typename Predicate> Ts filter_if(const Ts& ts, const Predicate& p)
-{
-  Ts filtered;
-  std::copy_if(ts.begin(), ts.end(), std::inserter(filtered, filtered.end()), p);
-  return filtered;
-}
-
-bool is_not_null(const void* p);
-
 template<typename SetA, typename SetB = SetA> decltype(auto) merge(SetA&& a, SetB&& b)
 {
   a.insert(b.begin(), b.end());
@@ -106,23 +97,6 @@ template<typename SetA, typename SetB, typename... Sets>
 SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
 {
   return merge(merge(a, b), std::forward<Sets>(sets)...);
-}
-
-template<typename T, typename Predicate> void erase_if(std::set<T>& ts, const Predicate& p)
-{
-  // TODO replace with std::erase_if once we have c++2a.
-  // See https://stackoverflow.com/q/53791992/4248972
-  for (auto it = ts.begin(); it != ts.end(); ++it) {
-    if (p(*it)) {
-      ts.erase(it);
-    }
-  }
-}
-
-template<typename T, typename Predicate> void erase_if(std::vector<T>& ts, const Predicate& p)
-{
-  // TODO replace with std::erase_if once we have c++2a
-  ts.erase(std::remove_if(ts.begin(), ts.end(), p), ts.end());
 }
 
 template<typename Container, typename S>
@@ -222,8 +196,9 @@ template<typename T, typename S> decltype(auto) type_cast(S&& s)
 template<typename T, template<typename...> class Container, typename S>
 Container<T> type_casts(const Container<S>& apos)
 {
-  const auto casted = util::transform(apos, [](S apo) { return type_cast<T>(apo); });
-  return ::filter_if(casted, ::is_not_null);
+  auto casted = util::transform(apos, [](S apo) { return type_cast<T>(apo); });
+  std::erase_if(casted, [](const auto* p) { return p == nullptr; });
+  return casted;
 }
 
 template<typename S, typename T, typename... Ts> constexpr bool typelist_contains() noexcept

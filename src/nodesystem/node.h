@@ -33,9 +33,9 @@ public:
   [[nodiscard]] std::set<AbstractPort*> ports() const;
   template<typename PortT> [[nodiscard]] std::set<PortT*> ports() const
   {
-    const auto predicate = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
-    const auto convert = [](AbstractPort* p) { return static_cast<PortT*>(p); };
-    return util::transform(::filter_if(ports(), predicate), convert);
+    auto ports = this->ports();
+    std::erase_if(ports, [](AbstractPort* p) { return p->port_type != PortT::PORT_TYPE; });
+    return util::transform(ports, [](AbstractPort* p) { return static_cast<PortT*>(p); });
   }
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;

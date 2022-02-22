@@ -22,6 +22,7 @@
 #include "scene/pointselection.h"
 #include "scene/scene.h"
 #include "tools/toolbox.h"
+#include "removeif.h"
 #include <QUndoStack>
 #include <functional>
 #include <map>
@@ -177,9 +178,9 @@ void remove_selected_points(Application& app)
 
 void convert_objects(Application& app)
 {
-  const auto convertibles
-      = ::filter_if(app.scene->item_selection<Object>(),
-                    [](const Object* o) { return !!(o->flags() & Flag::Convertible); });
+  const auto convertibles = util::remove_if(app.scene->item_selection<Object>(), [](const Object* o) {
+    return !(o->flags() & Flag::Convertible);
+  });
   if (!convertibles.empty()) {
     Scene& scene = *app.scene;
     auto macro = scene.history().start_macro(QObject::tr("convert"));

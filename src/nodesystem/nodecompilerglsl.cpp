@@ -8,6 +8,7 @@
 #include "nodesystem/ordinaryport.h"
 #include "nodesystem/port.h"
 #include "renderers/offscreenrenderer.h"
+#include "removeif.h"
 
 namespace
 {
@@ -145,8 +146,8 @@ void compile_output_ports(const omm::nodes::Node& node, QStringList& lines)
     return compile_argument(*ip, node);
   });
 
-  auto ordinary_output_ports = ::filter_if(node.ports<omm::nodes::OutputPort>(), [](const auto* op) {
-    return op->flavor == omm::nodes::PortFlavor::Ordinary;
+  auto ordinary_output_ports = util::remove_if(node.ports<omm::nodes::OutputPort>(), [](const auto* op) {
+    return op->flavor != omm::nodes::PortFlavor::Ordinary;
   });
   std::size_t i = 0;
   for (const auto* port : sort_ports(ordinary_output_ports)) {
@@ -275,8 +276,9 @@ AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::start_program(QStringList&
 AbstractNodeCompiler::AssemblyError NodeCompilerGLSL::end_program(QStringList& lines) const
 {
   if (const auto nodes = model().nodes(); !nodes.empty()) {
-    const auto fragment_nodes
-        = ::filter_if(nodes, [](const Node* node) { return node->type() == FragmentNode::TYPE; });
+    const auto fragment_nodes = util::remove_if(nodes, [](const Node* node) {
+      return node->type() != FragmentNode::TYPE;
+    });
 
     if (fragment_nodes.size() != 1) {
       QString msg

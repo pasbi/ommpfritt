@@ -14,6 +14,7 @@
 #include "path/graph.h"
 #include "path/face.h"
 #include "scene/mailbox.h"
+#include "removeif.h"
 #include <QObject>
 
 namespace
@@ -112,26 +113,23 @@ PathVector::~PathVector() = default;
 void PathVector::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   const auto paths_pointer = make_pointer(root, SEGMENTS_POINTER);
-  serializer.start_array(m_paths.size(), paths_pointer);
-  for (std::size_t i = 0; i < m_paths.size(); ++i) {
-    if (m_paths.empty()) {
+  serializer.set_value(m_paths, paths_pointer, [&serializer](const auto& path, const auto& root) {
+    if (path->size() == 0) {
       LWARNING << "Ignoring empty sub-path.";
     } else {
-      m_paths[i]->serialize(serializer, make_pointer(paths_pointer, i));
+      path->serialize(serializer, root);
     }
-  }
-  serializer.end_array();
+  });
 }
 
 void PathVector::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   const auto paths_pointer = make_pointer(root, SEGMENTS_POINTER);
-  const std::size_t n_paths = deserializer.array_size(paths_pointer);
   m_paths.clear();
-  for (std::size_t i = 0; i < n_paths; ++i) {
+  deserializer.get_items(paths_pointer, [&deserializer, this](const auto& root) {
     Path& path = *m_paths.emplace_back(std::make_unique<Path>(this));
-    path.deserialize(deserializer, make_pointer(paths_pointer, i));
-  }
+    path.deserialize(deserializer, root);
+  });
 }
 
 PathPoint& PathVector::point_at_index(std::size_t index) const
@@ -241,7 +239,7 @@ std::deque<PathPoint*> PathVector::points() const
 
 std::deque<PathPoint*> PathVector::selected_points() const
 {
-  return ::filter_if(points(), std::mem_fn(&PathPoint::is_selected));
+  return util::remove_if(points(), [](const auto& p) { return !p->is_selected(); });
 }
 
 void PathVector::deselect_all_points() const

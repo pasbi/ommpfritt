@@ -11,6 +11,7 @@
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
+#include "removeif.h"
 #include <QCursor>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -433,13 +434,14 @@ double TimelineCanvas::footer_y() const
 
 bool TimelineCanvas::is_selected(int frame) const
 {
-  const auto relevant_tracks
-      = ::filter_if(tracks, [frame](Track* track) { return track->has_keyframe(frame); });
+  const auto relevant_tracks = util::remove_if(tracks, [frame](const Track* const track) {
+    return !track->has_keyframe(frame);
+  });
   if (relevant_tracks.empty()) {
     return false;
   }
 
-  return std::all_of(relevant_tracks.begin(), relevant_tracks.end(), [this, frame](Track* track) {
+  return std::all_of(relevant_tracks.begin(), relevant_tracks.end(), [this, frame](Track* const track) {
     const auto is_selected = [frame, track](auto&& selection) {
       const auto it = selection.find(track);
       return it != selection.end() && it->second.contains(frame);

@@ -7,6 +7,7 @@
 #include <random>
 #include <variant>
 
+#include "removeif.h"
 #include "commands/command.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
@@ -93,7 +94,7 @@ auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& sele
 
 template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const QString& name)
 {
-  return ::filter_if(set, [name](const T* t) { return t->name() == name; });
+  return util::remove_if(set, [name](const T* t) { return t->name() != name; });
 }
 
 std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scene& scene)
@@ -128,9 +129,10 @@ Scene::Scene(PythonEngine& python_engine)
   }
   connect(&history(), &HistoryModel::index_changed, &mail_box(), &MailBox::filename_changed);
   connect(&history(), &HistoryModel::index_changed, this, [this]() {
-    const auto keep_in_selection = [this](const auto* apo) { return contains(apo); };
     const auto old_selection = selection();
-    const auto new_selection = ::filter_if(old_selection, keep_in_selection);
+    const auto new_selection = util::remove_if(old_selection, [this](const auto* apo) {
+      return !contains(apo);
+    });
     if (old_selection.size() > new_selection.size()) {
       set_selection(new_selection);
     }
@@ -172,7 +174,7 @@ void Scene::prepare_reset()
 
   auto root = make_root();
   object_tree().replace_root(std::move(root));
-  styles().set(std::vector<std::unique_ptr<Style>>{});
+  styles().set(std::deque<std::unique_ptr<Style>>{});
   tool_box().active_tool().reset();
 }
 
@@ -281,8 +283,7 @@ bool Scene::load_from(const QString& filename)
     new_root->deserialize(deserializer, ROOT_POINTER);
 
     const auto n_styles = deserializer.array_size(Serializable::make_pointer(STYLES_POINTER));
-    std::vector<std::unique_ptr<Style>> styles;
-    styles.reserve(n_styles);
+    std::deque<std::unique_ptr<Style>> styles;
     for (std::size_t i = 0; i < n_styles; ++i) {
       const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
       auto style = std::make_unique<Style>(this);
@@ -324,7 +325,7 @@ void Scene::reset()
   history().reset();
   history().set_saved_index();
   object_tree().replace_root(make_root());
-  styles().set(std::vector<std::unique_ptr<Style>>{});
+  styles().set({});
   m_filename.clear();
   animator().invalidate();
   m_named_colors->clear();
@@ -408,8 +409,9 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
       m_item_selection.at(kind).clear();
       emit_selection_changed(m_selection, kind);
     } else {
-      const auto item_selection
-          = ::filter_if(selection, [kind](const auto* apo) { return apo->kind == kind; });
+      const auto item_selection = util::remove_if(selection, [kind](const auto* apo) {
+        return apo->kind != kind;
+      });
       if (item_selection.empty()) {
         // selection is not empty but does not contain objects. Do not touch the object selection.
       } else {

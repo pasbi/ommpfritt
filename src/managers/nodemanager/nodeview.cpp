@@ -17,6 +17,7 @@
 #include "scene/history/macro.h"
 #include "scene/propertyownermimedata.h"
 #include "scene/scene.h"
+#include "removeif.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QGraphicsItem>
@@ -175,8 +176,9 @@ void NodeView::paste_from_clipboard()
         = util::transform<std::vector>(dynamic_cast<const NodeMimeData&>(mime_data).nodes());
 
     std::map<const nodes::Node*, nodes::Node*> copy_map;
-    const auto copyable_nodes
-        = ::filter_if(nodes, [](const auto& node) { return node->copyable(); });
+    const auto copyable_nodes = util::remove_if(nodes, [](const auto& node) {
+      return !node->copyable();
+    });
     const auto make_copy = [&model, &copy_map](auto* const node) {
       auto clone = node->clone(model);
       copy_map[node] = clone.get();  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
@@ -504,9 +506,10 @@ void NodeView::abort()
 
 void NodeView::remove_selection() const
 {
-  static const auto can_remove = [](const auto* const n) { return n->type() != nodes::FragmentNode::TYPE; };
   if (auto* model = this->model(); model != nullptr) {
-    auto selection = ::filter_if(util::transform<std::vector>(selected_nodes()), can_remove);
+    auto selection = util::remove_if(util::transform<std::vector>(selected_nodes()), [](const auto* const n) {
+      return n->type() == nodes::FragmentNode::TYPE;
+    });
     model->scene()->submit<RemoveNodesCommand>(*model, selection);
   }
 }

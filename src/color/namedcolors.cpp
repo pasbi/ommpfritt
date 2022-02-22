@@ -145,26 +145,23 @@ void NamedColors::clear()
 
 void NamedColors::serialize(AbstractSerializer& serializer, const Serializable::Pointer& p) const
 {
-  serializer.start_array(m_named_colors.size(), Serializable::make_pointer(p));
-  for (std::size_t i = 0; i < m_named_colors.size(); ++i) {
-    const auto& [name, color] = m_named_colors[i];
-    serializer.set_value(name, Serializable::make_pointer(p, i, "name"));
-    serializer.set_value(color, Serializable::make_pointer(p, i, "color"));
-  }
-  serializer.end_array();
+  const auto pointer = Serializable::make_pointer(p);
+  serializer.set_value(m_named_colors, pointer, [&serializer](const auto& named_color, const auto& root) {
+    const auto& [name, color] = named_color;
+    serializer.set_value(name, Serializable::make_pointer(root, "name"));
+    serializer.set_value(color, Serializable::make_pointer(root, "color"));
+  });
 }
 
 void NamedColors::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& p)
 {
-  const std::size_t n = deserializer.array_size(make_pointer(p));
   beginResetModel();
   m_named_colors.clear();
-  m_named_colors.reserve(n);
-  for (std::size_t i = 0; i < n; ++i) {
-    const auto name = deserializer.get_string(make_pointer(p, i, "name"));
-    const auto color = deserializer.get_color(make_pointer(p, i, "color"));
+  deserializer.get_items(make_pointer(p), [&deserializer, this](const auto& root) {
+    const auto name = deserializer.get_string(make_pointer(root, "name"));
+    const auto color = deserializer.get_color(make_pointer(root, "color"));
     m_named_colors.emplace_back(name, color);
-  }
+  });
   endResetModel();
 }
 

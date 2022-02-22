@@ -22,6 +22,7 @@ public:
 private:
   class ReferencePolisher;
   void serialize_impl(AbstractSerializer& serializer, const Pointer& root) const;
+  static void serialize(AbstractSerializer& serializer, const Joint& joint, const Pointer& root);
 };
 
 }  // namespace omm

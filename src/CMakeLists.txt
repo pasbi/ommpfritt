@@ -4,7 +4,6 @@ target_sources(libommpfritt PRIVATE
   abstractfactory.h
   cache.h
   cachedgetter.h
-  common.cpp
   common.h
   disjointset.h
   dnf.cpp
@@ -19,6 +18,7 @@ target_sources(libommpfritt PRIVATE
   propertytypeenum.h
   registers.cpp
   registers.h
+  removeif.h
   splinetype.cpp
   splinetype.h
   syncpalettedecorator.cpp

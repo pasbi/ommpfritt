@@ -20,6 +20,14 @@ class ReferenceProperty;
 class Scene;
 struct PolarCoordinates;
 
+template<typename T>
+concept SizeIterable = requires(const T& a)
+{
+  { a.size() } -> std::convertible_to<std::size_t>;
+  { a.begin() } -> std::convertible_to<typename T::const_iterator>;
+  { a.end() } -> std::convertible_to<typename T::const_iterator>;
+};
+
 class AbstractSerializer : public QObject
 {
   Q_OBJECT
@@ -41,8 +49,6 @@ public:
   }
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  virtual void start_array(std::size_t size, const Pointer& pointer) = 0;
-  virtual void end_array() = 0;
   virtual void set_value(bool value, const Pointer& pointer) = 0;
   virtual void set_value(int value, const Pointer& pointer) = 0;
   virtual void set_value(double value, const Pointer& pointer) = 0;
@@ -68,20 +74,30 @@ public:
     set_value(pair.second, Serializable::make_pointer(ptr, "val"));
   }
 
-  template<typename Vs>
-  std::enable_if_t<is_iterable_v<Vs>, void> set_value(const Vs& vs, const Pointer& ptr)
+  template<SizeIterable Vs, typename F>
+  void set_value(const Vs& vs, const Pointer& pointer, const F& serializer)
+      requires requires(const F& serializer) { serializer(*vs.begin(), Pointer{}); }
   {
-    start_array(vs.size(), ptr);
+    start_array(vs.size(), pointer);
     std::size_t i = 0;
     for (const auto& v : vs) {
-      set_value(v, Serializable::make_pointer(ptr, i));
+      serializer(v, Serializable::make_pointer(pointer, i));
       i += 1;
     }
     end_array();
   }
 
+  template<SizeIterable Vs> void set_value(const Vs& vs, const Pointer& ptr)
+  {
+    set_value(vs, ptr, [this](const auto& v, const auto& root) {
+      this->set_value(v, root);
+    });
+  }
+
 protected:
   void register_serialzied_reference(AbstractPropertyOwner* reference);
+  virtual void start_array(std::size_t size, const Pointer& pointer) = 0;
+  virtual void end_array() = 0;
 };
 
 class ReferencePolisher
@@ -116,7 +132,6 @@ public:
   void add_references(const std::set<AbstractPropertyOwner*>& existing_references);
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  [[nodiscard]] virtual std::size_t array_size(const Pointer& pointer) = 0;
   [[nodiscard]] virtual bool get_bool(const Pointer& pointer) = 0;
   [[nodiscard]] virtual int get_int(const Pointer& pointer) = 0;
   [[nodiscard]] virtual double get_double(const Pointer& pointer) = 0;
@@ -126,9 +141,7 @@ public:
   [[nodiscard]] virtual Vec2f get_vec2f(const Pointer& pointer) = 0;
   [[nodiscard]] virtual Vec2i get_vec2i(const Pointer& pointer) = 0;
   [[nodiscard]] virtual PolarCoordinates get_polarcoordinates(const Pointer& pointer) = 0;
-  [[nodiscard]] virtual TriggerPropertyDummyValueType
-  get_trigger_dummy_value(const Pointer& pointer)
-      = 0;
+  [[nodiscard]] virtual TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) = 0;
   [[nodiscard]] virtual SplineType get_spline(const Pointer& pointer) = 0;
 
   void register_reference(std::size_t id, AbstractPropertyOwner& reference);
@@ -176,6 +189,14 @@ public:
     }
   }
 
+  template<typename F> void get_items(const Pointer& root, const F& deserializer)
+  {
+    const auto array_size = this->array_size(root);
+    for (std::size_t i = 0; i < array_size; ++i) {
+      deserializer(Serializable::make_pointer(root, i));
+    }
+  }
+
   void get(Serializable& serializable, const Pointer& pointer);
 
   variant_type get(const Pointer& pointer, const QString& type);
@@ -185,6 +206,9 @@ public:
   public:
     using runtime_error::runtime_error;
   };
+
+protected:
+  [[nodiscard]] virtual std::size_t array_size(const Pointer& pointer) = 0;
 
 private:
   // maps old stored hash to new ref

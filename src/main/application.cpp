@@ -101,7 +101,7 @@ bool dispatch_named_action(Application& app, const QString& action_name)
     {"new", [&app](){ app.reset(); }},  // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
     {"save", [&app](){ app.save(); }},
     {"save as ...", [&app](){ app.save_as(); }},
-    {"open", [&app](){ app.open(); }},
+    {"open ...", [&app](){ app.open(); }},
     {"export ...", [&app](){ ExportDialog(*app.scene, app.main_window()).exec(); }},
     {"evaluate", [&app](){ app.evaluate(); }},
     {"restore default layout", [&app]() { app.main_window()->restore_default_layout(); }},

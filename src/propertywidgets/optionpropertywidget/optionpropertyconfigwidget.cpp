@@ -38,7 +38,7 @@ OptionPropertyConfigWidget ::OptionPropertyConfigWidget()
 void OptionPropertyConfigWidget::init(const PropertyConfiguration& configuration)
 {
   m_list_widget->clear();
-  const auto items = configuration.get<std::vector<QString>>(OptionProperty::OPTIONS_POINTER, {});
+  const auto items = configuration.get<std::deque<QString>>(OptionProperty::OPTIONS_POINTER, {});
   for (const QString& label : items) {
     m_list_widget->insertItem(m_list_widget->count(), make_item(label).release());
   }
@@ -50,9 +50,8 @@ void OptionPropertyConfigWidget::init(const PropertyConfiguration& configuration
 
 void OptionPropertyConfigWidget::update(PropertyConfiguration& configuration) const
 {
-  std::vector<QString> items;
+  std::deque<QString> items;
   const int n = m_list_widget->count();
-  items.reserve(n);
   for (int row = 0; row < n; ++row) {
     const auto label = m_list_widget->item(row)->data(Qt::DisplayRole).toString();
     items.push_back(label);

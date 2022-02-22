@@ -8,6 +8,7 @@
 #include "mainwindow/exporter.h"
 #include "main/application.h"
 #include "animation/animator.h"
+#include "removeif.h"
 
 namespace
 {
@@ -16,14 +17,16 @@ using namespace omm;
 
 template<typename T> T& find(Scene& scene, const QString& name)
 {
-  const auto type_matches = ::filter_if(scene.object_tree().items(), [](const auto* c) {
-    return c->type() == T::TYPE || std::is_same_v<T, Object>;
+  const auto type_matches = util::remove_if(scene.object_tree().items(), [](const auto* c) {
+    return c->type() != T::TYPE && !std::is_same_v<T, Object>;
   });
-  const auto name_type_matches
-      = ::filter_if(type_matches, [name](const auto* c) { return c->name() == name; });
+
+  const auto name_type_matches = util::remove_if(type_matches, [name](const auto* c) {
+    return c->name() != name;
+  });
+
   if (name_type_matches.empty()) {
-    const QStringList view_names
-        = util::transform<QList>(type_matches, [](const auto* v) { return v->name(); });
+    const QStringList view_names = util::transform<QList>(type_matches, [](const auto* v) { return v->name(); });
     LINFO << QString("There are %1 objects of type [%2] in this scene:\n%3")
                  .arg(view_names.size())
                  .arg(T::TYPE)
@@ -79,17 +82,17 @@ void prepare_scene(Scene& scene, const CommandLineParser& args)
     LFATAL("options object-path and object-name are mutual exclusive.");
   }
 
-  const auto predicate = [object_name, object_path](const auto* object) {
+  const auto is_not_visible = [object_name, object_path](const auto* object) {
     if (!object_name.isEmpty()) {
-      return QRegularExpression(object_name).match(object->name()).hasMatch();
+      return !QRegularExpression(object_name).match(object->name()).hasMatch();
     } else if (!object_path.isEmpty()) {
-      return QRegularExpression(object_path).match(object->tree_path()).hasMatch();
+      return !QRegularExpression(object_path).match(object->tree_path()).hasMatch();
     } else {
-      return true;
+      return false;
     }
   };
 
-  const auto visible_objects = ::filter_if(scene.object_tree().items(), predicate);
+  const auto visible_objects = util::remove_if(scene.object_tree().items(), is_not_visible);
   if (args.is_set(CommandLineParser::UNIQUE_KEY) && visible_objects.size() != 1) {
     LFATAL("Expected exactly one matching object but found %d.", static_cast<int>(visible_objects.size()));
   }

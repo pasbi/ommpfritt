@@ -6,7 +6,7 @@
 namespace
 {
 
-std::vector<QString> conversion_options()
+std::deque<QString> conversion_options()
 {
   return {
     omm::nodes::ColorConvertNode::tr("Identity"),

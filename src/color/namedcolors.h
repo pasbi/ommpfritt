@@ -7,6 +7,7 @@
 #include <QComboBox>
 #include <QIdentityProxyModel>
 #include <cmath>
+#include <deque>
 
 namespace omm
 {
@@ -42,7 +43,7 @@ public:
 private:
   Color* resolve(const QString& name);
   [[nodiscard]] const Color* resolve(const QString& name) const;
-  std::vector<std::pair<QString, Color>> m_named_colors;
+  std::deque<std::pair<QString, Color>> m_named_colors;
 };
 
 template<typename ViewT> class NamedColorsHighlighProxyModel : public QIdentityProxyModel

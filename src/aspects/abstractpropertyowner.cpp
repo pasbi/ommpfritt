@@ -72,16 +72,12 @@ void AbstractPropertyOwner::serialize(AbstractSerializer& serializer, const Poin
   serializer.set_value(this, id_pointer);
 
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
-  serializer.start_array(m_properties.size(), properties_pointer);
-  for (std::size_t i = 0; i < m_properties.size(); ++i) {
-    const auto property_key = m_properties.keys().at(i);
-    const auto property_pointer = make_pointer(properties_pointer, i);
-    const auto& property = *this->property(property_key);
-    serializer.set_value(property_key, make_pointer(property_pointer, PROPERTY_KEY_POINTER));
-    serializer.set_value(property.type(), make_pointer(property_pointer, PROPERTY_TYPE_POINTER));
-    property.serialize(serializer, property_pointer);
-  }
-  serializer.end_array();
+  serializer.set_value(m_properties.keys(), properties_pointer, [this, &serializer](const auto& key, const auto& root) {
+    const auto& property = *this->property(key);
+    serializer.set_value(key, make_pointer(root, PROPERTY_KEY_POINTER));
+    serializer.set_value(property.type(), make_pointer(root, PROPERTY_TYPE_POINTER));
+    property.serialize(serializer, root);
+  });
 }
 
 void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
@@ -93,22 +89,14 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   deserializer.register_reference(m_id, *this);
 
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
-  std::size_t n_properties = deserializer.array_size(properties_pointer);
-  for (std::size_t i = 0; i < n_properties; ++i) {
-    const auto property_pointer = make_pointer(properties_pointer, i);
-
-    const auto property_key
-        = deserializer.get_string(make_pointer(property_pointer, PROPERTY_KEY_POINTER));
-    const auto property_type
-        = deserializer.get_string(make_pointer(property_pointer, PROPERTY_TYPE_POINTER));
+  deserializer.get_items(properties_pointer, [&deserializer, this](const auto& root) {
+    const auto property_key = deserializer.get_string(make_pointer(root, PROPERTY_KEY_POINTER));
+    const auto property_type = deserializer.get_string(make_pointer(root, PROPERTY_TYPE_POINTER));
 
     if (properties().contains(property_key)) {
       assert(property_type == property(property_key)->type());
-      property(property_key)->deserialize(deserializer, property_pointer);
+      property(property_key)->deserialize(deserializer, root);
     } else {
-      if (property_key == "closed") {
-        continue;
-      }
       std::unique_ptr<Property> property;
       try {
         property = Property::make(property_type);
@@ -116,12 +104,11 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
         const auto msg = "Failed to retrieve property type '" + property_type + "'.";
         throw AbstractDeserializer::DeserializeError(msg.toStdString());
       }
-      property->deserialize(deserializer, property_pointer);
-      Property& ref = add_property(property_key, std::move(property));
+      property->deserialize(deserializer, root);
+      [[maybe_unused]] Property& ref = add_property(property_key, std::move(property));
       assert(ref.is_user_property());
-      Q_UNUSED(ref)
     }
-  }
+  });
 }
 
 Property& AbstractPropertyOwner::add_property(const QString& key,

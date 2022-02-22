@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <deque>
 
 class QWidget;
 class QPaintDevice;
@@ -14,7 +14,7 @@ struct PainterOptions
 {
   explicit PainterOptions(const QWidget& viewport);
   explicit PainterOptions(const QPaintDevice& device);
-  std::vector<const Style*> styles;
+  std::deque<const Style*> styles;
   const Style* default_style = nullptr;
   const bool device_is_viewport;
   const QPaintDevice& device;

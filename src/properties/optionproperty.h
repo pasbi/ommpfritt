@@ -14,8 +14,8 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void set(const variant_type& variant) override;
 
-  [[nodiscard]] std::vector<QString> options() const;
-  OptionProperty& set_options(const std::vector<QString>& options);
+  [[nodiscard]] std::deque<QString> options() const;
+  OptionProperty& set_options(const std::deque<QString>& options);
 
   static constexpr auto OPTIONS_POINTER = "options";
   [[nodiscard]] bool is_compatible(const Property& other) const override;

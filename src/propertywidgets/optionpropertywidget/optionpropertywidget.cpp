@@ -13,13 +13,13 @@ OptionPropertyWidget::OptionPropertyWidget(Scene& scene, const std::set<Property
   auto options_edit = std::make_unique<OptionsEdit>();
   connect(options_edit.get(),
           static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+          this,
           [this](int value) { set_properties_value(value); });
   m_options_edit = options_edit.get();
   const auto get_options = std::mem_fn(&OptionProperty::options);
 
   QSignalBlocker blocker(m_options_edit);
-  m_options_edit->set_options(
-      Property::get_value<std::vector<QString>, OptionProperty>(properties, get_options));
+  m_options_edit->set_options(Property::get_value<std::deque<QString>, OptionProperty>(properties, get_options));
   m_options_edit->prefix = label();
   set_widget(std::move(options_edit));
   OptionPropertyWidget::update_edit();

@@ -12,6 +12,7 @@
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/scene.h"
+#include "removeif.h"
 #include <QMenu>
 #include <QPainter>
 #include <QResizeEvent>
@@ -97,8 +98,8 @@ void AnimationButton::set_key()
 
   const int current_time = m_animator.current();
   const std::set<Property*> p1 = values(m_properties);
-  const std::set<Property*> p2 = ::filter_if(p1, [current_time](Property* p) {
-    return p->track() != nullptr && p->track()->has_keyframe(current_time);
+  std::set<Property*> p2 = util::remove_if(p1, [current_time](Property* p) {
+    return p->track() == nullptr || !p->track()->has_keyframe(current_time);
   });
 
   m_animator.scene.submit<RemoveKeyFrameCommand>(m_animator, current_time, p2);

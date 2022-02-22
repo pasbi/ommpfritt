@@ -11,6 +11,7 @@
 #include "tools/handles/scaleaxishandle.h"
 #include "tools/handles/scalebandhandle.h"
 #include "tools/transformobjectshelper.h"
+#include "removeif.h"
 
 namespace omm
 {
@@ -56,8 +57,9 @@ void SelectObjectsTool::reset()
   push_handle(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
 
   // ignore object selection. Return a handle for each visible object.
-  const auto objects = ::filter_if(scene()->object_tree().items(),
-                                   [](Object* object) { return object->is_visible(true); });
+  const auto objects = util::remove_if(scene()->object_tree().items(), [](Object* object) {
+    return !object->is_visible(true);
+  });
 
   for (const auto& object : objects) {
     push_handle(std::make_unique<ObjectSelectHandle>(*this, *scene(), *object));

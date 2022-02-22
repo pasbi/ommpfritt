@@ -7,8 +7,8 @@
 
 namespace
 {
-template<typename T>
-std::vector<std::unique_ptr<T>> copy_items(const std::vector<std::unique_ptr<T>>& items)
+template<typename Ts>
+auto copy_items(const Ts& items)
 {
   return util::transform(items, [](const auto& i) { return i->clone(); });
 }
@@ -27,7 +27,7 @@ template<typename T> std::set<T*> List<T>::items() const
   return util::transform<std::set>(m_items, [](const auto& item) { return item.get(); });
 }
 
-template<typename T> std::vector<T*> List<T>::ordered_items() const
+template<typename T> std::deque<T*> List<T>::ordered_items() const
 {
   return util::transform(m_items, [](const auto& item) { return item.get(); });
 }
@@ -100,7 +100,7 @@ template<typename T> void List<T>::move(ListMoveContext<T>& context)
 }
 
 template<typename T>
-std::vector<std::unique_ptr<T>> List<T>::set(std::vector<std::unique_ptr<T>> items)
+std::deque<std::unique_ptr<T>> List<T>::set(std::deque<std::unique_ptr<T>> items)
 {
   auto old_items = std::move(m_items);
   m_items = std::move(items);
@@ -115,8 +115,8 @@ template<typename T> std::size_t List<T>::size() const
 template<typename T> bool List<T>::contains(const T& item) const
 {
   return m_items.end() != std::find_if(m_items.begin(), m_items.end(), [&item](const auto& i) {
-           return i.get() == &item;
-         });
+    return i.get() == &item;
+  });
 }
 
 template class List<Style>;

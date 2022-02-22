@@ -25,6 +25,7 @@
 #include "serializers/jsonserializer.h"
 #include "tags/styletag.h"
 #include "tags/tag.h"
+#include "removeif.h"
 
 #include <QObject>
 #include <QPen>
@@ -276,24 +277,16 @@ void Object::serialize(AbstractSerializer& serializer, const Pointer& root) cons
   PropertyOwner::serialize(serializer, root);
 
   const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
-  serializer.start_array(n_children(), children_pointer);
-  for (std::size_t i = 0; i < n_children(); ++i) {
-    const auto& child = this->tree_child(i);
-    const auto child_pointer = make_pointer(children_pointer, i);
-    serializer.set_value(child.type(), make_pointer(child_pointer, TYPE_POINTER));
-    child.serialize(serializer, child_pointer);
-  }
-  serializer.end_array();
+  serializer.set_value(tree_children(), children_pointer, [&serializer](const auto* child, const auto& root) {
+    serializer.set_value(child->type(), make_pointer(root, TYPE_POINTER));
+    child->serialize(serializer, root);
+  });
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
-  serializer.start_array(tags.size(), tags_pointer);
-  for (std::size_t i = 0; i < tags.size(); ++i) {
-    const auto& tag = tags.item(i);
-    const auto tag_pointer = make_pointer(tags_pointer, i);
-    serializer.set_value(tag.type(), make_pointer(tag_pointer, TYPE_POINTER));
-    tag.serialize(serializer, tag_pointer);
-  }
-  serializer.end_array();
+  serializer.set_value(tags.ordered_items(), tags_pointer, [&serializer](const auto* tag, const auto& root) {
+    serializer.set_value(tag->type(), make_pointer(root, TYPE_POINTER));
+    tag->serialize(serializer, root);
+  });
 }
 
 void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
@@ -301,16 +294,14 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   PropertyOwner::deserialize(deserializer, root);
 
   const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
-  std::size_t n_children = deserializer.array_size(children_pointer);
-  for (std::size_t i = 0; i < n_children; ++i) {
-    const auto child_pointer = make_pointer(children_pointer, i);
-    const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
+  deserializer.get_items(children_pointer, [&deserializer, this](const auto& root) {
+    const auto child_type = deserializer.get_string(make_pointer(root, TYPE_POINTER));
     try {
       auto child = Object::make(child_type, static_cast<Scene*>(scene()));
       if (auto* scene = this->scene(); scene != nullptr) {
         child->set_object_tree(scene->object_tree());
       }
-      child->deserialize(deserializer, child_pointer);
+      child->deserialize(deserializer, root);
 
       // TODO adopt sets the global transformation which is reverted by setting the local
       //  transformation immediately afterwards. That can be optimized.
@@ -321,19 +312,16 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
       LERROR << message;
       throw AbstractDeserializer::DeserializeError(message.toStdString());
     }
-  }
+  });
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
-  std::size_t n_tags = deserializer.array_size(tags_pointer);
-  std::vector<std::unique_ptr<Tag>> tags;
-  tags.reserve(n_tags);
-  for (std::size_t i = 0; i < n_tags; ++i) {
-    const auto tag_pointer = make_pointer(tags_pointer, i);
-    const auto tag_type = deserializer.get_string(make_pointer(tag_pointer, TYPE_POINTER));
+  std::deque<std::unique_ptr<Tag>> tags;
+  deserializer.get_items(tags_pointer, [&deserializer, &tags, this](const auto& root) {
+    const auto tag_type = deserializer.get_string(make_pointer(root, TYPE_POINTER));
     auto tag = Tag::make(tag_type, *this);
-    tag->deserialize(deserializer, tag_pointer);
+    tag->deserialize(deserializer, root);
     tags.push_back(std::move(tag));
-  }
+  });
   this->tags.set(std::move(tags));
 }
 
@@ -537,7 +525,7 @@ bool Object::is_visible(bool viewport) const
   return m_visibility_cache_value;
 }
 
-std::vector<const omm::Style*> Object::find_styles() const
+std::deque<const omm::Style*> Object::find_styles() const
 {
   const auto get_style = [](const omm::Tag* tag) -> const omm::Style* {
     if (tag->type() == omm::StyleTag::TYPE) {
@@ -551,7 +539,9 @@ std::vector<const omm::Style*> Object::find_styles() const
   };
 
   const auto tags = this->tags.ordered_items();
-  return ::filter_if(util::transform(tags, get_style), ::is_not_null);
+  return util::remove_if(util::transform(tags, get_style), [](const auto* const p) {
+    return p == nullptr;
+  });
 }
 
 Point Object::pos(const Geom::PathVectorTime& t) const
