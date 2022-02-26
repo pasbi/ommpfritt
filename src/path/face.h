@@ -1,5 +1,6 @@
 #pragma once
 
+#include "path/edge.h"
 #include <QString>
 #include <list>
 #include <deque>
@@ -9,7 +10,6 @@ namespace omm
 
 class Point;
 class PathPoint;
-class Edge;
 
 class Face
 {

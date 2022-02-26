@@ -60,6 +60,7 @@ public:
   virtual void set_value(std::size_t, const Pointer& pointer) = 0;
   virtual void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) = 0;
   virtual void set_value(const SplineType&, const Pointer& pointer) = 0;
+  virtual void set_value(const Faces&, const Pointer& pointer) = 0;
   void set_value(const AbstractPropertyOwner* ref, const Pointer& pointer);
   void set_value(const variant_type& variant, const Pointer& pointer);
   void set_value(const Serializable& serializable, const Pointer& pointer);
@@ -143,6 +144,7 @@ public:
   [[nodiscard]] virtual PolarCoordinates get_polarcoordinates(const Pointer& pointer) = 0;
   [[nodiscard]] virtual TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) = 0;
   [[nodiscard]] virtual SplineType get_spline(const Pointer& pointer) = 0;
+  [[nodiscard]] virtual Faces get_faces(const Pointer& pointer) = 0;
 
   void register_reference(std::size_t id, AbstractPropertyOwner& reference);
   void register_reference_polisher(std::unique_ptr<ReferencePolisher> polisher);

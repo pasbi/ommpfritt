@@ -182,6 +182,11 @@ void JSONSerializer::set_value(const SplineType& spline, const Pointer& pointer)
   }
 }
 
+void JSONSerializer::set_value(const Faces&, const Pointer& pointer)
+{
+  Q_UNUSED(pointer)
+}
+
 JSONDeserializer::JSONDeserializer(std::istream& istream) : AbstractDeserializer(istream)
 {
   try {
@@ -280,6 +285,12 @@ SplineType JSONDeserializer::get_spline(const AbstractDeserializer::Pointer& poi
   }
 
   return SplineType(map);
+}
+
+Faces JSONDeserializer::get_faces(const Pointer& pointer)
+{
+  Q_UNUSED(pointer)
+  return {};
 }
 
 }  // namespace omm

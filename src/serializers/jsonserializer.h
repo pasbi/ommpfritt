@@ -29,6 +29,7 @@ public:
   void set_value(const PolarCoordinates& value, const Pointer& pointer) override;
   void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) override;
   void set_value(const SplineType&, const Pointer& pointer) override;
+  void set_value(const Faces&, const Pointer& pointer) override;
 
 private:
   nlohmann::json m_store;
@@ -53,6 +54,7 @@ public:
   PolarCoordinates get_polarcoordinates(const Pointer& pointer) override;
   TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) override;
   SplineType get_spline(const Pointer& pointer) override;
+  Faces get_faces(const Pointer& pointer) override;
 
 private:
   nlohmann::json m_store;
