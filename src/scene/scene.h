@@ -250,6 +250,8 @@ private:
   std::unique_ptr<DisjointPathPointSetForest> m_joined_points;
 public:
   [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
+
+  friend class SceneSerialization;
 };
 
 }  // namespace omm

@@ -10,10 +10,6 @@ class JSONSerializerWorker : public SerializerWorker
 {
 public:
   explicit JSONSerializerWorker(nlohmann::json& value);
-  JSONSerializerWorker(const JSONSerializerWorker&) = delete;
-  JSONSerializerWorker(JSONSerializerWorker&&) = delete;
-  JSONSerializerWorker& operator=(const JSONSerializerWorker&) = delete;
-  JSONSerializerWorker& operator=(JSONSerializerWorker&&) = delete;
 
   void set_value(int value) override;
   void set_value(bool value) override;
