@@ -11,6 +11,7 @@ namespace omm
 class Manager;
 class CurveTreeView;
 class Track;
+class Scene;
 
 class CurveManagerWidget : public QWidget
 {

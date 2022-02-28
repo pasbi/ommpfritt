@@ -22,7 +22,7 @@ class Scene;
 class Property;
 class ReferenceProperty;
 
-class AbstractPropertyOwner : public QObject, public Typed
+class AbstractPropertyOwner : public QObject, virtual public Typed
 {
   Q_OBJECT
 public:

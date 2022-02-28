@@ -8,7 +8,7 @@
 #include <set>
 
 template<typename Key, bool enable_clone, typename GeneralT, typename... Args>
-class AbstractFactory : public omm::Typed
+class AbstractFactory : virtual public omm::Typed
 {
 protected:
   using creator_type = std::unique_ptr<GeneralT> (*)(Args&&...);

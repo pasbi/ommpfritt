@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "serializers/deserializerworker.h"
 #include "serializers/serializerworker.h"
 #include "geometry/vec2.h"

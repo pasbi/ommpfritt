@@ -1,6 +1,5 @@
 #include "serializers/serializerworker.h"
 #include "aspects/propertyowner.h"
-#include "aspects/serializable.h"
 
 
 namespace omm::serialization

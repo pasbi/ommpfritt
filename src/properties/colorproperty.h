@@ -10,8 +10,8 @@ class ColorProperty : public TypedProperty<Color>
 {
 public:
   using TypedProperty::TypedProperty;
-  void deserialize(serialization::DeserializerWorker& worker) override;
-  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker);
+  void serialize(serialization::SerializerWorker& worker) const;
   static const PropertyDetail detail;
 };
 

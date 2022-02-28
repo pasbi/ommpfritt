@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "logging.h"
 #include "serializers/serializerworker.h"
 #include "serializers/deserializerworker.h"

@@ -21,8 +21,8 @@ public:
   ReferenceProperty& operator=(ReferenceProperty&&) = delete;
   ReferenceProperty& operator=(const ReferenceProperty&) = delete;
 
-  void serialize(serialization::SerializerWorker& worker) const override;
-  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   static constexpr auto FILTER_POINTER = "filter";
 

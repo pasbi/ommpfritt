@@ -1,7 +1,6 @@
 #pragma once
 
 #include "disjointset.h"
-#include "aspects/serializable.h"
 #include "serializers/deserializerworker.h"
 #include "serializers/serializerworker.h"
 

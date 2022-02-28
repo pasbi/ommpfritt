@@ -20,8 +20,8 @@ public:
   static constexpr auto CONSTANT_VALUE_KEY = "constant";
   static constexpr auto REFERENCE_PROPERTY_KEY = "ref";
 
-  void deserialize(serialization::DeserializerWorker& worker) override;
-  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker);
+  void serialize(serialization::SerializerWorker& worker) const;
   void populate_menu(QMenu& menu) override;
   [[nodiscard]] QString title() const override;
   AbstractPort& add_forwarding_port(PortType port_type, const QString& key);

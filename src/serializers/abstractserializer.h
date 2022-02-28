@@ -5,7 +5,6 @@
 #include <unordered_map>
 
 #include "abstractfactory.h"
-#include "aspects/serializable.h"
 #include "common.h"
 #include "geometry/vec2.h"
 #include "variant.h"

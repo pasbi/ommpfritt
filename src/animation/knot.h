@@ -1,6 +1,7 @@
 #pragma once
 
-#include "serializers/abstractserializer.h"
+#include "serializers/abstractdeserializer.h"
+#include "variant.h"
 
 namespace omm
 {

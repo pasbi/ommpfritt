@@ -4,6 +4,5 @@ target_sources(libommpfritt PRIVATE
   propertyowner.h
   treeelement.cpp
   treeelement.h
-  serializable.h
   typed.h
 )

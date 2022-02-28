@@ -83,7 +83,7 @@ public:
     return *this;
   }
 
-  void deserialize(serialization::DeserializerWorker& worker) override
+  void deserialize(serialization::DeserializerWorker& worker)
   {
     TypedProperty<T>::deserialize(worker);
     if (this->is_user_property()) {
@@ -95,7 +95,7 @@ public:
     }
   }
 
-  void serialize(serialization::SerializerWorker& worker) const override
+  void serialize(serialization::SerializerWorker& worker) const
   {
     TypedProperty<T>::serialize(worker);
     if (this->is_user_property()) {

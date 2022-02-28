@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "cachedgetter.h"
 #include "common.h"
 #include "nodesystem/nodecompiler.h"
