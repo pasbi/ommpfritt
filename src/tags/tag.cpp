@@ -7,7 +7,6 @@
 #include "objects/object.h"
 #include "properties/stringproperty.h"
 #include "scene/scene.h"
-#include "serializers/jsonserializer.h"
 
 namespace omm
 {

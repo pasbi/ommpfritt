@@ -8,6 +8,6 @@ target_sources(libommpfritt PRIVATE
   deserializerworker.h
   serializerworker.cpp
   serializerworker.h
-  jsonserializer.cpp
-  jsonserializer.h
 )
+
+add_subdirectory(json)
