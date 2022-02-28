@@ -1,8 +1,8 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "common.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
 #include <QCoreApplication>
 #include <QObject>
 #include <map>
@@ -20,7 +20,7 @@ struct Knot;
  *  It would be impossible to restore an track at deserialization since the property it belongs
  *  to is not known at that time.
  */
-class Track : public Serializable
+class Track
 {
   Q_DECLARE_TR_FUNCTIONS(Track)
 public:
@@ -32,7 +32,7 @@ public:
   Track(const Track&) = delete;
   Track& operator=(Track&&) = delete;
   Track& operator=(const Track&) = delete;
-  ~Track() override;
+  ~Track();
   [[nodiscard]] std::unique_ptr<Track> clone() const;
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
@@ -46,8 +46,8 @@ public:
   static constexpr auto RIGHT_VALUE_KEY = "right-value";
   static constexpr auto INTERPOLATION_KEY = "interpolation";
 
-  void serialize(serialization::SerializerWorker& worker) const override;
-  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   [[nodiscard]] bool has_keyframe(int frame) const
   {

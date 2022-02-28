@@ -7,13 +7,14 @@
 #include <variant>
 
 #include "abstractfactory.h"
-#include "aspects/serializable.h"
 #include "common.h"
 #include "external/json.hpp"
 #include "logging.h"
 #include "propertyconfiguration.h"
-#include "variant.h"
 #include "propertytypeenum.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
+#include "variant.h"
 
 namespace omm
 {
@@ -22,10 +23,7 @@ class Track;
 class Property;
 class OptionProperty;
 
-class Property
-    : public QObject
-    , public AbstractFactory<QString, true, Property>
-    , public virtual Serializable
+class Property : public QObject, public AbstractFactory<QString, true, Property>
 {
   Q_OBJECT
 
@@ -127,8 +125,8 @@ private:
 
   // === (De)Serialization
 public:
-  void serialize(serialization::SerializerWorker& worker) const override;
-  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   // === Animation
 public:

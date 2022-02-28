@@ -32,7 +32,7 @@ template<typename T> struct ConjunctionImpl {
 
 }  // namespace DNF_detail
 
-template<typename E> class Literal : public Serializable
+template<typename E> class Literal
 {
   static std::size_t from_enum(E e)
   {
@@ -70,13 +70,13 @@ public:
     return !!(v & (1 << i)) == value;
   }
 
-  void serialize(serialization::SerializerWorker& worker) const override
+  void serialize(serialization::SerializerWorker& worker) const
   {
     worker.sub("i")->set_value(i);
     worker.sub("v")->set_value(value);
   }
 
-  void deserialize(serialization::DeserializerWorker& worker) override
+  void deserialize(serialization::DeserializerWorker& worker)
   {
     i = worker.sub("i")->get_size_t();
     value =worker.sub("v")->get_bool();
@@ -126,7 +126,7 @@ public:
 
 namespace DNF_detail
 {
-template<typename E, typename T, typename Junction> class Term : public Serializable
+template<typename E, typename T, typename Junction> class Term
 {
   static constexpr bool is_top_level = std::is_same_v<T, Literal<E>>;
   using U = underlying_type_t<E>;
@@ -164,13 +164,13 @@ public:
     return Junction::evaluate(terms, value);
   }
 
-  void serialize(serialization::SerializerWorker& worker) const override
+  void serialize(serialization::SerializerWorker& worker) const
   {
     Q_UNUSED(worker)
 //    worker.sub("terms")->set_value(terms);
   }
 
-  void deserialize(serialization::DeserializerWorker& worker) override
+  void deserialize(serialization::DeserializerWorker& worker)
   {
     Q_UNUSED(worker)
 //    worker.sub("terms")->get(terms);

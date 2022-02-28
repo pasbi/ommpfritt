@@ -1,18 +1,19 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "common.h"
 #include "dnf.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
 
 namespace omm
 {
-struct PropertyFilter : public Serializable
+struct PropertyFilter
 {
   explicit PropertyFilter(const Disjunction<Kind>& kind, const DNF<Flag>& flag);
   PropertyFilter();
   explicit PropertyFilter(const DNF<Flag>& flag);
-  void serialize(serialization::SerializerWorker& worker) const override;
-  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
   Disjunction<Kind> kind;
   DNF<Flag> flag;
   [[nodiscard]] bool accepts(const AbstractPropertyOwner& apo) const;

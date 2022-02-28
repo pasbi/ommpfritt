@@ -16,9 +16,4 @@ void SerializerWorker::set_value(const variant_type& variant)
   std::visit([this](auto&& arg) { set_value(arg); }, variant);
 }
 
-void SerializerWorker::set_value(const Serializable& serializable)
-{
-  serializable.serialize(*this);
-}
-
 }  // namespace omm::serialization

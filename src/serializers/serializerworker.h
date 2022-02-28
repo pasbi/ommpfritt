@@ -8,7 +8,6 @@ namespace omm
 {
 
 class PolarCoordinates;
-class Serializable;
 
 }  // namespace omm
 
@@ -24,7 +23,7 @@ concept SizeIterable = requires(const T& a)
 };
 
 template<typename T>
-concept SerializableConcept = requires(const T& s)
+concept Serializable = requires(const T& s)
 {
   { s.serialize(std::declval<SerializerWorker&>()) };
 };
@@ -48,13 +47,13 @@ public:
   virtual void set_value(const SplineType&) = 0;
   void set_value(const AbstractPropertyOwner* ref);
   void set_value(const variant_type& variant);
-  void set_value(const Serializable& serializable);
+
   template<typename T> std::enable_if_t<std::is_enum_v<T>> set_value(const T& t)
   {
     set_value(static_cast<std::size_t>(t));
   }
 
-  template<SerializableConcept T> void set_value(const T& t)
+  template<Serializable T> void set_value(const T& t)
   {
     t.serialize(*this);
   }

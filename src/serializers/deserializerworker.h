@@ -8,18 +8,17 @@ namespace omm
 {
 
 class PolarCoordinates;
-class Serializable;
 
 }  // namespace omm
 
 namespace omm::serialization
 {
 
-template<typename T> concept EnumConcept = std::is_enum_v<T>;
-template<typename T> concept NotEnumConcept = !std::is_enum_v<T>;
+template<typename T> concept Enum = std::is_enum_v<T>;
+template<typename T> concept NotEnum = !std::is_enum_v<T>;
 
 template<typename T>
-concept DeserializableConcept = requires(const T& s)
+concept Deserializable = requires(const T& s)
 {
   { s.deserialize(std::declval<DeserializerWorker&>()) };
 };
@@ -49,8 +48,8 @@ public:
   virtual std::unique_ptr<DeserializationArray> start_array() = 0;
   virtual void end_array() {}
 
-  template<NotEnumConcept T> T get();
-  template<EnumConcept T> T get()
+  template<NotEnum T> T get();
+  template<Enum T> T get()
   {
     return static_cast<T>(get_size_t());
   }
@@ -61,7 +60,7 @@ public:
     sub("val")->get(value.second);
   }
 
-  template<DeserializableConcept T> void get(T& t)
+  template<Deserializable T> void get(T& t)
   {
     t.deserialize(*this);
   }
@@ -102,8 +101,6 @@ public:
       deserializer(array->next());
     }
   }
-
-  void get(Serializable& serializable);
 
   variant_type get(const QString& type);
 

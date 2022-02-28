@@ -5,6 +5,8 @@
 #include "common.h"
 #include "nodesystem/nodecompiler.h"
 #include "nodesystem/port.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
 #include <QObject>
 #include <memory>
 #include <set>
@@ -24,9 +26,7 @@ class OutputPort;
 class InputPort;
 class FragmentNode;
 
-class NodeModel
-    : public QObject
-    , public Serializable
+class NodeModel : public QObject
 {
   Q_OBJECT
 public:
@@ -45,8 +45,8 @@ public:
   [[nodiscard]] bool can_connect(const OutputPort& a, const InputPort& b) const;
   using QObject::connect;
 
-  void serialize(serialization::SerializerWorker& worker) const override;
-  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   static constexpr auto NODES_POINTER = "nodes";
   static constexpr auto TYPE_POINTER = "type";

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "color/color.h"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
 #include <QAbstractItemView>
 #include <QAbstractListModel>
 #include <QComboBox>
@@ -11,9 +12,7 @@
 
 namespace omm
 {
-class NamedColors
-    : public QAbstractListModel
-    , public Serializable
+class NamedColors : public QAbstractListModel
 {
   Q_OBJECT
 public:
@@ -35,8 +34,8 @@ public:
   [[nodiscard]] Color color(const QString& name) const;
   void clear();
 
-  void serialize(serialization::SerializerWorker& worker) const override;
-  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   [[nodiscard]] QString generate_default_name() const;
 

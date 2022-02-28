@@ -1,13 +1,15 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "geometry/polarcoordinates.h"
 #include "geometry/vec2.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
 #include <Qt>
 
 namespace omm
 {
-class Point : public Serializable
+
+class Point
 {
 public:
   explicit Point(const Vec2f& position,
@@ -40,8 +42,8 @@ public:
   static constexpr auto LEFT_TANGENT_POINTER = "left";
   static constexpr auto RIGHT_TANGENT_POINTER = "right";
 
-  void serialize(serialization::SerializerWorker& worker) const override;
-  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   /**
    * @brief flattened means adjust the tangents such that the angle between them approaches

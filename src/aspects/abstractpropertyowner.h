@@ -7,12 +7,13 @@
 #include <typeinfo>
 #include <variant>
 
-#include "aspects/serializable.h"
 #include "aspects/typed.h"
 #include "common.h"
 #include "external/json_fwd.hpp"
 #include "orderedmap.h"
 #include "properties/property.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
 #include <Qt>
 
 namespace omm
@@ -21,10 +22,7 @@ class Scene;
 class Property;
 class ReferenceProperty;
 
-class AbstractPropertyOwner
-    : public QObject
-    , public virtual Serializable
-    , public virtual Typed
+class AbstractPropertyOwner : public QObject, public Typed
 {
   Q_OBJECT
 public:
@@ -56,8 +54,8 @@ public:
 
   const OrderedMap<QString, Property>& properties() const;
 
-  void serialize(serialization::SerializerWorker& worker) const override;
-  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
   virtual QString name() const;
 
   static const QString NAME_PROPERTY_KEY;
