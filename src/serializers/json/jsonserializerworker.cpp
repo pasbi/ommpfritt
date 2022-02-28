@@ -116,24 +116,24 @@ void JSONSerializerWorker::set_value(const SplineType& spline)
 std::unique_ptr<SerializerWorker> JSONSerializerWorker::sub(const std::string& key)
 {
   if (!m_value.is_object()) {
-    throw omm::serialization::AbstractSerializer::SerializeError{"Attempt to access non-object value by key"};
+    throw AbstractSerializer::SerializeError{"Attempt to access non-object value by key"};
   }
   try {
     return std::make_unique<JSONSerializerWorker>(m_value[key]);
   } catch (const nlohmann::json::out_of_range&) {
-    throw omm::serialization::AbstractSerializer::SerializeError{"Attempt to access non-existing key: " + key};
+    throw AbstractSerializer::SerializeError{"Attempt to access non-existing key: " + key};
   }
 }
 
 std::unique_ptr<SerializerWorker> JSONSerializerWorker::sub(const std::size_t i)
 {
   if (!m_value.is_array()) {
-    throw omm::serialization::AbstractSerializer::SerializeError{"Attempt to access non-array value by index"};
+    throw AbstractSerializer::SerializeError{"Attempt to access non-array value by index"};
   }
   try {
     return std::make_unique<JSONSerializerWorker>(m_value[i]);
   } catch (const nlohmann::json::out_of_range&) {
-    throw omm::serialization::AbstractSerializer::SerializeError{"Attempt to access non-existing index: " + std::to_string(i)};
+    throw AbstractSerializer::SerializeError{"Attempt to access non-existing index: " + std::to_string(i)};
   }
 }
 

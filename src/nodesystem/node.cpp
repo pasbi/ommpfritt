@@ -98,7 +98,8 @@ void Node::deserialize(serialization::DeserializerWorker& worker)
     connection_ids.node_id = worker_i.sub(CONNECTED_NODE_PTR)->get_size_t();
     connection_idss.push_back(connection_ids);
   });
-  worker.deserializer().register_reference_polisher(std::make_unique<ReferencePolisher>(std::move(connection_idss), *this));
+  auto polisher = std::make_unique<ReferencePolisher>(std::move(connection_idss), *this);
+  worker.deserializer().register_reference_polisher(std::move(polisher));
 }
 
 void Node::set_pos(const QPointF& pos)

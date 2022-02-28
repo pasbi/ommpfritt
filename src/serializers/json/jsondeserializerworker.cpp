@@ -97,7 +97,7 @@ Color JSONDeserializerWorker::get_color()
       return Color(n);
     }
   } catch (std::out_of_range&) {
-    throw omm::serialization::AbstractDeserializer::DeserializeError("Expected vector of size 4.");
+    throw AbstractDeserializer::DeserializeError("Expected vector of size 4.");
   }
 }
 
@@ -173,7 +173,7 @@ std::unique_ptr<DeserializationArray> JSONDeserializerWorker::start_array()
   };
 
   if (!m_value.is_array()) {
-    throw omm::serialization::AbstractDeserializer::DeserializeError{"Expected Array"};
+    throw AbstractDeserializer::DeserializeError{"Expected Array"};
   }
   return std::make_unique<JSONArray>(*this, m_value.size());
 }
@@ -181,24 +181,24 @@ std::unique_ptr<DeserializationArray> JSONDeserializerWorker::start_array()
 std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::string& key)
 {
   if (!m_value.is_object()) {
-    throw omm::serialization::AbstractDeserializer::DeserializeError{"Attempt to access non-object value by key"};
+    throw AbstractDeserializer::DeserializeError{"Attempt to access non-object value by key"};
   }
   try {
     return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value[key]);
   } catch (const nlohmann::json::out_of_range&) {
-    throw omm::serialization::AbstractDeserializer::DeserializeError{"Attempt to access non-existing key: " + key};
+    throw AbstractDeserializer::DeserializeError{"Attempt to access non-existing key: " + key};
   }
 }
 
 std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::size_t i)
 {
   if (!m_value.is_array()) {
-    throw omm::serialization::AbstractDeserializer::DeserializeError{"Attempt to access non-array value by index"};
+    throw AbstractDeserializer::DeserializeError{"Attempt to access non-array value by index"};
   }
   try {
     return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value[i]);
   } catch (const nlohmann::json::out_of_range&) {
-    throw omm::serialization::AbstractDeserializer::DeserializeError{"Attempt to access non-existing index: " + std::to_string(i)};
+    throw AbstractDeserializer::DeserializeError{"Attempt to access non-existing index: " + std::to_string(i)};
   }
 }
 

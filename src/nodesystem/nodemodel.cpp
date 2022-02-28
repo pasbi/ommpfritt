@@ -142,7 +142,8 @@ void NodeModel::deserialize(serialization::DeserializerWorker& worker)
   });
 
   // Nodes are not yet connected. They will be connected when the Deserializer gets destroyed.
-  connect(&worker.deserializer(), &serialization::AbstractDeserializer::destroyed, this, &NodeModel::emit_topology_changed);
+  connect(&worker.deserializer(), &serialization::AbstractDeserializer::destroyed,
+          this, &NodeModel::emit_topology_changed);
 }
 
 bool NodeModel::find_path(const Node& start, const Node& end, std::list<const Node*>& path) const
