@@ -1,61 +1,89 @@
 #pragma once
 
 #include "external/json.hpp"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/abstractdeserializer.h"
 #include "serializers/abstractserializer.h"
 
-namespace omm
+namespace omm::serialization
 {
+
+class JSONSerializerWorker : public SerializerWorker
+{
+public:
+  explicit JSONSerializerWorker(nlohmann::json& value);
+  JSONSerializerWorker(const JSONSerializerWorker&) = delete;
+  JSONSerializerWorker(JSONSerializerWorker&&) = delete;
+  JSONSerializerWorker& operator=(const JSONSerializerWorker&) = delete;
+  JSONSerializerWorker& operator=(JSONSerializerWorker&&) = delete;
+
+  void set_value(int value) override;
+  void set_value(bool value) override;
+  void set_value(double value) override;
+  void set_value(const QString& value) override;
+  void set_value(std::size_t id) override;
+  void set_value(const Color& color) override;
+  void set_value(const Vec2f& value) override;
+  void set_value(const Vec2i& value) override;
+  void set_value(const PolarCoordinates& value) override;
+  void set_value(const TriggerPropertyDummyValueType&) override;
+  void set_value(const SplineType&) override;
+
+protected:
+  std::unique_ptr<SerializationArray> start_array(std::size_t size) override;
+  std::unique_ptr<SerializerWorker> sub(const std::string& key) override;
+  std::unique_ptr<SerializerWorker> sub(const std::size_t i) override;
+
+private:
+  nlohmann::json& m_value;
+};
+
+class JSONDeserializer;
+
+class JSONDeserializerWorker : public DeserializerWorker
+{
+public:
+  explicit JSONDeserializerWorker(AbstractDeserializer& deserializer, const nlohmann::json& value);
+
+  // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
+  int get_int() override;
+  double get_double() override;
+  bool get_bool() override;
+  QString get_string() override;
+  Color get_color() override;
+  std::size_t get_size_t() override;
+  Vec2f get_vec2f() override;
+  Vec2i get_vec2i() override;
+  PolarCoordinates get_polarcoordinates() override;
+  TriggerPropertyDummyValueType get_trigger_dummy_value() override;
+  SplineType get_spline() override;
+
+protected:
+  std::unique_ptr<DeserializationArray> start_array() override;
+  std::unique_ptr<DeserializerWorker> sub(const std::string& key) override;
+  std::unique_ptr<DeserializerWorker> sub(const std::size_t i) override;
+
+private:
+  const nlohmann::json& m_value;
+};
 
 class JSONSerializer : public AbstractSerializer
 {
 public:
-  explicit JSONSerializer(std::ostream& ostream);
-  ~JSONSerializer() override;
-  JSONSerializer(const JSONSerializer&) = delete;
-  JSONSerializer(JSONSerializer&&) = delete;
-  JSONSerializer& operator=(const JSONSerializer&) = delete;
-  JSONSerializer& operator=(JSONSerializer&&) = delete;
-
-  void start_array(std::size_t size, const Pointer& pointer) override;
-  void end_array() override;
-  void set_value(int value, const Pointer& pointer) override;
-  void set_value(bool value, const Pointer& pointer) override;
-  void set_value(double value, const Pointer& pointer) override;
-  void set_value(const QString& value, const Pointer& pointer) override;
-  void set_value(std::size_t id, const Pointer& pointer) override;
-  void set_value(const Color& color, const Pointer& pointer) override;
-  void set_value(const Vec2f& value, const Pointer& pointer) override;
-  void set_value(const Vec2i& value, const Pointer& pointer) override;
-  void set_value(const PolarCoordinates& value, const Pointer& pointer) override;
-  void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) override;
-  void set_value(const SplineType&, const Pointer& pointer) override;
-
+  explicit JSONSerializer(nlohmann::json& json);
+  std::unique_ptr<SerializerWorker> sub(const std::string& key) override;
 private:
-  nlohmann::json m_store;
-  std::ostream& m_ostream;
+  nlohmann::json& m_json;
 };
 
 class JSONDeserializer : public AbstractDeserializer
 {
 public:
-  explicit JSONDeserializer(std::istream& istream);
-
-  // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  std::size_t array_size(const Pointer& pointer) override;
-  int get_int(const Pointer& pointer) override;
-  double get_double(const Pointer& pointer) override;
-  bool get_bool(const Pointer& pointer) override;
-  QString get_string(const Pointer& pointer) override;
-  Color get_color(const Pointer& pointer) override;
-  std::size_t get_size_t(const Pointer& pointer) override;
-  Vec2f get_vec2f(const Pointer& pointer) override;
-  Vec2i get_vec2i(const Pointer& pointer) override;
-  PolarCoordinates get_polarcoordinates(const Pointer& pointer) override;
-  TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) override;
-  SplineType get_spline(const Pointer& pointer) override;
-
+  explicit JSONDeserializer(const nlohmann::json& json);
+  std::unique_ptr<DeserializerWorker> sub(const std::string& key) override;
 private:
-  nlohmann::json m_store;
+  const nlohmann::json& m_json;
 };
 
 }  // namespace omm

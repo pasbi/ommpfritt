@@ -238,19 +238,18 @@ bool Scene::save_as(const QString& filename)
     return false;
   }
 
-  JSONSerializer serializer(static_cast<std::ostream&>(ofstream));
-  object_tree().root().serialize(serializer, ROOT_POINTER);
+  nlohmann::json json;
+  serialization::JSONSerializer serializer(json);
+  object_tree().root().serialize(*serializer.sub(ROOT_POINTER));
 
-  serializer.start_array(styles().items().size(), Serializable::make_pointer(STYLES_POINTER));
-  for (std::size_t i = 0; i < styles().items().size(); ++i) {
-    styles().item(i).serialize(serializer, Serializable::make_pointer(STYLES_POINTER, i));
-  }
-  serializer.end_array();
+  serializer.sub(STYLES_POINTER)->set_value(styles().items());
 
-  animator().serialize(serializer, ANIMATOR_POINTER);
-  named_colors().serialize(serializer, NAMED_COLORS_POINTER);
-  export_options().serialize(serializer, EXPORT_OPTIONS_POINTER);
-  m_joined_points->serialize(serializer, JOINED_POINTS_POINTER);
+  animator().serialize(*serializer.sub(ANIMATOR_POINTER));
+  named_colors().serialize(*serializer.sub(NAMED_COLORS_POINTER));
+  export_options().serialize(*serializer.sub(EXPORT_OPTIONS_POINTER));
+  m_joined_points->serialize(*serializer.sub(JOINED_POINTS_POINTER));
+
+  ofstream << json.dump(4);
 
   LINFO << "Saved current scene to '" << filename << "'.";
   history().set_saved_index();
@@ -277,19 +276,19 @@ bool Scene::load_from(const QString& filename)
   };
 
   try {
-    JSONDeserializer deserializer(static_cast<std::istream&>(ifstream));
+    nlohmann::json json;
+    ifstream >> json;
+    serialization::JSONDeserializer deserializer(json);
 
     auto new_root = make_root();
-    new_root->deserialize(deserializer, ROOT_POINTER);
+    new_root->deserialize(*deserializer.sub(ROOT_POINTER));
 
-    const auto n_styles = deserializer.array_size(Serializable::make_pointer(STYLES_POINTER));
     std::deque<std::unique_ptr<Style>> styles;
-    for (std::size_t i = 0; i < n_styles; ++i) {
-      const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
+    deserializer.sub(STYLES_POINTER)->get_items([this, &styles](auto& worker_i) {
       auto style = std::make_unique<Style>(this);
-      style->deserialize(deserializer, style_pointer);
+      style->deserialize(worker_i);
       styles.push_back(std::move(style));
-    }
+    });
 
     m_filename = filename;
     history().set_saved_index();
@@ -301,15 +300,15 @@ bool Scene::load_from(const QString& filename)
 
     object_tree().root().update_recursive();
 
-    animator().deserialize(deserializer, ANIMATOR_POINTER);
-    named_colors().deserialize(deserializer, NAMED_COLORS_POINTER);
-    m_export_options->deserialize(deserializer, EXPORT_OPTIONS_POINTER);
-    m_joined_points->deserialize(deserializer, JOINED_POINTS_POINTER);
+    animator().deserialize(*deserializer.sub(ANIMATOR_POINTER));
+    named_colors().deserialize(*deserializer.sub(NAMED_COLORS_POINTER));
+    m_export_options->deserialize(*deserializer.sub(EXPORT_OPTIONS_POINTER));
+    m_joined_points->deserialize(*deserializer.sub(JOINED_POINTS_POINTER));
     deserializer.polish();
     return true;
   } catch (const Object::AbstractFactory::InvalidKeyError& invalid_key_error) {
     error_handler(invalid_key_error.what());
-  } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
+  } catch (const serialization::AbstractDeserializer::DeserializeError& deserialize_error) {
     error_handler(deserialize_error.what());
   } catch (const nlohmann::json::exception& exception) {
     error_handler(exception.what());

@@ -1,6 +1,7 @@
 #include "nodesystem/node.h"
 #include "common.h"
 #include "nodesystem/nodemodel.h"
+#include "serializers/abstractdeserializer.h"
 #include <QApplication>
 
 namespace
@@ -19,7 +20,7 @@ namespace omm::nodes
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::map<QString, const Node::Detail*> Node::m_details;
 
-class Node::ReferencePolisher : public omm::ReferencePolisher
+class Node::ReferencePolisher : public omm::serialization::ReferencePolisher
 {
 public:
   explicit ReferencePolisher(std::list<ConnectionIds>&& connection_ids, Node& node)
@@ -63,44 +64,41 @@ std::set<AbstractPort*> Node::ports() const
   return util::transform(m_ports, [](const std::unique_ptr<AbstractPort>& p) { return p.get(); });
 }
 
-void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+void Node::serialize(serialization::SerializerWorker& worker) const
 {
-  AbstractPropertyOwner::serialize(serializer, root);
-  serializer.set_value(Vec2f(pos()), make_pointer(root, POS_PTR));
+  AbstractPropertyOwner::serialize(worker);
+  worker.sub(POS_PTR)->set_value(Vec2f(pos()));
 
   std::vector<const InputPort*> connection_inputs;
   connection_inputs.reserve(m_ports.size());
   for (const auto& port : m_ports) {
-    if (port->port_type == PortType::Input
-        && dynamic_cast<InputPort&>(*port).connected_output() != nullptr) {
+    if (port->port_type == PortType::Input && dynamic_cast<InputPort&>(*port).connected_output() != nullptr) {
       connection_inputs.push_back(dynamic_cast<const InputPort*>(port.get()));
     }
   }
   connection_inputs.shrink_to_fit();
-  const auto connections_ptr = make_pointer(root, CONNECTIONS_PTR);
-  serializer.set_value(connection_inputs, connections_ptr, [&serializer](const auto& input, const auto& root) {
+  worker.sub(CONNECTIONS_PTR)->set_value(connection_inputs, [](const auto& input, auto& worker_i) {
     const OutputPort& output = *input->connected_output();
-    serializer.set_value(input->index, make_pointer(root, INPUT_PORT_PTR));
-    serializer.set_value(output.index, make_pointer(root, OUTPUT_PORT_PTR));
-    serializer.set_value(&output.node, make_pointer(root, CONNECTED_NODE_PTR));
+    worker_i.sub(INPUT_PORT_PTR)->set_value(input->index);
+    worker_i.sub(OUTPUT_PORT_PTR)->set_value(output.index);
+    worker_i.sub(CONNECTED_NODE_PTR)->set_value(&output.node);
   });
 }
 
-void Node::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+void Node::deserialize(serialization::DeserializerWorker& worker)
 {
-  AbstractPropertyOwner::deserialize(deserializer, root);
-  m_pos = deserializer.get_vec2f(make_pointer(root, POS_PTR)).to_pointf();
+  AbstractPropertyOwner::deserialize(worker);
+  m_pos = worker.sub(POS_PTR)->get_vec2f().to_pointf();
 
-  const auto connections_ptr = make_pointer(root, CONNECTIONS_PTR);
   std::list<ConnectionIds> connection_idss;
-  deserializer.get_items(connections_ptr, [&deserializer, &connection_idss](const auto& root) {
+  worker.sub(CONNECTIONS_PTR)->get_items([&connection_idss](auto& worker_i) {
     ConnectionIds connection_ids{};
-    connection_ids.input_port = deserializer.get_size_t(make_pointer(root, INPUT_PORT_PTR));
-    connection_ids.output_port = deserializer.get_size_t(make_pointer(root, OUTPUT_PORT_PTR));
-    connection_ids.node_id = deserializer.get_size_t(make_pointer(root, CONNECTED_NODE_PTR));
+    connection_ids.input_port = worker_i.sub(INPUT_PORT_PTR)->get_size_t();
+    connection_ids.output_port = worker_i.sub(OUTPUT_PORT_PTR)->get_size_t();
+    connection_ids.node_id = worker_i.sub(CONNECTED_NODE_PTR)->get_size_t();
     connection_idss.push_back(connection_ids);
   });
-  deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(std::move(connection_idss), *this));
+  worker.deserializer().register_reference_polisher(std::make_unique<ReferencePolisher>(std::move(connection_idss), *this));
 }
 
 void Node::set_pos(const QPointF& pos)

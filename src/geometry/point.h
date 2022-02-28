@@ -40,8 +40,8 @@ public:
   static constexpr auto LEFT_TANGENT_POINTER = "left";
   static constexpr auto RIGHT_TANGENT_POINTER = "right";
 
-  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
   /**
    * @brief flattened means adjust the tangents such that the angle between them approaches

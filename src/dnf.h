@@ -2,7 +2,8 @@
 
 #include "aspects/serializable.h"
 #include "logging.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
 #include <bitset>
 #include <set>
 
@@ -69,16 +70,16 @@ public:
     return !!(v & (1 << i)) == value;
   }
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override
+  void serialize(serialization::SerializerWorker& worker) const override
   {
-    serializer.set_value(i, make_pointer(root, "i"));
-    serializer.set_value(value, make_pointer(root, "v"));
+    worker.sub("i")->set_value(i);
+    worker.sub("v")->set_value(value);
   }
 
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override
+  void deserialize(serialization::DeserializerWorker& worker) override
   {
-    i = deserializer.get_size_t(make_pointer(root, "i"));
-    value = deserializer.get_bool(make_pointer(root, "v"));
+    i = worker.sub("i")->get_size_t();
+    value =worker.sub("v")->get_bool();
   }
 
   bool operator==(const Literal<E>& other) const
@@ -118,7 +119,6 @@ public:
 
     return s;
   }
-
 
   std::size_t i = -1;
   bool value = false;
@@ -164,14 +164,16 @@ public:
     return Junction::evaluate(terms, value);
   }
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override
+  void serialize(serialization::SerializerWorker& worker) const override
   {
-    serializer.set_value(terms, make_pointer(root, "terms"));
+    Q_UNUSED(worker)
+//    worker.sub("terms")->set_value(terms);
   }
 
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override
+  void deserialize(serialization::DeserializerWorker& worker) override
   {
-    deserializer.get(terms, make_pointer(root, "terms"));
+    Q_UNUSED(worker)
+//    worker.sub("terms")->get(terms);
   }
 
   bool operator==(const Term<E, T, Junction>& other) const

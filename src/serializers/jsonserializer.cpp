@@ -4,6 +4,9 @@
 #include "common.h"
 #include "logging.h"
 #include "geometry/polarcoordinates.h"
+#include "serializers/abstractdeserializer.h"
+#include "serializers/abstractserializer.h"
+#include "geometry/polarcoordinates.h"
 #include <iomanip>
 #include <typeinfo>
 
@@ -25,10 +28,10 @@ double get_double(const nlohmann::json& json_val)
     } else {
       const std::string msg = std::string("Expected '") + inf_value + "' or '" + neg_inf_value
                               + "' but got '" + value + "'.";
-      throw omm::AbstractDeserializer::DeserializeError(msg);
+      throw omm::serialization::AbstractDeserializer::DeserializeError(msg);
     }
   } else {
-    throw omm::AbstractDeserializer::DeserializeError("invalid type.");
+    throw omm::serialization::AbstractDeserializer::DeserializeError("invalid type.");
   }
 }
 
@@ -44,106 +47,86 @@ nlohmann::json set_double(double value)
   }
 }
 
-auto ptr(const omm::Serializable::Pointer& pointer)
-{
-  return nlohmann::json::json_pointer(pointer.toStdString());
-}
-
 template<typename T>
-T get_t(const nlohmann::json& json, const nlohmann::json::json_pointer& pointer)
+T get_t(const nlohmann::json& value)
 {
   try {
-    const auto value = json.at(pointer);
-    try {
-      if constexpr (std::is_same_v<T, double>) {
-        // get inf properly
-        return get_double(value);
-      } else if constexpr (std::is_same_v<T, std::vector<double>>) {
-        return util::transform<std::vector>(static_cast<std::vector<nlohmann::json>>(value), get_double);
-      } else if constexpr (std::is_same_v<T, QString>) {
-        return QString::fromStdString(value);
-      } else {
-        return value;
-      }
-    } catch (const nlohmann::json::type_error& convert_exception) {
-      std::ostringstream message;
-      message << "Failed to convert\n";
-      message << value << "\n";
-      message << "at '" << pointer << "'\n";
-      message << "to '" << typeid(T).name() << "'.";
-      throw omm::AbstractDeserializer::DeserializeError(message.str());
+    if constexpr (std::is_same_v<T, double>) {
+      // get inf properly
+      return get_double(value);
+    } else if constexpr (std::is_same_v<T, std::vector<double>>) {
+      return util::transform<std::vector>(static_cast<std::vector<nlohmann::json>>(value), get_double);
+    } else if constexpr (std::is_same_v<T, QString>) {
+      return QString::fromStdString(value);
+    } else {
+      return value;
     }
-  } catch (const nlohmann::json::out_of_range& json_exception) {
-    throw omm::AbstractDeserializer::DeserializeError("Cannot find '" + std::string(pointer)
-                                                      + "'.");
-  } catch (const nlohmann::json::parse_error& json_exception) {
-    throw omm::AbstractDeserializer::DeserializeError("Invalid pointer '" + std::string(pointer)
-                                                      + "'.");
+  } catch (const nlohmann::json::type_error& convert_exception) {
+    std::ostringstream message;
+    message << "Failed to convert\n";
+    message << value << "\n";
+    message << "to '" << typeid(T).name() << "'.";
+    throw omm::serialization::AbstractDeserializer::DeserializeError(message.str());
   }
-}
-
-template<typename T, typename PointerT> T get_t(const nlohmann::json& json, const PointerT& pointer)
-{
-  return get_t<T>(json, nlohmann::json::json_pointer(pointer.toStdString()));
 }
 
 }  // namespace
 
-namespace omm
+namespace omm::serialization
 {
-JSONSerializer::JSONSerializer(std::ostream& ostream)
-    : AbstractSerializer(ostream), m_ostream(ostream)
+
+std::unique_ptr<SerializationArray> JSONSerializerWorker::start_array([[maybe_unused]] std::size_t size)
+{
+  class JSONArray : public SerializationArray
+  {
+  public:
+    using SerializationArray::SerializationArray;
+    SerializerWorker& next() override
+    {
+      m_current = m_parent.sub(m_next_index);
+      m_next_index += 1;
+      return *m_current;
+    }
+  };
+
+  m_value = nlohmann::json::value_type::array();
+  return std::make_unique<JSONArray>(*this);
+}
+
+JSONSerializerWorker::JSONSerializerWorker(nlohmann::json& value)
+    : m_value(value)
 {
 }
 
-JSONSerializer::~JSONSerializer()
+void JSONSerializerWorker::set_value(int value)
 {
-#ifdef NDEBUG
-  m_ostream << m_store;
-#else
-  m_ostream << std::setw(4) << m_store;
-#endif
+  m_value = value;
 }
 
-void JSONSerializer::start_array([[maybe_unused]] std::size_t size, const Pointer& pointer)
+void JSONSerializerWorker::set_value(bool value)
 {
-  m_store[ptr(pointer)] = nlohmann::json::value_type::array();
+  m_value = value;
 }
 
-void JSONSerializer::end_array()
+void JSONSerializerWorker::set_value(double value)
 {
-  // no action required
+  m_value = ::set_double(value);
 }
 
-void JSONSerializer::set_value(int value, const Pointer& pointer)
+void JSONSerializerWorker::set_value(const QString& value)
 {
-  m_store[ptr(pointer)] = value;
+  m_value = value.toStdString();
 }
 
-void JSONSerializer::set_value(bool value, const Pointer& pointer)
+void JSONSerializerWorker::set_value(const std::size_t id)
 {
-  m_store[ptr(pointer)] = value;
+  m_value = id;
 }
 
-void JSONSerializer::set_value(double value, const Pointer& pointer)
+void JSONSerializerWorker::set_value(const Color& color)
 {
-  m_store[ptr(pointer)] = ::set_double(value);
-}
-
-void JSONSerializer::set_value(const QString& value, const Pointer& pointer)
-{
-  m_store[ptr(pointer)] = value.toStdString();
-}
-
-void JSONSerializer::set_value(const std::size_t id, const Pointer& pointer)
-{
-  m_store[ptr(pointer)] = id;
-}
-
-void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
-{
-  auto& name = m_store[ptr(Serializable::make_pointer(pointer, "name"))];
-  auto& rgba = m_store[ptr(Serializable::make_pointer(pointer, "rgba"))];
+  auto& name = m_value["name"];
+  auto& rgba = m_value["rgba"];
   if (color.model() == Color::Model::Named) {
     name = color.name().toStdString();
     rgba = {0.0, 0.0, 0.0, 0.0};
@@ -153,133 +136,215 @@ void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
   }
 }
 
-void JSONSerializer::set_value(const Vec2f& value, const Pointer& pointer)
+void JSONSerializerWorker::set_value(const Vec2f& value)
 {
-  m_store[ptr(pointer)] = {set_double(value[0]), set_double(value[1])};
+  m_value = {set_double(value[0]), set_double(value[1])};
 }
 
-void JSONSerializer::set_value(const Vec2i& value, const Pointer& pointer)
+void JSONSerializerWorker::set_value(const Vec2i& value)
 {
-  m_store[ptr(pointer)] = {value[0], value[1]};
+  m_value = {value[0], value[1]};
 }
 
-void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& pointer)
+void JSONSerializerWorker::set_value(const PolarCoordinates& value)
 {
-  set_value(Vec2f(value.argument, value.magnitude), pointer);
+  set_value(Vec2f(value.argument, value.magnitude));
 }
 
-void JSONSerializer::set_value(const TriggerPropertyDummyValueType&,
-                               const AbstractSerializer::Pointer&)
+void JSONSerializerWorker::set_value(const TriggerPropertyDummyValueType&)
 {
 }
 
-void JSONSerializer::set_value(const SplineType& spline, const Pointer& pointer)
+void JSONSerializerWorker::set_value(const SplineType& spline)
 {
-  auto& array = m_store[ptr(pointer)];
-  array = nlohmann::json::value_type::array();
+  m_value = nlohmann::json::value_type::array();
   for (const auto& [t, knot] : spline.knots) {
-    array.push_back({t, knot.value, knot.left_offset, knot.right_offset});
+    m_value.push_back({t, knot.value, knot.left_offset, knot.right_offset});
   }
 }
 
-JSONDeserializer::JSONDeserializer(std::istream& istream) : AbstractDeserializer(istream)
+std::unique_ptr<SerializerWorker> JSONSerializerWorker::sub(const std::string& key)
+{
+  if (!m_value.is_object()) {
+    throw omm::serialization::AbstractSerializer::SerializeError{"Attempt to access non-object value by key"};
+  }
+  try {
+    return std::make_unique<JSONSerializerWorker>(m_value[key]);
+  } catch (const nlohmann::json::out_of_range&) {
+    throw omm::serialization::AbstractSerializer::SerializeError{"Attempt to access non-existing key: " + key};
+  }
+}
+
+std::unique_ptr<SerializerWorker> JSONSerializerWorker::sub(const std::size_t i)
+{
+  if (!m_value.is_array()) {
+    throw omm::serialization::AbstractSerializer::SerializeError{"Attempt to access non-array value by index"};
+  }
+  try {
+    return std::make_unique<JSONSerializerWorker>(m_value[i]);
+  } catch (const nlohmann::json::out_of_range&) {
+    throw omm::serialization::AbstractSerializer::SerializeError{"Attempt to access non-existing index: " + std::to_string(i)};
+  }
+}
+
+JSONDeserializerWorker::JSONDeserializerWorker(AbstractDeserializer& deserializer, const nlohmann::json& value)
+    : DeserializerWorker(deserializer)
+    , m_value(value)
+{
+}
+
+int JSONDeserializerWorker::get_int()
+{
+  return get_t<int>(m_value);
+}
+
+bool JSONDeserializerWorker::get_bool()
+{
+  return get_t<bool>(m_value);
+}
+
+double JSONDeserializerWorker::get_double()
+{
+  return get_t<double>(m_value);
+}
+
+QString JSONDeserializerWorker::get_string()
+{
+  return get_t<QString>(m_value);
+}
+
+Color JSONDeserializerWorker::get_color()
 {
   try {
-    istream >> m_store;
-  } catch (const nlohmann::detail::parse_error& error) {
-    throw omm::AbstractDeserializer::DeserializeError(error.what());
-  }
-}
-
-std::size_t JSONDeserializer::array_size(const Pointer& pointer)
-{
-  const auto array = m_store[ptr(pointer)];
-  if (array.is_array() || array.is_null()) {
-    return array.size();
-  } else {
-    const std::string dump = array.dump(4);
-    throw omm::AbstractDeserializer::DeserializeError("Expected array, got " + dump);
-  }
-}
-
-int JSONDeserializer::get_int(const Pointer& pointer)
-{
-  return get_t<int>(m_store, pointer);
-}
-
-bool JSONDeserializer::get_bool(const Pointer& pointer)
-{
-  return get_t<bool>(m_store, pointer);
-}
-
-double JSONDeserializer::get_double(const Pointer& pointer)
-{
-  return get_t<double>(m_store, pointer);
-}
-
-QString JSONDeserializer::get_string(const Pointer& pointer)
-{
-  return get_t<QString>(m_store, pointer);
-}
-
-Color JSONDeserializer::get_color(const Pointer& pointer)
-{
-  try {
-    const auto v = get_t<std::vector<double>>(m_store, Serializable::make_pointer(pointer, "rgba"));
-    const auto n = get_string(Serializable::make_pointer(pointer, "name"));
+    const auto v = get_t<std::vector<double>>(m_value["rgba"]);
+    const auto n = sub("name")->get_string();
     if (n.isEmpty()) {
       return Color(Color::Model::RGBA, {v.at(0), v.at(1), v.at(2), v.at(3)});
     } else {
       return Color(n);
     }
   } catch (std::out_of_range&) {
-    throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
+    throw omm::serialization::AbstractDeserializer::DeserializeError("Expected vector of size 4.");
   }
 }
 
-std::size_t JSONDeserializer::get_size_t(const Pointer& pointer)
+std::size_t JSONDeserializerWorker::get_size_t()
 {
-  return get_t<std::size_t>(m_store, pointer);
+  return get_t<std::size_t>(m_value);
 }
 
-Vec2f JSONDeserializer::get_vec2f(const Pointer& pointer)
+Vec2f JSONDeserializerWorker::get_vec2f()
 {
   try {
-    return Vec2f(get_t<std::vector<double>>(m_store, pointer));
+    return Vec2f(get_t<std::vector<double>>(m_value));
   } catch (std::out_of_range&) {
-    throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
+    throw AbstractDeserializer::DeserializeError("Expected vector of size 2.");
   }
 }
 
-Vec2i JSONDeserializer::get_vec2i(const Pointer& pointer)
+Vec2i JSONDeserializerWorker::get_vec2i()
 {
   try {
-    return Vec2i(get_t<std::vector<int>>(m_store, pointer));
+    return Vec2i(get_t<std::vector<int>>(m_value));
   } catch (std::out_of_range&) {
-    throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
+    throw AbstractDeserializer::DeserializeError("Expected vector of size 2.");
   }
 }
 
-PolarCoordinates JSONDeserializer::get_polarcoordinates(const Pointer& pointer)
+PolarCoordinates JSONDeserializerWorker::get_polarcoordinates()
 {
-  const auto pair = get_vec2f(pointer);
+  const auto pair = get_vec2f();
   return PolarCoordinates(pair[0], pair[1]);
 }
 
-TriggerPropertyDummyValueType
-JSONDeserializer::get_trigger_dummy_value(const AbstractDeserializer::Pointer&)
+TriggerPropertyDummyValueType JSONDeserializerWorker::get_trigger_dummy_value()
 {
   return {};
 }
 
-SplineType JSONDeserializer::get_spline(const AbstractDeserializer::Pointer& pointer)
+SplineType JSONDeserializerWorker::get_spline()
 {
   SplineType::knot_map_type map;
-  for (const auto& item : m_store[ptr(pointer)]) {
+  for (const auto& item : m_value) {
     map.insert({item.at(0), SplineType::Knot(item.at(1), item.at(2), item.at(3))});
   }
 
   return SplineType(map);
+}
+
+std::unique_ptr<DeserializationArray> JSONDeserializerWorker::start_array()
+{
+  class JSONArray : public DeserializationArray
+  {
+  public:
+    explicit JSONArray(JSONDeserializerWorker& parent, const std::size_t size)
+        : DeserializationArray(parent)
+        , m_size(size)
+    {
+    }
+
+    DeserializerWorker& next() override
+    {
+      m_current = m_parent.sub(m_next_index);
+      m_next_index += 1;
+      return *m_current;
+    }
+
+    std::size_t size() const override
+    {
+      return m_size;
+    }
+
+  private:
+    const std::size_t m_size;
+  };
+
+  if (!m_value.is_array()) {
+    throw omm::serialization::AbstractDeserializer::DeserializeError{"Expected Array"};
+  }
+  return std::make_unique<JSONArray>(*this, m_value.size());
+}
+
+std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::string& key)
+{
+  if (!m_value.is_object()) {
+    throw omm::serialization::AbstractDeserializer::DeserializeError{"Attempt to access non-object value by key"};
+  }
+  try {
+    return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value[key]);
+  } catch (const nlohmann::json::out_of_range&) {
+    throw omm::serialization::AbstractDeserializer::DeserializeError{"Attempt to access non-existing key: " + key};
+  }
+}
+
+std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::size_t i)
+{
+  if (!m_value.is_array()) {
+    throw omm::serialization::AbstractDeserializer::DeserializeError{"Attempt to access non-array value by index"};
+  }
+  try {
+    return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value[i]);
+  } catch (const nlohmann::json::out_of_range&) {
+    throw omm::serialization::AbstractDeserializer::DeserializeError{"Attempt to access non-existing index: " + std::to_string(i)};
+  }
+}
+
+JSONSerializer::JSONSerializer(nlohmann::json& json) : m_json(json)
+{
+}
+
+std::unique_ptr<SerializerWorker> JSONSerializer::sub(const std::string& key)
+{
+  return std::make_unique<JSONSerializerWorker>(m_json[key]);
+}
+
+JSONDeserializer::JSONDeserializer(const nlohmann::json& json) : m_json(json)
+{
+}
+
+std::unique_ptr<DeserializerWorker> JSONDeserializer::sub(const std::string& key)
+{
+  return std::make_unique<JSONDeserializerWorker>(*this, m_json[key]);
 }
 
 }  // namespace omm

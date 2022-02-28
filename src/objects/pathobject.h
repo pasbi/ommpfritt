@@ -26,8 +26,8 @@ public:
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
   static constexpr auto PATH_VECTOR_POINTER = "path-vector";
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
   void on_property_value_changed(Property* property) override;
   Flag flags() const override;

@@ -70,24 +70,20 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 
 Animator::~Animator() = default;
 
-void Animator::serialize(AbstractSerializer& serializer, const Serializable::Pointer& pointer) const
+void Animator::serialize(serialization::SerializerWorker& worker) const
 {
-  Serializable::serialize(serializer, pointer);
-
-  serializer.set_value(m_start_frame, make_pointer(pointer, START_FRAME_POINTER));
-  serializer.set_value(m_end_frame, make_pointer(pointer, END_FRAME_POINTER));
-  serializer.set_value(m_current_frame, make_pointer(pointer, CURRENT_FRAME_POINTER));
-  serializer.set_value(static_cast<int>(m_play_mode), make_pointer(pointer, "play-mode"));
+  worker.sub(START_FRAME_POINTER)->set_value(m_start_frame);
+  worker.sub(END_FRAME_POINTER)->set_value(m_end_frame);
+  worker.sub(CURRENT_FRAME_POINTER)->set_value(m_current_frame);
+  worker.sub(PLAY_MODE_POINTER)->set_value(static_cast<int>(m_play_mode));
 }
 
-void Animator::deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
+void Animator::deserialize(serialization::DeserializerWorker& worker)
 {
-  Serializable::deserialize(deserializer, pointer);
-
-  set_start(deserializer.get_int(make_pointer(pointer, START_FRAME_POINTER)));
-  set_end(deserializer.get_int(make_pointer(pointer, END_FRAME_POINTER)));
-  m_current_frame = deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER));
-  m_play_mode = static_cast<PlayMode>(deserializer.get_int(make_pointer(pointer, "play-mode")));
+  set_start(worker.sub(START_FRAME_POINTER)->get_int());
+  set_end(worker.sub(END_FRAME_POINTER)->get_int());
+  m_current_frame = worker.sub(CURRENT_FRAME_POINTER)->get_int();
+  m_play_mode = static_cast<PlayMode>(worker.sub(PLAY_MODE_POINTER)->get_int());
   invalidate();
 }
 

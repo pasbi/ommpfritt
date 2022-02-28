@@ -34,8 +34,8 @@ public:
 
   static constexpr auto POINTS_POINTER = "points";
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
   [[nodiscard]] std::size_t size() const;
   [[nodiscard]] PathPoint& at(std::size_t i) const;
   [[nodiscard]] bool contains(const PathPoint& point) const;

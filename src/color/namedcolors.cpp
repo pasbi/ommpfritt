@@ -1,6 +1,7 @@
 #include "color/namedcolors.h"
 #include "logging.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
 
 namespace omm
 {
@@ -143,23 +144,22 @@ void NamedColors::clear()
   endResetModel();
 }
 
-void NamedColors::serialize(AbstractSerializer& serializer, const Serializable::Pointer& p) const
+void NamedColors::serialize(serialization::SerializerWorker& worker) const
 {
-  const auto pointer = Serializable::make_pointer(p);
-  serializer.set_value(m_named_colors, pointer, [&serializer](const auto& named_color, const auto& root) {
+  worker.set_value(m_named_colors, [](const auto& named_color, auto& worker_i) {
     const auto& [name, color] = named_color;
-    serializer.set_value(name, Serializable::make_pointer(root, "name"));
-    serializer.set_value(color, Serializable::make_pointer(root, "color"));
+    worker_i.sub("name")->set_value(name);
+    worker_i.sub("color")->set_value(color);
   });
 }
 
-void NamedColors::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& p)
+void NamedColors::deserialize(serialization::DeserializerWorker& worker)
 {
   beginResetModel();
   m_named_colors.clear();
-  deserializer.get_items(make_pointer(p), [&deserializer, this](const auto& root) {
-    const auto name = deserializer.get_string(make_pointer(root, "name"));
-    const auto color = deserializer.get_color(make_pointer(root, "color"));
+  worker.get_items([this](auto& worker_i) {
+    const auto name = worker_i.sub("name")->get_string();
+    const auto color = worker_i.sub("color")->get_color();
     m_named_colors.emplace_back(name, color);
   });
   endResetModel();

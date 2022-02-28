@@ -42,8 +42,8 @@ public:
   [[nodiscard]] bool joined_points_shared() const;
 
   static constexpr auto SEGMENTS_POINTER = "segments";
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
   [[nodiscard]] PathPoint& point_at_index(std::size_t index) const;
 
   [[nodiscard]] QPainterPath outline() const;

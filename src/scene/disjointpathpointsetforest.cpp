@@ -1,5 +1,7 @@
 #include "scene/disjointpathpointsetforest.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/abstractdeserializer.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
 #include "path/path.h"
@@ -29,7 +31,7 @@ struct PathPointId
 namespace omm
 {
 
-class DisjointPathPointSetForest::ReferencePolisher : public omm::ReferencePolisher
+class DisjointPathPointSetForest::ReferencePolisher : public omm::serialization::ReferencePolisher
 {
 public:
   explicit ReferencePolisher(const std::deque<std::list<PathPointId>>& joined_point_indices,
@@ -57,27 +59,26 @@ private:
   }
 };
 
-void DisjointPathPointSetForest::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void DisjointPathPointSetForest::deserialize(serialization::DeserializerWorker& worker)
 {
   std::deque<std::list<PathPointId>> joined_point_indices;
-  const auto forest_ptr = make_pointer(root, FOREST_POINTER);
-  deserializer.get_items(forest_ptr, [&deserializer, &joined_point_indices](const auto& root) {
+  worker.sub(FOREST_POINTER)->get_items([&joined_point_indices](auto& worker_i) {
     std::list<PathPointId> point_set;
-    deserializer.get_items(root, [&deserializer, &point_set](const auto& root) {
-      const auto point_index = deserializer.get_size_t(make_pointer(root, INDEX_POINTER));
-      const auto path_id = deserializer.get_size_t(make_pointer(root, PATH_ID_POINTER));
+    worker_i.get_items([&point_set](auto& worker_ii) {
+      const auto point_index = worker_ii.sub(INDEX_POINTER)->get_size_t();
+      const auto path_id = worker_ii.sub(PATH_ID_POINTER)->get_size_t();
       point_set.emplace_back(path_id, point_index);
     });
     joined_point_indices.push_back(point_set);
   });
-  deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(joined_point_indices, *this));
+  worker.deserializer().register_reference_polisher(std::make_unique<ReferencePolisher>(joined_point_indices, *this));
 }
 
-void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void DisjointPathPointSetForest::serialize(serialization::SerializerWorker& worker) const
 {
   auto copy = *this;
   copy.remove_dangling_points();
-  copy.serialize_impl(serializer, root);
+  copy.serialize_impl(worker);
 }
 
 void DisjointPathPointSetForest::remove_dangling_points()
@@ -107,21 +108,18 @@ void DisjointPathPointSetForest::replace(const std::map<PathPoint*, PathPoint*>&
   remove_empty_sets();
 }
 
-void DisjointPathPointSetForest::serialize(AbstractSerializer& serializer,
-                                           const Joint& joint,
-                                           const Pointer& root)
+void DisjointPathPointSetForest::serialize(serialization::SerializerWorker& worker, const Joint& joint)
 {
-  serializer.set_value(joint, root, [&serializer](const auto* p, const auto& root) {
-    serializer.set_value(p->index(), make_pointer(root, INDEX_POINTER));
-    serializer.set_value(p->path_vector()->path_object()->id(), make_pointer(root, PATH_ID_POINTER));
+  worker.set_value(joint, [](const auto* p, auto& worker_i) {
+    worker_i.sub(INDEX_POINTER)->set_value(p->index());
+    worker_i.sub(PATH_ID_POINTER)->set_value(p->path_vector()->path_object()->id());
   });
 }
 
-void DisjointPathPointSetForest::serialize_impl(AbstractSerializer& serializer, const Pointer& root) const
+void DisjointPathPointSetForest::serialize_impl(serialization::SerializerWorker& worker) const
 {
-  const auto ptr = make_pointer(root, FOREST_POINTER);
-  serializer.set_value(m_forest, ptr, [&serializer](const auto& joint, const auto& root) {
-    serialize(serializer, joint, root);
+  worker.sub(FOREST_POINTER)->set_value(m_forest, [](const auto& joint, auto& worker_i) {
+    serialize(worker_i, joint);
   });
 }
 

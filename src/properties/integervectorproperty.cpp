@@ -18,23 +18,21 @@ const Vec2i IntegerVectorPropertyLimits::lower(int_low, int_low);
 const Vec2i IntegerVectorPropertyLimits::upper(int_high, int_high);
 const Vec2i IntegerVectorPropertyLimits::step(1, 1);
 
-void IntegerVectorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void IntegerVectorProperty::deserialize(serialization::DeserializerWorker& worker)
 {
-  NumericProperty::deserialize(deserializer, root);
-  set(deserializer.get_vec2i(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  NumericProperty::deserialize(worker);
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_vec2i());
   if (is_user_property()) {
-    set_default_value(
-        deserializer.get_vec2i(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get_vec2i());
   }
 }
 
-void IntegerVectorProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void IntegerVectorProperty::serialize(serialization::SerializerWorker& worker) const
 {
-  NumericProperty::serialize(serializer, root);
-  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  NumericProperty::serialize(worker);
+  worker.sub(TypedPropertyDetail::VALUE_POINTER)->set_value(value());
   if (is_user_property()) {
-    serializer.set_value(default_value(),
-                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER));
+    worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->set_value(default_value());
   }
 }
 

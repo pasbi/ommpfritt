@@ -38,8 +38,8 @@ public:
     return util::transform(ports, [](AbstractPort* p) { return static_cast<PortT*>(p); });
   }
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
   void set_pos(const QPointF& pos);
   [[nodiscard]] QPointF pos() const;

@@ -5,6 +5,8 @@
 
 #include "animation/track.h"
 #include "properties/optionproperty.h"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
 #include <Qt>
 
 namespace omm
@@ -34,31 +36,28 @@ void Property::revise()
 {
 }
 
-void Property::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void Property::serialize(serialization::SerializerWorker& worker) const
 {
-  Serializable::serialize(serializer, root);
   if (is_user_property()) {
-    serializer.set_value(label(), make_pointer(root, LABEL_POINTER));
-    serializer.set_value(category(), make_pointer(root, CATEGORY_POINTER));
+    worker.sub(LABEL_POINTER)->set_value(label());
+    worker.sub(CATEGORY_POINTER)->set_value(category());
   }
-  serializer.set_value(is_animatable(), make_pointer(root, ANIMATABLE_POINTER));
-  serializer.set_value(m_track != nullptr, make_pointer(root, IS_ANIMATED_POINTER));
+  worker.sub(ANIMATABLE_POINTER)->set_value(is_animatable());
+  worker.sub(IS_ANIMATED_POINTER)->set_value(m_track != nullptr);
   if (m_track != nullptr) {
-    m_track->serialize(serializer, make_pointer(root, TRACK_POINTER));
+    m_track->serialize(*worker.sub(TRACK_POINTER));
   }
 }
 
-void Property::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void Property::deserialize(serialization::DeserializerWorker& worker)
 {
-  Serializable::deserialize(deserializer, root);
+  configuration.deserialize_field<QString>(LABEL_POINTER, worker);
+  configuration.deserialize_field<QString>(CATEGORY_POINTER, worker);
+  configuration.deserialize_field<bool>(ANIMATABLE_POINTER, worker);
 
-  configuration.deserialize_field<QString>(LABEL_POINTER, deserializer, root);
-  configuration.deserialize_field<QString>(CATEGORY_POINTER, deserializer, root);
-  configuration.deserialize_field<bool>(ANIMATABLE_POINTER, deserializer, root);
-
-  if (deserializer.get_bool(make_pointer(root, IS_ANIMATED_POINTER))) {
+  if (worker.sub(IS_ANIMATED_POINTER)->get_bool()) {
     m_track = std::make_unique<Track>(*this);
-    m_track->deserialize(deserializer, make_pointer(root, TRACK_POINTER));
+    m_track->deserialize(*worker.sub(TRACK_POINTER));
   }
 }
 

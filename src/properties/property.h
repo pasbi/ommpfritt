@@ -127,8 +127,8 @@ private:
 
   // === (De)Serialization
 public:
-  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
   // === Animation
 public:

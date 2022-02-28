@@ -84,16 +84,16 @@ std::set<nodes::Node*> NodesTag::nodes() const
   return node_model()->nodes();
 }
 
-void NodesTag::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+void NodesTag::serialize(serialization::SerializerWorker& worker) const
 {
-  Tag::serialize(serializer, root);
-  node_model()->serialize(serializer, make_pointer(root, NODES_POINTER));
+  Tag::serialize(worker);
+  node_model()->serialize(*worker.sub(NODES_POINTER));
 }
 
-void NodesTag::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+void NodesTag::deserialize(serialization::DeserializerWorker& worker)
 {
-  Tag::deserialize(deserializer, root);
-  node_model()->deserialize(deserializer, make_pointer(root, NODES_POINTER));
+  Tag::deserialize(worker);
+  node_model()->deserialize(*worker.sub(NODES_POINTER));
 }
 
 void NodesTag::polish()

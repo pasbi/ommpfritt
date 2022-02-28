@@ -1,7 +1,6 @@
 #pragma once
 
 #include "aspects/propertyowner.h"
-#include "dnf.h"
 #include "properties/typedproperty.h"
 #include <Qt>
 
@@ -22,8 +21,8 @@ public:
   ReferenceProperty& operator=(ReferenceProperty&&) = delete;
   ReferenceProperty& operator=(const ReferenceProperty&) = delete;
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
   static constexpr auto FILTER_POINTER = "filter";
 

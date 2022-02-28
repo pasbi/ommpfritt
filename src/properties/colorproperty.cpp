@@ -10,23 +10,21 @@ const Property::PropertyDetail ColorProperty::detail{
       return QCoreApplication::translate("Color", name.toStdString().c_str());
     }};
 
-void ColorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void ColorProperty::deserialize(serialization::DeserializerWorker& worker)
 {
-  TypedProperty::deserialize(deserializer, root);
-  set(deserializer.get_color(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  TypedProperty::deserialize(worker);
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_color());
   if (is_user_property()) {
-    const auto ptr = make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER);
-    set_default_value(deserializer.get_color(ptr));
+    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get_color());
   }
 }
 
-void ColorProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void ColorProperty::serialize(serialization::SerializerWorker& worker) const
 {
-  TypedProperty::serialize(serializer, root);
-  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  TypedProperty::serialize(worker);
+  worker.sub(TypedPropertyDetail::VALUE_POINTER)->set_value(value());
   if (is_user_property()) {
-    const auto ptr = make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER);
-    serializer.set_value(default_value(), ptr);
+    worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->set_value(default_value());
   }
 }
 

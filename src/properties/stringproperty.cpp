@@ -9,29 +9,24 @@ StringProperty::StringProperty(const QString& default_value) : TypedProperty<QSt
   set_mode(Mode::SingleLine);
 }
 
-void StringProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void StringProperty::deserialize(serialization::DeserializerWorker& worker)
 {
-  TypedProperty::deserialize(deserializer, root);
-  set(deserializer.get_string(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  TypedProperty::deserialize(worker);
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_string());
   if (is_user_property()) {
-    set_default_value(
-        deserializer.get_string(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
-    const auto mode_pointer = make_pointer(root, StringProperty::MODE_PROPERTY_KEY);
-    configuration.set(MODE_PROPERTY_KEY, deserializer.get_size_t(mode_pointer));
+    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get_string());
+    configuration.set(MODE_PROPERTY_KEY, worker.sub(StringProperty::MODE_PROPERTY_KEY)->get_size_t());
   }
 }
 
-void StringProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void StringProperty::serialize(serialization::SerializerWorker& worker) const
 {
-  TypedProperty::serialize(serializer, root);
-  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  TypedProperty::serialize(worker);
+  worker.sub(TypedPropertyDetail::VALUE_POINTER)->set_value(value());
   if (is_user_property()) {
-    serializer.set_value(default_value(),
-                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER));
-    const auto mode_pointer = make_pointer(root, StringProperty::MODE_PROPERTY_KEY);
-
+    worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->set_value(default_value());
     const Mode mode = configuration.get<Mode>(MODE_PROPERTY_KEY);
-    serializer.set_value(static_cast<std::size_t>(static_cast<std::size_t>(mode)), mode_pointer);
+    worker.sub(StringProperty::MODE_PROPERTY_KEY)->set_value(static_cast<std::size_t>(static_cast<std::size_t>(mode)));
   }
 }
 

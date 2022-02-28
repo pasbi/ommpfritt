@@ -70,37 +70,35 @@ std::unique_ptr<Track> Track::clone() const
   return track;
 }
 
-void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) const
+void Track::serialize(serialization::SerializerWorker& worker) const
 {
-  serializer.set_value(type(), make_pointer(pointer, TYPE_KEY));
-  serializer.set_value(m_interpolation, make_pointer(pointer, INTERPOLATION_KEY));
+  worker.sub(TYPE_KEY)->set_value(type());
+  worker.sub(INTERPOLATION_KEY)->set_value(m_interpolation);
 
-  const auto knots_pointer = make_pointer(pointer, KNOTS_KEY);
   const auto key_frames = this->key_frames();
-  serializer.set_value(key_frames, knots_pointer, [this, &serializer](const auto& key_frame, const auto& root) {
+  worker.sub(KNOTS_KEY)->set_value(key_frames, [this](const auto& key_frame, auto& worker_i) {
     const Knot& knot = *m_knots.at(key_frame);
-    serializer.set_value(key_frame, make_pointer(root, FRAME_KEY));
-    serializer.set_value(knot.value, make_pointer(root, VALUE_KEY));
+    worker_i.sub(FRAME_KEY)->set_value(key_frame);
+    worker_i.sub(VALUE_KEY)->set_value(knot.value);
     if (is_numerical()) {
-      serializer.set_value(knot.left_offset, make_pointer(root, LEFT_VALUE_KEY));
-      serializer.set_value(knot.right_offset, make_pointer(root, RIGHT_VALUE_KEY));
+      worker_i.sub(LEFT_VALUE_KEY)->set_value(knot.left_offset);
+      worker_i.sub(RIGHT_VALUE_KEY)->set_value(knot.right_offset);
     }
   });
 }
 
-void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
+void Track::deserialize(serialization::DeserializerWorker& worker)
 {
-  const QString type = deserializer.get_string(make_pointer(pointer, TYPE_KEY));
-  m_interpolation = deserializer.get<Interpolation>(make_pointer(pointer, INTERPOLATION_KEY));
+  const QString type = worker.sub(TYPE_KEY)->get_string();
+  m_interpolation = worker.sub(INTERPOLATION_KEY)->get<Interpolation>();
 
-  const auto knots_pointer = make_pointer(pointer, KNOTS_KEY);
-  deserializer.get_items(knots_pointer, [&deserializer, this, type](const auto& root) {
-    auto knot = std::make_unique<Knot>(deserializer, make_pointer(root, VALUE_KEY), type);
+  worker.sub(KNOTS_KEY)->get_items([this, type](auto& worker_i) {
+    auto knot = std::make_unique<Knot>(*worker_i.sub(VALUE_KEY), type);
     if (is_numerical()) {
-      knot->left_offset = deserializer.get(make_pointer(root, LEFT_VALUE_KEY), type);
-      knot->right_offset = deserializer.get(make_pointer(root, RIGHT_VALUE_KEY), type);
+      knot->left_offset = worker_i.sub(LEFT_VALUE_KEY)->get(type);
+      knot->right_offset = worker_i.sub(RIGHT_VALUE_KEY)->get(type);
     }
-    const int frame = deserializer.get_int(make_pointer(root, FRAME_KEY));
+    const int frame = worker_i.sub(FRAME_KEY)->get_int();
     m_knots.insert(std::pair(frame, std::move(knot)));
   });
 }

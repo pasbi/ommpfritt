@@ -56,8 +56,8 @@ public:
 
   const OrderedMap<QString, Property>& properties() const;
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
   virtual QString name() const;
 
   static const QString NAME_PROPERTY_KEY;

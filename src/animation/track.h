@@ -46,8 +46,8 @@ public:
   static constexpr auto RIGHT_VALUE_KEY = "right-value";
   static constexpr auto INTERPOLATION_KEY = "interpolation";
 
-  void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
   [[nodiscard]] bool has_keyframe(int frame) const
   {

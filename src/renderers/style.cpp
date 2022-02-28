@@ -155,19 +155,19 @@ Texture Style::render_texture(const Object& object,
   return m_offscreen_renderer->render(object, size, roi, options);
 }
 
-void Style::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+void Style::serialize(serialization::SerializerWorker& worker) const
 {
-  PropertyOwner::serialize(serializer, root);
+  PropertyOwner::serialize(worker);
   if (auto* const node_model = this->node_model(); node_model != nullptr) {
-    node_model->serialize(serializer, make_pointer(root, NODES_POINTER));
+    node_model->serialize(*worker.sub(NODES_POINTER));
   }
 }
 
-void Style::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+void Style::deserialize(serialization::DeserializerWorker& worker)
 {
-  PropertyOwner::deserialize(deserializer, root);
+  PropertyOwner::deserialize(worker);
   if (auto* const node_model = this->node_model(); node_model != nullptr) {
-    node_model->deserialize(deserializer, make_pointer(root, NODES_POINTER));
+    node_model->deserialize(*worker.sub(NODES_POINTER));
   }
 }
 

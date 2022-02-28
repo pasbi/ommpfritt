@@ -45,8 +45,8 @@ public:
   [[nodiscard]] bool can_connect(const OutputPort& a, const InputPort& b) const;
   using QObject::connect;
 
-  void serialize(AbstractSerializer&, const Pointer&) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& ptr) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
   static constexpr auto NODES_POINTER = "nodes";
   static constexpr auto TYPE_POINTER = "type";

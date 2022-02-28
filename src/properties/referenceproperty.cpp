@@ -1,5 +1,6 @@
 #include "properties/referenceproperty.h"
 #include "objects/object.h"
+#include "serializers/abstractdeserializer.h"
 #include "tags/tag.h"
 
 namespace omm
@@ -9,7 +10,7 @@ const Property::PropertyDetail ReferenceProperty::detail{nullptr};
 using Flag = Flag;
 using Kind = Kind;
 
-class ReferenceProperty::ReferencePolisher : public omm::ReferencePolisher
+class ReferenceProperty::ReferencePolisher : public omm::serialization::ReferencePolisher
 {
 public:
   explicit ReferencePolisher(const std::size_t reference_value_id, ReferenceProperty& reference_property)
@@ -55,28 +56,26 @@ ReferenceProperty::~ReferenceProperty()
   ReferenceProperty::set(nullptr);
 }
 
-void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void ReferenceProperty::serialize(serialization::SerializerWorker& worker) const
 {
-  TypedProperty::serialize(serializer, root);
-  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
-  serializer.set_value(configuration.get<PropertyFilter>(FILTER_POINTER),
-                       make_pointer(root, ReferenceProperty::FILTER_POINTER));
+  TypedProperty::serialize(worker);
+  worker.sub(TypedPropertyDetail::VALUE_POINTER)->set_value(value());
+  configuration.get<PropertyFilter>(FILTER_POINTER).serialize(*worker.sub(ReferenceProperty::FILTER_POINTER));
 }
 
-void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void ReferenceProperty::deserialize(serialization::DeserializerWorker& worker)
 {
-  TypedProperty::deserialize(deserializer, root);
+  TypedProperty::deserialize(worker);
 
   // not all objects are restored yet, hence not all pointers are known.
   // remember the property to set `m_value` later.
-  const auto ref_pointer = make_pointer(root, TypedPropertyDetail::VALUE_POINTER);
-  const auto reference_value_id = deserializer.get_size_t(ref_pointer);
+  const auto reference_value_id = worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_size_t();
   {
     PropertyFilter filter;
-    deserializer.get(filter, make_pointer(root, ReferenceProperty::FILTER_POINTER));
+    filter.deserialize(*worker.sub(ReferenceProperty::FILTER_POINTER));
     set_filter(filter);
   }
-  deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(reference_value_id, *this));
+  worker.deserializer().register_reference_polisher(std::make_unique<ReferencePolisher>(reference_value_id, *this));
 }
 
 ReferenceProperty& ReferenceProperty::set_filter(const PropertyFilter& filter)

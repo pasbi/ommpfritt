@@ -8,6 +8,7 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "serializers/abstractserializer.h"
+#include "serializers/abstractdeserializer.h"
 #include <random>
 
 namespace
@@ -65,46 +66,39 @@ bool AbstractPropertyOwner::has_property(const QString& key) const
   return m_properties.contains(key);
 }
 
-void AbstractPropertyOwner::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void AbstractPropertyOwner::serialize(serialization::SerializerWorker& worker) const
 {
-  Serializable::serialize(serializer, root);
-  const auto id_pointer = make_pointer(root, ID_POINTER);
-  serializer.set_value(this, id_pointer);
+  worker.sub(ID_POINTER)->set_value(this);
 
-  const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
-  serializer.set_value(m_properties.keys(), properties_pointer, [this, &serializer](const auto& key, const auto& root) {
+  worker.sub(PROPERTIES_POINTER)->set_value(m_properties.keys(), [this](const auto& key, auto& worker_i) {
     const auto& property = *this->property(key);
-    serializer.set_value(key, make_pointer(root, PROPERTY_KEY_POINTER));
-    serializer.set_value(property.type(), make_pointer(root, PROPERTY_TYPE_POINTER));
-    property.serialize(serializer, root);
+    worker_i.sub(PROPERTY_KEY_POINTER)->set_value(key);
+    worker_i.sub(PROPERTY_TYPE_POINTER)->set_value(property.type());
+    property.serialize(worker_i);
   });
 }
 
-void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void AbstractPropertyOwner::deserialize(serialization::DeserializerWorker& worker)
 {
-  Serializable::deserialize(deserializer, root);
+  m_id = worker.sub(ID_POINTER)->get_size_t();
+  worker.deserializer().register_reference(m_id, *this);
 
-  const auto id_pointer = make_pointer(root, ID_POINTER);
-  m_id = deserializer.get_size_t(id_pointer);
-  deserializer.register_reference(m_id, *this);
-
-  const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
-  deserializer.get_items(properties_pointer, [&deserializer, this](const auto& root) {
-    const auto property_key = deserializer.get_string(make_pointer(root, PROPERTY_KEY_POINTER));
-    const auto property_type = deserializer.get_string(make_pointer(root, PROPERTY_TYPE_POINTER));
+  worker.sub(PROPERTIES_POINTER)->get_items([this](auto& worker_i) {
+    const auto property_key = worker_i.sub(PROPERTY_KEY_POINTER)->get_string();
+    const auto property_type = worker_i.sub(PROPERTY_TYPE_POINTER)->get_string();
 
     if (properties().contains(property_key)) {
       assert(property_type == property(property_key)->type());
-      property(property_key)->deserialize(deserializer, root);
+      property(property_key)->deserialize(worker_i);
     } else {
       std::unique_ptr<Property> property;
       try {
         property = Property::make(property_type);
       } catch (const std::out_of_range&) {
         const auto msg = "Failed to retrieve property type '" + property_type + "'.";
-        throw AbstractDeserializer::DeserializeError(msg.toStdString());
+        throw serialization::AbstractDeserializer::DeserializeError(msg.toStdString());
       }
-      property->deserialize(deserializer, root);
+      property->deserialize(worker_i);
       [[maybe_unused]] Property& ref = add_property(property_key, std::move(property));
       assert(ref.is_user_property());
     }

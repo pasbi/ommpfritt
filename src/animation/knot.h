@@ -8,7 +8,7 @@ namespace omm
 struct Knot
 {
   enum class Side { Left, Right };
-  Knot(AbstractDeserializer& deserializer, const Serializable::Pointer& pointer, const QString& type);
+  Knot(serialization::DeserializerWorker& worker, const QString& type);
   Knot(const variant_type& value);
   Knot(Knot&&) = delete;
   Knot& operator=(Knot&&) = delete;
