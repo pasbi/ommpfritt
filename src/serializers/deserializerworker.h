@@ -18,7 +18,7 @@ template<typename T> concept Enum = std::is_enum_v<T>;
 template<typename T> concept NotEnum = !std::is_enum_v<T>;
 
 template<typename T>
-concept Deserializable = requires(const T& s)
+concept Deserializable = requires(T s)
 {
   { s.deserialize(std::declval<DeserializerWorker&>()) };
 };
@@ -48,12 +48,6 @@ public:
   virtual std::unique_ptr<DeserializationArray> start_array() = 0;
   virtual void end_array() {}
 
-  template<NotEnum T> T get();
-  template<Enum T> T get()
-  {
-    return static_cast<T>(get_size_t());
-  }
-
   template<typename A, typename B> void get(std::pair<A, B>& value)
   {
     sub("key")->get(value.first);
@@ -63,6 +57,23 @@ public:
   template<Deserializable T> void get(T& t)
   {
     t.deserialize(*this);
+  }
+
+  template<Enum T> void get(T& val)
+  {
+    val = static_cast<T>(get_size_t());
+  }
+
+  template<typename T> void get(T& val)
+  {
+    val = get<T>();
+  }
+
+  template<typename T> T get()
+  {
+    T t;
+    get(t);
+    return t;
   }
 
   template<typename T> void get(std::set<T>& value)
@@ -84,13 +95,6 @@ public:
     for (std::size_t i = 0; i < n; ++i) {
       value.empalce_back(array->next().get<T>());
     }
-  }
-
-  template<typename T> T get()
-  {
-    T t;
-    get<T>(t);
-    return t;
   }
 
   template<typename F> void get_items(const F& deserializer)

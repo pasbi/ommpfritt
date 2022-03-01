@@ -152,8 +152,11 @@ public:
   Term(std::initializer_list<T> ts) : terms(ts)
   {
   }
+
   Term() = default;
+
   template<typename = typename std::enable_if<is_top_level>>
+
   Term(E positives, E negatives) : terms(convert_literals(positives, negatives))
   {
   }
@@ -165,14 +168,12 @@ public:
 
   void serialize(serialization::SerializerWorker& worker) const
   {
-    Q_UNUSED(worker)
-//    worker.sub("terms")->set_value(terms);
+    worker.sub("terms")->set_value(terms);
   }
 
   void deserialize(serialization::DeserializerWorker& worker)
   {
-    Q_UNUSED(worker)
-//    worker.sub("terms")->get(terms);
+    worker.sub("terms")->get(terms);
   }
 
   bool operator==(const Term<E, T, Junction>& other) const
