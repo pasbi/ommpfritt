@@ -12,12 +12,17 @@
 #include "logging.h"
 #include "propertyconfiguration.h"
 #include "propertytypeenum.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 #include "variant.h"
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 class Object;
 class Track;
 class Property;

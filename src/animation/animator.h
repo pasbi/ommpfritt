@@ -2,8 +2,6 @@
 
 #include "animation/track.h"
 #include "cachedgetter.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 #include <QAbstractItemModel>
 #include <QObject>
 #include <QTimer>
@@ -17,6 +15,12 @@ class Track;
 class Scene;
 class Property;
 class ChannelProxy;
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 class Animator : public QAbstractItemModel
 {

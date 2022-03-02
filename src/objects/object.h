@@ -8,8 +8,6 @@
 #include "external/json_fwd.hpp"
 #include "geometry/objecttransformation.h"
 #include "scene/taglist.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 #include <memory>
 #include <vector>
 #include <QPainterPath>

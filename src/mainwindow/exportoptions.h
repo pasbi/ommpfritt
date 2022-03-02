@@ -1,11 +1,17 @@
 #pragma once
 
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
+#include <QString>
 
 namespace omm
 {
+
 class View;
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 struct ExportOptions
 {

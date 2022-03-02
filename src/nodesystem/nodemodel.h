@@ -4,15 +4,21 @@
 #include "common.h"
 #include "nodesystem/nodecompiler.h"
 #include "nodesystem/port.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 #include <QObject>
 #include <memory>
 #include <set>
 
 namespace omm
 {
+
 class Scene;
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 }  // namespace omm
 
 namespace omm::nodes

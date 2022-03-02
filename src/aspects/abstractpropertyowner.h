@@ -12,8 +12,6 @@
 #include "external/json_fwd.hpp"
 #include "orderedmap.h"
 #include "properties/property.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 #include <Qt>
 
 namespace omm
@@ -21,6 +19,12 @@ namespace omm
 class Scene;
 class Property;
 class ReferenceProperty;
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 class AbstractPropertyOwner : public QObject, virtual public Typed
 {

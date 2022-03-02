@@ -2,7 +2,6 @@
 
 #include "geometry/vec2.h"
 #include "properties/propertyfilter.h"
-#include "serializers/abstractserializer.h"
 #include <QString>
 #include <cctype>
 #include <map>
@@ -10,6 +9,7 @@
 
 namespace omm
 {
+
 class PropertyConfiguration
 {
 public:

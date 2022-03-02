@@ -2,14 +2,18 @@
 
 #include "common.h"
 #include "geometry/vec2.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 #include <deque>
 #include <memory>
 #include <QPainterPath>
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 class Point;
 class PathPoint;

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "color/color.h"
-#include "serializers/serializerworker.h"
-#include "serializers/deserializerworker.h"
 #include <QAbstractItemView>
 #include <QAbstractListModel>
 #include <QComboBox>
@@ -12,6 +10,13 @@
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 class NamedColors : public QAbstractListModel
 {
   Q_OBJECT

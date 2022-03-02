@@ -2,11 +2,16 @@
 
 #include "common.h"
 #include "dnf.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 struct PropertyFilter
 {
   explicit PropertyFilter(const Disjunction<Kind>& kind, const DNF<Flag>& flag);

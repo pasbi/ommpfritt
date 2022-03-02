@@ -2,12 +2,16 @@
 
 #include "geometry/polarcoordinates.h"
 #include "geometry/vec2.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 #include <Qt>
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 class Point
 {

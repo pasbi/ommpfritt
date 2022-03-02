@@ -1,14 +1,19 @@
 #pragma once
 
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 #include "geometry/vec2.h"
 #include <deque>
+#include <memory>
 
 class QPainterPath;
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 class EnhancedPathVector;
 

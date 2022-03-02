@@ -1,10 +1,15 @@
 #pragma once
 
-#include "serializers/abstractdeserializer.h"
 #include "variant.h"
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 struct Knot
 {

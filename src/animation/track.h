@@ -1,8 +1,7 @@
 #pragma once
 
 #include "common.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
+#include "variant.h"
 #include <QCoreApplication>
 #include <QObject>
 #include <map>
@@ -12,6 +11,12 @@ namespace omm
 
 class Property;
 struct Knot;
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 /**
  * @brief The AbstractTrack class is the base class for all track.

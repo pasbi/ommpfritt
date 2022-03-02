@@ -1,13 +1,17 @@
 #pragma once
 
 #include "disjointset.h"
-#include "serializers/deserializerworker.h"
-#include "serializers/serializerworker.h"
 
 namespace omm
 {
 
 class PathPoint;
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 class DisjointPathPointSetForest : public DisjointSetForest<PathPoint*>
 {
