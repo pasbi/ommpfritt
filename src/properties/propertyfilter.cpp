@@ -58,6 +58,6 @@ PropertyFilter PropertyFilter::accept_anything()
 
 QString PropertyFilter::to_string() const
 {
-  return QString{"Filter[Flag=%1, Kind=%2]"}.arg(flag.to_string()).arg(kind.to_string());
+  return QString{"Filter[Flag=%1, Kind=%2]"}.arg(flag.to_string(), kind.to_string());
 }
 }  // namespace omm
