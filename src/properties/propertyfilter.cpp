@@ -42,6 +42,11 @@ bool PropertyFilter::operator==(const PropertyFilter& other) const
   return kind == other.kind && flag == other.flag;
 }
 
+bool PropertyFilter::operator!=(const PropertyFilter& other) const
+{
+  return !(*this == other);
+}
+
 bool PropertyFilter::operator<(const PropertyFilter& other) const
 {
   if (kind == other.kind) {
@@ -60,4 +65,5 @@ QString PropertyFilter::to_string() const
 {
   return QString{"Filter[Flag=%1, Kind=%2]"}.arg(flag.to_string(), kind.to_string());
 }
+
 }  // namespace omm

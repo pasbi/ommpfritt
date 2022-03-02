@@ -24,7 +24,7 @@ public:
 protected:
   std::unique_ptr<DeserializationArray> start_array() override;
   std::unique_ptr<DeserializerWorker> sub(const std::string& key) override;
-  std::unique_ptr<DeserializerWorker> sub(const std::size_t i) override;
+  std::unique_ptr<DeserializerWorker> sub(std::size_t i) override;
 
 private:
   const nlohmann::json& m_value;

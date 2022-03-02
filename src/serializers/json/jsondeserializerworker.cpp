@@ -107,14 +107,14 @@ std::unique_ptr<DeserializationArray> JSONDeserializerWorker::start_array()
     {
     }
 
-    DeserializerWorker& next() override
+    [[nodiscard]] DeserializerWorker& next() override
     {
       m_current = m_parent.sub(m_next_index);
       m_next_index += 1;
       return *m_current;
     }
 
-    std::size_t size() const override
+    [[nodiscard]] std::size_t size() const override
     {
       return m_size;
     }

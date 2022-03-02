@@ -23,15 +23,12 @@ struct PropertyFilter
   DNF<Flag> flag;
   [[nodiscard]] bool accepts(const AbstractPropertyOwner& apo) const;
   [[nodiscard]] bool accepts(Kind kind, Flag flag) const;
-  bool operator==(const PropertyFilter& other) const;
-  bool operator!=(const PropertyFilter& other) const
-  {
-    return !(*this == other);
-  }
-  bool operator<(const PropertyFilter& other) const;
+  [[nodiscard]] bool operator==(const PropertyFilter& other) const;
+  [[nodiscard]] bool operator!=(const PropertyFilter& other) const;
+  [[nodiscard]] bool operator<(const PropertyFilter& other) const;
 
-  static PropertyFilter accept_anything();
-  QString to_string() const;
+  [[nodiscard]] static PropertyFilter accept_anything();
+  [[nodiscard]] QString to_string() const;
 };
 
 }  // namespace omm

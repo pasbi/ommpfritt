@@ -5,17 +5,18 @@
 
 namespace omm
 {
+
 int NamedColors::rowCount(const QModelIndex& parent) const
 {
   assert(!parent.isValid());
   Q_UNUSED(parent)
-  return m_named_colors.size();
+  return static_cast<int>(m_named_colors.size());
 }
 
 QVariant NamedColors::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
-    return QVariant();
+    return {};
   }
   const auto& [name, color] = m_named_colors[index.row()];
   switch (role) {
@@ -24,7 +25,7 @@ QVariant NamedColors::data(const QModelIndex& index, int role) const
   case Qt::DisplayRole:
     return name;
   default:
-    return QVariant();
+    return {};
   }
 }
 
@@ -77,7 +78,7 @@ QModelIndex NamedColors::index(const QString& name) const
   const auto it = std::find_if(m_named_colors.begin(),
                                m_named_colors.end(),
                                [name](const auto& pair) { return pair.first == name; });
-  return index(std::distance(m_named_colors.begin(), it), 0);
+  return index(static_cast<int>(std::distance(m_named_colors.begin(), it)), 0);
 }
 
 bool NamedColors::has_color(const QString& name) const
@@ -123,8 +124,8 @@ void NamedColors::remove(const QString& name)
   const QModelIndex index = this->index(name);
   assert(index.isValid());
   assert(index.model() == this);
-  const std::size_t n = index.row();
-  beginRemoveRows(QModelIndex(), n, n);
+  const auto n = static_cast<int>(index.row());
+  beginRemoveRows({}, n, n);
   m_named_colors.erase(m_named_colors.begin() + n);
   endRemoveRows();
 }
@@ -181,7 +182,7 @@ QString NamedColors::generate_default_name() const
 
 QModelIndex NamedColors::add(const QString& name, const Color& color)
 {
-  const std::size_t n = m_named_colors.size();
+  const auto n = static_cast<int>(m_named_colors.size());
   beginInsertRows(QModelIndex(), n, n);
   m_named_colors.emplace_back(name, color);
   endInsertRows();

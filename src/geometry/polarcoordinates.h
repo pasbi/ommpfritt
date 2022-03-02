@@ -28,18 +28,18 @@ struct PolarCoordinates
   /**
    * @brief operator < enables the use of PolarCoordinates in, e.g., std::set
    */
-  bool operator<(const PolarCoordinates& other) const;
-  bool operator!=(const PolarCoordinates& point) const;
-  PolarCoordinates operator-() const;
+  [[nodiscard]] bool operator<(const PolarCoordinates& other) const;
+  [[nodiscard]] bool operator!=(const PolarCoordinates& point) const;
+  [[nodiscard]] PolarCoordinates operator-() const;
 
   /**
    * @brief normalize_angle normalizes an angle.
    * @param rad the angle
    * @return an number between [-pi, pi)
    */
-  static double normalize_angle(double rad);
+  [[nodiscard]] static double normalize_angle(double rad);
 
-  QString to_string() const;
+  [[nodiscard]] QString to_string() const;
   void serialize(serialization::SerializerWorker& worker) const;
   void deserialize(serialization::DeserializerWorker& worker);
 };

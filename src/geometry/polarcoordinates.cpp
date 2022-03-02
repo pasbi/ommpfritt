@@ -71,7 +71,8 @@ double PolarCoordinates::normalize_angle(double rad)
 
 QString PolarCoordinates::to_string() const
 {
-  return QString{"[%1°, %2]"}.arg(argument * 180.0 / M_PI).arg(magnitude);
+  static constexpr auto rad_to_deg = 180.0 / M_PI;
+  return QString{"[%1°, %2]"}.arg(argument * rad_to_deg).arg(magnitude);
 }
 
 void PolarCoordinates::serialize(serialization::SerializerWorker& worker) const

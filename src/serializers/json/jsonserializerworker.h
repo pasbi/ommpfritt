@@ -21,7 +21,7 @@ public:
 protected:
   std::unique_ptr<SerializationArray> start_array(std::size_t size) override;
   std::unique_ptr<SerializerWorker> sub(const std::string& key) override;
-  std::unique_ptr<SerializerWorker> sub(const std::size_t i) override;
+  std::unique_ptr<SerializerWorker> sub(std::size_t i) override;
 
 private:
   nlohmann::json& m_value;

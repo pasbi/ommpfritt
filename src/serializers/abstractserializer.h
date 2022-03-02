@@ -40,10 +40,6 @@ private:
   template<typename T> static inline constexpr bool is_iterable_v = is_iterable<T>::value;
 
 public:
-  explicit AbstractSerializer()
-  {
-  }
-
   class SerializeError : public std::runtime_error
   {
   public:

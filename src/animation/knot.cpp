@@ -31,7 +31,7 @@ private:
 Knot::Knot(serialization::DeserializerWorker& worker, const QString& type)
 {
   if (type == "Reference") {
-    const std::size_t reference_id = worker.get<std::size_t>();
+    const auto reference_id = worker.get<std::size_t>();
     auto ref_polisher = std::make_unique<ReferencePolisher>(reference_id, *this);
     worker.deserializer().register_reference_polisher(std::move(ref_polisher));
     value = nullptr;

@@ -49,19 +49,19 @@ using SpInit = omm::SplineType::Initialization;
 const std::map<SpInit, omm::SplineType::knot_map_type> predefined{
     {SpInit::Linear,
      {
-         {0.0, Knot(0.0, -1.0 / 3.0, 1.0 / 3.0)},
-         {1.0, Knot(1.0, -1.0 / 3.0, 1.0 / 3.0)},
+         {0.0, Knot(0.0, {-1.0 / 3.0, 1.0 / 3.0})},
+         {1.0, Knot(1.0, {-1.0 / 3.0, 1.0 / 3.0})},
      }},
     {SpInit::Ease,
      {
-         {0.0, Knot(0.0, 0.0, 0.0)},
-         {1.0, Knot(1.0, 0.0, 0.0)},
+         {0.0, Knot(0.0, {0.0, 0.0})},
+         {1.0, Knot(1.0, {0.0, 0.0})},
      }},
     {SpInit::Valley,
      {
-         {0.0, Knot(1.0, 0.0, 0.0)},
-         {0.5, Knot(0.0, 0.0, 0.0)},
-         {1.0, Knot(1.0, 0.0, 0.0)},
+         {0.0, Knot(1.0, {0.0, 0.0})},
+         {0.5, Knot(0.0, {0.0, 0.0})},
+         {1.0, Knot(1.0, {0.0, 0.0})},
      }},
 };
 
@@ -70,6 +70,7 @@ const std::map<SpInit, omm::SplineType::knot_map_type> predefined{
 namespace omm
 {
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 QString SplineType::to_string() const
 {
   return {};
@@ -90,7 +91,7 @@ void SplineType::deserialize(serialization::DeserializerWorker& worker)
   knots.clear();
   worker.get_items([this](auto& worker_i) {
     const auto values = worker_i.template get<std::vector<double>>();
-    knots.emplace(values.at(0), SplineType::Knot(values.at(1), values.at(2), values.at(3)));
+    knots.emplace(values.at(0), SplineType::Knot(values.at(1), {values.at(2), values.at(3)}));
   });
 }
 
@@ -118,6 +119,11 @@ SplineType::SplineType(Initialization initialization, bool flip)
 bool SplineType::operator==(const SplineType& other) const
 {
   return knots == other.knots;
+}
+
+bool SplineType::operator!=(const SplineType& other) const
+{
+  return !(*this == other);
 }
 
 bool SplineType::operator<(const SplineType& other) const
@@ -167,8 +173,8 @@ SplineType::Interpolation SplineType::evaluate(double t) const
   return interpolation;
 }
 
-SplineType::Knot::Knot(double value, double left_offset, double right_offset)
-    : value(value), left_offset(left_offset), right_offset(right_offset)
+SplineType::Knot::Knot(double value, const std::pair<double, double>& left_right_offset)
+    : value(value), left_offset(left_right_offset.first), right_offset(left_right_offset.second)
 {
 }
 
@@ -176,6 +182,11 @@ bool SplineType::Knot::operator==(const SplineType::Knot& other) const
 {
   return value == other.value && left_offset == other.left_offset
          && right_offset == other.right_offset;
+}
+
+bool Knot::operator!=(const Knot& other) const
+{
+  return !(*this == other);
 }
 
 bool SplineType::Knot::operator<(const SplineType::Knot& other) const

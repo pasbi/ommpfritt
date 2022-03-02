@@ -42,6 +42,40 @@ void populate_locals(py::object& locals, const omm::nodes::NodeModel& model)
   }
 }
 
+using InputPropertyPort = omm::nodes::PropertyPort<omm::nodes::PortType::Input>;
+
+void evaluate_connected_property_port(const InputPropertyPort& port, const pybind11::dict& locals)
+{
+  auto* const property = port.property();
+  if (property != nullptr) {
+    const auto var_name = port.uuid();
+    const auto py_var_name = py::cast(var_name.toStdString());
+    if (locals.contains(py_var_name)) {
+      if (port.data_type() == property->data_type()) {
+        const auto var = python_to_variant(locals[py_var_name], port.data_type());
+        property->set(var);
+      } else {
+        // don't set the value if types don't match.
+        // That may be inconvenient, but the type of the property is fixed. A value of another
+        // type cannot be set.
+      }
+    }
+  }
+}
+
+void evaluate_spy_node(omm::nodes::InputPort* port, const pybind11::dict& locals)
+{
+  auto& spy_node = dynamic_cast<omm::nodes::SpyNode&>(port->node);
+  const auto py_var_name = py::cast(port->uuid().toStdString());
+  if (locals.contains(py_var_name)) {
+    py::object val = locals[py_var_name];
+    const QString repr = QString::fromStdString(py::str(val));
+    spy_node.set_text(repr);
+  } else {
+    spy_node.set_text(QObject::tr("nil"));
+  }
+}
+
 }  // namespace
 
 namespace omm
@@ -121,33 +155,10 @@ void NodesTag::force_evaluate()
   if (Application::instance().python_engine->exec(code, locals, this)) {
     for (auto* const port : model.ports<nodes::InputPort>()) {
       if (port->node.type() == nodes::SpyNode::TYPE) {
-        auto& spy_node = dynamic_cast<nodes::SpyNode&>(port->node);
-        const auto py_var_name = py::cast(port->uuid().toStdString());
-        if (locals.contains(py_var_name)) {
-          py::object val = locals[py_var_name];
-          const QString repr = QString::fromStdString(py::str(val));
-          spy_node.set_text(repr);
-        } else {
-          spy_node.set_text(tr("nil"));
-        }
+        ::evaluate_spy_node(port, locals);
       }
       if (port->flavor == nodes::PortFlavor::Property && port->is_connected()) {
-        using InputPropertyPort = nodes::PropertyPort<nodes::PortType::Input>;
-        auto* const property = dynamic_cast<InputPropertyPort*>(port)->property();
-        if (property != nullptr) {
-          const auto var_name = port->uuid();
-          const auto py_var_name = py::cast(var_name.toStdString());
-          if (locals.contains(py_var_name)) {
-            if (port->data_type() == property->data_type()) {
-              const variant_type var = python_to_variant(locals[py_var_name], port->data_type());
-              property->set(var);
-            } else {
-              // don't set the value if types don't match.
-              // That may be inconvenient, but the type of the property is fixed. A value of another
-              // type cannot be set.
-            }
-          }
-        }
+        ::evaluate_connected_property_port(dynamic_cast<const InputPropertyPort&>(*port), locals);
       }
     }
     model.set_error("");

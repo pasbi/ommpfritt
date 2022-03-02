@@ -8,31 +8,31 @@ TEST(SplineTypeTest, insert)
   omm::SplineType st;
 
   {
-    const Knot knot(1.0, 2.0, 3.0);
+    const Knot knot(1.0, {2.0, 3.0});
     st.knots.insert({0.5, knot});
     ASSERT_EQ(st.knots.begin()->second, knot);
   }
 
   {
-    const Knot knot(1.1, 2.1, 3.1);
+    const Knot knot(1.1, {2.1, 3.1});
     st.knots.insert({0.9, knot});
     ASSERT_EQ(std::next(st.knots.begin())->second, knot);
   }
 
   {
-    const Knot knot(1.2, 2.2, 3.2);
+    const Knot knot(1.2, {2.2, 3.2});
     st.knots.insert({0.1, knot});
     ASSERT_EQ(st.knots.begin()->second, knot);
   }
 
   {
-    const Knot knot(1.3, 2.3, 3.3);
+    const Knot knot(1.3, {2.3, 3.3});
     st.knots.insert({0.1, knot});
     ASSERT_EQ(std::next(st.knots.begin())->second, knot);
   }
 
   {
-    const Knot knot(1.4, 2.4, 3.4);
+    const Knot knot(1.4, {2.4, 3.4});
     st.knots.insert({0.9, knot});
     EXPECT_EQ(std::next(st.knots.begin(), 4)->second, knot);
   }
@@ -46,9 +46,9 @@ TEST(SplineTypeTest, value)
   const omm::SplineType ease_down(omm::SplineType::Initialization::Ease, true);
   const omm::SplineType valley(omm::SplineType::Initialization::Valley, false);
   const omm::SplineType mountain(omm::SplineType::Initialization::Valley, true);
-  const omm::SplineType center({{0.5, omm::SplineType::Knot(0.7, 0.0, 0.0)}});
-  const omm::SplineType left({{0.0, omm::SplineType::Knot(0.7, 0.0, 0.0)}});
-  const omm::SplineType right({{1.0, omm::SplineType::Knot(0.7, 0.0, 0.0)}});
+  const omm::SplineType center({{0.5, omm::SplineType::Knot(0.7, {0.0, 0.0})}});
+  const omm::SplineType left({{0.0, omm::SplineType::Knot(0.7, {0.0, 0.0})}});
+  const omm::SplineType right({{1.0, omm::SplineType::Knot(0.7, {0.0, 0.0})}});
   const omm::SplineType empty;
 
   const std::set<const omm::SplineType*> rot_symmetric{&up, &down, &ease_up, &ease_down};

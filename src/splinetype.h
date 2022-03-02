@@ -19,16 +19,13 @@ class SplineType
 public:
   struct Knot {
     enum class Side { Left = 0x1, Middle = 0x2, Right = 0x4 };
-    explicit Knot(double value = 0, double left_offset = 0, double right_offset = 0);
+    explicit Knot(double value = 0, const std::pair<double, double>& left_right_offset = {0.0, 0.0});
     double value;
     double left_offset;
     double right_offset;
-    bool operator==(const Knot& other) const;
-    bool operator!=(const Knot& other) const
-    {
-      return !(*this == other);
-    }
-    bool operator<(const Knot& other) const;
+    [[nodiscard]] bool operator==(const Knot& other) const;
+    [[nodiscard]] bool operator!=(const Knot& other) const;
+    [[nodiscard]] bool operator<(const Knot& other) const;
     [[nodiscard]] double get_value(Side side) const;
     void set_value(Side side, double value);
   };
@@ -36,7 +33,7 @@ public:
   using knot_map_type = std::multimap<double, Knot>;
   knot_map_type knots;
 
-  QString to_string() const;
+  [[nodiscard]] QString to_string() const;
   void serialize(serialization::SerializerWorker& worker) const;
   void deserialize(serialization::DeserializerWorker& worker);
 
@@ -71,22 +68,27 @@ private:
     {
       return m_value.value().first->second;
     }
+
     [[nodiscard]] double& t() const
     {
       return m_value.value().first->first;
     }
+
     Knot::Side& side()
     {
       return m_value.value().second;
     }
+
     [[nodiscard]] Knot::Side side() const
     {
       return m_value.value().second;
     }
+
     Iterator& iterator()
     {
       return m_value.value().first;
     }
+
     [[nodiscard]] Iterator iterator() const
     {
       return m_value.value().first;
@@ -128,12 +130,9 @@ public:
   explicit SplineType(Initialization initialization, bool flip);
   explicit SplineType() = default;
 
-  bool operator==(const SplineType& other) const;
-  bool operator!=(const SplineType& other) const
-  {
-    return !(*this == other);
-  }
-  bool operator<(const SplineType& other) const;
+  [[nodiscard]] bool operator==(const SplineType& other) const;
+  [[nodiscard]] bool operator!=(const SplineType& other) const;
+  [[nodiscard]] bool operator<(const SplineType& other) const;
   knot_map_type::iterator move(knot_map_type::const_iterator it, double new_t);
   static constexpr auto TYPE = "SplineType";
 

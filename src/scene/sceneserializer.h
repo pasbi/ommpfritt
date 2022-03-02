@@ -20,15 +20,15 @@ class SceneSerialization
 public:
   explicit SceneSerialization(Scene& scene);
 
-  template<typename Serializer> bool save(Serializer& serializer) const;
-  bool save(const QString& filename) const;
-  bool save_json(const QString& filename) const;
-  bool save(const QString& filename, scene_serializer::Format format) const;
+  template<typename Serializer> bool save(Serializer& serializer) const;  // NOLINT(modernize-use-nodiscard)
+  bool save(const QString& filename) const;  // NOLINT(modernize-use-nodiscard)
+  bool save_json(const QString& filename) const;  // NOLINT(modernize-use-nodiscard)
+  bool save(const QString& filename, scene_serializer::Format format) const;  // NOLINT(modernize-use-nodiscard)
 
-  template<typename Deserializer> bool load(Deserializer& deserializer) const;
-  bool load(const QString& filename) const;
-  bool load_json(const QString& filename) const;
-  bool load(const QString& filename, scene_serializer::Format format) const;
+  template<typename Deserializer> bool load(Deserializer& deserializer) const;  // NOLINT(modernize-use-nodiscard)
+  bool load(const QString& filename) const;  // NOLINT(modernize-use-nodiscard)
+  bool load_json(const QString& filename) const;  // NOLINT(modernize-use-nodiscard)
+  bool load(const QString& filename, scene_serializer::Format format) const;  // NOLINT(modernize-use-nodiscard)
 
 private:
   Scene& m_scene;

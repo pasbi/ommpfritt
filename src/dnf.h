@@ -63,7 +63,7 @@ public:
     return value[i] == this->value;
   }
 
-  bool evaluate(const E& e) const
+  [[nodiscard]] bool evaluate(const E& e) const
   {
     const auto v = static_cast<DNF_detail::underlying_type_t<E>>(e);
     return !!(v & (1 << i)) == value;
@@ -81,12 +81,12 @@ public:
     value =worker.sub("v")->get_bool();
   }
 
-  bool operator==(const Literal<E>& other) const
+  [[nodiscard]] bool operator==(const Literal<E>& other) const
   {
     return i == other.i && value == other.value;
   }
 
-  bool operator<(const Literal<E>& other) const
+  [[nodiscard]] bool operator<(const Literal<E>& other) const
   {
     if (i == other.i) {
       return value < other.value;
@@ -104,7 +104,7 @@ public:
     return static_cast<E>(1 << i);
   }
 
-  QString to_string() const
+  [[nodiscard]] QString to_string() const
   {
     QString s;
     if (!value) {
@@ -113,7 +113,7 @@ public:
     if constexpr (std::is_enum_v<E>) {
       s += QString("%1").arg(static_cast<std::underlying_type_t<E>>(i));
     } else {
-      s += QString("%1").arg(value);
+      s += QString("%1").arg(value ? 1 : 0);
     }
 
     return s;
@@ -161,7 +161,7 @@ public:
   {
   }
 
-  template<typename V> bool evaluate(const V& value) const
+  template<typename V> [[nodiscard]] bool evaluate(const V& value) const
   {
     return Junction::evaluate(terms, value);
   }
@@ -176,12 +176,12 @@ public:
     worker.sub("terms")->get(terms);
   }
 
-  bool operator==(const Term<E, T, Junction>& other) const
+  [[nodiscard]] bool operator==(const Term<E, T, Junction>& other) const
   {
     return terms == other.terms;
   }
 
-  bool operator<(const Term<E, T, Junction>& other) const
+  [[nodiscard]] bool operator<(const Term<E, T, Junction>& other) const
   {
     return std::lexicographical_compare(terms.begin(),
                                         terms.end(),
@@ -189,7 +189,7 @@ public:
                                         other.terms.end());
   }
 
-  QString to_string() const
+  [[nodiscard]] QString to_string() const
   {
     QString s;
     s += "( ";

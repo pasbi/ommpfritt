@@ -28,8 +28,13 @@ class DeserializerWorker
 public:
   explicit DeserializerWorker(AbstractDeserializer& deserializer);
   virtual ~DeserializerWorker() = default;
+  DeserializerWorker(const DeserializerWorker&) = delete;
+  DeserializerWorker(DeserializerWorker&&) = delete;
+  DeserializerWorker& operator=(const DeserializerWorker&) = delete;
+  DeserializerWorker& operator=(DeserializerWorker&&) = delete;
+
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
-  AbstractDeserializer& deserializer() const;
+  [[nodiscard]] AbstractDeserializer& deserializer() const;
 
   [[nodiscard]] virtual bool get_bool() = 0;
   [[nodiscard]] virtual int get_int() = 0;
@@ -37,9 +42,9 @@ public:
   [[nodiscard]] virtual QString get_string() = 0;
   [[nodiscard]] virtual std::size_t get_size_t() = 0;
   [[nodiscard]] virtual TriggerPropertyDummyValueType get_trigger_dummy_value() = 0;
-  virtual std::unique_ptr<DeserializerWorker> sub(const std::string& key) = 0;
-  virtual std::unique_ptr<DeserializerWorker> sub(std::size_t i) = 0;
-  virtual std::unique_ptr<DeserializationArray> start_array() = 0;
+  [[nodiscard]] virtual std::unique_ptr<DeserializerWorker> sub(const std::string& key) = 0;
+  [[nodiscard]] virtual std::unique_ptr<DeserializerWorker> sub(std::size_t i) = 0;
+  [[nodiscard]] virtual std::unique_ptr<DeserializationArray> start_array() = 0;
   virtual void end_array() {}
 
   // since there's no partial function template specialization, overloading plays an important
@@ -101,14 +106,14 @@ public:
     }
   }
 
-  template<typename T> T get()
+  template<typename T> [[nodiscard]] T get()
   {
     T t;
     get(t);
     return t;
   }
 
-  variant_type get(const QString& type);
+  [[nodiscard]] variant_type get(const QString& type);
 
 private:
   AbstractDeserializer& m_deserializer;

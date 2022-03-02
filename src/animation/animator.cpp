@@ -204,7 +204,7 @@ QModelIndex Animator::index(int row, int column, const QModelIndex& parent) cons
     [[fallthrough]];
   default:
     Q_UNREACHABLE();  // channel index cannot be parent
-    return QModelIndex();
+    return {};
   }
 }
 
@@ -215,7 +215,7 @@ QModelIndex Animator::parent(const QModelIndex& child) const
     [[fallthrough]];
   case IndexType::Owner:
     // parent of owner is root.
-    return QModelIndex();
+    return {};
   case IndexType::Property:
     // parent of property is owner
     return index(*accelerator().owner(*property(child)));
@@ -224,7 +224,7 @@ QModelIndex Animator::parent(const QModelIndex& child) const
     return index(channel(child).track.property());
   default:
     Q_UNREACHABLE();
-    return QModelIndex();
+    return {};
   }
 }
 
@@ -232,14 +232,11 @@ int Animator::rowCount(const QModelIndex& parent) const
 {
   switch (index_type(parent)) {
   case IndexType::None:
-    return accelerator().owners().size();
+    return static_cast<int>(accelerator().owners().size());
   case IndexType::Owner:
-    return accelerator().properties(*owner(parent)).size();
-  case IndexType::Property: {
-    Property& pp = *property(parent);
-    const auto n = n_channels(pp.variant_value());
-    return n;
-  }
+    return static_cast<int>(accelerator().properties(*owner(parent)).size());
+  case IndexType::Property:
+    return static_cast<int>(n_channels(property(parent)->variant_value()));
   case IndexType::Channel:
     return 0;
   default:
@@ -256,7 +253,7 @@ int Animator::columnCount(const QModelIndex&) const
 QVariant Animator::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
-    return QVariant();
+    return {};
   }
   assert(index.column() == 0);
   switch (index_type(index)) {
@@ -267,7 +264,7 @@ QVariant Animator::data(const QModelIndex& index, int role) const
     case Qt::DecorationRole:
       return IconProvider::icon(*owner(index));
     default:
-      return QVariant();
+      return {};
     }
     break;
   case IndexType::Property:
@@ -275,7 +272,7 @@ QVariant Animator::data(const QModelIndex& index, int role) const
     case Qt::DisplayRole:
       return property(index)->label();
     default:
-      return QVariant();
+      return {};
     }
   case IndexType::Channel:
     switch (role) {
@@ -284,14 +281,14 @@ QVariant Animator::data(const QModelIndex& index, int role) const
       return c.track.property().channel_name(c.channel);
     }
     default:
-      return QVariant();
+      return {};
     }
   default:
     Q_UNREACHABLE();
   }
 
   Q_UNREACHABLE();
-  return QVariant();
+  return {};
 }
 
 Qt::ItemFlags Animator::flags(const QModelIndex&) const
@@ -303,21 +300,21 @@ QModelIndex Animator::index(Property& property, int column) const
 {
   AbstractPropertyOwner& owner = *accelerator().owner(property);
   const auto props = accelerator().properties(owner);
-  const int row = std::distance(props.begin(), std::find(props.begin(), props.end(), &property));
+  const auto row = static_cast<int>(std::distance(props.begin(), std::find(props.begin(), props.end(), &property)));
   return createIndex(row, column, &property);
 }
 
 QModelIndex Animator::index(AbstractPropertyOwner& owner, int column) const
 {
   const auto& owners = accelerator().owners();
-  const int row = std::distance(owners.begin(), std::find(owners.begin(), owners.end(), &owner));
+  const auto row = static_cast<int>(std::distance(owners.begin(), std::find(owners.begin(), owners.end(), &owner)));
   return createIndex(row, column, &owner);
 }
 
 QModelIndex Animator::index(const std::pair<Property*, std::size_t>& channel, int column) const
 {
   const auto [property, c] = channel;
-  return createIndex(c, column, m_channel_proxies.at({property->track(), c}).get());
+  return createIndex(static_cast<int>(c), column, m_channel_proxies.at({property->track(), c}).get());
 }
 
 Animator::IndexType Animator::index_type(const QModelIndex& index)
@@ -474,7 +471,7 @@ AbstractPropertyOwner* Animator::Accelerator::owner(Property& property) const
 std::list<AbstractPropertyOwner*> Animator::Accelerator::animatable_owners() const
 {
   auto owners = m_scene->property_owners();
-  return std::list<AbstractPropertyOwner*>(owners.begin(), owners.end());
+  return {owners.begin(), owners.end()};
 }
 
 }  // namespace omm

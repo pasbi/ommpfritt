@@ -26,6 +26,10 @@ class SerializerWorker
 public:
   explicit SerializerWorker() = default;
   virtual ~SerializerWorker() = default;
+  SerializerWorker(const SerializerWorker&) = delete;
+  SerializerWorker(SerializerWorker&&) = delete;
+  SerializerWorker& operator=(const SerializerWorker&) = delete;
+  SerializerWorker& operator=(SerializerWorker&&) = delete;
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual void set_value(bool value) = 0;
   virtual void set_value(int value) = 0;
@@ -72,10 +76,10 @@ public:
     }
   }
 
-  virtual std::unique_ptr<SerializerWorker> sub(const std::string& key) = 0;
-  virtual std::unique_ptr<SerializerWorker> sub(std::size_t i) = 0;
+  [[nodiscard]] virtual std::unique_ptr<SerializerWorker> sub(const std::string& key) = 0;
+  [[nodiscard]] virtual std::unique_ptr<SerializerWorker> sub(std::size_t i) = 0;
   virtual void end_array() {}
-  virtual std::unique_ptr<SerializationArray> start_array(std::size_t size) = 0;
+  [[nodiscard]] virtual std::unique_ptr<SerializationArray> start_array(std::size_t size) = 0;
 };
 
 }  // namespace omm::serialization

@@ -11,7 +11,11 @@ class Array
 public:
   Array(Worker& parent) : m_parent(parent) {}
   virtual ~Array() { m_parent.end_array(); }
-  virtual Worker& next() = 0;
+  Array(const Array&) = delete;
+  Array(Array&&) = delete;
+  Array& operator=(const Array&) = delete;
+  Array& operator=(Array&&) = delete;
+  [[nodiscard]] virtual Worker& next() = 0;
 
 protected:
   std::size_t m_next_index = 0;
@@ -24,7 +28,7 @@ class DeserializationArray : public Array<DeserializerWorker>
 {
 public:
   using Array::Array;
-  virtual std::size_t size() const = 0;
+  [[nodiscard]] virtual std::size_t size() const = 0;
 };
 
 class SerializerWorker;
