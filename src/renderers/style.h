@@ -35,8 +35,8 @@ public:
                          const QRectF& roi,
                          const PainterOptions& options) const;
 
-  void serialize(serialization::SerializerWorker& worker) const;
-  void deserialize(serialization::DeserializerWorker& worker);
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
 public:
   static constexpr auto PEN_IS_ACTIVE_KEY = "pen/active";

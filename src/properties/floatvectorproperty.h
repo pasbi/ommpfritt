@@ -15,8 +15,8 @@ class FloatVectorProperty : public NumericProperty<Vec2f>
 {
 public:
   using NumericProperty::NumericProperty;
-  void deserialize(serialization::DeserializerWorker& worker);
-  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
   static const PropertyDetail detail;
 };
 

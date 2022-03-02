@@ -10,8 +10,8 @@ class OptionProperty : public TypedProperty<std::size_t>
 {
 public:
   using TypedProperty::TypedProperty;
-  void deserialize(serialization::DeserializerWorker& worker);
-  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
   void set(const variant_type& variant) override;
 
   [[nodiscard]] std::deque<QString> options() const;

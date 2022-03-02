@@ -39,8 +39,8 @@ public:
   Flag flags() const override;
   std::set<nodes::Node*> nodes() const;
 
-  void serialize(serialization::SerializerWorker& worker) const;
-  void deserialize(serialization::DeserializerWorker& worker);
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
 
 private:
   void polish();

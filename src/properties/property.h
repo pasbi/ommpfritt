@@ -125,8 +125,8 @@ private:
 
   // === (De)Serialization
 public:
-  void serialize(serialization::SerializerWorker& worker) const;
-  void deserialize(serialization::DeserializerWorker& worker);
+  virtual void serialize(serialization::SerializerWorker& worker) const;
+  virtual void deserialize(serialization::DeserializerWorker& worker);
 
   // === Animation
 public:

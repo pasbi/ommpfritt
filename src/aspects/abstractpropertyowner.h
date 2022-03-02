@@ -54,8 +54,8 @@ public:
 
   const OrderedMap<QString, Property>& properties() const;
 
-  void serialize(serialization::SerializerWorker& worker) const;
-  void deserialize(serialization::DeserializerWorker& worker);
+  virtual void serialize(serialization::SerializerWorker& worker) const;
+  virtual void deserialize(serialization::DeserializerWorker& worker);
   virtual QString name() const;
 
   static const QString NAME_PROPERTY_KEY;

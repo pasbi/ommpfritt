@@ -54,8 +54,8 @@ public:
                                               Space space);
   bool is_transformation_property(const Property& property) const;
 
-  void serialize(serialization::SerializerWorker& worker) const;
-  void deserialize(serialization::DeserializerWorker& worker);
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
   virtual void draw_handles(Painter& renderer) const;
 
   virtual void
