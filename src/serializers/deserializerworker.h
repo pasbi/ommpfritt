@@ -27,6 +27,7 @@ class DeserializerWorker
 {
 public:
   explicit DeserializerWorker(AbstractDeserializer& deserializer);
+  virtual ~DeserializerWorker() = default;
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   AbstractDeserializer& deserializer() const;
 
