@@ -8,6 +8,13 @@
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 /**
  * @brief The Color class r, g, b, h, s, v are in range [0, 1]
  */
@@ -50,6 +57,8 @@ public:
   }
 
   QString to_string() const;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
 private:
   Model m_current_model;

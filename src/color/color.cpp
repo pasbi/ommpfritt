@@ -4,6 +4,7 @@
 #include "logging.h"
 #include "main/application.h"
 #include "scene/scene.h"
+#include "serializers/abstractdeserializer.h"
 #include <QtGlobal>
 #include <algorithm>
 #include <cassert>
@@ -450,6 +451,34 @@ QString Color::to_string() const
     }
   }();
   return QString("Color[%1]").arg(id);
+}
+
+void Color::serialize(serialization::SerializerWorker& worker) const
+{
+  if (model() == Color::Model::Named) {
+    worker.sub("name")->set_value(name());
+    worker.sub("rgba")->set_value(std::vector{0.0, 0.0, 0.0, 0.0});
+  } else {
+    worker.sub("name")->set_value("");
+    worker.sub("rgba")->set_value(components(Color::Model::RGBA));
+  }
+}
+
+void Color::deserialize(serialization::DeserializerWorker& worker)
+{
+  try {
+    const auto v = worker.sub("rgba")->get<std::vector<double>>();
+    const auto n = worker.sub("name")->get_string();
+    if (n.isEmpty()) {
+      m_current_model = Color::Model::RGBA;
+      m_components = {v.at(0), v.at(1), v.at(2), v.at(3)};
+    } else {
+      m_current_model = Color::Model::Named;
+      m_name = n;
+    }
+  } catch (std::out_of_range&) {
+    throw omm::serialization::AbstractDeserializer::DeserializeError("Expected vector of size 4.");
+  }
 }
 
 }  // namespace omm

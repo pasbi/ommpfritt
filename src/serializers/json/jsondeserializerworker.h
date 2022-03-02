@@ -18,13 +18,8 @@ public:
   double get_double() override;
   bool get_bool() override;
   QString get_string() override;
-  Color get_color() override;
   std::size_t get_size_t() override;
-  Vec2f get_vec2f() override;
-  Vec2i get_vec2i() override;
-  PolarCoordinates get_polarcoordinates() override;
   TriggerPropertyDummyValueType get_trigger_dummy_value() override;
-  SplineType get_spline() override;
 
 protected:
   std::unique_ptr<DeserializationArray> start_array() override;

@@ -12,7 +12,7 @@ SplineProperty::SplineProperty(const omm::SplineType& default_value)
 void SplineProperty::deserialize(serialization::DeserializerWorker& worker)
 {
   TypedProperty::deserialize(worker);
-  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_spline());
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get<SplineType>());
 }
 
 void SplineProperty::serialize(serialization::SerializerWorker& worker) const

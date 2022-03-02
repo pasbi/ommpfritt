@@ -73,44 +73,8 @@ void JSONSerializerWorker::set_value(const std::size_t id)
   m_value = id;
 }
 
-void JSONSerializerWorker::set_value(const Color& color)
-{
-  auto& name = m_value["name"];
-  auto& rgba = m_value["rgba"];
-  if (color.model() == Color::Model::Named) {
-    name = color.name().toStdString();
-    rgba = {0.0, 0.0, 0.0, 0.0};
-  } else {
-    name = "";
-    rgba = color.components(Color::Model::RGBA);
-  }
-}
-
-void JSONSerializerWorker::set_value(const Vec2f& value)
-{
-  m_value = {set_double(value[0]), set_double(value[1])};
-}
-
-void JSONSerializerWorker::set_value(const Vec2i& value)
-{
-  m_value = {value[0], value[1]};
-}
-
-void JSONSerializerWorker::set_value(const PolarCoordinates& value)
-{
-  set_value(Vec2f(value.argument, value.magnitude));
-}
-
 void JSONSerializerWorker::set_value(const TriggerPropertyDummyValueType&)
 {
-}
-
-void JSONSerializerWorker::set_value(const SplineType& spline)
-{
-  m_value = nlohmann::json::value_type::array();
-  for (const auto& [t, knot] : spline.knots) {
-    m_value.push_back({t, knot.value, knot.left_offset, knot.right_offset});
-  }
 }
 
 std::unique_ptr<SerializerWorker> JSONSerializerWorker::sub(const std::string& key)

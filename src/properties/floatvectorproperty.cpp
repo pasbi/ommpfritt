@@ -20,9 +20,9 @@ const Vec2f FloatVectorPropertyLimits::step(1.0, 1.0);
 void FloatVectorProperty::deserialize(serialization::DeserializerWorker& worker)
 {
   NumericProperty::deserialize(worker);
-  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_vec2f());
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get<Vec2f>());
   if (is_user_property()) {
-    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get_vec2f());
+    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get<Vec2f>());
   }
 }
 

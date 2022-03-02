@@ -1,4 +1,6 @@
 #include "geometry/polarcoordinates.h"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
 
 namespace omm
 {
@@ -70,6 +72,18 @@ double PolarCoordinates::normalize_angle(double rad)
 QString PolarCoordinates::to_string() const
 {
   return QString{"[%1°, %2]"}.arg(argument * 180.0 / M_PI).arg(magnitude);
+}
+
+void PolarCoordinates::serialize(serialization::SerializerWorker& worker) const
+{
+  worker.set_value(Vec2f{argument, magnitude});
+}
+
+void PolarCoordinates::deserialize(serialization::DeserializerWorker& worker)
+{
+  const auto v = worker.get<Vec2f>();
+  argument = v.x;
+  magnitude = v.y;
 }
 
 }  // namespace omm

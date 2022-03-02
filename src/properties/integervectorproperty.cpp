@@ -21,9 +21,9 @@ const Vec2i IntegerVectorPropertyLimits::step(1, 1);
 void IntegerVectorProperty::deserialize(serialization::DeserializerWorker& worker)
 {
   NumericProperty::deserialize(worker);
-  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_vec2i());
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get<Vec2i>());
   if (is_user_property()) {
-    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get_vec2i());
+    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get<Vec2i>());
   }
 }
 

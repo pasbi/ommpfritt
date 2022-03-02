@@ -5,6 +5,13 @@
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 struct PolarCoordinates
 {
   explicit PolarCoordinates(double argument, double magnitude);
@@ -33,6 +40,8 @@ struct PolarCoordinates
   static double normalize_angle(double rad);
 
   QString to_string() const;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 };
 
 }  // namespace omm

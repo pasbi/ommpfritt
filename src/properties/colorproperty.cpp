@@ -13,9 +13,9 @@ const Property::PropertyDetail ColorProperty::detail{
 void ColorProperty::deserialize(serialization::DeserializerWorker& worker)
 {
   TypedProperty::deserialize(worker);
-  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_color());
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get<Color>());
   if (is_user_property()) {
-    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get_color());
+    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get<Color>());
   }
 }
 

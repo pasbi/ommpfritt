@@ -1,5 +1,21 @@
 #include "serializers/deserializerworker.h"
+#include "serializers/abstractdeserializer.h"
 #include "geometry/polarcoordinates.h"
+#include "geometry/vec2.h"
+
+namespace
+{
+
+template<typename T> omm::Vec2<T> deserialize_vec2(omm::serialization::DeserializerWorker& worker)
+{
+  const auto vs = worker.get<std::vector<T>>();
+  if (vs.size() != 2) {
+    throw omm::serialization::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
+  }
+  return omm::Vec2{vs};
+}
+
+}  // namepsace
 
 namespace  omm::serialization
 {
@@ -14,59 +30,43 @@ AbstractDeserializer& DeserializerWorker::deserializer() const
   return m_deserializer;
 }
 
-template<> bool DeserializerWorker::get<bool>()
+template<> void DeserializerWorker::get<Vec2f>(Vec2f& v)
 {
-  return get_bool();
+  v = deserialize_vec2<double>(*this);
 }
 
-template<> int DeserializerWorker::get<int>()
+template<> void DeserializerWorker::get<Vec2i>(Vec2i& v)
 {
-  return get_int();
+  v = deserialize_vec2<int>(*this);
 }
 
-template<> double DeserializerWorker::get<double>()
+template<> void DeserializerWorker::get<bool>(bool& v)
 {
-  return get_double();
+  v = get_bool();
 }
 
-template<> QString DeserializerWorker::get<QString>()
+template<> void DeserializerWorker::get<int>(int& v)
 {
-  return get_string();
+  v = get_int();
 }
 
-template<> std::size_t DeserializerWorker::get<std::size_t>()
+template<> void DeserializerWorker::get<double>(double& v)
 {
-  return get_size_t();
+  v = get_double();
 }
 
-template<> Color DeserializerWorker::get<Color>()
+template<> void DeserializerWorker::get<QString>(QString& v)
 {
-  return get_color();
+  v = get_string();
 }
 
-template<> Vec2f DeserializerWorker::get<Vec2f>()
+template<> void DeserializerWorker::get<std::size_t>(std::size_t& v)
 {
-  return get_vec2f();
+  v = get_size_t();
 }
 
-template<> Vec2i DeserializerWorker::get<Vec2i>()
+template<> void DeserializerWorker::get<TriggerPropertyDummyValueType>(TriggerPropertyDummyValueType&)
 {
-  return get_vec2i();
-}
-
-template<> PolarCoordinates DeserializerWorker::get<PolarCoordinates>()
-{
-  return get_polarcoordinates();
-}
-
-template<> SplineType DeserializerWorker::get<SplineType>()
-{
-  return get_spline();
-}
-
-template<> TriggerPropertyDummyValueType DeserializerWorker::get<TriggerPropertyDummyValueType>()
-{
-  return {};
 }
 
 variant_type DeserializerWorker::get(const QString& type)

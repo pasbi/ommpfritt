@@ -86,63 +86,14 @@ QString JSONDeserializerWorker::get_string()
   return get_t<QString>(m_value);
 }
 
-Color JSONDeserializerWorker::get_color()
-{
-  try {
-    const auto v = get_t<std::vector<double>>(m_value["rgba"]);
-    const auto n = sub("name")->get_string();
-    if (n.isEmpty()) {
-      return Color(Color::Model::RGBA, {v.at(0), v.at(1), v.at(2), v.at(3)});
-    } else {
-      return Color(n);
-    }
-  } catch (std::out_of_range&) {
-    throw AbstractDeserializer::DeserializeError("Expected vector of size 4.");
-  }
-}
-
 std::size_t JSONDeserializerWorker::get_size_t()
 {
   return get_t<std::size_t>(m_value);
 }
 
-Vec2f JSONDeserializerWorker::get_vec2f()
-{
-  try {
-    return Vec2f(get_t<std::vector<double>>(m_value));
-  } catch (std::out_of_range&) {
-    throw AbstractDeserializer::DeserializeError("Expected vector of size 2.");
-  }
-}
-
-Vec2i JSONDeserializerWorker::get_vec2i()
-{
-  try {
-    return Vec2i(get_t<std::vector<int>>(m_value));
-  } catch (std::out_of_range&) {
-    throw AbstractDeserializer::DeserializeError("Expected vector of size 2.");
-  }
-}
-
-PolarCoordinates JSONDeserializerWorker::get_polarcoordinates()
-{
-  const auto pair = get_vec2f();
-  return PolarCoordinates(pair[0], pair[1]);
-}
-
 TriggerPropertyDummyValueType JSONDeserializerWorker::get_trigger_dummy_value()
 {
   return {};
-}
-
-SplineType JSONDeserializerWorker::get_spline()
-{
-  SplineType::knot_map_type map;
-  for (const auto& item : m_value) {
-    map.insert({item.at(0), SplineType::Knot(item.at(1), item.at(2), item.at(3))});
-  }
-
-  return SplineType(map);
 }
 
 std::unique_ptr<DeserializationArray> JSONDeserializerWorker::start_array()

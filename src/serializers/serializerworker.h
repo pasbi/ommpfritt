@@ -4,13 +4,6 @@
 #include <QString>
 #include "serializers/array.h"
 
-namespace omm
-{
-
-class PolarCoordinates;
-
-}  // namespace omm
-
 namespace omm::serialization
 {
 
@@ -38,13 +31,10 @@ public:
   virtual void set_value(int value) = 0;
   virtual void set_value(double value) = 0;
   virtual void set_value(const QString& value) = 0;
-  virtual void set_value(const Vec2f& value) = 0;
-  virtual void set_value(const Vec2i& value) = 0;
-  virtual void set_value(const PolarCoordinates& value) = 0;
-  virtual void set_value(const Color& color) = 0;
   virtual void set_value(std::size_t) = 0;
   virtual void set_value(const TriggerPropertyDummyValueType&) = 0;
-  virtual void set_value(const SplineType&) = 0;
+  void set_value(const Vec2f& value);
+  void set_value(const Vec2i& value);
   void set_value(const AbstractPropertyOwner* ref);
   void set_value(const variant_type& variant);
 
@@ -85,8 +75,6 @@ public:
   virtual std::unique_ptr<SerializerWorker> sub(const std::string& key) = 0;
   virtual std::unique_ptr<SerializerWorker> sub(std::size_t i) = 0;
   virtual void end_array() {}
-
-protected:
   virtual std::unique_ptr<SerializationArray> start_array(std::size_t size) = 0;
 };
 

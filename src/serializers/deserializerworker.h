@@ -6,9 +6,7 @@
 
 namespace omm
 {
-
-class PolarCoordinates;
-
+struct PolarCoordinates;
 }  // namespace omm
 
 namespace omm::serialization
@@ -37,16 +35,22 @@ public:
   [[nodiscard]] virtual double get_double() = 0;
   [[nodiscard]] virtual QString get_string() = 0;
   [[nodiscard]] virtual std::size_t get_size_t() = 0;
-  [[nodiscard]] virtual Color get_color() = 0;
-  [[nodiscard]] virtual Vec2f get_vec2f() = 0;
-  [[nodiscard]] virtual Vec2i get_vec2i() = 0;
-  [[nodiscard]] virtual PolarCoordinates get_polarcoordinates() = 0;
   [[nodiscard]] virtual TriggerPropertyDummyValueType get_trigger_dummy_value() = 0;
-  [[nodiscard]] virtual SplineType get_spline() = 0;
   virtual std::unique_ptr<DeserializerWorker> sub(const std::string& key) = 0;
   virtual std::unique_ptr<DeserializerWorker> sub(std::size_t i) = 0;
   virtual std::unique_ptr<DeserializationArray> start_array() = 0;
   virtual void end_array() {}
+
+  // since there's no partial function template specialization, overloading plays an important
+  // rule when implementing the type-specific getters.
+  // Hence, we implement all the
+  //  `void get<T>(T& t)`   (return via reference argument)
+  // and then implement a generic interface to
+  //  T get<T>();
+  // If we specialized `T get<T>()` directly, we wouldn't be able to distinguish deserialization
+  // of, e.g., `vector` and `set`.
+  // So if you want to implement deserialization support for a new type, specialize
+  // `void get<T>(T&)` and everything else will just work automatically.
 
   template<typename A, typename B> void get(std::pair<A, B>& value)
   {
@@ -64,17 +68,7 @@ public:
     val = static_cast<T>(get_size_t());
   }
 
-  template<typename T> void get(T& val)
-  {
-    val = get<T>();
-  }
-
-  template<typename T> T get()
-  {
-    T t;
-    get(t);
-    return t;
-  }
+  template<typename T> void get(T& val);
 
   template<typename T> void get(std::set<T>& value)
   {
@@ -93,7 +87,7 @@ public:
     value.clear();
     value.reserve(n);
     for (std::size_t i = 0; i < n; ++i) {
-      value.empalce_back(array->next().get<T>());
+      value.emplace_back(array->next().get<T>());
     }
   }
 
@@ -104,6 +98,13 @@ public:
     for (std::size_t i = 0; i < n; ++i) {
       deserializer(array->next());
     }
+  }
+
+  template<typename T> T get()
+  {
+    T t;
+    get(t);
+    return t;
   }
 
   variant_type get(const QString& type);

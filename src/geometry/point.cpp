@@ -130,9 +130,9 @@ void Point::serialize(serialization::SerializerWorker& worker) const
 
 void Point::deserialize(serialization::DeserializerWorker& worker)
 {
-  m_position = worker.sub(POSITION_POINTER)->get_vec2f();
-  m_left_tangent = worker.sub(LEFT_TANGENT_POINTER)->get_polarcoordinates();
-  m_right_tangent = worker.sub(RIGHT_TANGENT_POINTER)->get_polarcoordinates();
+  m_position = worker.sub(POSITION_POINTER)->get<Vec2f>();
+  m_left_tangent = worker.sub(LEFT_TANGENT_POINTER)->get<PolarCoordinates>();
+  m_right_tangent = worker.sub(RIGHT_TANGENT_POINTER)->get<PolarCoordinates>();
 }
 
 Point Point::flattened(const double t) const

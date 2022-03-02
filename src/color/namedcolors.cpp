@@ -159,7 +159,7 @@ void NamedColors::deserialize(serialization::DeserializerWorker& worker)
   m_named_colors.clear();
   worker.get_items([this](auto& worker_i) {
     const auto name = worker_i.sub("name")->get_string();
-    const auto color = worker_i.sub("color")->get_color();
+    const auto color = worker_i.sub("color")->template get<Color>();
     m_named_colors.emplace_back(name, color);
   });
   endResetModel();

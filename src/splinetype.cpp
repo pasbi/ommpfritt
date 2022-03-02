@@ -1,5 +1,7 @@
 #include "splinetype.h"
 #include "logging.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
 #include <algorithm>
 #include <cmath>
 
@@ -71,6 +73,25 @@ namespace omm
 QString SplineType::to_string() const
 {
   return {};
+}
+
+void SplineType::serialize(serialization::SerializerWorker& worker) const
+{
+  std::vector<std::vector<double>> values;
+  values.reserve(knots.size());
+  for (const auto& [t, knot] : knots) {
+    values.push_back({t, knot.value, knot.left_offset, knot.right_offset});
+  }
+  worker.set_value(values);
+}
+
+void SplineType::deserialize(serialization::DeserializerWorker& worker)
+{
+  knots.clear();
+  worker.get_items([this](auto& worker_i) {
+    const auto values = worker_i.template get<std::vector<double>>();
+    knots.emplace(values.at(0), SplineType::Knot(values.at(1), values.at(2), values.at(3)));
+  });
 }
 
 SplineType::ControlPoint SplineType::begin()

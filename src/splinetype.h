@@ -7,6 +7,13 @@
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 class SplineType
 {
 public:
@@ -30,6 +37,8 @@ public:
   knot_map_type knots;
 
   QString to_string() const;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
 private:
   template<typename Knots, typename Iterator> struct ControlPoint_ {

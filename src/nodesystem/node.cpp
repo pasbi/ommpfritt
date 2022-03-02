@@ -88,7 +88,7 @@ void Node::serialize(serialization::SerializerWorker& worker) const
 void Node::deserialize(serialization::DeserializerWorker& worker)
 {
   AbstractPropertyOwner::deserialize(worker);
-  m_pos = worker.sub(POS_PTR)->get_vec2f().to_pointf();
+  m_pos = worker.sub(POS_PTR)->get<Vec2f>().to_pointf();
 
   std::list<ConnectionIds> connection_idss;
   worker.sub(CONNECTIONS_PTR)->get_items([&connection_idss](auto& worker_i) {

@@ -16,12 +16,7 @@ public:
   void set_value(double value) override;
   void set_value(const QString& value) override;
   void set_value(std::size_t id) override;
-  void set_value(const Color& color) override;
-  void set_value(const Vec2f& value) override;
-  void set_value(const Vec2i& value) override;
-  void set_value(const PolarCoordinates& value) override;
   void set_value(const TriggerPropertyDummyValueType&) override;
-  void set_value(const SplineType&) override;
 
 protected:
   std::unique_ptr<SerializationArray> start_array(std::size_t size) override;
