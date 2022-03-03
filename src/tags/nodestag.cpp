@@ -115,19 +115,19 @@ Flag NodesTag::flags() const
 
 std::set<nodes::Node*> NodesTag::nodes() const
 {
-  return node_model()->nodes();
+  return node_model().nodes();
 }
 
 void NodesTag::serialize(serialization::SerializerWorker& worker) const
 {
   Tag::serialize(worker);
-  node_model()->serialize(*worker.sub(NODES_POINTER));
+  node_model().serialize(*worker.sub(NODES_POINTER));
 }
 
 void NodesTag::deserialize(serialization::DeserializerWorker& worker)
 {
   Tag::deserialize(worker);
-  node_model()->deserialize(*worker.sub(NODES_POINTER));
+  node_model().deserialize(*worker.sub(NODES_POINTER));
 }
 
 void NodesTag::polish()
@@ -147,7 +147,7 @@ void NodesTag::force_evaluate()
   using namespace py::literals;
 
   auto locals = py::dict();
-  auto& model = *node_model();
+  auto& model = node_model();
   populate_locals<nodes::PortType::Input>(locals, model);
   populate_locals<nodes::PortType::Output>(locals, model);
 

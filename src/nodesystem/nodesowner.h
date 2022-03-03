@@ -33,7 +33,7 @@ public:
   NodesOwner& operator=(NodesOwner&& other) = delete;
   NodesOwner& operator=(const NodesOwner& other) = delete;
 
-  [[nodiscard]] NodeModel* node_model() const;
+  [[nodiscard]] NodeModel& node_model() const;
 
 private:
   std::unique_ptr<NodeModel> m_node_model;

@@ -386,8 +386,8 @@ std::set<nodes::Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner
   for (auto&& apo : owners) {
     if (!!(apo->flags() & Flag::HasNodes)) {
       const auto& nodes_owner = dynamic_cast<const nodes::NodesOwner&>(*apo);
-      if (const auto* node_model = nodes_owner.node_model()) {
-        nodes = ::merge(nodes, node_model->nodes());
+      if (const auto& node_model = nodes_owner.node_model(); node_model.is_enabled()) {
+        nodes = ::merge(nodes, node_model.nodes());
       }
     }
   }

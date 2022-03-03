@@ -69,8 +69,7 @@ NodeManager::NodeManager(Scene& scene)
   connect(&scene.mail_box(), &MailBox::selection_changed, this, &NodeManager::set_selection);
   connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed, this, [this](const auto& apo) {
     const auto* nodes_owner = dynamic_cast<const nodes::NodesOwner*>(&apo);
-    const auto* node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
-    if (node_model == m_ui->nodeview->model()) {
+    if (nodes_owner != nullptr && &nodes_owner->node_model() == m_ui->nodeview->model()) {
       set_model(nullptr);
     }
   });
@@ -99,9 +98,9 @@ void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selectio
   if (!is_locked()) {
     for (AbstractPropertyOwner* apo : selection) {
       if (!!(apo->flags() & Flag::HasNodes)) {
-        auto* const model = dynamic_cast<nodes::NodesOwner*>(apo)->node_model();
-        if (m_ui->nodeview->model() != model) {
-          set_model(model);
+        auto& model = dynamic_cast<const nodes::NodesOwner*>(apo)->node_model();
+        if (m_ui->nodeview->model() != &model) {
+          set_model(&model);
         }
       }
     }

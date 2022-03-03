@@ -16,6 +16,12 @@
 namespace
 {
 
+bool is_enabled(const omm::nodes::BackendLanguage language)
+{
+  bool have_opengl = !omm::Application::instance().options().have_opengl;
+  return language != omm::nodes::BackendLanguage::GLSL || !have_opengl;
+}
+
 std::unique_ptr<omm::nodes::AbstractNodeCompiler>
 make_compiler(omm::nodes::BackendLanguage language, omm::nodes::NodeModel& model)
 {
@@ -38,18 +44,9 @@ namespace omm::nodes
 
 NodeModel::NodeModel(BackendLanguage language, Scene* scene)
     : m_scene(scene), m_compiler(make_compiler(language, *this))
+    , m_is_enabled(::is_enabled(language))
 {
   init();
-}
-
-std::unique_ptr<NodeModel> NodeModel::make(BackendLanguage language, Scene* scene)
-{
-  const bool no_opengl = !Application::instance().options().have_opengl;
-  if (language == BackendLanguage::GLSL && no_opengl) {
-    return nullptr;
-  } else {
-    return std::make_unique<NodeModel>(language, scene);
-  }
 }
 
 NodeModel::NodeModel(const NodeModel& other) : NodeModel(other.compiler().language, other.m_scene)
@@ -199,6 +196,11 @@ Scene* NodeModel::scene() const
 AbstractNodeCompiler& NodeModel::compiler() const
 {
   return *m_compiler;
+}
+
+bool NodeModel::is_enabled() const
+{
+  return m_is_enabled;
 }
 
 void NodeModel::set_error(const QString& error)

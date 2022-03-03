@@ -99,6 +99,7 @@ public:
   };
 
 public:
+  [[nodiscard]] bool is_enabled() const;
   void set_error(const QString& error);
 
 Q_SIGNALS:
@@ -117,6 +118,7 @@ private:
   QString m_error = "";
   FragmentNode* m_fragment_node = nullptr;
   bool m_emit_topology_changed_blocked = false;
+  const bool m_is_enabled;
 };
 
 }  // namespace omm::nodes

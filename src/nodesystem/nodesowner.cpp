@@ -8,13 +8,12 @@ namespace omm::nodes
 {
 
 NodesOwner::NodesOwner(BackendLanguage language, Scene* scene)
-    : m_node_model(NodeModel::make(language, scene))
+    : m_node_model(std::make_unique<NodeModel>(language, scene))
 {
 }
 
 NodesOwner::NodesOwner(const NodesOwner& other)
-    : m_node_model(other.node_model() == nullptr ? nullptr
-                                                 : std::make_unique<NodeModel>(*other.node_model()))
+    : m_node_model(std::make_unique<NodeModel>(other.node_model()))
 {
 }
 
@@ -33,9 +32,9 @@ void NodesOwner::connect_edit_property(TriggerProperty& property, QObject& self)
   });
 }
 
-NodeModel* NodesOwner::node_model() const
+NodeModel& NodesOwner::node_model() const
 {
-  return m_node_model.get();
+  return *m_node_model;
 }
 
 }  // namespace omm::nodes
