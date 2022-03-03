@@ -3,6 +3,12 @@
 #include <QGuiApplication>
 #include <vector>
 #include <array>
+#include <memory>
+
+namespace omm
+{
+class Application;
+}  // namespace omm
 
 namespace ommtest
 {
@@ -31,6 +37,7 @@ public:
 };
 
 bool have_opengl();
+std::unique_ptr<omm::Application> get_application(int kill_after_msec = 1);
 
 #define SKIP_IF_NO_OPENGL do { if (!ommtest::have_opengl()) { GTEST_SKIP(); } } while (false)
 
