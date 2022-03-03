@@ -1,6 +1,6 @@
+#include "config.h"
 #include "logging.h"
 #include "gtest/gtest.h"
-#include "testconfig.h"
 #include "main/application.h"
 #include "main/options.h"
 #include "scene/scene.h"
@@ -33,6 +33,6 @@ TEST(IOTest, load_icons)
   static constexpr auto kill_after_msec = 1000;
   using namespace std::string_literals;
   auto app = get_application(kill_after_msec);
-  static const auto fn = QString::fromStdString(ommtest::SOURCE_DIRECTORY + "/icons/icons.omm"s);
+  static const auto fn = QString::fromStdString(source_directory + "/icons/icons.omm"s);
   EXPECT_TRUE(app->scene->load_from(fn));
 }

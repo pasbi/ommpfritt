@@ -1,7 +1,5 @@
 include(GoogleTest)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/testconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testconfig.h @ONLY)
-
 # The following line is required to mark ${compiled_resource_file} as generated file.
 # Sadly, it's not possible to do that with `set_source_files_properties`, because:
 # - using this directory (`DIRECTORY ${CMAKE_CURRENT_SOURCER_DIRECTORY}`), cmake does not find the
