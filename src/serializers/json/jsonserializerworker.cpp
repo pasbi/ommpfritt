@@ -79,6 +79,9 @@ void JSONSerializerWorker::set_value(const TriggerPropertyDummyValueType&)
 
 std::unique_ptr<SerializerWorker> JSONSerializerWorker::sub(const std::string& key)
 {
+  if (m_value.is_null()) {
+    m_value = nlohmann::json::object();
+  }
   if (!m_value.is_object()) {
     throw AbstractSerializer::SerializeError{"Attempt to access non-object value by key"};
   }

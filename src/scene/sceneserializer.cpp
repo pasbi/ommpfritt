@@ -74,7 +74,10 @@ template<typename Serializer> bool SceneSerialization::save(Serializer& serializ
 {
   m_scene.object_tree().root().serialize(*serializer.sub(ROOT_POINTER));
 
-  serializer.sub(STYLES_POINTER)->set_value(m_scene.styles().items());
+
+  serializer.sub(STYLES_POINTER)->set_value(m_scene.styles().ordered_items(), [](const auto* style, auto& worker_i) {
+    style->serialize(worker_i);
+  });
 
   m_scene.m_animator->serialize(*serializer.sub(ANIMATOR_POINTER));
   m_scene.m_named_colors->serialize(*serializer.sub(NAMED_COLORS_POINTER));
@@ -159,7 +162,7 @@ bool SceneSerialization::save_json(const QString& filename) const
     return false;
   }
 
-  ofstream << json.dump(4);
+  ofstream << json.dump(4) << "\n";
   return true;
 }
 
