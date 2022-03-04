@@ -1,13 +1,19 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "geometry/vec2.h"
 #include <deque>
+#include <memory>
 
 class QPainterPath;
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 class EnhancedPathVector;
 
@@ -19,7 +25,7 @@ class DisjointPathPointSetForest;
 class Scene;
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
-class PathVector : public Serializable
+class PathVector
 {
 public:
   PathVector(PathObject* path_object = nullptr);
@@ -27,7 +33,7 @@ public:
   PathVector(PathVector&& other) noexcept;
   PathVector& operator=(const PathVector& other);
   PathVector& operator=(PathVector&& other) noexcept;
-  ~PathVector() override;
+  ~PathVector();
   friend void swap(PathVector& a, PathVector& b) noexcept;
 
   /**
@@ -42,8 +48,8 @@ public:
   [[nodiscard]] bool joined_points_shared() const;
 
   static constexpr auto SEGMENTS_POINTER = "segments";
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
   [[nodiscard]] PathPoint& point_at_index(std::size_t index) const;
 
   [[nodiscard]] QPainterPath outline() const;

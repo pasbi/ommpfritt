@@ -1,7 +1,6 @@
 #pragma once
 
 #include "properties/property.h"
-#include "serializers/abstractserializer.h"
 
 namespace omm
 {

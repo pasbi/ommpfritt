@@ -8,6 +8,13 @@
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 /**
  * @brief The Color class r, g, b, h, s, v are in range [0, 1]
  */
@@ -23,11 +30,11 @@ public:
   explicit Color(const QString& name);
   explicit Color(const QColor& c);
   explicit Color();
-  static QString component_name(const Model& model, std::size_t component);
+  [[nodiscard]] static QString component_name(const Model& model, std::size_t component);
 
   [[nodiscard]] QString to_html() const;
-  static Color from_html(const QString& html, bool* ok = nullptr);
-  static Color from_qcolor(const QColor& color);
+  [[nodiscard]] static Color from_html(const QString& html, bool* ok = nullptr);
+  [[nodiscard]] static Color from_qcolor(const QColor& color);
   [[nodiscard]] QColor to_qcolor() const;
 
   void to_ordinary_color();
@@ -49,7 +56,9 @@ public:
     return m_current_model;
   }
 
-  QString to_string() const;
+  [[nodiscard]] QString to_string() const;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
 private:
   Model m_current_model;
@@ -80,8 +89,8 @@ static const Color CERULEAN(Color::Model::RGBA, {0.1, 0.52, 0.82, 1.0});
 
 }  // namespace Colors
 
-bool operator==(const Color& a, const Color& b);
-bool operator!=(const Color& a, const Color& b);
-bool operator<(const Color& a, const Color& b);
+[[nodiscard]] bool operator==(const Color& a, const Color& b);
+[[nodiscard]] bool operator!=(const Color& a, const Color& b);
+[[nodiscard]] bool operator<(const Color& a, const Color& b);
 
 }  // namespace omm

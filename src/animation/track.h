@@ -1,8 +1,7 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "common.h"
-#include "serializers/abstractserializer.h"
+#include "variant.h"
 #include <QCoreApplication>
 #include <QObject>
 #include <map>
@@ -13,6 +12,12 @@ namespace omm
 class Property;
 struct Knot;
 
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 /**
  * @brief The AbstractTrack class is the base class for all track.
  *  It is required to store the association to a (owner, property_key)-pair rather than to a
@@ -20,7 +25,7 @@ struct Knot;
  *  It would be impossible to restore an track at deserialization since the property it belongs
  *  to is not known at that time.
  */
-class Track : public Serializable
+class Track
 {
   Q_DECLARE_TR_FUNCTIONS(Track)
 public:
@@ -32,7 +37,7 @@ public:
   Track(const Track&) = delete;
   Track& operator=(Track&&) = delete;
   Track& operator=(const Track&) = delete;
-  ~Track() override;
+  ~Track();
   [[nodiscard]] std::unique_ptr<Track> clone() const;
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
@@ -46,8 +51,8 @@ public:
   static constexpr auto RIGHT_VALUE_KEY = "right-value";
   static constexpr auto INTERPOLATION_KEY = "interpolation";
 
-  void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   [[nodiscard]] bool has_keyframe(int frame) const
   {

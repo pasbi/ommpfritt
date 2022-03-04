@@ -1,7 +1,7 @@
 #pragma once
 
 #include "aspects/typed.h"
-#include <string>
+#include <QString>
 
 namespace omm
 {

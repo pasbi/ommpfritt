@@ -1,6 +1,10 @@
 #include "testutil.h"
 #include "registers.h"
+#include "main/application.h"
+#include "main/options.h"
+#include <QApplication>
 #include <QProcessEnvironment>
+#include <QTimer>
 
 namespace ommtest
 {
@@ -8,7 +12,6 @@ namespace ommtest
 GuiApplication::GuiApplication()
     : m_application(argc, argv.data())
 {
-  omm::register_everything();
 }
 
 QGuiApplication& GuiApplication::gui_application()

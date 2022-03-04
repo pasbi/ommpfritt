@@ -15,11 +15,10 @@ PropertyFilter::PropertyFilter(const DNF<Flag>& flag)
 {
 }
 
-void PropertyFilter::deserialize(AbstractDeserializer& deserializer,
-                                 const Serializable::Pointer& root)
+void PropertyFilter::deserialize(serialization::DeserializerWorker& worker)
 {
-  deserializer.get(kind, make_pointer(root, "kind"));
-  deserializer.get(flag, make_pointer(root, "flag"));
+  kind.deserialize(*worker.sub("kind"));
+  flag.deserialize(*worker.sub("flag"));
 }
 
 bool PropertyFilter::accepts(Kind kind, Flag flag) const
@@ -27,10 +26,10 @@ bool PropertyFilter::accepts(Kind kind, Flag flag) const
   return this->flag.evaluate(flag) && this->kind.evaluate(kind);
 }
 
-void PropertyFilter::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void PropertyFilter::serialize(serialization::SerializerWorker& worker) const
 {
-  serializer.set_value(kind, make_pointer(root, "kind"));
-  serializer.set_value(flag, make_pointer(root, "flag"));
+  kind.serialize(*worker.sub("kind"));
+  flag.serialize(*worker.sub("flag"));
 }
 
 bool PropertyFilter::accepts(const AbstractPropertyOwner& apo) const
@@ -41,6 +40,11 @@ bool PropertyFilter::accepts(const AbstractPropertyOwner& apo) const
 bool PropertyFilter::operator==(const PropertyFilter& other) const
 {
   return kind == other.kind && flag == other.flag;
+}
+
+bool PropertyFilter::operator!=(const PropertyFilter& other) const
+{
+  return !(*this == other);
 }
 
 bool PropertyFilter::operator<(const PropertyFilter& other) const
@@ -59,6 +63,7 @@ PropertyFilter PropertyFilter::accept_anything()
 
 QString PropertyFilter::to_string() const
 {
-  return QString{"Filter[Flag=%1, Kind=%2]"}.arg(flag.to_string()).arg(kind.to_string());
+  return QString{"Filter[Flag=%1, Kind=%2]"}.arg(flag.to_string(), kind.to_string());
 }
+
 }  // namespace omm

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "color/color.h"
 #include <QAbstractItemView>
 #include <QAbstractListModel>
@@ -11,9 +10,14 @@
 
 namespace omm
 {
-class NamedColors
-    : public QAbstractListModel
-    , public Serializable
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
+class NamedColors : public QAbstractListModel
 {
   Q_OBJECT
 public:
@@ -35,8 +39,8 @@ public:
   [[nodiscard]] Color color(const QString& name) const;
   void clear();
 
-  void serialize(AbstractSerializer& serializer, const Pointer& p) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& p) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   [[nodiscard]] QString generate_default_name() const;
 

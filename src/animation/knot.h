@@ -1,14 +1,20 @@
 #pragma once
 
-#include "serializers/abstractserializer.h"
+#include "variant.h"
 
 namespace omm
 {
 
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 struct Knot
 {
   enum class Side { Left, Right };
-  Knot(AbstractDeserializer& deserializer, const Serializable::Pointer& pointer, const QString& type);
+  Knot(serialization::DeserializerWorker& worker, const QString& type);
   Knot(const variant_type& value);
   Knot(Knot&&) = delete;
   Knot& operator=(Knot&&) = delete;

@@ -4,6 +4,7 @@
 #include "logging.h"
 #include "main/application.h"
 #include "scene/scene.h"
+#include "serializers/abstractdeserializer.h"
 #include <QtGlobal>
 #include <algorithm>
 #include <cassert>
@@ -156,14 +157,14 @@ QString Color::component_name(const Color::Model& model, std::size_t component)
   };
   switch (model) {
   case Model::HSVA:
-    return QString(HSVA_COMPONENT_NAMES.at(component).data());
+    return HSVA_COMPONENT_NAMES.at(component).data();
   case Model::RGBA:
-    return QString(RGBA_COMPONENT_NAMES.at(component).data());
+    return RGBA_COMPONENT_NAMES.at(component).data();
   case Model::Named:
     return "invalid (named)";
   default:
     Q_UNREACHABLE();
-    return "";
+    return {};
   }
 }
 
@@ -299,10 +300,10 @@ Color::Model Color::model(Role role, Model tie)
 
 QString Color::to_html() const
 {
-  static const auto to_hex = [](float f) {
-    const int i = std::clamp(static_cast<int>(std::round(f * 255)), 0, 255);
-    static constexpr int base_hex = 16;
-    QString str = QString("%1").arg(static_cast<int>(i), 2, base_hex, QChar('0'));
+  static const auto to_hex = [](const double f) {
+    const auto i = std::clamp(static_cast<int>(std::round(f * 255.0)), 0, 255);
+    static constexpr auto base_hex = 16;
+    auto str = QString("%1").arg(static_cast<int>(i), 2, base_hex, QChar('0'));
     assert(str.size() == 2);
     return str;
   };
@@ -444,12 +445,40 @@ QString Color::to_string() const
       const auto components = this->components(model());
       for (std::size_t i = 0; i < components.size(); ++i) {
         const auto component_name = Color::component_name(model(), i);
-        cs.append(QString("%1: %2").arg(component_name, components.at(i)));
+        cs.append(QString("%2: %1").arg(components.at(i)).arg(component_name));
       }
       return cs.join(", ");
     }
   }();
   return QString("Color[%1]").arg(id);
+}
+
+void Color::serialize(serialization::SerializerWorker& worker) const
+{
+  if (model() == Color::Model::Named) {
+    worker.sub("name")->set_value(name());
+    worker.sub("rgba")->set_value(std::vector{0.0, 0.0, 0.0, 0.0});
+  } else {
+    worker.sub("name")->set_value(QString{});
+    worker.sub("rgba")->set_value(components(Color::Model::RGBA));
+  }
+}
+
+void Color::deserialize(serialization::DeserializerWorker& worker)
+{
+  try {
+    const auto v = worker.sub("rgba")->get<std::vector<double>>();
+    const auto n = worker.sub("name")->get_string();
+    if (n.isEmpty()) {
+      m_current_model = Color::Model::RGBA;
+      m_components = {v.at(0), v.at(1), v.at(2), v.at(3)};
+    } else {
+      m_current_model = Color::Model::Named;
+      m_name = n;
+    }
+  } catch (std::out_of_range&) {
+    throw omm::serialization::AbstractDeserializer::DeserializeError("Expected vector of size 4.");
+  }
 }
 
 }  // namespace omm

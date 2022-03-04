@@ -122,8 +122,8 @@ Style::Style(const Style& other)
 
 void Style::polish()
 {
-  if (const auto* const model = node_model(); model != nullptr) {
-    auto& compiler = model->compiler();
+  if (const auto& model = node_model(); model.is_enabled()) {
+    auto& compiler = model.compiler();
     connect(&compiler, &nodes::AbstractNodeCompiler::compilation_succeeded, this, &Style::set_code);
     connect(&compiler, &nodes::AbstractNodeCompiler::compilation_failed, this, &Style::set_error);
     connect_edit_property(dynamic_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)),
@@ -155,20 +155,16 @@ Texture Style::render_texture(const Object& object,
   return m_offscreen_renderer->render(object, size, roi, options);
 }
 
-void Style::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+void Style::serialize(serialization::SerializerWorker& worker) const
 {
-  PropertyOwner::serialize(serializer, root);
-  if (auto* const node_model = this->node_model(); node_model != nullptr) {
-    node_model->serialize(serializer, make_pointer(root, NODES_POINTER));
-  }
+  PropertyOwner::serialize(worker);
+  node_model().serialize(*worker.sub(NODES_POINTER));
 }
 
-void Style::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+void Style::deserialize(serialization::DeserializerWorker& worker)
 {
-  PropertyOwner::deserialize(deserializer, root);
-  if (auto* const node_model = this->node_model(); node_model != nullptr) {
-    node_model->deserialize(deserializer, make_pointer(root, NODES_POINTER));
-  }
+  PropertyOwner::deserialize(worker);
+  node_model().deserialize(*worker.sub(NODES_POINTER));
 }
 
 void Style::on_property_value_changed(Property* property)
@@ -186,8 +182,8 @@ void Style::on_property_value_changed(Property* property)
 
 void Style::update_uniform_values() const
 {
-  if (const auto* const node_model = this->node_model(); node_model != nullptr) {
-    auto& compiler = dynamic_cast<nodes::NodeCompilerGLSL&>(node_model->compiler());
+  if (const auto& node_model = this->node_model(); node_model.is_enabled()) {
+    auto& compiler = dynamic_cast<nodes::NodeCompilerGLSL&>(node_model.compiler());
     for (auto* const port : compiler.uniform_ports()) {
       assert(port->flavor == nodes::PortFlavor::Property);
       const Property* property = port->port_type == nodes::PortType::Input
@@ -202,20 +198,20 @@ void Style::update_uniform_values() const
 
 void Style::set_code(const QString& code) const
 {
-  if (auto* const node_model = this->node_model(); node_model != nullptr) {
+  if (auto& node_model = this->node_model(); node_model.is_enabled()) {
     if (m_offscreen_renderer->set_fragment_shader(code)) {
       update_uniform_values();
-      node_model->set_error("");
+      node_model.set_error("");
     } else {
-      node_model->set_error(tr("Compilation failed"));
+      node_model.set_error(tr("Compilation failed"));
     }
   }
 }
 
 void Style::set_error(const QString& error) const
 {
-  if (auto* const node_model = this->node_model(); node_model != nullptr) {
-    node_model->set_error(error);
+  if (auto& node_model = this->node_model(); node_model.is_enabled()) {
+    node_model.set_error(error);
     m_offscreen_renderer->set_fragment_shader("");
   }
 }

@@ -70,24 +70,20 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 
 Animator::~Animator() = default;
 
-void Animator::serialize(AbstractSerializer& serializer, const Serializable::Pointer& pointer) const
+void Animator::serialize(serialization::SerializerWorker& worker) const
 {
-  Serializable::serialize(serializer, pointer);
-
-  serializer.set_value(m_start_frame, make_pointer(pointer, START_FRAME_POINTER));
-  serializer.set_value(m_end_frame, make_pointer(pointer, END_FRAME_POINTER));
-  serializer.set_value(m_current_frame, make_pointer(pointer, CURRENT_FRAME_POINTER));
-  serializer.set_value(static_cast<int>(m_play_mode), make_pointer(pointer, "play-mode"));
+  worker.sub(START_FRAME_POINTER)->set_value(m_start_frame);
+  worker.sub(END_FRAME_POINTER)->set_value(m_end_frame);
+  worker.sub(CURRENT_FRAME_POINTER)->set_value(m_current_frame);
+  worker.sub(PLAY_MODE_POINTER)->set_value(static_cast<int>(m_play_mode));
 }
 
-void Animator::deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
+void Animator::deserialize(serialization::DeserializerWorker& worker)
 {
-  Serializable::deserialize(deserializer, pointer);
-
-  set_start(deserializer.get_int(make_pointer(pointer, START_FRAME_POINTER)));
-  set_end(deserializer.get_int(make_pointer(pointer, END_FRAME_POINTER)));
-  m_current_frame = deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER));
-  m_play_mode = static_cast<PlayMode>(deserializer.get_int(make_pointer(pointer, "play-mode")));
+  set_start(worker.sub(START_FRAME_POINTER)->get_int());
+  set_end(worker.sub(END_FRAME_POINTER)->get_int());
+  m_current_frame = worker.sub(CURRENT_FRAME_POINTER)->get_int();
+  m_play_mode = static_cast<PlayMode>(worker.sub(PLAY_MODE_POINTER)->get_int());
   invalidate();
 }
 
@@ -208,7 +204,7 @@ QModelIndex Animator::index(int row, int column, const QModelIndex& parent) cons
     [[fallthrough]];
   default:
     Q_UNREACHABLE();  // channel index cannot be parent
-    return QModelIndex();
+    return {};
   }
 }
 
@@ -219,7 +215,7 @@ QModelIndex Animator::parent(const QModelIndex& child) const
     [[fallthrough]];
   case IndexType::Owner:
     // parent of owner is root.
-    return QModelIndex();
+    return {};
   case IndexType::Property:
     // parent of property is owner
     return index(*accelerator().owner(*property(child)));
@@ -228,7 +224,7 @@ QModelIndex Animator::parent(const QModelIndex& child) const
     return index(channel(child).track.property());
   default:
     Q_UNREACHABLE();
-    return QModelIndex();
+    return {};
   }
 }
 
@@ -236,14 +232,11 @@ int Animator::rowCount(const QModelIndex& parent) const
 {
   switch (index_type(parent)) {
   case IndexType::None:
-    return accelerator().owners().size();
+    return static_cast<int>(accelerator().owners().size());
   case IndexType::Owner:
-    return accelerator().properties(*owner(parent)).size();
-  case IndexType::Property: {
-    Property& pp = *property(parent);
-    const auto n = n_channels(pp.variant_value());
-    return n;
-  }
+    return static_cast<int>(accelerator().properties(*owner(parent)).size());
+  case IndexType::Property:
+    return static_cast<int>(n_channels(property(parent)->variant_value()));
   case IndexType::Channel:
     return 0;
   default:
@@ -260,7 +253,7 @@ int Animator::columnCount(const QModelIndex&) const
 QVariant Animator::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
-    return QVariant();
+    return {};
   }
   assert(index.column() == 0);
   switch (index_type(index)) {
@@ -271,7 +264,7 @@ QVariant Animator::data(const QModelIndex& index, int role) const
     case Qt::DecorationRole:
       return IconProvider::icon(*owner(index));
     default:
-      return QVariant();
+      return {};
     }
     break;
   case IndexType::Property:
@@ -279,7 +272,7 @@ QVariant Animator::data(const QModelIndex& index, int role) const
     case Qt::DisplayRole:
       return property(index)->label();
     default:
-      return QVariant();
+      return {};
     }
   case IndexType::Channel:
     switch (role) {
@@ -288,14 +281,14 @@ QVariant Animator::data(const QModelIndex& index, int role) const
       return c.track.property().channel_name(c.channel);
     }
     default:
-      return QVariant();
+      return {};
     }
   default:
     Q_UNREACHABLE();
   }
 
   Q_UNREACHABLE();
-  return QVariant();
+  return {};
 }
 
 Qt::ItemFlags Animator::flags(const QModelIndex&) const
@@ -307,21 +300,21 @@ QModelIndex Animator::index(Property& property, int column) const
 {
   AbstractPropertyOwner& owner = *accelerator().owner(property);
   const auto props = accelerator().properties(owner);
-  const int row = std::distance(props.begin(), std::find(props.begin(), props.end(), &property));
+  const auto row = static_cast<int>(std::distance(props.begin(), std::find(props.begin(), props.end(), &property)));
   return createIndex(row, column, &property);
 }
 
 QModelIndex Animator::index(AbstractPropertyOwner& owner, int column) const
 {
   const auto& owners = accelerator().owners();
-  const int row = std::distance(owners.begin(), std::find(owners.begin(), owners.end(), &owner));
+  const auto row = static_cast<int>(std::distance(owners.begin(), std::find(owners.begin(), owners.end(), &owner)));
   return createIndex(row, column, &owner);
 }
 
 QModelIndex Animator::index(const std::pair<Property*, std::size_t>& channel, int column) const
 {
   const auto [property, c] = channel;
-  return createIndex(c, column, m_channel_proxies.at({property->track(), c}).get());
+  return createIndex(static_cast<int>(c), column, m_channel_proxies.at({property->track(), c}).get());
 }
 
 Animator::IndexType Animator::index_type(const QModelIndex& index)
@@ -478,7 +471,7 @@ AbstractPropertyOwner* Animator::Accelerator::owner(Property& property) const
 std::list<AbstractPropertyOwner*> Animator::Accelerator::animatable_owners() const
 {
   auto owners = m_scene->property_owners();
-  return std::list<AbstractPropertyOwner*>(owners.begin(), owners.end());
+  return {owners.begin(), owners.end()};
 }
 
 }  // namespace omm

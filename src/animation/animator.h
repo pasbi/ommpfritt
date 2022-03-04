@@ -1,7 +1,6 @@
 #pragma once
 
 #include "animation/track.h"
-#include "aspects/serializable.h"
 #include "cachedgetter.h"
 #include <QAbstractItemModel>
 #include <QObject>
@@ -17,9 +16,13 @@ class Scene;
 class Property;
 class ChannelProxy;
 
-class Animator
-    : public QAbstractItemModel
-    , public Serializable
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
+class Animator : public QAbstractItemModel
 {
   Q_OBJECT
 public:
@@ -31,8 +34,8 @@ public:
   Animator(const Animator&) = delete;
   Animator& operator=(Animator&&) = delete;
   Animator& operator=(const Animator&) = delete;
-  void serialize(AbstractSerializer&, const Pointer&) const override;
-  void deserialize(AbstractDeserializer&, const Pointer&) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   int start() const
   {
@@ -58,6 +61,7 @@ public:
   static constexpr auto START_FRAME_POINTER = "start-frame";
   static constexpr auto END_FRAME_POINTER = "end-frame";
   static constexpr auto CURRENT_FRAME_POINTER = "current-frame";
+  static constexpr auto PLAY_MODE_POINTER = "play-mode";
   static constexpr auto COLUMN_COUNT = 1;
 
   Scene& scene;

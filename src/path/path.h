@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "common.h"
 #include "geometry/vec2.h"
 #include <deque>
@@ -9,6 +8,12 @@
 
 namespace omm
 {
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
 
 class Point;
 class PathPoint;
@@ -20,22 +25,22 @@ class Path;
 class PathVector;
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
-class Path : public Serializable
+class Path
 {
 public:
   explicit Path(PathVector* path_vector = nullptr);
   explicit Path(const Path& other, PathVector* path_vector = nullptr);
   explicit Path(std::deque<Point>&& points, PathVector* path_vector = nullptr);
   explicit Path(std::vector<Point>&& points, PathVector* path_vector = nullptr);
-  ~Path() override;
+  ~Path();
   Path(Path&&) = delete;
   Path& operator=(const Path&) = delete;
   Path& operator=(Path&&) = delete;
 
   static constexpr auto POINTS_POINTER = "points";
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
   [[nodiscard]] std::size_t size() const;
   [[nodiscard]] PathPoint& at(std::size_t i) const;
   [[nodiscard]] bool contains(const PathPoint& point) const;

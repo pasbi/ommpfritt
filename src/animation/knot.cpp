@@ -1,9 +1,11 @@
 #include "animation/knot.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/abstractdeserializer.h"
 
 namespace omm
 {
 
-class Knot::ReferencePolisher : public omm::ReferencePolisher
+class Knot::ReferencePolisher : public omm::serialization::ReferencePolisher
 {
 public:
   explicit ReferencePolisher(std::size_t reference_id, Knot& knot)
@@ -26,14 +28,15 @@ private:
   Knot& m_knot;
 };
 
-Knot::Knot(AbstractDeserializer& deserializer, const Serializable::Pointer& pointer, const QString& type)
+Knot::Knot(serialization::DeserializerWorker& worker, const QString& type)
 {
   if (type == "Reference") {
-    const auto reference_id = deserializer.get<std::size_t>(pointer);
-    deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(reference_id, *this));
+    const auto reference_id = worker.get<std::size_t>();
+    auto ref_polisher = std::make_unique<ReferencePolisher>(reference_id, *this);
+    worker.deserializer().register_reference_polisher(std::move(ref_polisher));
     value = nullptr;
   } else {
-    value = deserializer.get(pointer, type);
+    value = worker.get(type);
     polish();
   }
 }

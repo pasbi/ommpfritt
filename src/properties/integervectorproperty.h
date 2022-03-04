@@ -15,8 +15,8 @@ class IntegerVectorProperty : public NumericProperty<Vec2i>
 {
 public:
   using NumericProperty::NumericProperty;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
   static const PropertyDetail detail;
 };
 

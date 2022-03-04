@@ -62,16 +62,16 @@ QString PathObject::type() const
   return TYPE;
 }
 
-void PathObject::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void PathObject::serialize(serialization::SerializerWorker& worker) const
 {
-  Object::serialize(serializer, root);
-  m_path_vector->serialize(serializer, make_pointer(root, PATH_VECTOR_POINTER));
+  Object::serialize(worker);
+  m_path_vector->serialize(*worker.sub(PATH_VECTOR_POINTER));
 }
 
-void PathObject::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void PathObject::deserialize(serialization::DeserializerWorker& worker)
 {
-  Object::deserialize(deserializer, root);
-  m_path_vector->deserialize(deserializer, make_pointer(root, PATH_VECTOR_POINTER));
+  Object::deserialize(worker);
+  m_path_vector->deserialize(*worker.sub(PATH_VECTOR_POINTER));
   update();
 }
 

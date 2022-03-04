@@ -9,8 +9,8 @@ class IntegerProperty : public NumericProperty<int>
 {
 public:
   using NumericProperty::NumericProperty;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
   static const PropertyDetail detail;
   IntegerProperty& set_special_value(const QString& label);
 

@@ -234,11 +234,7 @@ void Application::init(Application* instance)
   register_everything();
   QCoreApplication::setOrganizationName(QObject::tr("omm"));
   QCoreApplication::setApplicationName(::QApplication::translate("QObject", "ommpfritt"));
-  if (Application::m_instance == nullptr) {
-    Application::m_instance = instance;
-  } else {
-    LFATAL("Resetting application instance.");
-  }
+  Application::m_instance = instance;
 }
 
 Application::~Application() = default;

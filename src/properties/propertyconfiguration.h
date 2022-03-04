@@ -2,7 +2,6 @@
 
 #include "geometry/vec2.h"
 #include "properties/propertyfilter.h"
-#include "serializers/abstractserializer.h"
 #include <QString>
 #include <cctype>
 #include <map>
@@ -10,6 +9,7 @@
 
 namespace omm
 {
+
 class PropertyConfiguration
 {
 public:
@@ -73,12 +73,10 @@ public:
   }
 
   template<typename T>
-  void deserialize_field(const QString& field,
-                         AbstractDeserializer& deserializer,
-                         const Serializable::Pointer& root)
+  void deserialize_field(const QString& field, serialization::DeserializerWorker& worker)
   {
     if (m_store.find(field) == m_store.end()) {
-      (m_store)[field] = deserializer.get<T>(Serializable::make_pointer(root, field));
+      m_store[field] = worker.sub(field.toStdString())->get<T>();
     }
   }
 

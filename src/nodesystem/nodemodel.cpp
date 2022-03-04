@@ -9,10 +9,18 @@
 #include "nodesystem/port.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
-#include "serializers/jsonserializer.h"
+#include "serializers/json/jsonserializer.h"
+#include "serializers/json/jsondeserializer.h"
+
 
 namespace
 {
+
+bool is_enabled(const omm::nodes::BackendLanguage language)
+{
+  bool have_opengl = !omm::Application::instance().options().have_opengl;
+  return language != omm::nodes::BackendLanguage::GLSL || !have_opengl;
+}
 
 std::unique_ptr<omm::nodes::AbstractNodeCompiler>
 make_compiler(omm::nodes::BackendLanguage language, omm::nodes::NodeModel& model)
@@ -36,35 +44,25 @@ namespace omm::nodes
 
 NodeModel::NodeModel(BackendLanguage language, Scene* scene)
     : m_scene(scene), m_compiler(make_compiler(language, *this))
+    , m_is_enabled(::is_enabled(language))
 {
   init();
 }
 
-std::unique_ptr<NodeModel> NodeModel::make(BackendLanguage language, Scene* scene)
-{
-  const bool no_opengl = !Application::instance().options().have_opengl;
-  if (language == BackendLanguage::GLSL && no_opengl) {
-    return nullptr;
-  } else {
-    return std::make_unique<NodeModel>(language, scene);
-  }
-}
-
 NodeModel::NodeModel(const NodeModel& other) : NodeModel(other.compiler().language, other.m_scene)
 {
-  std::ostringstream oss;
+  nlohmann::json store;
   {
-    JSONSerializer serializer(oss);
-    other.serialize(serializer, "root");
+    serialization::JSONSerializer serializer(store);
+    other.serialize(*serializer.sub("root"));
   }
-  const std::string str = oss.str();
 
   {
     QSignalBlocker blocker(this);
-    std::istringstream iss(str);
-    JSONDeserializer deserializer(iss);
-    deserialize(deserializer, "root");
+    serialization::JSONDeserializer deserializer(store);
+    deserialize(*deserializer.sub("root"));
   }
+
   for (Node* node : nodes()) {
     node->new_id();
   }
@@ -117,33 +115,32 @@ std::set<Node*> NodeModel::nodes() const
   return util::transform(m_nodes, [](const std::unique_ptr<Node>& node) { return node.get(); });
 }
 
-void NodeModel::serialize(AbstractSerializer& serializer, const Serializable::Pointer& ptr) const
+void NodeModel::serialize(serialization::SerializerWorker& worker) const
 {
-  const auto nodes_ptr = Serializable::make_pointer(ptr, NODES_POINTER);
-  serializer.set_value(m_nodes, nodes_ptr, [&serializer](const auto& node, const auto& root) {
-    node->serialize(serializer, root);
-    serializer.set_value(node->type(), make_pointer(root, TYPE_POINTER));
+  worker.sub(NODES_POINTER)->set_value(m_nodes, [](const auto& node, auto& worker_i) {
+    node->serialize(worker_i);
+    worker_i.sub(TYPE_POINTER)->set_value(node->type());
   });
 }
 
-void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& ptr)
+void NodeModel::deserialize(serialization::DeserializerWorker& worker)
 {
   QSignalBlocker blocker(this);
-  const auto nodes_pointer = Serializable::make_pointer(ptr, NODES_POINTER);
-  deserializer.get_items(nodes_pointer, [&deserializer, this](const auto& root) {
-    const auto type = deserializer.get_string(make_pointer(root, TYPE_POINTER));
+  worker.sub(NODES_POINTER)->get_items([this](auto& worker_i) {
+    const auto type = worker_i.sub(TYPE_POINTER)->get_string();
     if (type == FragmentNode::TYPE) {
       assert(m_fragment_node != nullptr);
-      m_fragment_node->deserialize(deserializer, root);
+      m_fragment_node->deserialize(worker_i);
     } else {
       auto node = Node::make(type, *this);
-      node->deserialize(deserializer, root);
+      node->deserialize(worker_i);
       add_node(std::move(node));
     }
   });
 
   // Nodes are not yet connected. They will be connected when the Deserializer gets destroyed.
-  connect(&deserializer, &AbstractDeserializer::destroyed, this, &NodeModel::emit_topology_changed);
+  connect(&worker.deserializer(), &serialization::AbstractDeserializer::destroyed,
+          this, &NodeModel::emit_topology_changed);
 }
 
 bool NodeModel::find_path(const Node& start, const Node& end, std::list<const Node*>& path) const
@@ -199,6 +196,11 @@ Scene* NodeModel::scene() const
 AbstractNodeCompiler& NodeModel::compiler() const
 {
   return *m_compiler;
+}
+
+bool NodeModel::is_enabled() const
+{
+  return m_is_enabled;
 }
 
 void NodeModel::set_error(const QString& error)

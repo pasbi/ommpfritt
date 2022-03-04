@@ -5,6 +5,6 @@
 static constexpr auto ommpfritt_version_major = "@CMAKE_PROJECT_VERSION_MAJOR@";
 static constexpr auto ommpfritt_version_minor = "@CMAKE_PROJECT_VERSION_MINOR@";
 static constexpr auto ommpfritt_version_patch = "@CMAKE_PROJECT_VERSION_PATCH@";
-static constexpr auto source_directory = "@CMAKE_CURRENT_SOURCE_DIR@";
+static constexpr auto source_directory = "@CMAKE_SOURCE_DIR@";
 static constexpr auto qt_qm_path = "@qt_qm_path@";
 std::string_view git_describe();

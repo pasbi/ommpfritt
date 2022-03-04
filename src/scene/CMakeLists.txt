@@ -1,30 +1,32 @@
 target_sources(libommpfritt PRIVATE
+  contextes.h
+  contextes_fwd.h
   cycleguard.cpp
   cycleguard.h
   disjointpathpointsetforest.cpp
   disjointpathpointsetforest.h
   itemmodeladapter.cpp
-  contextes_fwd.h
-  contextes.h
   itemmodeladapter.h
   list.cpp
   list.h
   mailbox.cpp
   mailbox.h
-  objecttree.h
   objecttree.cpp
-  pointselection.h
+  objecttree.h
   pointselection.cpp
-  propertyownermimedata.h
+  pointselection.h
   propertyownermimedata.cpp
-  scene.h
+  propertyownermimedata.h
   scene.cpp
-  structure.h
+  scene.h
+  sceneserializer.cpp
+  sceneserializer.h
   structure.cpp
-  stylelist.h
+  structure.h
   stylelist.cpp
-  taglist.h
+  stylelist.h
   taglist.cpp
+  taglist.h
 )
 
 add_subdirectory(history)

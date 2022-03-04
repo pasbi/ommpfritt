@@ -110,25 +110,23 @@ void swap(PathVector& a, PathVector& b) noexcept
 
 PathVector::~PathVector() = default;
 
-void PathVector::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void PathVector::serialize(serialization::SerializerWorker& worker) const
 {
-  const auto paths_pointer = make_pointer(root, SEGMENTS_POINTER);
-  serializer.set_value(m_paths, paths_pointer, [&serializer](const auto& path, const auto& root) {
+  worker.sub(SEGMENTS_POINTER)->set_value(m_paths, [](const auto& path, auto& worker_i) {
     if (path->size() == 0) {
       LWARNING << "Ignoring empty sub-path.";
     } else {
-      path->serialize(serializer, root);
+      path->serialize(worker_i);
     }
   });
 }
 
-void PathVector::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void PathVector::deserialize(serialization::DeserializerWorker& worker)
 {
-  const auto paths_pointer = make_pointer(root, SEGMENTS_POINTER);
   m_paths.clear();
-  deserializer.get_items(paths_pointer, [&deserializer, this](const auto& root) {
+  worker.sub(SEGMENTS_POINTER)->get_items([this](auto& worker_i) {
     Path& path = *m_paths.emplace_back(std::make_unique<Path>(this));
-    path.deserialize(deserializer, root);
+    path.deserialize(worker_i);
   });
 }
 

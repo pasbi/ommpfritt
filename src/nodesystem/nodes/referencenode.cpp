@@ -23,6 +23,11 @@ ReferenceNode::ReferenceNode(NodeModel& model) : Node(model)
       .set_category(category);
 }
 
+auto ptr(const PortType type)
+{
+  return type == PortType::Input ? "input" : "output";
+}
+
 QString ReferenceNode::type() const
 {
   return TYPE;
@@ -65,27 +70,23 @@ QString ReferenceNode::title() const
   return Node::title() + tr(" [%1]").arg(r_name);
 }
 
-void ReferenceNode::deserialize(AbstractDeserializer& deserializer,
-                                const Serializable::Pointer& root)
+void ReferenceNode::deserialize(serialization::DeserializerWorker& worker)
 {
-  Node::deserialize(deserializer, root);
+  Node::deserialize(worker);
   for (auto type : {PortType::Input, PortType::Output}) {
-    auto pointer = make_pointer(root, type == PortType::Input ? "input" : "output");
     std::set<QString> keys;
-    deserializer.get(keys, pointer);
+    worker.sub(ptr(type))->get(keys);
     for (const QString& key : keys) {
       add_forwarding_port(type, key);
     }
   }
 }
 
-void ReferenceNode::serialize(AbstractSerializer& serializer,
-                              const Serializable::Pointer& root) const
+void ReferenceNode::serialize(serialization::SerializerWorker& worker) const
 {
-  Node::serialize(serializer, root);
+  Node::serialize(worker);
   for (auto&& [type, map] : m_forwarded_ports) {
-    auto pointer = make_pointer(root, type == PortType::Input ? "input" : "output");
-    serializer.set_value(::get_keys(map), pointer);
+    worker.sub(ptr(type))->set_value(::get_keys(map));
   }
 }
 

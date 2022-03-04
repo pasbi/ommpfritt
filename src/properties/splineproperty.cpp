@@ -9,18 +9,16 @@ SplineProperty::SplineProperty(const omm::SplineType& default_value)
 {
 }
 
-void SplineProperty::deserialize(omm::AbstractDeserializer& deserializer,
-                                 const omm::Serializable::Pointer& root)
+void SplineProperty::deserialize(serialization::DeserializerWorker& worker)
 {
-  TypedProperty::deserialize(deserializer, root);
-  set(deserializer.get_spline(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  TypedProperty::deserialize(worker);
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get<SplineType>());
 }
 
-void SplineProperty::serialize(omm::AbstractSerializer& serializer,
-                               const omm::Serializable::Pointer& root) const
+void SplineProperty::serialize(serialization::SerializerWorker& worker) const
 {
-  TypedProperty::serialize(serializer, root);
-  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  TypedProperty::serialize(worker);
+  worker.sub(TypedPropertyDetail::VALUE_POINTER)->set_value(value());
 }
 
 }  // namespace omm

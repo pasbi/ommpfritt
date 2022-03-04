@@ -1,8 +1,8 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "logging.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
 #include <bitset>
 #include <set>
 
@@ -31,7 +31,7 @@ template<typename T> struct ConjunctionImpl {
 
 }  // namespace DNF_detail
 
-template<typename E> class Literal : public Serializable
+template<typename E> class Literal
 {
   static std::size_t from_enum(E e)
   {
@@ -63,30 +63,30 @@ public:
     return value[i] == this->value;
   }
 
-  bool evaluate(const E& e) const
+  [[nodiscard]] bool evaluate(const E& e) const
   {
     const auto v = static_cast<DNF_detail::underlying_type_t<E>>(e);
     return !!(v & (1 << i)) == value;
   }
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override
+  void serialize(serialization::SerializerWorker& worker) const
   {
-    serializer.set_value(i, make_pointer(root, "i"));
-    serializer.set_value(value, make_pointer(root, "v"));
+    worker.sub("i")->set_value(i);
+    worker.sub("v")->set_value(value);
   }
 
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override
+  void deserialize(serialization::DeserializerWorker& worker)
   {
-    i = deserializer.get_size_t(make_pointer(root, "i"));
-    value = deserializer.get_bool(make_pointer(root, "v"));
+    i = worker.sub("i")->get_size_t();
+    value =worker.sub("v")->get_bool();
   }
 
-  bool operator==(const Literal<E>& other) const
+  [[nodiscard]] bool operator==(const Literal<E>& other) const
   {
     return i == other.i && value == other.value;
   }
 
-  bool operator<(const Literal<E>& other) const
+  [[nodiscard]] bool operator<(const Literal<E>& other) const
   {
     if (i == other.i) {
       return value < other.value;
@@ -104,7 +104,7 @@ public:
     return static_cast<E>(1 << i);
   }
 
-  QString to_string() const
+  [[nodiscard]] QString to_string() const
   {
     QString s;
     if (!value) {
@@ -113,12 +113,11 @@ public:
     if constexpr (std::is_enum_v<E>) {
       s += QString("%1").arg(static_cast<std::underlying_type_t<E>>(i));
     } else {
-      s += QString("%1").arg(value);
+      s += QString("%1").arg(value ? 1 : 0);
     }
 
     return s;
   }
-
 
   std::size_t i = -1;
   bool value = false;
@@ -126,7 +125,7 @@ public:
 
 namespace DNF_detail
 {
-template<typename E, typename T, typename Junction> class Term : public Serializable
+template<typename E, typename T, typename Junction> class Term
 {
   static constexpr bool is_top_level = std::is_same_v<T, Literal<E>>;
   using U = underlying_type_t<E>;
@@ -153,33 +152,36 @@ public:
   Term(std::initializer_list<T> ts) : terms(ts)
   {
   }
+
   Term() = default;
+
   template<typename = typename std::enable_if<is_top_level>>
+
   Term(E positives, E negatives) : terms(convert_literals(positives, negatives))
   {
   }
 
-  template<typename V> bool evaluate(const V& value) const
+  template<typename V> [[nodiscard]] bool evaluate(const V& value) const
   {
     return Junction::evaluate(terms, value);
   }
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override
+  void serialize(serialization::SerializerWorker& worker) const
   {
-    serializer.set_value(terms, make_pointer(root, "terms"));
+    worker.sub("terms")->set_value(terms);
   }
 
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override
+  void deserialize(serialization::DeserializerWorker& worker)
   {
-    deserializer.get(terms, make_pointer(root, "terms"));
+    worker.sub("terms")->get(terms);
   }
 
-  bool operator==(const Term<E, T, Junction>& other) const
+  [[nodiscard]] bool operator==(const Term<E, T, Junction>& other) const
   {
     return terms == other.terms;
   }
 
-  bool operator<(const Term<E, T, Junction>& other) const
+  [[nodiscard]] bool operator<(const Term<E, T, Junction>& other) const
   {
     return std::lexicographical_compare(terms.begin(),
                                         terms.end(),
@@ -187,7 +189,7 @@ public:
                                         other.terms.end());
   }
 
-  QString to_string() const
+  [[nodiscard]] QString to_string() const
   {
     QString s;
     s += "( ";

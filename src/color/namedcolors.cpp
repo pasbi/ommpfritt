@@ -1,20 +1,22 @@
 #include "color/namedcolors.h"
 #include "logging.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
 
 namespace omm
 {
+
 int NamedColors::rowCount(const QModelIndex& parent) const
 {
   assert(!parent.isValid());
   Q_UNUSED(parent)
-  return m_named_colors.size();
+  return static_cast<int>(m_named_colors.size());
 }
 
 QVariant NamedColors::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
-    return QVariant();
+    return {};
   }
   const auto& [name, color] = m_named_colors[index.row()];
   switch (role) {
@@ -23,7 +25,7 @@ QVariant NamedColors::data(const QModelIndex& index, int role) const
   case Qt::DisplayRole:
     return name;
   default:
-    return QVariant();
+    return {};
   }
 }
 
@@ -76,7 +78,7 @@ QModelIndex NamedColors::index(const QString& name) const
   const auto it = std::find_if(m_named_colors.begin(),
                                m_named_colors.end(),
                                [name](const auto& pair) { return pair.first == name; });
-  return index(std::distance(m_named_colors.begin(), it), 0);
+  return index(static_cast<int>(std::distance(m_named_colors.begin(), it)), 0);
 }
 
 bool NamedColors::has_color(const QString& name) const
@@ -122,8 +124,8 @@ void NamedColors::remove(const QString& name)
   const QModelIndex index = this->index(name);
   assert(index.isValid());
   assert(index.model() == this);
-  const std::size_t n = index.row();
-  beginRemoveRows(QModelIndex(), n, n);
+  const auto n = static_cast<int>(index.row());
+  beginRemoveRows({}, n, n);
   m_named_colors.erase(m_named_colors.begin() + n);
   endRemoveRows();
 }
@@ -143,23 +145,22 @@ void NamedColors::clear()
   endResetModel();
 }
 
-void NamedColors::serialize(AbstractSerializer& serializer, const Serializable::Pointer& p) const
+void NamedColors::serialize(serialization::SerializerWorker& worker) const
 {
-  const auto pointer = Serializable::make_pointer(p);
-  serializer.set_value(m_named_colors, pointer, [&serializer](const auto& named_color, const auto& root) {
+  worker.set_value(m_named_colors, [](const auto& named_color, auto& worker_i) {
     const auto& [name, color] = named_color;
-    serializer.set_value(name, Serializable::make_pointer(root, "name"));
-    serializer.set_value(color, Serializable::make_pointer(root, "color"));
+    worker_i.sub("name")->set_value(name);
+    worker_i.sub("color")->set_value(color);
   });
 }
 
-void NamedColors::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& p)
+void NamedColors::deserialize(serialization::DeserializerWorker& worker)
 {
   beginResetModel();
   m_named_colors.clear();
-  deserializer.get_items(make_pointer(p), [&deserializer, this](const auto& root) {
-    const auto name = deserializer.get_string(make_pointer(root, "name"));
-    const auto color = deserializer.get_color(make_pointer(root, "color"));
+  worker.get_items([this](auto& worker_i) {
+    const auto name = worker_i.sub("name")->get_string();
+    const auto color = worker_i.sub("color")->template get<Color>();
     m_named_colors.emplace_back(name, color);
   });
   endResetModel();
@@ -181,7 +182,7 @@ QString NamedColors::generate_default_name() const
 
 QModelIndex NamedColors::add(const QString& name, const Color& color)
 {
-  const std::size_t n = m_named_colors.size();
+  const auto n = static_cast<int>(m_named_colors.size());
   beginInsertRows(QModelIndex(), n, n);
   m_named_colors.emplace_back(name, color);
   endInsertRows();

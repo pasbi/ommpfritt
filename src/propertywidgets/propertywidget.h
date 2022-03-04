@@ -29,7 +29,6 @@ public:
                                   [key](const Property& p) { return p.configuration.get<T>(key); });
   }
 
-public:
   void on_property_value_changed(omm::Property* property) const;
   void update_enabledness();
 

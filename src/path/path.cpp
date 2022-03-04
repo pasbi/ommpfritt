@@ -2,6 +2,8 @@
 #include "geometry/point.h"
 #include "path/pathpoint.h"
 #include "serializers/abstractserializer.h"
+#include "serializers/serializerworker.h"
+#include "serializers/deserializerworker.h"
 #include <2geom/pathvector.h>
 
 namespace
@@ -207,20 +209,18 @@ std::deque<std::unique_ptr<PathPoint> > Path::extract(std::size_t start, std::si
   return points;
 }
 
-void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void Path::serialize(serialization::SerializerWorker& worker) const
 {
-  const auto points_ptr = make_pointer(root, POINTS_POINTER);
-  serializer.set_value(m_points, points_ptr, [&serializer](const auto& point, const auto& root) {
-    point->geometry().serialize(serializer, root);
+  worker.sub(POINTS_POINTER)->set_value(m_points, [](const auto& point, auto& worker_i) {
+    point->geometry().serialize(worker_i);
   });
 }
 
-void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void Path::deserialize(serialization::DeserializerWorker& worker)
 {
-  const auto points_ptr = make_pointer(root, POINTS_POINTER);
-  deserializer.get_items(points_ptr, [&deserializer, this](const auto& root) {
+  worker.sub(POINTS_POINTER)->get_items([this](auto& worker_i) {
     Point geometry;
-    geometry.deserialize(deserializer, root);
+    geometry.deserialize(worker_i);
     m_points.emplace_back(std::make_unique<PathPoint>(geometry, *this));
   });
 }

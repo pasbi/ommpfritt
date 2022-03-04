@@ -21,7 +21,7 @@
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
 #include "renderers/style.h"
-#include "serializers/jsonserializer.h"
+#include "scene/sceneserializer.h"
 #include "tags/nodestag.h"
 #include "tags/tag.h"
 #include "tools/selectobjectstool.h"
@@ -73,13 +73,6 @@ void remove_items(omm::Scene& scene, StructureT& structure, const ItemsT& select
   using remove_command_type = omm::RemoveCommand<StructureT>;
   scene.submit<remove_command_type>(structure, selection);
 }
-
-constexpr auto ROOT_POINTER = "root";
-constexpr auto STYLES_POINTER = "styles";
-constexpr auto ANIMATOR_POINTER = "animation";
-constexpr auto NAMED_COLORS_POINTER = "colors";
-constexpr auto EXPORT_OPTIONS_POINTER = "export_options";
-constexpr auto JOINED_POINTS_POINTER =  "joined_points";
 
 auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
@@ -232,90 +225,12 @@ DisjointPathPointSetForest& Scene::joined_points() const
 
 bool Scene::save_as(const QString& filename)
 {
-  std::ofstream ofstream(filename.toStdString());
-  if (!ofstream) {
-    LERROR << "Failed to open ofstream at '" << filename << "'.";
-    return false;
-  }
-
-  JSONSerializer serializer(static_cast<std::ostream&>(ofstream));
-  object_tree().root().serialize(serializer, ROOT_POINTER);
-
-  serializer.start_array(styles().items().size(), Serializable::make_pointer(STYLES_POINTER));
-  for (std::size_t i = 0; i < styles().items().size(); ++i) {
-    styles().item(i).serialize(serializer, Serializable::make_pointer(STYLES_POINTER, i));
-  }
-  serializer.end_array();
-
-  animator().serialize(serializer, ANIMATOR_POINTER);
-  named_colors().serialize(serializer, NAMED_COLORS_POINTER);
-  export_options().serialize(serializer, EXPORT_OPTIONS_POINTER);
-  m_joined_points->serialize(serializer, JOINED_POINTS_POINTER);
-
-  LINFO << "Saved current scene to '" << filename << "'.";
-  history().set_saved_index();
-  m_has_pending_changes = false;
-  m_filename = filename;
-  Q_EMIT mail_box().filename_changed();
-  return true;
+  return SceneSerialization{*this}.save(filename);
 }
 
 bool Scene::load_from(const QString& filename)
 {
-  reset();
-
-  std::ifstream ifstream(filename.toStdString());
-  if (!ifstream) {
-    LERROR << "Failed to open '" << filename << "'.";
-    return false;
-  }
-
-  auto error_handler = [this, filename](const QString& msg) {
-    LERROR << "Failed to deserialize file at '" << filename << "'.";
-    LINFO << msg;
-    reset();
-  };
-
-  try {
-    JSONDeserializer deserializer(static_cast<std::istream&>(ifstream));
-
-    auto new_root = make_root();
-    new_root->deserialize(deserializer, ROOT_POINTER);
-
-    const auto n_styles = deserializer.array_size(Serializable::make_pointer(STYLES_POINTER));
-    std::deque<std::unique_ptr<Style>> styles;
-    for (std::size_t i = 0; i < n_styles; ++i) {
-      const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
-      auto style = std::make_unique<Style>(this);
-      style->deserialize(deserializer, style_pointer);
-      styles.push_back(std::move(style));
-    }
-
-    m_filename = filename;
-    history().set_saved_index();
-    Q_EMIT mail_box().filename_changed();
-
-    this->object_tree().replace_root(std::move(new_root));
-    this->styles().set(std::move(styles));
-    animator().invalidate();
-
-    object_tree().root().update_recursive();
-
-    animator().deserialize(deserializer, ANIMATOR_POINTER);
-    named_colors().deserialize(deserializer, NAMED_COLORS_POINTER);
-    m_export_options->deserialize(deserializer, EXPORT_OPTIONS_POINTER);
-    m_joined_points->deserialize(deserializer, JOINED_POINTS_POINTER);
-    deserializer.polish();
-    return true;
-  } catch (const Object::AbstractFactory::InvalidKeyError& invalid_key_error) {
-    error_handler(invalid_key_error.what());
-  } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
-    error_handler(deserialize_error.what());
-  } catch (const nlohmann::json::exception& exception) {
-    error_handler(exception.what());
-  }
-
-  return false;
+  return SceneSerialization{*this}.load(filename);
 }
 
 void Scene::reset()
@@ -379,7 +294,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 
   m_selection = selection;
 
-  static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
+  const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
     auto& mail_box = this->mail_box();
     Q_EMIT mail_box.kind_selection_changed(selection, kind);
 
@@ -471,8 +386,8 @@ std::set<nodes::Node*> Scene::collect_nodes(const std::set<AbstractPropertyOwner
   for (auto&& apo : owners) {
     if (!!(apo->flags() & Flag::HasNodes)) {
       const auto& nodes_owner = dynamic_cast<const nodes::NodesOwner&>(*apo);
-      if (const auto* node_model = nodes_owner.node_model()) {
-        nodes = ::merge(nodes, node_model->nodes());
+      if (const auto& node_model = nodes_owner.node_model(); node_model.is_enabled()) {
+        nodes = ::merge(nodes, node_model.nodes());
       }
     }
   }

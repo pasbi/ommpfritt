@@ -26,7 +26,6 @@ class PathVector;
 
 class Object
     : public PropertyOwner<Kind::Object>
-    , public virtual Serializable
     , public TreeElement<Object>
     , public AbstractFactory<QString, true, Object, Scene*>
 {
@@ -53,8 +52,8 @@ public:
                                               Space space);
   bool is_transformation_property(const Property& property) const;
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(serialization::SerializerWorker& worker) const override;
+  void deserialize(serialization::DeserializerWorker& worker) override;
   virtual void draw_handles(Painter& renderer) const;
 
   virtual void

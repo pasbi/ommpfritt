@@ -5,23 +5,21 @@ namespace omm
 const Property::PropertyDetail FloatProperty::detail{
     [](const Property&, std::size_t) { return ""; }};
 
-void FloatProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void FloatProperty::deserialize(serialization::DeserializerWorker& worker)
 {
-  NumericProperty::deserialize(deserializer, root);
-  set(deserializer.get_double(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  NumericProperty::deserialize(worker);
+  set(worker.sub(TypedPropertyDetail::VALUE_POINTER)->get_double());
   if (is_user_property()) {
-    set_default_value(
-        deserializer.get_double(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+    set_default_value(worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->get_double());
   }
 }
 
-void FloatProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void FloatProperty::serialize(serialization::SerializerWorker& worker) const
 {
-  NumericProperty::serialize(serializer, root);
-  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  NumericProperty::serialize(worker);
+  worker.sub(TypedPropertyDetail::VALUE_POINTER)->set_value(value());
   if (is_user_property()) {
-    serializer.set_value(default_value(),
-                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER));
+    worker.sub(TypedPropertyDetail::DEFAULT_VALUE_POINTER)->set_value(default_value());
   }
 }
 

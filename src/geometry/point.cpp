@@ -1,6 +1,7 @@
 #include "geometry/point.h"
 #include "logging.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
 #include <cmath>
 
 namespace omm
@@ -120,18 +121,18 @@ Point Point::flipped() const
   return Point{position(), right_tangent(), left_tangent()};
 }
 
-void Point::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+void Point::serialize(serialization::SerializerWorker& worker) const
 {
-  serializer.set_value(m_position, make_pointer(root, POSITION_POINTER));
-  serializer.set_value(m_left_tangent, make_pointer(root, LEFT_TANGENT_POINTER));
-  serializer.set_value(m_right_tangent, make_pointer(root, RIGHT_TANGENT_POINTER));
+  worker.sub(POSITION_POINTER)->set_value(m_position);
+  worker.sub(LEFT_TANGENT_POINTER)->set_value(m_left_tangent);
+  worker.sub(RIGHT_TANGENT_POINTER)->set_value(m_right_tangent);
 }
 
-void Point::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+void Point::deserialize(serialization::DeserializerWorker& worker)
 {
-  m_position = deserializer.get_vec2f(make_pointer(root, POSITION_POINTER));
-  m_left_tangent = deserializer.get_polarcoordinates(make_pointer(root, LEFT_TANGENT_POINTER));
-  m_right_tangent = deserializer.get_polarcoordinates(make_pointer(root, RIGHT_TANGENT_POINTER));
+  m_position = worker.sub(POSITION_POINTER)->get<Vec2f>();
+  m_left_tangent = worker.sub(LEFT_TANGENT_POINTER)->get<PolarCoordinates>();
+  m_right_tangent = worker.sub(RIGHT_TANGENT_POINTER)->get<PolarCoordinates>();
 }
 
 Point Point::flattened(const double t) const

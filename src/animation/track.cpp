@@ -7,6 +7,7 @@
 
 namespace
 {
+
 using Interpolation = omm::Track::Interpolation;
 
 double interpolate(const std::array<double, 4>& segment, double t, Interpolation interpolation)
@@ -32,6 +33,66 @@ double interpolate(const std::array<double, 4>& segment, double t, Interpolation
   default:
     Q_UNREACHABLE();
     return 0.0;
+  }
+}
+
+struct KnotAt
+{
+  const omm::Knot* knot = nullptr;
+  int frame = 0;
+};
+
+std::pair<KnotAt, KnotAt> find_left_right_knot(const int frame, const auto& knots)
+{
+  KnotAt left;
+  KnotAt right;
+  for (const auto& knot : knots) {
+    if (knot.first <= frame) {
+      left.frame = knot.first;
+      left.knot = knot.second.get();
+    } else {
+      assert(knot.first > frame);
+      right.frame = knot.first;
+      right.knot = knot.second.get();
+      break;
+    }
+  }
+  return {left, right};
+}
+
+omm::variant_type interpolate(const Interpolation& interpolation,
+                              const double frame,
+                              const KnotAt& left,
+                              const KnotAt& right)
+{
+  if (left.knot == nullptr && right.knot != nullptr) {
+    return right.knot->value;
+  } else if (left.knot != nullptr && right.knot == nullptr) {
+    return left.knot->value;
+  } else if (left.knot == nullptr && right.knot == nullptr) {
+    LFATAL("Unexpected condition.");
+    return {};
+  } else {
+    const std::size_t n = n_channels(left.knot->value);
+    assert(n == n_channels(right.knot->value));
+    if (n == 0) {
+      return left.knot->value;  // non-numerical types cannot be interpolated.
+    } else {
+      const double t = (frame - left.frame) / static_cast<double>(right.frame - left.frame);
+      auto interpolated = left.knot->value;
+      for (std::size_t channel = 0; channel < n; ++channel) {
+        const double left_value = get_channel_value(left.knot->value, channel);
+        const double right_value = get_channel_value(right.knot->value, channel);
+        const std::array<double, 4> segment{
+            left_value,
+            left_value + get_channel_value(left.knot->right_offset, channel),
+            right_value + get_channel_value(right.knot->left_offset, channel),
+            right_value};
+        const double v = ::interpolate(segment, t, interpolation);
+        set_channel_value(interpolated, channel, v);
+      }
+      return interpolated;
+    }
   }
 }
 
@@ -70,37 +131,35 @@ std::unique_ptr<Track> Track::clone() const
   return track;
 }
 
-void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) const
+void Track::serialize(serialization::SerializerWorker& worker) const
 {
-  serializer.set_value(type(), make_pointer(pointer, TYPE_KEY));
-  serializer.set_value(m_interpolation, make_pointer(pointer, INTERPOLATION_KEY));
+  worker.sub(TYPE_KEY)->set_value(type());
+  worker.sub(INTERPOLATION_KEY)->set_value(m_interpolation);
 
-  const auto knots_pointer = make_pointer(pointer, KNOTS_KEY);
   const auto key_frames = this->key_frames();
-  serializer.set_value(key_frames, knots_pointer, [this, &serializer](const auto& key_frame, const auto& root) {
+  worker.sub(KNOTS_KEY)->set_value(key_frames, [this](const auto& key_frame, auto& worker_i) {
     const Knot& knot = *m_knots.at(key_frame);
-    serializer.set_value(key_frame, make_pointer(root, FRAME_KEY));
-    serializer.set_value(knot.value, make_pointer(root, VALUE_KEY));
+    worker_i.sub(FRAME_KEY)->set_value(key_frame);
+    worker_i.sub(VALUE_KEY)->set_value(knot.value);
     if (is_numerical()) {
-      serializer.set_value(knot.left_offset, make_pointer(root, LEFT_VALUE_KEY));
-      serializer.set_value(knot.right_offset, make_pointer(root, RIGHT_VALUE_KEY));
+      worker_i.sub(LEFT_VALUE_KEY)->set_value(knot.left_offset);
+      worker_i.sub(RIGHT_VALUE_KEY)->set_value(knot.right_offset);
     }
   });
 }
 
-void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
+void Track::deserialize(serialization::DeserializerWorker& worker)
 {
-  const QString type = deserializer.get_string(make_pointer(pointer, TYPE_KEY));
-  m_interpolation = deserializer.get<Interpolation>(make_pointer(pointer, INTERPOLATION_KEY));
+  const QString type = worker.sub(TYPE_KEY)->get_string();
+  m_interpolation = worker.sub(INTERPOLATION_KEY)->get<Interpolation>();
 
-  const auto knots_pointer = make_pointer(pointer, KNOTS_KEY);
-  deserializer.get_items(knots_pointer, [&deserializer, this, type](const auto& root) {
-    auto knot = std::make_unique<Knot>(deserializer, make_pointer(root, VALUE_KEY), type);
+  worker.sub(KNOTS_KEY)->get_items([this, type](auto& worker_i) {
+    auto knot = std::make_unique<Knot>(*worker_i.sub(VALUE_KEY), type);
     if (is_numerical()) {
-      knot->left_offset = deserializer.get(make_pointer(root, LEFT_VALUE_KEY), type);
-      knot->right_offset = deserializer.get(make_pointer(root, RIGHT_VALUE_KEY), type);
+      knot->left_offset = worker_i.sub(LEFT_VALUE_KEY)->get(type);
+      knot->right_offset = worker_i.sub(RIGHT_VALUE_KEY)->get(type);
     }
-    const int frame = deserializer.get_int(make_pointer(root, FRAME_KEY));
+    const int frame = worker_i.sub(FRAME_KEY)->get_int();
     m_knots.insert(std::pair(frame, std::move(knot)));
   });
 }
@@ -117,60 +176,17 @@ double Track::interpolate(double frame, std::size_t channel) const
   return get_channel_value(interpolate(frame), channel);
 }
 
-variant_type Track::interpolate(double frame) const
+variant_type Track::interpolate(const double frame) const
 {
   assert(!m_knots.empty());
 
-  if (const auto it = m_knots.find(frame); it != m_knots.end()) {
+  const auto iframe = static_cast<int>(frame);
+  if (const auto it = m_knots.find(iframe); it != m_knots.end()) {
     return it->second->value;
   }
 
-  const Knot* left = nullptr;
-  int left_frame = 0;
-  const Knot* right = nullptr;
-  int right_frame = 0;
-  for (const auto& knot : m_knots) {
-    if (knot.first <= frame) {
-      left_frame = knot.first;
-      left = knot.second.get();
-    } else {
-      assert(knot.first > frame);
-      right_frame = knot.first;
-      right = knot.second.get();
-      break;
-    }
-  }
-
-  if (left == nullptr && right != nullptr) {
-    return right->value;
-  } else if (left != nullptr && right == nullptr) {
-    return left->value;
-  } else if (left == nullptr && right == nullptr) {
-    LFATAL("Unexpected condition.");
-  } else {
-    const std::size_t n = n_channels(left->value);
-    assert(n == n_channels(right->value));
-    if (n == 0) {
-      return left->value;  // non-numerical types cannot be interpolated.
-    } else {
-      const double t = (frame - left_frame) / static_cast<double>(right_frame - left_frame);
-      variant_type interpolated = left->value;
-      assert(interpolated.index() == property().variant_value().index());
-      for (std::size_t channel = 0; channel < n; ++channel) {
-        const double left_value = get_channel_value(left->value, channel);
-        const double right_value = get_channel_value(right->value, channel);
-        const std::array<double, 4> segment{
-            left_value,
-            left_value + get_channel_value(left->right_offset, channel),
-            right_value + get_channel_value(right->left_offset, channel),
-            right_value};
-        const double v = ::interpolate(segment, t, m_interpolation);
-        set_channel_value(interpolated, channel, v);
-      }
-      assert(interpolated.index() == property().variant_value().index());
-      return interpolated;
-    }
-  }
+  const auto& [left, right] = ::find_left_right_knot(iframe, m_knots);
+  return ::interpolate(m_interpolation, frame, left, right);
 }
 
 Knot& Track::knot(int frame) const

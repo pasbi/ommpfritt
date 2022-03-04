@@ -3,29 +3,30 @@
 #include "common.h"
 #include "logging.h"
 #include "objects/pathobject.h"
-#include "path/path.h"
 #include "path/lib2geomadapter.h"
+#include "path/path.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/integervectorproperty.h"
-#include "properties/propertygroups/markerproperties.h"
 #include "properties/optionproperty.h"
+#include "properties/propertygroups/markerproperties.h"
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
-#include "renderers/style.h"
+#include "removeif.h"
 #include "renderers/painter.h"
 #include "renderers/painteroptions.h"
+#include "renderers/style.h"
 #include "scene/contextes.h"
 #include "scene/mailbox.h"
 #include "scene/objecttree.h"
 #include "scene/scene.h"
-#include "serializers/jsonserializer.h"
+#include "serializers/json/jsonserializer.h"
+#include "serializers/abstractdeserializer.h"
 #include "tags/styletag.h"
 #include "tags/tag.h"
-#include "removeif.h"
 
 #include <QObject>
 #include <QPen>
@@ -272,36 +273,33 @@ PathVector Object::join(const std::vector<Object*>& objects)
   return path_vector;
 }
 
-void Object::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void Object::serialize(serialization::SerializerWorker& worker) const
 {
-  PropertyOwner::serialize(serializer, root);
+  PropertyOwner::serialize(worker);
 
-  const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
-  serializer.set_value(tree_children(), children_pointer, [&serializer](const auto* child, const auto& root) {
-    serializer.set_value(child->type(), make_pointer(root, TYPE_POINTER));
-    child->serialize(serializer, root);
+  worker.sub(CHILDREN_POINTER)->set_value(tree_children(), [](const auto* child, auto& worker_i) {
+    worker_i.sub(TYPE_POINTER)->set_value(child->type());
+    child->serialize(worker_i);
   });
 
-  const auto tags_pointer = make_pointer(root, TAGS_POINTER);
-  serializer.set_value(tags.ordered_items(), tags_pointer, [&serializer](const auto* tag, const auto& root) {
-    serializer.set_value(tag->type(), make_pointer(root, TYPE_POINTER));
-    tag->serialize(serializer, root);
+  worker.sub(TAGS_POINTER)->set_value(tags.ordered_items(), [](const auto* tag, auto& worker_i) {
+    worker_i.sub(TYPE_POINTER)->set_value(tag->type());
+    tag->serialize(worker_i);
   });
 }
 
-void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void Object::deserialize(serialization::DeserializerWorker& worker)
 {
-  PropertyOwner::deserialize(deserializer, root);
+  PropertyOwner::deserialize(worker);
 
-  const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
-  deserializer.get_items(children_pointer, [&deserializer, this](const auto& root) {
-    const auto child_type = deserializer.get_string(make_pointer(root, TYPE_POINTER));
+  worker.sub(CHILDREN_POINTER)->get_items([this](auto& worker_i) {
+    const auto child_type = worker_i.sub(TYPE_POINTER)->get_string();
     try {
       auto child = Object::make(child_type, static_cast<Scene*>(scene()));
       if (auto* scene = this->scene(); scene != nullptr) {
         child->set_object_tree(scene->object_tree());
       }
-      child->deserialize(deserializer, root);
+      child->deserialize(worker_i);
 
       // TODO adopt sets the global transformation which is reverted by setting the local
       //  transformation immediately afterwards. That can be optimized.
@@ -310,16 +308,15 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     } catch (std::out_of_range&) {
       const auto message = QObject::tr("Failed to retrieve object type '%1'.").arg(child_type);
       LERROR << message;
-      throw AbstractDeserializer::DeserializeError(message.toStdString());
+      throw serialization::AbstractDeserializer::DeserializeError(message.toStdString());
     }
   });
 
-  const auto tags_pointer = make_pointer(root, TAGS_POINTER);
   std::deque<std::unique_ptr<Tag>> tags;
-  deserializer.get_items(tags_pointer, [&deserializer, &tags, this](const auto& root) {
-    const auto tag_type = deserializer.get_string(make_pointer(root, TYPE_POINTER));
+  worker.sub(TAGS_POINTER)->get_items([&tags, this](auto& worker_i) {
+    const auto tag_type = worker_i.sub(TYPE_POINTER)->get_string();
     auto tag = Tag::make(tag_type, *this);
-    tag->deserialize(deserializer, root);
+    tag->deserialize(worker_i);
     tags.push_back(std::move(tag));
   });
   this->tags.set(std::move(tags));

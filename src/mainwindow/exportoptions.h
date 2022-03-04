@@ -1,19 +1,24 @@
 #pragma once
 
-#include "aspects/serializable.h"
-#include "serializers/abstractserializer.h"
+#include <QString>
 
 namespace omm
 {
+
 class View;
 
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 struct ExportOptions
-    : Serializable
 {
   bool operator==(const ExportOptions& other) const;
   bool operator!=(const ExportOptions& other) const;
-  void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   enum class Format { Raster, Vector };
 

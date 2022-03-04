@@ -1,12 +1,12 @@
 #include "mainwindow/exportoptions.h"
 #include "aspects/abstractpropertyowner.h"
 #include "objects/view.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/abstractdeserializer.h"
 
 namespace omm
 {
 
-class ExportOptions::ReferencePolisher : public omm::ReferencePolisher
+class ExportOptions::ReferencePolisher : public omm::serialization::ReferencePolisher
 {
 public:
   explicit ReferencePolisher(const std::size_t view_id, ExportOptions& export_options)
@@ -38,31 +38,29 @@ private:
   ExportOptions& m_export_options;
 };
 
-void ExportOptions::serialize(AbstractSerializer& serializer, const Pointer& pointer) const
+void ExportOptions::serialize(serialization::SerializerWorker& worker) const
 {
-  Serializable::serialize(serializer, pointer);
-  serializer.set_value(view, make_pointer(pointer, VIEW_KEY));
-  serializer.set_value(x_resolution, make_pointer(pointer, X_RESOLUTION_KEY));
-  serializer.set_value(start_frame, make_pointer(pointer, START_FRAME_KEY));
-  serializer.set_value(end_frame, make_pointer(pointer, END_FRAME_KEY));
-  serializer.set_value(pattern, make_pointer(pointer, PATTERN_KEY));
-  serializer.set_value(animated, make_pointer(pointer, ANIMATED_KEY));
-  serializer.set_value(scale, make_pointer(pointer, SCALE_KEY));
-  serializer.set_value(static_cast<int>(format), make_pointer(pointer, FORMAT_KEY));
+  worker.sub(VIEW_KEY)->set_value(view);
+  worker.sub(X_RESOLUTION_KEY)->set_value(x_resolution);
+  worker.sub(START_FRAME_KEY)->set_value(start_frame);
+  worker.sub(END_FRAME_KEY)->set_value(end_frame);
+  worker.sub(PATTERN_KEY)->set_value(pattern);
+  worker.sub(ANIMATED_KEY)->set_value(animated);
+  worker.sub(SCALE_KEY)->set_value(scale);
+  worker.sub(FORMAT_KEY)->set_value(static_cast<int>(format));
 }
 
-void ExportOptions::deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
+void ExportOptions::deserialize(serialization::DeserializerWorker& worker)
 {
-  Serializable::deserialize(deserializer, pointer);
-  const auto view_id = deserializer.get_size_t(make_pointer(pointer, VIEW_KEY));
-  x_resolution = deserializer.get_int(make_pointer(pointer, X_RESOLUTION_KEY));
-  start_frame = deserializer.get_int(make_pointer(pointer, START_FRAME_KEY));
-  end_frame = deserializer.get_int(make_pointer(pointer, END_FRAME_KEY));
-  pattern = deserializer.get_string(make_pointer(pointer, PATTERN_KEY));
-  animated = deserializer.get_bool(make_pointer(pointer, ANIMATED_KEY));
-  scale = deserializer.get_double(make_pointer(pointer, SCALE_KEY));
-  format = static_cast<Format>(deserializer.get_int(make_pointer(pointer, FORMAT_KEY)));
-  deserializer.register_reference_polisher(std::make_unique<ReferencePolisher>(view_id, *this));
+  const auto view_id = worker.sub(VIEW_KEY)->get_size_t();
+  x_resolution = worker.sub(X_RESOLUTION_KEY)->get_int();
+  start_frame = worker.sub(START_FRAME_KEY)->get_int();
+  end_frame = worker.sub(END_FRAME_KEY)->get_int();
+  pattern = worker.sub(PATTERN_KEY)->get_string();
+  animated = worker.sub(ANIMATED_KEY)->get_bool();
+  scale = worker.sub(SCALE_KEY)->get_double();
+  format = static_cast<Format>(worker.sub(FORMAT_KEY)->get_int());
+  worker.deserializer().register_reference_polisher(std::make_unique<ReferencePolisher>(view_id, *this));
 }
 
 bool ExportOptions::operator==(const ExportOptions& other) const

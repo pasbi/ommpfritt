@@ -1,7 +1,5 @@
 include(GoogleTest)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/testconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testconfig.h @ONLY)
-
 # The following line is required to mark ${compiled_resource_file} as generated file.
 # Sadly, it's not possible to do that with `set_source_files_properties`, because:
 # - using this directory (`DIRECTORY ${CMAKE_CURRENT_SOURCER_DIRECTORY}`), cmake does not find the
@@ -38,10 +36,10 @@ package_add_test(color.cpp)
 package_add_test(common.cpp)
 package_add_test(dnftest.cpp)
 package_add_test(geometry.cpp)
-package_add_test(iotest.cpp)
 package_add_test(nodetest.cpp)
 package_add_test(pathtest.cpp)
 package_add_test(propertytest.cpp)
 package_add_test(splinetypetest.cpp)
 package_add_test(transform.cpp)
 package_add_test(tree.cpp)
+package_add_test(serialization.cpp)

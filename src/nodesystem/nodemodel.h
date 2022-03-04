@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aspects/serializable.h"
 #include "cachedgetter.h"
 #include "common.h"
 #include "nodesystem/nodecompiler.h"
@@ -11,7 +10,15 @@
 
 namespace omm
 {
+
 class Scene;
+
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 }  // namespace omm
 
 namespace omm::nodes
@@ -24,9 +31,7 @@ class OutputPort;
 class InputPort;
 class FragmentNode;
 
-class NodeModel
-    : public QObject
-    , public Serializable
+class NodeModel : public QObject
 {
   Q_OBJECT
 public:
@@ -45,8 +50,8 @@ public:
   [[nodiscard]] bool can_connect(const OutputPort& a, const InputPort& b) const;
   using QObject::connect;
 
-  void serialize(AbstractSerializer&, const Pointer&) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& ptr) override;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   static constexpr auto NODES_POINTER = "nodes";
   static constexpr auto TYPE_POINTER = "type";
@@ -94,6 +99,7 @@ public:
   };
 
 public:
+  [[nodiscard]] bool is_enabled() const;
   void set_error(const QString& error);
 
 Q_SIGNALS:
@@ -112,6 +118,7 @@ private:
   QString m_error = "";
   FragmentNode* m_fragment_node = nullptr;
   bool m_emit_topology_changed_blocked = false;
+  const bool m_is_enabled;
 };
 
 }  // namespace omm::nodes

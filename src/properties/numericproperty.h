@@ -83,29 +83,26 @@ public:
     return *this;
   }
 
-  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override
+  void deserialize(serialization::DeserializerWorker& worker) override
   {
-    TypedProperty<T>::deserialize(deserializer, root);
+    TypedProperty<T>::deserialize(worker);
     if (this->is_user_property()) {
       for (const auto& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
-        this->configuration.set(key, deserializer.get<T>(Serializable::make_pointer(root, key)));
+        const auto t = worker.sub(key)->template get<T>();
+        this->configuration.set(key, t);
       }
-      this->configuration.set(
-          D::MULTIPLIER_POINTER,
-          deserializer.get<double>(Serializable::make_pointer(root, D::MULTIPLIER_POINTER)));
+      this->configuration.set( D::MULTIPLIER_POINTER, worker.sub(D::MULTIPLIER_POINTER)->get<double>());
     }
   }
 
-  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override
+  void serialize(serialization::SerializerWorker& worker) const override
   {
-    TypedProperty<T>::serialize(serializer, root);
+    TypedProperty<T>::serialize(worker);
     if (this->is_user_property()) {
       for (const auto& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
-        serializer.set_value(this->configuration.template get<T>(key),
-                             Serializable::make_pointer(root, key));
+        worker.sub(key)->set_value(this->configuration.template get<T>(key));
       }
-      serializer.set_value(this->configuration.template get<double>(D::MULTIPLIER_POINTER),
-                           Serializable::make_pointer(root, D::MULTIPLIER_POINTER));
+      worker.sub(D::MULTIPLIER_POINTER)->set_value(this->configuration.template get<double>(D::MULTIPLIER_POINTER));
     }
   }
 
