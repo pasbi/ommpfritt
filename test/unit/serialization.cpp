@@ -2,6 +2,7 @@
 #include "external/json.hpp"
 #include "gtest/gtest.h"
 #include "main/application.h"
+#include "main/options.h"
 #include "python/pythonengine.h"
 #include "scene/scene.h"
 #include "scene/sceneserializer.h"
@@ -12,6 +13,13 @@
 
 namespace
 {
+
+std::unique_ptr<omm::Options> options()
+{
+  return std::make_unique<omm::Options>(false, // is_cli
+                                        false  // have_opengl
+  );
+}
 
 bool scene_eq(const nlohmann::json& a, const nlohmann::json& b)
 {
@@ -60,16 +68,16 @@ TEST(serialization, JSON)
     const auto abs_fn = QString{source_directory} + "/" + fn;
     std::ifstream ifstream{abs_fn.toStdString()};
 
-    auto app = ommtest::get_application();
+    omm::Application app(ommtest::qt_gui_app->gui_application(), options());
 
     nlohmann::json json_file;
     ifstream >> json_file;
     omm::serialization::JSONDeserializer deserializer(json_file);
-    omm::SceneSerialization{*app->scene}.load(deserializer);
+    omm::SceneSerialization{*app.scene}.load(deserializer);
 
     nlohmann::json store;
     omm::serialization::JSONSerializer serializer(store);
-    omm::SceneSerialization{*app->scene}.save(serializer);
+    omm::SceneSerialization{*app.scene}.save(serializer);
     if (scene_eq(json_file, store)) {
       const auto diff = nlohmann::json::diff(json_file, store);
       LINFO << "diff: " << QString::fromStdString(diff.dump(2));

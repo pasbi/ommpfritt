@@ -1,4 +1,6 @@
 #include "gtest/gtest.h"
+#include "main/application.h"
+#include "main/options.h"
 #include "nodesystem/nodecompilerglsl.h"
 #include "nodesystem/nodemodel.h"
 #include "nodesystem/nodes/constantnode.h"
@@ -15,11 +17,19 @@
 namespace
 {
 
+std::unique_ptr<omm::Options> options()
+{
+  return std::make_unique<omm::Options>(false, // is_cli
+                                        false  // have_opengl
+  );
+}
+
 class GLSLNodeTest
 {
 public:
   GLSLNodeTest()
-      : m_model(omm::nodes::NodeModel(omm::nodes::BackendLanguage::GLSL, nullptr))
+      : m_omm_app(ommtest::qt_gui_app->gui_application(), options())
+      , m_model(omm::nodes::NodeModel(omm::nodes::BackendLanguage::GLSL, nullptr))
       , m_compiler(m_model)
   {
   }
@@ -50,11 +60,10 @@ public:
     return m_offscreen_renderer.set_fragment_shader(m_compiler.code());
   }
 
-  ommtest::GuiApplication m_application;
+  omm::Application m_omm_app;
   omm::nodes::NodeModel m_model;
   omm::nodes::NodeCompilerGLSL m_compiler;
   omm::OffscreenRenderer m_offscreen_renderer;
-
 };
 
 }  // namespace

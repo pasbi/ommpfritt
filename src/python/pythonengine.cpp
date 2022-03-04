@@ -70,12 +70,6 @@ PYBIND11_EMBEDDED_MODULE(omm, m)
 
 PythonEngine::PythonEngine()
 {
-  static std::size_t count = 0;
-  if (count > 0) {
-    LFATAL("There must be not more than one PythonEngine.");
-  }
-  count++;
-
   py::object omm_module = py::module::import("omm");
   register_wrappers(omm_module);
 }

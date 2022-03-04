@@ -294,7 +294,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 
   m_selection = selection;
 
-  static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
+  const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
     auto& mail_box = this->mail_box();
     Q_EMIT mail_box.kind_selection_changed(selection, kind);
 

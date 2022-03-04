@@ -36,8 +36,8 @@ public:
   QGuiApplication& gui_application();
 };
 
+inline std::unique_ptr<GuiApplication> qt_gui_app;  // is initialized in test-`main()`
 bool have_opengl();
-std::unique_ptr<omm::Application> get_application(int kill_after_msec = 1);
 
 #define SKIP_IF_NO_OPENGL do { if (!ommtest::have_opengl()) { GTEST_SKIP(); } } while (false)
 
