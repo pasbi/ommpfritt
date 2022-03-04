@@ -670,6 +670,8 @@ void Object::draw_object(Painter& renderer,
       }
 
       painter->save();
+      options.path_id = 0;
+      renderer.set_style(style, *this, options);
       renderer.painter->setBrush(Qt::NoBrush);
       painter->drawPath(outline);
       painter->restore();
