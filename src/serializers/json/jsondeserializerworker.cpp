@@ -135,7 +135,7 @@ std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::strin
     throw AbstractDeserializer::DeserializeError{"Attempt to access non-object value by key"};
   }
   try {
-    return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value[key]);
+    return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value.at(key));
   } catch (const nlohmann::json::out_of_range&) {
     throw AbstractDeserializer::DeserializeError{"Attempt to access non-existing key: " + key};
   }
