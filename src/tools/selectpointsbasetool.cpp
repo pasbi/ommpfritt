@@ -119,6 +119,11 @@ void SelectPointsBaseTool::on_property_value_changed(Property* property)
   AbstractSelectTool::on_property_value_changed(property);
 }
 
+SceneMode SelectPointsBaseTool::scene_mode() const
+{
+  return SceneMode::Vertex;
+}
+
 void SelectPointsBaseTool::reset()
 {
   clear();

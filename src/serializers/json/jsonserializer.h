@@ -10,7 +10,7 @@ class JSONSerializer : public AbstractSerializer
 {
 public:
   explicit JSONSerializer(nlohmann::json& json);
-  std::unique_ptr<SerializerWorker> sub(const std::string& key) override;
+  std::unique_ptr<SerializerWorker> worker() override;
 private:
   nlohmann::json& m_json;
 };

@@ -49,7 +49,7 @@ public:
 
   void register_reference(std::size_t id, AbstractPropertyOwner& reference);
   void register_reference_polisher(std::unique_ptr<ReferencePolisher> polisher);
-  virtual std::unique_ptr<DeserializerWorker> sub(const std::string& key) = 0;
+  virtual std::unique_ptr<DeserializerWorker> worker() = 0;
 
 private:
   // maps old stored hash to new ref
