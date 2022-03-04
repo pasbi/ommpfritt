@@ -77,6 +77,9 @@ private:
 
   // === Save/Load ====
 public:
+  friend class SceneSerialization;
+  void deserialize(serialization::DeserializerWorker& deserializer);
+  void serialize(serialization::SerializerWorker& serializer);
   bool save_as(const QString& filename);
   bool load_from(const QString& filename);
   [[nodiscard]] QString filename() const;
@@ -250,8 +253,6 @@ private:
   std::unique_ptr<DisjointPathPointSetForest> m_joined_points;
 public:
   [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
-
-  friend class SceneSerialization;
 };
 
 }  // namespace omm

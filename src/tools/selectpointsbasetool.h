@@ -29,14 +29,10 @@ public:
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool allow_clear);
 
-
   BoundingBox bounding_box() const;
   void transform_objects_absolute(ObjectTransformation t);
   void on_property_value_changed(Property* property) override;
-  SceneMode scene_mode() const override
-  {
-    return SceneMode::Vertex;
-  }
+  SceneMode scene_mode() const override;
 
   void reset() override;
 

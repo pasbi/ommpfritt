@@ -10,9 +10,9 @@ JSONSerializer::JSONSerializer(nlohmann::json& json) : m_json(json)
 {
 }
 
-std::unique_ptr<SerializerWorker> JSONSerializer::sub(const std::string& key)
+std::unique_ptr<SerializerWorker> JSONSerializer::worker()
 {
-  return std::make_unique<JSONSerializerWorker>(m_json[key]);
+  return std::make_unique<JSONSerializerWorker>(m_json);
 }
 
 }  // namespace omm

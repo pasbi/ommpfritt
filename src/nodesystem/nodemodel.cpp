@@ -54,13 +54,15 @@ NodeModel::NodeModel(const NodeModel& other) : NodeModel(other.compiler().langua
   nlohmann::json store;
   {
     serialization::JSONSerializer serializer(store);
-    other.serialize(*serializer.sub("root"));
+    auto worker = serializer.worker();
+    other.serialize(*worker);
   }
 
   {
     QSignalBlocker blocker(this);
     serialization::JSONDeserializer deserializer(store);
-    deserialize(*deserializer.sub("root"));
+    auto worker = deserializer.worker();
+    deserialize(*worker);
   }
 
   for (Node* node : nodes()) {
