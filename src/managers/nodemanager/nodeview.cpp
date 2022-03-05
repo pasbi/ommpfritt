@@ -253,8 +253,9 @@ void NodeView::draw_status_bar(QPainter& painter)
 
 void NodeView::drawForeground(QPainter* painter, const QRectF&)
 {
-  static const auto reverse_connection
-      = [](const PortItem& origin) { return origin.port.port_type == nodes::PortType::Output; };
+  static constexpr auto reverse_connection = [](const PortItem& origin) {
+    return origin.port.port_type == nodes::PortType::Output;
+  };
   painter->save();
   painter->setRenderHint(QPainter::Antialiasing);
   painter->setTransform(viewportTransform());
