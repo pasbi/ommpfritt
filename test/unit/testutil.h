@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <vector>
 #include <array>
 #include <memory>
@@ -30,10 +30,10 @@ private:
   std::array<std::string, 3> argv_{"test", "-platform", "offscreen"};
   std::vector<char*> argv = string_array_to_charpp(argv_);
   int argc = argv.size();
-  QGuiApplication m_application;
+  QApplication m_application;
 public:
   explicit GuiApplication();
-  QGuiApplication& gui_application();
+  QApplication& gui_application();
 };
 
 inline std::unique_ptr<GuiApplication> qt_gui_app;  // is initialized in test-`main()`

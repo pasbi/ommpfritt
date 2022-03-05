@@ -14,7 +14,7 @@ GuiApplication::GuiApplication()
 {
 }
 
-QGuiApplication& GuiApplication::gui_application()
+QApplication& GuiApplication::gui_application()
 {
   return m_application;
 }
