@@ -17,6 +17,7 @@ option(USE_QT_5_12 "Allow to use Qt 5.12. Set this option to true for static ana
                     OFF
 )
 option(WERROR "Error on compiler warnings. Not available for MSVC." ON)
+option(USE_LLD "Use llvm's linker ('lld'') for faster builds." OFF)
 
 if (USE_QT_5_12)
   find_package(Qt5 5.12 REQUIRED COMPONENTS Widgets Svg LinguistTools)
@@ -187,3 +188,7 @@ add_custom_target(appimage
 add_custom_target(icons
                   COMMAND Python3::Interpreter "${CMAKE_BINARY_DIR}/generate-icons.py"
                   COMMENT "Generating icons")
+
+if (USE_LLD)
+set(CMAKE_LINKER "lld")
+endif()
