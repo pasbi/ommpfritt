@@ -2,8 +2,6 @@
     "animation": {
         "current-frame": 92,
         "end-frame": 100,
-        "filename-pattern": "",
-        "overwrite-file": true,
         "play-mode": 0,
         "start-frame": 1
     },
@@ -94,21 +92,7 @@
                         "animated": false,
                         "key": "code",
                         "type": "StringProperty",
-                        "value": "import math\nimport numpy as np\n\nprint(\"Hello Python!\")\nfor i, p in enumerate(points):\n  r = {0: 10, 1: 40, 2: 100, 3: 40}[i % 4]\n  theta = i/len(points)*math.pi*2\n  pos = np.array([math.cos(theta),\n                  math.sin(theta)])\n  tangent = np.array([pos[1], -pos[0]])\n  p.set_position(r*pos)\n  print(i, pos)\n  r /= 10\n  p.set_left_tangent(r*tangent)\n  p.set_right_tangent(-r*tangent)\n"
-                    },
-                    {
-                        "animatable": true,
-                        "animated": false,
-                        "key": "count",
-                        "type": "IntegerProperty",
-                        "value": 10
-                    },
-                    {
-                        "animatable": true,
-                        "animated": false,
-                        "key": "closed",
-                        "type": "BoolProperty",
-                        "value": true
+                        "value": "import numpy as np\nimport math\nimport omm\n\nn = 10;\npoints = []\npoints.append([])\nfor i in range(n + 1):\n    r = 50 if i % 2 else 200\n    theta = i/n * math.pi*2\n    pos = np.array([math.cos(theta), math.sin(theta)])\n    tangent = np.array([pos[1], -pos[0]])\n    p = omm.Point()\n    p.set_position(r * pos)\n    r /= 10\n    p.set_left_tangent(r*tangent)\n    p.set_right_tangent(-r*tangent)\n    points[-1].append(p)\njoined_points = [{0, n}]\n"
                     }
                 ],
                 "tags": [],
@@ -178,6 +162,13 @@
                 "key": "shear",
                 "type": "FloatProperty",
                 "value": 0.0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "join",
+                "type": "BoolProperty",
+                "value": false
             }
         ],
         "tags": []

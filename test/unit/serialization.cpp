@@ -63,7 +63,13 @@ TEST(serialization, JSON)
 {
   QStringList test_files{
     "icons/icons.omm",
+    "sample-scenes/animation.omm",
+    "sample-scenes/basic.omm",
+    "sample-scenes/glshader.omm",
+    "sample-scenes/nodes.omm",
+    "sample-scenes/python.omm",
   };
+
   for (const auto& fn : test_files) {
     const auto abs_fn = QString{source_directory} + "/" + fn;
     std::ifstream ifstream{abs_fn.toStdString()};
@@ -73,15 +79,20 @@ TEST(serialization, JSON)
     nlohmann::json json_file;
     ifstream >> json_file;
     omm::serialization::JSONDeserializer deserializer(json_file);
-    omm::SceneSerialization{*app.scene}.load(deserializer);
+    EXPECT_TRUE(omm::SceneSerialization{*app.scene}.load(deserializer));
 
     nlohmann::json store;
     omm::serialization::JSONSerializer serializer(store);
-    omm::SceneSerialization{*app.scene}.save(serializer);
+    EXPECT_TRUE(omm::SceneSerialization{*app.scene}.save(serializer));
     if (scene_eq(json_file, store)) {
       const auto diff = nlohmann::json::diff(json_file, store);
       LINFO << "diff: " << QString::fromStdString(diff.dump(2));
       EXPECT_TRUE(scene_eq(json_file, store));
     }
   }
+
+  omm::Application app(ommtest::qt_gui_app->gui_application(), options());
+  nlohmann::json json_file;
+  omm::serialization::JSONDeserializer deserializer(json_file);
+  EXPECT_FALSE(omm::SceneSerialization{*app.scene}.load(deserializer));
 }
