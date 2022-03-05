@@ -263,9 +263,11 @@ void NodeView::drawForeground(QPainter* painter, const QRectF&)
     for (auto* const node : model->nodes()) {
       for (auto* const ip : node->ports<nodes::InputPort>()) {
         if (auto* const op = ip->connected_output(); op != nullptr) {
-          const QPointF input_port_item_pos = get_port_item(*m_node_scene, *ip)->scenePos();
-          const QPointF output_port_item_pos = get_port_item(*m_node_scene, *op)->scenePos();
-          draw_connection(*painter, input_port_item_pos, output_port_item_pos, false, false);
+          const auto* op_item = get_port_item(*m_node_scene, *op);
+          const auto* ip_item = get_port_item(*m_node_scene, *ip);
+          if (op_item != nullptr && ip_item != nullptr) {
+            draw_connection(*painter, ip_item->scenePos(), op_item->scenePos(), false, false);
+          }
         }
       }
     }

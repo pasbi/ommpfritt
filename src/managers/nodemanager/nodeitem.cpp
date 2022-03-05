@@ -259,10 +259,8 @@ void NodeItem::update_children()
       Property* property = p->port_type == nodes::PortType::Input
                                ? dynamic_cast<nodes::PropertyPort<nodes::PortType::Input>&>(*p).property()
                                : dynamic_cast<nodes::PropertyPort<nodes::PortType::Output>&>(*p).property();
-      const auto it
-          = std::find_if(property_ports.begin(),
-                         property_ports.end(),
-                         [property](const PropertyPorts& pp) { return property == pp.property; });
+      const auto match_property = [property](const PropertyPorts& pp) { return property == pp.property; };
+      const auto it = std::find_if(property_ports.begin(), property_ports.end(), match_property);
       PropertyPorts* current = nullptr;
       if (it == property_ports.end()) {
         property_ports.emplace_back(property);
