@@ -75,7 +75,7 @@ omm::nodes::AbstractPort* get_sibling(const omm::nodes::AbstractPort* port)
   if (port->flavor != omm::nodes::PortFlavor::Property) {
     return nullptr;
   }
-  static const auto get_property = [](const auto* const port) {
+  static constexpr auto get_property = [](const auto* const port) {
     return port->port_type == omm::nodes::PortType::Input
                ? dynamic_cast<const omm::nodes::PropertyInputPort*>(port)->property()
                : dynamic_cast<const omm::nodes::PropertyOutputPort*>(port)->property();
