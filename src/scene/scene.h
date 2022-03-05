@@ -104,7 +104,7 @@ public:
   item_selection() const
   {
     auto items = item_selection<typename ItemT::factory_item_type>();
-    std::erase_if(items, [](const auto* v) { return v->type() == ItemT::TYPE; });
+    std::erase_if(items, [](const auto* v) { return v->type() != ItemT::TYPE; });
     return type_casts<ItemT*>(items);
   }
 
