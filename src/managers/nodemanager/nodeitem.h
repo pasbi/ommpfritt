@@ -15,9 +15,8 @@ class NodeView;
 namespace nodes
 {
 class Node;
-class PropertyOutputPort;
-class PropertyInputPort;
 template<PortType> class OrdinaryPort;
+template<PortType> class PropertyPort;
 }  // namespace nodes
 
 class NodeItem : public QGraphicsItem
@@ -65,7 +64,9 @@ private:
 
   void clear_ports();
   void align_ports();
-  void add_port(nodes::PropertyInputPort* ip, nodes::PropertyOutputPort* op, double pos_y);
+  void add_port(nodes::PropertyPort<nodes::PortType::Input>* ip,
+                nodes::PropertyPort<nodes::PortType::Output>* op,
+                double pos_y);
   void add_port(nodes::AbstractPort& p, double pos_y);
   void add_property_widget(Property& property, double pos_y, double height);
   void adjust_port_pos();
