@@ -136,8 +136,8 @@ std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::strin
   }
   try {
     return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value.at(key));
-  } catch (const nlohmann::json::out_of_range&) {
-    throw AbstractDeserializer::DeserializeError{"Attempt to access non-existing key: " + key};
+  } catch (const nlohmann::json::out_of_range& e) {
+    throw AbstractDeserializer::DeserializeError{e.what()};
   }
 }
 
@@ -148,8 +148,8 @@ std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::size_
   }
   try {
     return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value[i]);
-  } catch (const nlohmann::json::out_of_range&) {
-    throw AbstractDeserializer::DeserializeError{"Attempt to access non-existing index: " + std::to_string(i)};
+  } catch (const nlohmann::json::out_of_range& e) {
+    throw AbstractDeserializer::DeserializeError{e.what()};
   }
 }
 
