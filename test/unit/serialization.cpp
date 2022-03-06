@@ -57,20 +57,23 @@ bool scene_eq(const nlohmann::json& a, const nlohmann::json& b)
   return true;
 }
 
+QStringList test_files()
+{
+  return {
+    "sample-scenes/basic.omm",
+    "sample-scenes/animation.omm",
+    "sample-scenes/python.omm",
+    "sample-scenes/glshader.omm",
+    "sample-scenes/nodes.omm",
+    "icons/icons.omm",
+  };
+}
+
 }  // namespace
 
 TEST(serialization, JSON)
 {
-  QStringList test_files{
-    "icons/icons.omm",
-    "sample-scenes/animation.omm",
-    "sample-scenes/basic.omm",
-    "sample-scenes/glshader.omm",
-    "sample-scenes/nodes.omm",
-    "sample-scenes/python.omm",
-  };
-
-  for (const auto& fn : test_files) {
+  for (const auto& fn : static_cast<const QStringList>(test_files())) {
     const auto abs_fn = QString{source_directory} + "/" + fn;
     std::ifstream ifstream{abs_fn.toStdString()};
 
@@ -80,6 +83,8 @@ TEST(serialization, JSON)
     ifstream >> json_file;
     omm::serialization::JSONDeserializer deserializer(json_file);
     EXPECT_TRUE(omm::SceneSerialization{*app->scene}.load(deserializer));
+
+    app->scene->reset();
 
     nlohmann::json store;
     omm::serialization::JSONSerializer serializer(store);
