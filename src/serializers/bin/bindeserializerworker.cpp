@@ -16,35 +16,35 @@ BinDeserializerWorker::BinDeserializerWorker(AbstractDeserializer& deserializer,
 
 int BinDeserializerWorker::get_int()
 {
-  qint32 i;
+  qint32 i = 0;
   m_stream >> i;
   return i;
 }
 
 bool BinDeserializerWorker::get_bool()
 {
-  bool b;
+  bool b = false;
   m_stream >> b;
   return b;
 }
 
 double BinDeserializerWorker::get_double()
 {
-  double v;
+  double v = 0.0;
   m_stream >> v;
   return v;
 }
 
 QString BinDeserializerWorker::get_string()
 {
-  QString s;
+  QString s = "";
   m_stream >> s;
   return s;
 }
 
 std::size_t BinDeserializerWorker::get_size_t()
 {
-  quint64 i;
+  quint64 i = 0;;
   m_stream >> i;
   return static_cast<std::size_t>(i);
 }

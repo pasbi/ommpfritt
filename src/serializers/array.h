@@ -33,7 +33,7 @@ class DeserializationArray : public Array<DeserializerWorker>
 {
 public:
   explicit DeserializationArray(DeserializerWorker& parent, std::size_t size);
-  std::size_t size() const;
+  [[nodiscard]] std::size_t size() const;
 
 private:
   const std::size_t m_size;

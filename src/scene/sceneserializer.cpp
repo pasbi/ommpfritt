@@ -179,7 +179,8 @@ scene_serializer::Format scene_serializer::guess_format(const QString& filename)
 
 }  // namespace omm
 
-template bool omm::SceneSerialization::save<omm::serialization::JSONSerializer>(omm::serialization::JSONSerializer& serializer) const;
-template bool omm::SceneSerialization::load<omm::serialization::JSONDeserializer>(omm::serialization::JSONDeserializer& deserializer) const;
-template bool omm::SceneSerialization::save<omm::serialization::BinSerializer>(omm::serialization::BinSerializer& serializer) const;
-template bool omm::SceneSerialization::load<omm::serialization::BinDeserializer>(omm::serialization::BinDeserializer& deserializer) const;
+namespace oms = omm::serialization;  // NOLINT(readability-avoid-const-params-in-decls)
+template bool omm::SceneSerialization::save<oms::JSONSerializer>(oms::JSONSerializer& serializer) const;
+template bool omm::SceneSerialization::load<oms::JSONDeserializer>(oms::JSONDeserializer& deserializer) const;
+template bool omm::SceneSerialization::save<oms::BinSerializer>(oms::BinSerializer& serializer) const;
+template bool omm::SceneSerialization::load<oms::BinDeserializer>(oms::BinDeserializer& deserializer) const;
