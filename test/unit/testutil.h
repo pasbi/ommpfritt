@@ -8,6 +8,8 @@
 namespace omm
 {
 class Application;
+class PythonEngine;
+class Options;
 }  // namespace omm
 
 namespace ommtest
@@ -31,9 +33,10 @@ private:
   std::vector<char*> argv = string_array_to_charpp(argv_);
   int argc = argv.size();
   QApplication m_application;
+  omm::PythonEngine& m_python_engine;
 public:
-  explicit GuiApplication();
-  QApplication& gui_application();
+  explicit GuiApplication(omm::PythonEngine& python_engine);
+  std::unique_ptr<omm::Application> make_application(std::unique_ptr<omm::Options> options);
 };
 
 inline std::unique_ptr<GuiApplication> qt_gui_app;  // is initialized in test-`main()`
