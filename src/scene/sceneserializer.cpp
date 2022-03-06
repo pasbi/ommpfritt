@@ -142,5 +142,7 @@ scene_serializer::Format scene_serializer::guess_format(const QString& filename)
   return Format::JSON;
 }
 
-
 }  // namespace omm
+
+template bool omm::SceneSerialization::save<omm::serialization::JSONSerializer>(omm::serialization::JSONSerializer& serializer) const;
+template bool omm::SceneSerialization::load<omm::serialization::JSONDeserializer>(omm::serialization::JSONDeserializer& deserializer) const;
