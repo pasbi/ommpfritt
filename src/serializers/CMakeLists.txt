@@ -1,4 +1,5 @@
 target_sources(libommpfritt PRIVATE
+  array.cpp
   array.h
   abstractserializer.cpp
   abstractserializer.h
