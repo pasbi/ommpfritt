@@ -27,20 +27,8 @@ namespace omm::serialization
 
 std::unique_ptr<SerializationArray> JSONSerializerWorker::start_array([[maybe_unused]] std::size_t size)
 {
-  class JSONArray : public SerializationArray
-  {
-  public:
-    using SerializationArray::SerializationArray;
-    SerializerWorker& next() override
-    {
-      m_current = m_parent.sub(m_next_index);
-      m_next_index += 1;
-      return *m_current;
-    }
-  };
-
   m_value = nlohmann::json::value_type::array();
-  return std::make_unique<JSONArray>(*this);
+  return std::make_unique<SerializationArray>(*this);
 }
 
 JSONSerializerWorker::JSONSerializerWorker(nlohmann::json& value)
