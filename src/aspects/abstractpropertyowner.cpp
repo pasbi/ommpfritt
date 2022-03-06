@@ -97,6 +97,8 @@ void AbstractPropertyOwner::deserialize(serialization::DeserializerWorker& worke
       } catch (const std::out_of_range&) {
         const auto msg = "Failed to retrieve property type '" + property_type + "'.";
         throw serialization::AbstractDeserializer::DeserializeError(msg.toStdString());
+      } catch (const Property::InvalidKeyError& e) {
+        throw serialization::AbstractDeserializer::DeserializeError(e.what());
       }
       property->deserialize(worker_i);
       [[maybe_unused]] Property& ref = add_property(property_key, std::move(property));
