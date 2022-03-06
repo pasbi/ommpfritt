@@ -16,6 +16,8 @@
 
 #include "serializers/json/jsondeserializer.h"
 #include "serializers/json/jsonserializer.h"
+#include "serializers/bin/bindeserializer.h"
+#include "serializers/bin/binserializer.h"
 
 namespace omm
 {
@@ -83,6 +85,8 @@ bool SceneSerialization::load(const QString& filename, scene_serializer::Format 
   switch (format) {
   case Format::JSON:
     return load_json(filename);
+  case Format::Binary:
+    return load_bin(filename);
   }
   LERROR << "Cannot deserialize from unexpected format: " << static_cast<int>(format);
   return false;
@@ -107,6 +111,19 @@ bool SceneSerialization::load_json(const QString& filename) const
   return load(deserializer);
 }
 
+bool SceneSerialization::load_bin(const QString& filename) const
+{
+  QFile file{filename};
+  if (!file.open(QIODevice::ReadOnly)) {
+    LERROR << "Failed to open '" << filename << "'.";
+    return false;
+  }
+
+  QDataStream stream{&file};
+  serialization::BinDeserializer deserializer{stream};
+  return load(deserializer);
+}
+
 bool SceneSerialization::save_json(const QString& filename) const
 {
   std::ofstream ofstream(filename.toStdString());
@@ -125,12 +142,27 @@ bool SceneSerialization::save_json(const QString& filename) const
   return true;
 }
 
+bool SceneSerialization::save_bin(const QString& filename) const
+{
+  QFile file{filename};
+  if (!file.open(QIODevice::WriteOnly)) {
+    LERROR << "Failed to open ofstream at '" << filename << "'.";
+    return false;
+  }
+
+  QDataStream stream(&file);
+  serialization::BinSerializer serializer(stream);
+  return save(serializer);
+}
+
 bool SceneSerialization::save(const QString& filename, scene_serializer::Format format) const
 {
   using scene_serializer::Format;
   switch (format) {
   case Format::JSON:
     return save_json(filename);
+  case Format::Binary:
+    return save_bin(filename);
   }
   LERROR << "Cannot serialize to unexpected format: " << static_cast<int>(format);
   return false;
@@ -138,11 +170,16 @@ bool SceneSerialization::save(const QString& filename, scene_serializer::Format 
 
 scene_serializer::Format scene_serializer::guess_format(const QString& filename)
 {
-  Q_UNUSED(filename)
-  return Format::JSON;
+  if (filename.endsWith(".bom")) {
+    return Format::Binary;
+  } else {
+    return Format::JSON;
+  }
 }
 
 }  // namespace omm
 
 template bool omm::SceneSerialization::save<omm::serialization::JSONSerializer>(omm::serialization::JSONSerializer& serializer) const;
 template bool omm::SceneSerialization::load<omm::serialization::JSONDeserializer>(omm::serialization::JSONDeserializer& deserializer) const;
+template bool omm::SceneSerialization::save<omm::serialization::BinSerializer>(omm::serialization::BinSerializer& serializer) const;
+template bool omm::SceneSerialization::load<omm::serialization::BinDeserializer>(omm::serialization::BinDeserializer& deserializer) const;

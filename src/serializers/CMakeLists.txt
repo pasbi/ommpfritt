@@ -12,3 +12,4 @@ target_sources(libommpfritt PRIVATE
 )
 
 add_subdirectory(json)
+add_subdirectory(bin)

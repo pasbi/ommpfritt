@@ -8,6 +8,8 @@
 #include "scene/sceneserializer.h"
 #include "serializers/json/jsondeserializer.h"
 #include "serializers/json/jsonserializer.h"
+#include "serializers/bin/bindeserializer.h"
+#include "serializers/bin/binserializer.h"
 #include "testutil.h"
 #include <fstream>
 
@@ -89,6 +91,47 @@ TEST(serialization, JSON)
     nlohmann::json store;
     omm::serialization::JSONSerializer serializer(store);
     EXPECT_TRUE(omm::SceneSerialization{*app->scene}.save(serializer));
+    if (scene_eq(json_file, store)) {
+      const auto diff = nlohmann::json::diff(json_file, store);
+      LINFO << "diff: " << QString::fromStdString(diff.dump(2));
+      EXPECT_TRUE(scene_eq(json_file, store));
+    }
+  }
+
+  auto app = ommtest::qt_gui_app->make_application(options());
+  nlohmann::json json_file;
+  omm::serialization::JSONDeserializer deserializer(json_file);
+  EXPECT_FALSE(omm::SceneSerialization{*app->scene}.load(deserializer));
+}
+
+TEST(serialization, Binary)
+{
+  for (const auto& fn : static_cast<const QStringList>(test_files())) {
+    const auto abs_fn = QString{source_directory} + "/" + fn;
+    std::ifstream ifstream{abs_fn.toStdString()};
+
+    auto app = ommtest::qt_gui_app->make_application(options());
+
+    nlohmann::json json_file;
+    ifstream >> json_file;
+    omm::serialization::JSONDeserializer deserializer(json_file);
+    EXPECT_TRUE(omm::SceneSerialization{*app->scene}.load(deserializer));
+
+    QByteArray buffer;
+    QDataStream serialize_stream{&buffer, QIODevice::WriteOnly};
+    omm::serialization::BinSerializer bin_serializer(serialize_stream);
+    EXPECT_TRUE(omm::SceneSerialization{*app->scene}.save(bin_serializer));
+
+    app->scene->reset();
+
+    QDataStream deserialize_stream{buffer};
+    omm::serialization::BinDeserializer bin_deserializer(deserialize_stream);
+    EXPECT_TRUE(omm::SceneSerialization{*app->scene}.load(bin_deserializer));
+
+    nlohmann::json store;
+    omm::serialization::JSONSerializer serializer{store};
+    EXPECT_TRUE(omm::SceneSerialization{*app->scene}.save(serializer));
+
     if (scene_eq(json_file, store)) {
       const auto diff = nlohmann::json::diff(json_file, store);
       LINFO << "diff: " << QString::fromStdString(diff.dump(2));
