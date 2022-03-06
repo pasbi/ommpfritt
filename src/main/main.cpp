@@ -3,6 +3,7 @@
 #include "main/application.h"
 #include "main/commandlineparser.h"
 #include "main/options.h"
+#include "python/pythonengine.h"
 #include <QApplication>
 #include <QDirIterator>
 #include <QSettings>
@@ -58,7 +59,8 @@ int main(int argc, char* argv[])
        !args.is_set(CommandLineParser::NO_OPENGL_KEY)
   );
 
-  omm::Application app(qt_app, std::move(options));
+  PythonEngine python_engine;
+  omm::Application app(qt_app, python_engine, std::move(options));
 
   if (mode == CommandLineParser::GUI_MODE_NAME) {
     return omm::gui_main(args, app);

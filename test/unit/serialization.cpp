@@ -74,16 +74,16 @@ TEST(serialization, JSON)
     const auto abs_fn = QString{source_directory} + "/" + fn;
     std::ifstream ifstream{abs_fn.toStdString()};
 
-    omm::Application app(ommtest::qt_gui_app->gui_application(), options());
+    auto app = ommtest::qt_gui_app->make_application(options());
 
     nlohmann::json json_file;
     ifstream >> json_file;
     omm::serialization::JSONDeserializer deserializer(json_file);
-    EXPECT_TRUE(omm::SceneSerialization{*app.scene}.load(deserializer));
+    EXPECT_TRUE(omm::SceneSerialization{*app->scene}.load(deserializer));
 
     nlohmann::json store;
     omm::serialization::JSONSerializer serializer(store);
-    EXPECT_TRUE(omm::SceneSerialization{*app.scene}.save(serializer));
+    EXPECT_TRUE(omm::SceneSerialization{*app->scene}.save(serializer));
     if (scene_eq(json_file, store)) {
       const auto diff = nlohmann::json::diff(json_file, store);
       LINFO << "diff: " << QString::fromStdString(diff.dump(2));
@@ -91,8 +91,8 @@ TEST(serialization, JSON)
     }
   }
 
-  omm::Application app(ommtest::qt_gui_app->gui_application(), options());
+  auto app = ommtest::qt_gui_app->make_application(options());
   nlohmann::json json_file;
   omm::serialization::JSONDeserializer deserializer(json_file);
-  EXPECT_FALSE(omm::SceneSerialization{*app.scene}.load(deserializer));
+  EXPECT_FALSE(omm::SceneSerialization{*app->scene}.load(deserializer));
 }

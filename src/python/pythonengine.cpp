@@ -69,9 +69,16 @@ PYBIND11_EMBEDDED_MODULE(omm, m)
 }
 
 PythonEngine::PythonEngine()
+  : m_scoped_interpreter(new pybind11::scoped_interpreter())
 {
   py::object omm_module = py::module::import("omm");
   register_wrappers(omm_module);
+}
+
+PythonEngine::~PythonEngine()
+{
+  delete static_cast<pybind11::scoped_interpreter*>(m_scoped_interpreter);
+  m_scoped_interpreter = nullptr;
 }
 
 bool PythonEngine ::exec(const QString& code, py::object& locals, const void* associated_item)

@@ -17,8 +17,6 @@ target_sources(libommpfritt PRIVATE
   scenewrapper.h
   scripttagwrapper.cpp
   scripttagwrapper.h
-  scopedinterpreterwrapper.h
-  scopedinterpreterwrapper.cpp
   splinewrapper.cpp
   splinewrapper.h
   tagwrapper.cpp
