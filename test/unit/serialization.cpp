@@ -3,14 +3,17 @@
 #include "gtest/gtest.h"
 #include "main/application.h"
 #include "main/options.h"
+#include "objects/ellipse.h"
+#include "properties/stringproperty.h"
 #include "python/pythonengine.h"
 #include "scene/scene.h"
 #include "scene/sceneserializer.h"
-#include "serializers/json/jsondeserializer.h"
-#include "serializers/json/jsonserializer.h"
 #include "serializers/bin/bindeserializer.h"
 #include "serializers/bin/binserializer.h"
+#include "serializers/json/jsondeserializer.h"
+#include "serializers/json/jsonserializer.h"
 #include "testutil.h"
+#include <QFile>
 #include <fstream>
 
 namespace
@@ -71,9 +74,106 @@ QStringList test_files()
   };
 }
 
+class BinaryBuffer
+{
+public:
+  template<typename F> void serialize(F&& f)
+  {
+    QDataStream ostream{&m_buffer, QIODevice::WriteOnly};
+    omm::serialization::BinSerializer serializer{ostream};
+    std::forward<F>(f)(serializer);
+  }
+
+  template<typename F> void deserialize(F&& f)
+  {
+    omm::StringProperty other_property;
+    QDataStream istream{&m_buffer, QIODevice::ReadOnly};
+    omm::serialization::BinDeserializer deserializer{istream};
+    std::forward<F>(f)(deserializer);
+  }
+
+  void write(const QString& filename) const
+  {
+    QFile file{filename};
+    file.open(QIODevice::WriteOnly);
+    file.write(m_buffer);
+  }
+
+private:
+  QByteArray m_buffer;
+};
+
+class JSONBuffer
+{
+public:
+  template<typename F> void serialize(F&& f)
+  {
+    omm::serialization::JSONSerializer serializer{m_store};
+    std::forward<F>(f)(serializer);
+
+    std::cout << m_store.dump(2) << std::endl;
+  }
+
+  template<typename F> void deserialize(F&& f)
+  {
+    omm::serialization::JSONDeserializer deserializer{m_store};
+    std::forward<F>(f)(deserializer);
+  }
+
+  void write(const QString& filename) const
+  {
+    std::ofstream ostr{filename.toStdString()};
+    ostr << m_store.dump(2);
+  }
+
+private:
+  nlohmann::json m_store;
+};
+
+template<typename Buffer> void test_property_serialization()
+{
+  const QString default_value = "foo";
+  omm::StringProperty property(default_value);
+  // only user properties are fully serialized and can be tested easily.
+  property.set_category(omm::Property::USER_PROPERTY_CATEGROY_NAME).set_label("foo-label");
+  property.set(QString{"bar"});
+
+  Buffer buffer;
+  buffer.serialize([&property](auto& serializer) {
+    property.serialize(*serializer.worker());
+  });
+
+  omm::StringProperty other_property;
+  buffer.deserialize([&other_property](auto& deserializer) {
+    other_property.deserialize(*deserializer.worker());
+  });
+
+  EXPECT_EQ(property.value(), other_property.value());
+  EXPECT_EQ(property.default_value(), other_property.default_value());
+}
+
+template<typename Buffer> void test_object_serialization()
+{
+  omm::Ellipse ellipse(nullptr);
+
+  Buffer buffer;
+  buffer.serialize([&ellipse](auto& serializer) {
+    ellipse.serialize(*serializer.worker());
+  });
+
+  buffer.write("/tmp/foo.bin");
+
+  omm::Ellipse other_ellipse(nullptr);
+  buffer.deserialize([&other_ellipse](auto& deserializer) {
+    other_ellipse.deserialize(*deserializer.worker());
+  });
+
+  EXPECT_TRUE(ellipse.eq(other_ellipse));
+}
+
 }  // namespace
 
-TEST(serialization, JSON)
+TEST(serialization, JSONScene)
 {
   for (const auto& fn : static_cast<const QStringList>(test_files())) {
     const auto abs_fn = QString{source_directory} + "/" + fn;
@@ -104,7 +204,7 @@ TEST(serialization, JSON)
   EXPECT_FALSE(omm::SceneSerialization{*app->scene}.load(deserializer));
 }
 
-TEST(serialization, Binary)
+TEST(serialization, BinaryScene)
 {
   for (const auto& fn : static_cast<const QStringList>(test_files())) {
     const auto abs_fn = QString{source_directory} + "/" + fn;
@@ -143,4 +243,42 @@ TEST(serialization, Binary)
   nlohmann::json json_file;
   omm::serialization::JSONDeserializer deserializer(json_file);
   EXPECT_FALSE(omm::SceneSerialization{*app->scene}.load(deserializer));
+}
+
+TEST(serialization, BinaryProperty)
+{
+  test_property_serialization<BinaryBuffer>();
+}
+
+TEST(serialization, JSONProperty)
+{
+  test_property_serialization<JSONBuffer>();
+}
+
+TEST(serialization, BinaryObject)
+{
+  test_object_serialization<BinaryBuffer>();
+}
+
+TEST(serialization, JSONObject)
+{
+  test_object_serialization<JSONBuffer>();
+}
+
+TEST(serialization, BinaryString)
+{
+  const QString value = "foobar";
+
+  QByteArray buffer;
+  QDataStream ostream{&buffer, QIODevice::WriteOnly};
+  ostream << quint64{1039847};
+  ostream << value;
+
+  QString other_value;
+  quint64 x;
+  QDataStream istream{&buffer, QIODevice::ReadOnly};
+  istream >> x;
+  istream >> other_value;
+
+  EXPECT_EQ(value, other_value);
 }
