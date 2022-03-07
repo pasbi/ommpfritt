@@ -55,8 +55,8 @@ void Property::deserialize(serialization::DeserializerWorker& worker)
 {
   configuration.deserialize_field<QString>(LABEL_POINTER, worker);
   configuration.deserialize_field<QString>(CATEGORY_POINTER, worker);
-  configuration.deserialize_field<bool>(ANIMATABLE_POINTER, worker);
 
+  configuration.set(ANIMATABLE_POINTER, worker.sub(ANIMATABLE_POINTER)->get_bool());
   if (worker.sub(IS_ANIMATED_POINTER)->get_bool()) {
     m_track = std::make_unique<Track>(*this);
     m_track->deserialize(*worker.sub(TRACK_POINTER));

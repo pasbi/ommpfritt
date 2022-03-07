@@ -120,8 +120,8 @@ std::set<Node*> NodeModel::nodes() const
 void NodeModel::serialize(serialization::SerializerWorker& worker) const
 {
   worker.sub(NODES_POINTER)->set_value(m_nodes, [](const auto& node, auto& worker_i) {
-    node->serialize(worker_i);
     worker_i.sub(TYPE_POINTER)->set_value(node->type());
+    node->serialize(worker_i);
   });
 }
 

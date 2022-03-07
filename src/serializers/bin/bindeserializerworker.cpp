@@ -70,9 +70,7 @@ TriggerPropertyDummyValueType BinDeserializerWorker::get_trigger_dummy_value()
 
 std::unique_ptr<DeserializationArray> BinDeserializerWorker::start_array()
 {
-  quint64 n;
-  m_stream >> n;
-  return std::make_unique<DeserializationArray>(*this, n);
+  return std::make_unique<DeserializationArray>(*this, get_size_t());
 }
 
 std::unique_ptr<DeserializerWorker> BinDeserializerWorker::sub(const std::string& key)
