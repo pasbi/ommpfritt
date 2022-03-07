@@ -430,7 +430,7 @@ bool operator<(const Color& a, const Color& b)
       assert(b.m_current_model == Color::Model::Named);
       return a.m_name < b.m_name;
     } else {
-      return a.m_components < b.m_components;
+      return a.m_components < b.m_components;  // NOLINT(modernize-use-nullptr)
     }
   }
 }

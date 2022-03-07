@@ -35,7 +35,7 @@ public:
   virtual void set_value(int value) = 0;
   virtual void set_value(double value) = 0;
   virtual void set_value(const QString& value) = 0;
-  virtual void set_value(std::size_t) = 0;
+  virtual void set_value(std::size_t value) = 0;
   virtual void set_value(const TriggerPropertyDummyValueType&) = 0;
   void set_value(const Vec2f& value);
   void set_value(const Vec2i& value);
