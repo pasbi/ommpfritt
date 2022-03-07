@@ -28,10 +28,12 @@ QString Property::widget_type() const
 {
   return type() + "Widget";
 }
+
 bool Property::is_user_property() const
 {
   return category() == USER_PROPERTY_CATEGROY_NAME;
 }
+
 void Property::revise()
 {
 }
@@ -92,7 +94,7 @@ Property& Property::set_label(const QString& label)
 
 QString Property::category() const
 {
-  return configuration.get<QString>(CATEGORY_POINTER);
+  return configuration.get<QString>(CATEGORY_POINTER, "");
 }
 
 Property& Property::set_category(const QString& category)

@@ -7,8 +7,9 @@
 namespace omm::serialization
 {
 
-std::unique_ptr<SerializationArray> BinSerializerWorker::start_array([[maybe_unused]] std::size_t size)
+std::unique_ptr<SerializationArray> BinSerializerWorker::start_array(const std::size_t size)
 {
+  m_stream << static_cast<quint64>(size);
   return std::make_unique<SerializationArray>(*this);
 }
 
