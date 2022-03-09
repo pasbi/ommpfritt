@@ -203,14 +203,13 @@ const std::set<int> Application::keyboard_modifiers{Qt::Key_Shift,
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,-warnings-as-errors)
 Application* Application::m_instance = nullptr;
 
-Application::Application(QCoreApplication& app, PythonEngine& python_engine, std::unique_ptr<Options> options)
+Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
     : first_member((init(this), nullptr))
     , key_bindings(std::make_unique<KeyBindings>())
     , ui_colors(std::make_unique<UiColors>())
     , preferences(std::make_unique<Preferences>())
     , mode_selectors(init_mode_selectors())
-    , python_engine(python_engine)
-    , scene(std::make_unique<Scene>(python_engine))
+    , scene(std::make_unique<Scene>())
     , m_app(app)
     , m_options(std::move(options))
     , m_translator(load_locale())

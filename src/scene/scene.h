@@ -49,7 +49,7 @@ class Scene : public QObject
 {
   Q_OBJECT
 public:
-  Scene(PythonEngine& python_engine);
+  Scene();
   ~Scene() override;
 
   Scene(Scene&&) = delete;
@@ -85,10 +85,6 @@ public:
   [[nodiscard]] QString filename() const;
 
   static constexpr auto TYPE = "Scene";
-
-  // === Python ===
-public:
-  PythonEngine& python_engine;
 
   // === Objects, Tags and Styles and Selections ===
 public:

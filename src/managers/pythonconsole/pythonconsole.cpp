@@ -63,7 +63,7 @@ PythonConsole::PythonConsole(Scene& scene)
   m_layout->setContentsMargins(0, 0, 0, 0);
   set_widget(std::move(widget));
 
-  connect(&scene.python_engine, &PythonEngine::output, this, &PythonConsole::on_output);
+  connect(&PythonEngine::instance(), &PythonEngine::output, this, &PythonConsole::on_output);
   {
     using namespace pybind11::literals;
     m_locals = new pybind11::dict("scene"_a = SceneWrapper(scene));
@@ -93,7 +93,7 @@ void PythonConsole::eval()
   push_command(code);
   m_output->put(QObject::tr(">>> ", "PythonConsole") + code, Stream::stdout_);
 
-  scene().python_engine.exec(code, *static_cast<pybind11::dict*>(m_locals), nullptr);
+  PythonEngine::instance().exec(code, *static_cast<pybind11::dict*>(m_locals), nullptr);
 
   m_commandline->clear();
 }

@@ -59,8 +59,8 @@ int main(int argc, char* argv[])
        !args.is_set(CommandLineParser::NO_OPENGL_KEY)
   );
 
-  PythonEngine python_engine;
-  omm::Application app(qt_app, python_engine, std::move(options));
+  PythonEngine::instance();
+  omm::Application app(qt_app, std::move(options));
 
   if (mode == CommandLineParser::GUI_MODE_NAME) {
     return omm::gui_main(args, app);

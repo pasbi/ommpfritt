@@ -25,7 +25,6 @@ class ModeSelector;
 class Object;
 class Options;
 class Preferences;
-class PythonEngine;
 class Scene;
 class ToolBar;
 class UiColors;
@@ -39,7 +38,7 @@ private:
   std::nullptr_t first_member;
 
 public:
-  Application(QCoreApplication& app, PythonEngine& python_engine, std::unique_ptr<Options> options);
+  Application(QCoreApplication& app, std::unique_ptr<Options> options);
   ~Application() override;
 
   Application(Application&&) = delete;
@@ -71,7 +70,6 @@ public:
   bool handle_mode(const QString& action_name);
   const std::map<QString, std::unique_ptr<ModeSelector>> mode_selectors;
 
-  PythonEngine& python_engine;
   std::unique_ptr<Scene> scene;
   [[nodiscard]] MailBox& mail_box() const;
   [[nodiscard]] MainWindow* main_window() const;

@@ -33,9 +33,8 @@ private:
   std::vector<char*> argv = string_array_to_charpp(argv_);
   int argc = argv.size();
   QApplication m_application;
-  omm::PythonEngine& m_python_engine;
 public:
-  explicit GuiApplication(omm::PythonEngine& python_engine);
+  explicit GuiApplication();
   std::unique_ptr<omm::Application> make_application(std::unique_ptr<omm::Options> options);
 };
 

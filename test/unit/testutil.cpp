@@ -9,15 +9,14 @@
 namespace ommtest
 {
 
-GuiApplication::GuiApplication(omm::PythonEngine& python_engine)
+GuiApplication::GuiApplication()
     : m_application(argc, argv.data())
-    , m_python_engine(python_engine)
 {
 }
 
 std::unique_ptr<omm::Application> GuiApplication::make_application(std::unique_ptr<omm::Options> options)
 {
-  return std::make_unique<omm::Application>(m_application, m_python_engine, std::move(options));
+  return std::make_unique<omm::Application>(m_application, std::move(options));
 }
 
 

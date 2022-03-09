@@ -73,7 +73,7 @@ void ProceduralPath::update()
 
   m_points.clear();
   try {
-    scene()->python_engine.exec(code, locals, this);
+    PythonEngine::instance().exec(code, locals, this);
     const auto wrappers = locals["points"].cast<std::vector<std::vector<PointWrapper>>>();
     m_joined_points = locals["joined_points"].cast<std::vector<std::set<int>>>();
     for (const auto& ws : wrappers) {

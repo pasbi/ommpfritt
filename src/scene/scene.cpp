@@ -111,9 +111,8 @@ std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scen
 
 namespace omm
 {
-Scene::Scene(PythonEngine& python_engine)
-    : python_engine(python_engine)
-    , point_selection(std::make_unique<PointSelection>(*this))
+Scene::Scene()
+    : point_selection(std::make_unique<PointSelection>(*this))
     , m_mail_box(new MailBox())
     , m_object_tree(new ObjectTree(make_root(), *this))
     , m_styles(new StyleList(*this))
