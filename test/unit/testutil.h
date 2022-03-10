@@ -26,19 +26,21 @@ std::vector<char*> string_array_to_charpp(std::array<std::string, N>& string_arr
   return vs;
 }
 
-class GuiApplication
+class Application
 {
+public:
+  explicit Application(std::unique_ptr<omm::Options> options);
+  ~Application();
+  omm::Application& omm_app() const;
+
 private:
   std::array<std::string, 3> argv_{"test", "-platform", "offscreen"};
   std::vector<char*> argv = string_array_to_charpp(argv_);
   int argc = argv.size();
-  QApplication m_application;
-public:
-  explicit GuiApplication();
-  std::unique_ptr<omm::Application> make_application(std::unique_ptr<omm::Options> options);
+  QApplication m_q_application;
+  std::unique_ptr<omm::Application> m_omm_application;
 };
 
-inline std::unique_ptr<GuiApplication> qt_gui_app;  // is initialized in test-`main()`
 bool have_opengl();
 
 #define SKIP_IF_NO_OPENGL do { if (!ommtest::have_opengl()) { GTEST_SKIP(); } } while (false)

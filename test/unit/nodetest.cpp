@@ -33,8 +33,8 @@ class NodeTestFixture
 {
 public:
   NodeTestFixture()
-      : m_omm_app(ommtest::qt_gui_app->make_application(options()))
-      , m_model(omm::nodes::NodeModel(Compiler::LANGUAGE, m_omm_app->scene.get()))
+      : m_q_app(options())
+      , m_model(omm::nodes::NodeModel(Compiler::LANGUAGE, m_q_app.omm_app().scene.get()))
       , m_compiler(m_model)
   {
   }
@@ -43,10 +43,10 @@ public:
   const omm::nodes::NodeModel& model() const { return m_model; }
   Compiler& compiler() { return m_compiler; }
   const Compiler& compiler() const { return m_compiler; }
-  omm::Scene& scene() const { return *m_omm_app->scene; }
+  omm::Scene& scene() const { return *m_q_app.omm_app().scene; }
 
 private:
-  std::unique_ptr<omm::Application> m_omm_app;
+  ommtest::Application m_q_app;
   omm::nodes::NodeModel m_model;
   Compiler m_compiler;
 };
