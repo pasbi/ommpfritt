@@ -28,38 +28,26 @@ std::unique_ptr<omm::Options> options()
 
 bool scene_eq(const nlohmann::json& a, const nlohmann::json& b)
 {
-  if (a.type() != b.type()) {
+  static constexpr auto object_t = nlohmann::detail::value_t::object;
+  if (a.type() != object_t && b.type() != object_t) {
     return false;
   }
-
-//  const std::set<std::string> excluded_keys = ""
-
-  switch (a.type()) {
-  case nlohmann::detail::value_t::array:
-    if (a.size() != b.size()) {
+  const auto diff = nlohmann::json::diff(a, b);
+  const auto operation_is_numerically_negligible = [&a, &b](const auto d) {
+    if (d["op"] != "replace") {
       return false;
     }
-    for (std::size_t i = 0; i < a.size(); ++i) {
-      if (!scene_eq(a.at(i), b.at(i))) {
-        return false;
-      }
-    }
-  case nlohmann::detail::value_t::object:
-    if (a.size() != b.size()) {
+    const nlohmann::json::json_pointer pointer{static_cast<std::string>(d["path"])};
+    const auto& v_a = a.at(pointer);
+    const auto& v_b = b.at(pointer);
+    static constexpr auto float_t = nlohmann::detail::value_t::number_float;
+    if (v_a.type() != float_t || v_b.type() != float_t) {
       return false;
     }
-    for (const auto& [key, value] : a.items()) {
-      if (!b.contains(key) || !scene_eq(value, b.at(key))) {
-        return false;
-      }
-    }
-  case nlohmann::detail::value_t::number_float:
-    static constexpr auto eps = 0.00001;
-    return (static_cast<double>(a) - static_cast<double>(b)) < eps;
-  default:
-    return a == b;
-  }
-  return true;
+    static constexpr auto eps = 0.0001;
+    return std::abs(static_cast<double>(v_a) - static_cast<double>(v_b)) < eps;
+  };
+  return std::all_of(diff.begin(), diff.end(), operation_is_numerically_negligible);
 }
 
 QStringList test_files()
@@ -173,6 +161,33 @@ template<typename Buffer> void test_object_serialization()
 
 }  // namespace
 
+TEST(serialization, SceneEq)
+{
+  nlohmann::json a;
+  nlohmann::json b;
+
+  a = {{"key", "value"}};
+  EXPECT_FALSE(scene_eq(a, b));
+  EXPECT_TRUE(scene_eq(a, a));
+
+  a = {{"key", {1.0, "a", 2}}};
+  b = {{"key", {}}};
+  EXPECT_FALSE(scene_eq(a, b));
+  EXPECT_TRUE(scene_eq(a, a));
+  EXPECT_TRUE(scene_eq(b, b));
+
+  a = {{"key", {1.0, {{"sub", {}}}, 2}}};
+  b = {{"key", {1.0, {{"sub", 0.0}}, 2}}};
+  EXPECT_FALSE(scene_eq(a, b));
+  EXPECT_TRUE(scene_eq(a, a));
+  EXPECT_TRUE(scene_eq(b, b));
+
+  a = {{"key", {1.0, {{"sub", 1.23456789}}, 2}}};
+  b = {{"key", {1.0, {{"sub", 1.23456588}}, 2}}};
+  EXPECT_TRUE(scene_eq(a, b));
+  EXPECT_TRUE(scene_eq(a, a));
+  EXPECT_TRUE(scene_eq(b, b));
+}
 
 TEST(serialization, JSONScene)
 {
