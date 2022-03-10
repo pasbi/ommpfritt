@@ -201,13 +201,12 @@ TEST(serialization, JSONScene)
     nlohmann::json json_file;
     ifstream >> json_file;
     omm::serialization::JSONDeserializer deserializer(json_file);
-    app->scene->reset();
     EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(deserializer));
 
     nlohmann::json store;
     omm::serialization::JSONSerializer serializer(store);
-    if (scene_eq(json_file, store)) {
     EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.save(serializer));
+    if (!scene_eq(json_file, store)) {
       const auto diff = nlohmann::json::diff(json_file, store);
       LINFO << "diff: " << QString::fromStdString(diff.dump(2));
       LINFO << "store: " << QString::fromStdString(store.dump(4));
@@ -224,6 +223,7 @@ TEST(serialization, JSONScene)
 TEST(serialization, BinaryScene)
 {
   for (const auto& fn : static_cast<const QStringList>(test_files())) {
+    LINFO << "loading " << fn;
     const auto abs_fn = QString{source_directory} + "/" + fn;
     std::ifstream ifstream{abs_fn.toStdString()};
 
@@ -239,8 +239,6 @@ TEST(serialization, BinaryScene)
     omm::serialization::BinSerializer bin_serializer(serialize_stream);
     EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.save(bin_serializer));
 
-    app->scene->reset();
-
     QDataStream deserialize_stream{buffer};
     omm::serialization::BinDeserializer bin_deserializer(deserialize_stream);
     EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(bin_deserializer));
@@ -249,9 +247,10 @@ TEST(serialization, BinaryScene)
     omm::serialization::JSONSerializer serializer{store};
     EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.save(serializer));
 
-    if (scene_eq(json_file, store)) {
+    if (!scene_eq(json_file, store)) {
       const auto diff = nlohmann::json::diff(json_file, store);
       LINFO << "diff: " << QString::fromStdString(diff.dump(2));
+      LINFO << "store: " << QString::fromStdString(store.dump(4));
       EXPECT_TRUE(scene_eq(json_file, store));
     }
   }
