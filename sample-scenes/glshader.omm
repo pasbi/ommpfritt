@@ -2,8 +2,6 @@
     "animation": {
         "current-frame": 1,
         "end-frame": 100,
-        "filename-pattern": "",
-        "overwrite-file": true,
         "play-mode": 0,
         "start-frame": 1
     },
@@ -369,6 +367,13 @@
                 "key": "shear",
                 "type": "FloatProperty",
                 "value": 0.0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "join",
+                "type": "BoolProperty",
+                "value": false
             }
         ],
         "tags": []
@@ -378,22 +383,6 @@
             "id": 22408990650000502,
             "nodes": {
                 "nodes": [
-                    {
-                        "connection": [
-                            {
-                                "in": 0,
-                                "node": 11302106137919438831,
-                                "out": 0
-                            }
-                        ],
-                        "id": 14081031177401449156,
-                        "pos": [
-                            243.5111644538531,
-                            30.587858216396356
-                        ],
-                        "properties": [],
-                        "type": "FragmentNode"
-                    },
                     {
                         "connection": [
                             {
@@ -422,26 +411,16 @@
                         "type": "DecomposeNode"
                     },
                     {
-                        "connection": [],
-                        "id": 14724328996775097359,
-                        "pos": [
-                            -162.3620266074173,
-                            -77.87685334179754
-                        ],
-                        "properties": [],
-                        "type": "VertexNode"
-                    },
-                    {
                         "connection": [
-                            {
-                                "in": 2,
-                                "node": 1252121869652153566,
-                                "out": 2
-                            },
                             {
                                 "in": 0,
                                 "node": 1252121869652153566,
                                 "out": 1
+                            },
+                            {
+                                "in": 2,
+                                "node": 1252121869652153566,
+                                "out": 2
                             }
                         ],
                         "id": 11302106137919438831,
@@ -480,6 +459,32 @@
                             }
                         ],
                         "type": "ComposeColorNode"
+                    },
+                    {
+                        "connection": [
+                            {
+                                "in": 0,
+                                "node": 11302106137919438831,
+                                "out": 0
+                            }
+                        ],
+                        "id": 14081031177401449156,
+                        "pos": [
+                            243.5111644538531,
+                            30.587858216396356
+                        ],
+                        "properties": [],
+                        "type": "FragmentNode"
+                    },
+                    {
+                        "connection": [],
+                        "id": 14724328996775097359,
+                        "pos": [
+                            -162.3620266074173,
+                            -77.87685334179754
+                        ],
+                        "properties": [],
+                        "type": "VertexNode"
                     }
                 ]
             },
@@ -649,6 +654,61 @@
                         "connection": [
                             {
                                 "in": 0,
+                                "node": 12730615671267278618,
+                                "out": 1
+                            },
+                            {
+                                "in": 1,
+                                "node": 14146945465266274661,
+                                "out": 1
+                            },
+                            {
+                                "in": 2,
+                                "node": 12730615671267278618,
+                                "out": 2
+                            }
+                        ],
+                        "id": 1716099247501584868,
+                        "pos": [
+                            13.333333333333314,
+                            -39.33333333333334
+                        ],
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "r",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "g",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "b",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "a",
+                                "type": "FloatProperty",
+                                "value": 1.0
+                            }
+                        ],
+                        "type": "ComposeColorNode"
+                    },
+                    {
+                        "connection": [
+                            {
+                                "in": 0,
                                 "node": 1716099247501584868,
                                 "out": 0
                             }
@@ -660,6 +720,43 @@
                         ],
                         "properties": [],
                         "type": "FragmentNode"
+                    },
+                    {
+                        "connection": [],
+                        "id": 8367175419737299176,
+                        "pos": [
+                            -498.66666666666674,
+                            -148.33333333333334
+                        ],
+                        "properties": [],
+                        "type": "VertexNode"
+                    },
+                    {
+                        "connection": [
+                            {
+                                "in": 0,
+                                "node": 8367175419737299176,
+                                "out": 0
+                            }
+                        ],
+                        "id": 12730615671267278618,
+                        "pos": [
+                            -469.61072369814184,
+                            -35.80536184907086
+                        ],
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "in",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            }
+                        ],
+                        "type": "DecomposeNode"
                     },
                     {
                         "connection": [
@@ -703,98 +800,6 @@
                             }
                         ],
                         "type": "MathNode"
-                    },
-                    {
-                        "connection": [],
-                        "id": 8367175419737299176,
-                        "pos": [
-                            -498.66666666666674,
-                            -148.33333333333334
-                        ],
-                        "properties": [],
-                        "type": "VertexNode"
-                    },
-                    {
-                        "connection": [
-                            {
-                                "in": 0,
-                                "node": 8367175419737299176,
-                                "out": 0
-                            }
-                        ],
-                        "id": 12730615671267278618,
-                        "pos": [
-                            -469.61072369814184,
-                            -35.80536184907086
-                        ],
-                        "properties": [
-                            {
-                                "animatable": true,
-                                "animated": false,
-                                "key": "in",
-                                "type": "FloatVectorProperty",
-                                "value": [
-                                    0.0,
-                                    0.0
-                                ]
-                            }
-                        ],
-                        "type": "DecomposeNode"
-                    },
-                    {
-                        "connection": [
-                            {
-                                "in": 2,
-                                "node": 12730615671267278618,
-                                "out": 2
-                            },
-                            {
-                                "in": 0,
-                                "node": 12730615671267278618,
-                                "out": 1
-                            },
-                            {
-                                "in": 1,
-                                "node": 14146945465266274661,
-                                "out": 1
-                            }
-                        ],
-                        "id": 1716099247501584868,
-                        "pos": [
-                            13.333333333333314,
-                            -39.33333333333334
-                        ],
-                        "properties": [
-                            {
-                                "animatable": true,
-                                "animated": false,
-                                "key": "r",
-                                "type": "FloatProperty",
-                                "value": 0.0
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
-                                "key": "g",
-                                "type": "FloatProperty",
-                                "value": 0.0
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
-                                "key": "b",
-                                "type": "FloatProperty",
-                                "value": 0.0
-                            },
-                            {
-                                "animatable": true,
-                                "animated": false,
-                                "key": "a",
-                                "type": "FloatProperty",
-                                "value": 1.0
-                            }
-                        ],
-                        "type": "ComposeColorNode"
                     }
                 ]
             },

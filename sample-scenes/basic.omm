@@ -2,8 +2,6 @@
     "animation": {
         "current-frame": 1,
         "end-frame": 100,
-        "filename-pattern": "",
-        "overwrite-file": true,
         "play-mode": 0,
         "start-frame": 1
     },
@@ -590,6 +588,27 @@
                     {
                         "animatable": true,
                         "animated": false,
+                        "key": "segment",
+                        "type": "IntegerProperty",
+                        "value": 0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "interpolation",
+                        "type": "OptionProperty",
+                        "value": 0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "align",
+                        "type": "BoolProperty",
+                        "value": true
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
                         "key": "start",
                         "type": "FloatProperty",
                         "value": 0.0
@@ -600,13 +619,6 @@
                         "key": "end",
                         "type": "FloatProperty",
                         "value": 1.0
-                    },
-                    {
-                        "animatable": true,
-                        "animated": false,
-                        "key": "align",
-                        "type": "BoolProperty",
-                        "value": true
                     },
                     {
                         "animatable": true,
@@ -704,6 +716,13 @@
                 "key": "shear",
                 "type": "FloatProperty",
                 "value": 0.0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "join",
+                "type": "BoolProperty",
+                "value": false
             }
         ],
         "tags": []
