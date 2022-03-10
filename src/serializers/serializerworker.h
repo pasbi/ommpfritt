@@ -82,4 +82,21 @@ public:
   [[nodiscard]] virtual std::unique_ptr<SerializationArray> start_array(std::size_t size) = 0;
 };
 
+/**
+ * @brief sorT Make sure that the serialization order of nodes is deterministic.
+ * Otherwise, the same scene might be serialized differently.
+ * That's not a big functionality issue, but it's annoying, and makes it hard to test
+ * serialization.
+ * @tparam LessThan functor type that takes two arguments and returns true if the first is
+ *  considered less than the second.
+ * Implement it such that it only depends on values that are stable and serialized!
+ */
+template<typename LessThan> auto sort(const auto& set)
+{
+  using T = typename std::decay_t<decltype(set)>::value_type;
+  std::set<T, LessThan> sorted;
+  std::copy(set.begin(), set.end(), std::inserter(sorted, sorted.end()));
+  return sorted;
+}
+
 }  // namespace omm::serialization

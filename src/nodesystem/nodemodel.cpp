@@ -119,7 +119,10 @@ std::set<Node*> NodeModel::nodes() const
 
 void NodeModel::serialize(serialization::SerializerWorker& worker) const
 {
-  worker.sub(NODES_POINTER)->set_value(m_nodes, [](const auto& node, auto& worker_i) {
+  static constexpr auto less_than = [](const Node* n1, const Node* n2) { return n1->id() < n2->id(); };
+  const auto nodes = util::transform(m_nodes, &std::unique_ptr<Node>::get);
+  const auto sorted_nodes = serialization::sort<decltype(less_than)>(nodes);
+  worker.sub(NODES_POINTER)->set_value(sorted_nodes, [](const auto& node, auto& worker_i) {
     worker_i.sub(TYPE_POINTER)->set_value(node->type());
     node->serialize(worker_i);
   });

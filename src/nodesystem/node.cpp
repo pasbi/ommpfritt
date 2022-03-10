@@ -71,9 +71,21 @@ void Node::serialize(serialization::SerializerWorker& worker) const
 
   std::vector<const InputPort*> connection_inputs;
   connection_inputs.reserve(m_ports.size());
-  for (const auto& port : m_ports) {
-    if (port->port_type == PortType::Input && dynamic_cast<InputPort&>(*port).connected_output() != nullptr) {
-      connection_inputs.push_back(dynamic_cast<const InputPort*>(port.get()));
+
+  static constexpr auto less_than = [](const AbstractPort* p1, const AbstractPort* p2) {
+    static constexpr auto to_tuple = [](const AbstractPort& p) { return std::tuple{p.port_type, p.index}; };
+    if (p1 == nullptr || p2 == nullptr) {
+      return p1 < p2;
+    }
+    return to_tuple(*p1) < to_tuple(*p2);  // NOLINT(modernize-use-nullptr)
+  };
+  const auto ports = util::transform(m_ports, &std::unique_ptr<AbstractPort>::get);
+  const auto sorted_ports = serialization::sort<decltype(less_than)>(ports);
+
+  for (const auto& port : sorted_ports) {
+    if (const auto* ip = dynamic_cast<const InputPort*>(port); ip != nullptr && ip->connected_output() != nullptr) {
+      assert(ip->port_type == PortType::Input);
+      connection_inputs.push_back(ip);
     }
   }
   connection_inputs.shrink_to_fit();
