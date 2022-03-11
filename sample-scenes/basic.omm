@@ -158,6 +158,15 @@
                                 "animated": false,
                                 "key": "edit-style",
                                 "type": "TriggerProperty"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "facelist",
+                                "type": "FaceListProperty",
+                                "value": {
+                                    "path": 0
+                                }
                             }
                         ],
                         "type": "StyleTag"
@@ -300,6 +309,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -443,6 +461,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"

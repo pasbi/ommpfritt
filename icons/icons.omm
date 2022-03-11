@@ -137,6 +137,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -171,6 +180,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -300,6 +318,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -334,6 +361,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -471,6 +507,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -605,6 +650,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -740,6 +794,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -774,6 +837,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -900,6 +972,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -1219,6 +1300,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -1396,6 +1486,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -1629,6 +1728,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -1762,6 +1870,15 @@
                                                         "animated": false,
                                                         "key": "edit-style",
                                                         "type": "TriggerProperty"
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "facelist",
+                                                        "type": "FaceListProperty",
+                                                        "value": {
+                                                            "path": 0
+                                                        }
                                                     }
                                                 ],
                                                 "type": "StyleTag"
@@ -1977,6 +2094,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -2222,6 +2348,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -2373,6 +2508,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -2522,6 +2666,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -2733,6 +2886,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -2776,6 +2938,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -3054,6 +3225,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -3192,6 +3372,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -3578,6 +3767,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -3821,6 +4019,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -3876,7 +4083,7 @@
                                         "key": "scale",
                                         "type": "FloatVectorProperty",
                                         "value": [
-                                            1.0000000000003677,
+                                            1.0000000000003681,
                                             0.9999999999999004
                                         ]
                                     },
@@ -4010,6 +4217,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -4227,6 +4443,15 @@
                                                                 "animated": false,
                                                                 "key": "edit-style",
                                                                 "type": "TriggerProperty"
+                                                            },
+                                                            {
+                                                                "animatable": true,
+                                                                "animated": false,
+                                                                "key": "facelist",
+                                                                "type": "FaceListProperty",
+                                                                "value": {
+                                                                    "path": 0
+                                                                }
                                                             }
                                                         ],
                                                         "type": "StyleTag"
@@ -4639,6 +4864,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -4878,6 +5112,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -5394,6 +5637,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -5594,6 +5846,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -5637,6 +5898,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -5848,6 +6118,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -6074,6 +6353,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -6211,6 +6499,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -6546,6 +6843,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -6683,6 +6989,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -7034,6 +7349,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -7305,6 +7629,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -7482,6 +7815,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -7824,6 +8166,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -8227,6 +8578,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -8510,6 +8870,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -8755,6 +9124,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -8977,6 +9355,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -9115,6 +9502,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -9369,6 +9765,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -9789,6 +10194,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -9927,6 +10341,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -10241,6 +10664,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -10557,6 +10989,15 @@
                                                         "animated": false,
                                                         "key": "edit-style",
                                                         "type": "TriggerProperty"
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "facelist",
+                                                        "type": "FaceListProperty",
+                                                        "value": {
+                                                            "path": 0
+                                                        }
                                                     }
                                                 ],
                                                 "type": "StyleTag"
@@ -11001,6 +11442,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -11221,6 +11671,15 @@
                                                         "animated": false,
                                                         "key": "edit-style",
                                                         "type": "TriggerProperty"
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "facelist",
+                                                        "type": "FaceListProperty",
+                                                        "value": {
+                                                            "path": 0
+                                                        }
                                                     }
                                                 ],
                                                 "type": "StyleTag"
@@ -11454,6 +11913,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -11594,6 +12062,15 @@
                                                 "animated": false,
                                                 "key": "edit-style",
                                                 "type": "TriggerProperty"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "facelist",
+                                                "type": "FaceListProperty",
+                                                "value": {
+                                                    "path": 0
+                                                }
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -11737,6 +12214,15 @@
                                         "animated": false,
                                         "key": "edit-style",
                                         "type": "TriggerProperty"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "facelist",
+                                        "type": "FaceListProperty",
+                                        "value": {
+                                            "path": 0
+                                        }
                                     }
                                 ],
                                 "type": "StyleTag"
