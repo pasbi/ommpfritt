@@ -33,9 +33,11 @@ QString StyleTag::type() const
 {
   return TYPE;
 }
+
 void StyleTag::evaluate()
 {
 }
+
 Flag StyleTag::flags() const
 {
   return Tag::flags();
