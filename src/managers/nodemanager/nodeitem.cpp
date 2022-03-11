@@ -243,8 +243,8 @@ void NodeItem::update_children()
     {
     }
     Property* property;
-    nodes::PropertyInputPort* i;
-    nodes::PropertyOutputPort* o;
+    nodes::PropertyPort<nodes::PortType::Input>* i;
+    nodes::PropertyPort<nodes::PortType::Output>* o;
   };
 
   std::list<PropertyPorts> property_ports;
@@ -257,12 +257,10 @@ void NodeItem::update_children()
   for (auto* const p : ports) {
     if (p->flavor == nodes::PortFlavor::Property) {
       Property* property = p->port_type == nodes::PortType::Input
-                               ? dynamic_cast<nodes::PropertyInputPort&>(*p).property()
-                               : dynamic_cast<nodes::PropertyOutputPort&>(*p).property();
-      const auto it
-          = std::find_if(property_ports.begin(),
-                         property_ports.end(),
-                         [property](const PropertyPorts& pp) { return property == pp.property; });
+                               ? dynamic_cast<nodes::PropertyPort<nodes::PortType::Input>&>(*p).property()
+                               : dynamic_cast<nodes::PropertyPort<nodes::PortType::Output>&>(*p).property();
+      const auto match_property = [property](const PropertyPorts& pp) { return property == pp.property; };
+      const auto it = std::find_if(property_ports.begin(), property_ports.end(), match_property);
       PropertyPorts* current = nullptr;
       if (it == property_ports.end()) {
         property_ports.emplace_back(property);
@@ -272,9 +270,9 @@ void NodeItem::update_children()
       }
 
       if (p->port_type == nodes::PortType::Input) {
-        current->i = dynamic_cast<nodes::PropertyInputPort*>(p);
+        current->i = dynamic_cast<nodes::PropertyPort<nodes::PortType::Input>*>(p);
       } else {
-        current->o = dynamic_cast<nodes::PropertyOutputPort*>(p);
+        current->o = dynamic_cast<nodes::PropertyPort<nodes::PortType::Output>*>(p);
       }
     } else {
       if (p->port_type == nodes::PortType::Input) {
@@ -427,7 +425,8 @@ bool NodeItem::can_expand() const
   });
 }
 
-void NodeItem::add_port(nodes::PropertyInputPort* const ip, nodes::PropertyOutputPort* const op,
+void NodeItem::add_port(nodes::PropertyPort<nodes::PortType::Input>* const ip,
+                        nodes::PropertyPort<nodes::PortType::Output>* const op,
                         const double pos_y)
 {
   if (ip != nullptr) {

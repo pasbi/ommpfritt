@@ -15,7 +15,12 @@ public:
   Array(Array&&) = delete;
   Array& operator=(const Array&) = delete;
   Array& operator=(Array&&) = delete;
-  [[nodiscard]] virtual Worker& next() = 0;
+  [[nodiscard]] virtual Worker& next()
+  {
+    m_current = m_parent.sub(m_next_index);
+    m_next_index += 1;
+    return *m_current;
+  }
 
 protected:
   std::size_t m_next_index = 0;
@@ -27,15 +32,14 @@ class DeserializerWorker;
 class DeserializationArray : public Array<DeserializerWorker>
 {
 public:
-  using Array::Array;
-  [[nodiscard]] virtual std::size_t size() const = 0;
+  explicit DeserializationArray(DeserializerWorker& parent, std::size_t size);
+  [[nodiscard]] std::size_t size() const;
+
+private:
+  const std::size_t m_size;
 };
 
 class SerializerWorker;
-class SerializationArray : public Array<SerializerWorker>
-{
-public:
-  using Array::Array;
-};
+using SerializationArray = Array<SerializerWorker>;
 
 }  // namespace omm::serialization

@@ -152,7 +152,7 @@ void NodesTag::force_evaluate()
   populate_locals<nodes::PortType::Output>(locals, model);
 
   const auto code = model.compiler().code();
-  if (Application::instance().python_engine->exec(code, locals, this)) {
+  if (PythonEngine::instance().exec(code, locals, this)) {
     for (auto* const port : model.ports<nodes::InputPort>()) {
       if (port->node.type() == nodes::SpyNode::TYPE) {
         ::evaluate_spy_node(port, locals);

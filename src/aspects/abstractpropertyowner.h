@@ -42,6 +42,26 @@ public:
   AbstractPropertyOwner& operator=(const AbstractPropertyOwner&) = delete;
   AbstractPropertyOwner& operator=(AbstractPropertyOwner&&) = delete;
 
+  [[nodiscard]] bool eq(const AbstractPropertyOwner& other, const auto& eq) const
+  {
+    const auto keys = m_properties.keys();
+    if (keys != other.m_properties.keys()) {
+      return false;
+    }
+
+    for (const auto& key : keys) {
+      if (!eq(m_properties.at(key)->variant_value(), other.m_properties.at(key)->variant_value())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  [[nodiscard]] bool eq(const AbstractPropertyOwner& other) const
+  {
+    return eq(other, std::equal_to<>{});
+  }
+
   Property* property(const QString& key) const;
   bool has_property(const QString& key) const;
   template<typename ValueT> bool has_property(const QString& key) const

@@ -6,13 +6,13 @@
 namespace omm::serialization
 {
 
-class JSONSerializer : public AbstractSerializer
+class BinSerializer : public AbstractSerializer
 {
 public:
-  explicit JSONSerializer(nlohmann::json& json);
+  explicit BinSerializer(QDataStream& stream);
   std::unique_ptr<SerializerWorker> worker() override;
 private:
-  nlohmann::json& m_json;
+  QDataStream& m_stream;
 };
 
 }  // namespace omm

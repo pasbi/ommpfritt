@@ -69,9 +69,19 @@ PYBIND11_EMBEDDED_MODULE(omm, m)
 }
 
 PythonEngine::PythonEngine()
+  : m_scoped_interpreter(new pybind11::scoped_interpreter())
 {
+  [[maybe_unused]] static bool exists = false;
+  assert(!exists);  // PythonEngine must not be created more than once.
+  exists = true;
   py::object omm_module = py::module::import("omm");
   register_wrappers(omm_module);
+}
+
+PythonEngine::~PythonEngine()
+{
+  delete static_cast<pybind11::scoped_interpreter*>(m_scoped_interpreter);
+  m_scoped_interpreter = nullptr;
 }
 
 bool PythonEngine ::exec(const QString& code, py::object& locals, const void* associated_item)
@@ -108,6 +118,12 @@ PythonEngine ::eval(const QString& code, py::object& locals, const void* associa
     Q_EMIT output(associated_item, e.what(), Stream::stderr_);
     return py::none();
   }
+}
+
+PythonEngine& PythonEngine::instance()
+{
+  static PythonEngine python_engine;
+  return python_engine;
 }
 
 // TODO imported symbols are not available inside `lambda`s or `def`s.

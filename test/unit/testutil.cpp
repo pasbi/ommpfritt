@@ -9,14 +9,17 @@
 namespace ommtest
 {
 
-GuiApplication::GuiApplication()
-    : m_application(argc, argv.data())
+Application::Application(std::unique_ptr<omm::Options> options)
+    : m_q_application(argc, argv.data())
+    , m_omm_application(std::make_unique<omm::Application>(m_q_application, std::move(options)))
 {
 }
 
-QGuiApplication& GuiApplication::gui_application()
+Application::~Application() = default;
+
+omm::Application& Application::omm_app() const
 {
-  return m_application;
+  return *m_omm_application;
 }
 
 bool have_opengl()

@@ -98,35 +98,10 @@ TriggerPropertyDummyValueType JSONDeserializerWorker::get_trigger_dummy_value()
 
 std::unique_ptr<DeserializationArray> JSONDeserializerWorker::start_array()
 {
-  class JSONArray : public DeserializationArray
-  {
-  public:
-    explicit JSONArray(JSONDeserializerWorker& parent, const std::size_t size)
-        : DeserializationArray(parent)
-        , m_size(size)
-    {
-    }
-
-    [[nodiscard]] DeserializerWorker& next() override
-    {
-      m_current = m_parent.sub(m_next_index);
-      m_next_index += 1;
-      return *m_current;
-    }
-
-    [[nodiscard]] std::size_t size() const override
-    {
-      return m_size;
-    }
-
-  private:
-    const std::size_t m_size;
-  };
-
   if (!m_value.is_array()) {
     throw AbstractDeserializer::DeserializeError{"Expected Array"};
   }
-  return std::make_unique<JSONArray>(*this, m_value.size());
+  return std::make_unique<DeserializationArray>(*this, m_value.size());
 }
 
 std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::string& key)
@@ -135,9 +110,9 @@ std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::strin
     throw AbstractDeserializer::DeserializeError{"Attempt to access non-object value by key"};
   }
   try {
-    return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value[key]);
-  } catch (const nlohmann::json::out_of_range&) {
-    throw AbstractDeserializer::DeserializeError{"Attempt to access non-existing key: " + key};
+    return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value.at(key));
+  } catch (const nlohmann::json::out_of_range& e) {
+    throw AbstractDeserializer::DeserializeError{e.what()};
   }
 }
 
@@ -148,8 +123,8 @@ std::unique_ptr<DeserializerWorker> JSONDeserializerWorker::sub(const std::size_
   }
   try {
     return std::make_unique<JSONDeserializerWorker>(deserializer(), m_value[i]);
-  } catch (const nlohmann::json::out_of_range&) {
-    throw AbstractDeserializer::DeserializeError{"Attempt to access non-existing index: " + std::to_string(i)};
+  } catch (const nlohmann::json::out_of_range& e) {
+    throw AbstractDeserializer::DeserializeError{e.what()};
   }
 }
 

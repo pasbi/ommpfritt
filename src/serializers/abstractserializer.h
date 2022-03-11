@@ -46,7 +46,7 @@ public:
     using runtime_error::runtime_error;
   };
 
-  virtual std::unique_ptr<SerializerWorker> sub(const std::string& key) = 0;
+  virtual std::unique_ptr<SerializerWorker> worker() = 0;
 
 protected:
   void register_serialzied_reference(AbstractPropertyOwner* reference);

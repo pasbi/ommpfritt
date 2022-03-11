@@ -28,10 +28,12 @@ QString Property::widget_type() const
 {
   return type() + "Widget";
 }
+
 bool Property::is_user_property() const
 {
   return category() == USER_PROPERTY_CATEGROY_NAME;
 }
+
 void Property::revise()
 {
 }
@@ -53,8 +55,8 @@ void Property::deserialize(serialization::DeserializerWorker& worker)
 {
   configuration.deserialize_field<QString>(LABEL_POINTER, worker);
   configuration.deserialize_field<QString>(CATEGORY_POINTER, worker);
-  configuration.deserialize_field<bool>(ANIMATABLE_POINTER, worker);
 
+  configuration.set(ANIMATABLE_POINTER, worker.sub(ANIMATABLE_POINTER)->get_bool());
   if (worker.sub(IS_ANIMATED_POINTER)->get_bool()) {
     m_track = std::make_unique<Track>(*this);
     m_track->deserialize(*worker.sub(TRACK_POINTER));
@@ -92,7 +94,7 @@ Property& Property::set_label(const QString& label)
 
 QString Property::category() const
 {
-  return configuration.get<QString>(CATEGORY_POINTER);
+  return configuration.get<QString>(CATEGORY_POINTER, "");
 }
 
 Property& Property::set_category(const QString& category)

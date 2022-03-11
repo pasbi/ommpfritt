@@ -16,18 +16,8 @@
 
 #include "serializers/json/jsondeserializer.h"
 #include "serializers/json/jsonserializer.h"
-
-namespace
-{
-
-constexpr auto ROOT_POINTER = "root";
-constexpr auto STYLES_POINTER = "styles";
-constexpr auto ANIMATOR_POINTER = "animation";
-constexpr auto NAMED_COLORS_POINTER = "colors";
-constexpr auto EXPORT_OPTIONS_POINTER = "export_options";
-constexpr auto JOINED_POINTS_POINTER =  "joined_points";
-
-}  // namespace exportoptions
+#include "serializers/bin/bindeserializer.h"
+#include "serializers/bin/binserializer.h"
 
 namespace omm
 {
@@ -36,28 +26,8 @@ template<typename Deserializer> bool SceneSerialization::load(Deserializer& dese
 {
   m_scene.reset();
   try {
-    auto new_root = m_scene.make_root();
-    new_root->deserialize(*deserializer.sub(ROOT_POINTER));
-
-    std::deque<std::unique_ptr<Style>> styles;
-    deserializer.sub(STYLES_POINTER)->get_items([this, &styles](auto& worker_i) {
-      auto style = std::make_unique<Style>(&m_scene);
-      style->deserialize(worker_i);
-      styles.push_back(std::move(style));
-    });
-
-    m_scene.history().set_saved_index();
-
-    m_scene.object_tree().replace_root(std::move(new_root));
-    m_scene.styles().set(std::move(styles));
-    m_scene.animator().invalidate();
-
-    m_scene.object_tree().root().update_recursive();
-
-    m_scene.animator().deserialize(*deserializer.sub(ANIMATOR_POINTER));
-    m_scene.named_colors().deserialize(*deserializer.sub(NAMED_COLORS_POINTER));
-    m_scene.m_export_options->deserialize(*deserializer.sub(EXPORT_OPTIONS_POINTER));
-    m_scene.m_joined_points->deserialize(*deserializer.sub(JOINED_POINTS_POINTER));
+    auto worker = deserializer.worker();
+    m_scene.deserialize(*worker);
   } catch (const Object::AbstractFactory::InvalidKeyError& e) {
     LERROR << "Failed to deserialize file: " << e.what();
     return false;
@@ -72,17 +42,8 @@ template<typename Deserializer> bool SceneSerialization::load(Deserializer& dese
 
 template<typename Serializer> bool SceneSerialization::save(Serializer& serializer) const
 {
-  m_scene.object_tree().root().serialize(*serializer.sub(ROOT_POINTER));
-
-
-  serializer.sub(STYLES_POINTER)->set_value(m_scene.styles().ordered_items(), [](const auto* style, auto& worker_i) {
-    style->serialize(worker_i);
-  });
-
-  m_scene.m_animator->serialize(*serializer.sub(ANIMATOR_POINTER));
-  m_scene.m_named_colors->serialize(*serializer.sub(NAMED_COLORS_POINTER));
-  m_scene.export_options().serialize(*serializer.sub(EXPORT_OPTIONS_POINTER));
-  m_scene.m_joined_points->serialize(*serializer.sub(JOINED_POINTS_POINTER));
+  auto worker = serializer.worker();
+  m_scene.serialize(*worker);
   return true;
 }
 
@@ -124,6 +85,8 @@ bool SceneSerialization::load(const QString& filename, scene_serializer::Format 
   switch (format) {
   case Format::JSON:
     return load_json(filename);
+  case Format::Binary:
+    return load_bin(filename);
   }
   LERROR << "Cannot deserialize from unexpected format: " << static_cast<int>(format);
   return false;
@@ -148,6 +111,19 @@ bool SceneSerialization::load_json(const QString& filename) const
   return load(deserializer);
 }
 
+bool SceneSerialization::load_bin(const QString& filename) const
+{
+  QFile file{filename};
+  if (!file.open(QIODevice::ReadOnly)) {
+    LERROR << "Failed to open '" << filename << "'.";
+    return false;
+  }
+
+  QDataStream stream{&file};
+  serialization::BinDeserializer deserializer{stream};
+  return load(deserializer);
+}
+
 bool SceneSerialization::save_json(const QString& filename) const
 {
   std::ofstream ofstream(filename.toStdString());
@@ -166,12 +142,27 @@ bool SceneSerialization::save_json(const QString& filename) const
   return true;
 }
 
+bool SceneSerialization::save_bin(const QString& filename) const
+{
+  QFile file{filename};
+  if (!file.open(QIODevice::WriteOnly)) {
+    LERROR << "Failed to open ofstream at '" << filename << "'.";
+    return false;
+  }
+
+  QDataStream stream(&file);
+  serialization::BinSerializer serializer(stream);
+  return save(serializer);
+}
+
 bool SceneSerialization::save(const QString& filename, scene_serializer::Format format) const
 {
   using scene_serializer::Format;
   switch (format) {
   case Format::JSON:
     return save_json(filename);
+  case Format::Binary:
+    return save_bin(filename);
   }
   LERROR << "Cannot serialize to unexpected format: " << static_cast<int>(format);
   return false;
@@ -179,9 +170,17 @@ bool SceneSerialization::save(const QString& filename, scene_serializer::Format 
 
 scene_serializer::Format scene_serializer::guess_format(const QString& filename)
 {
-  Q_UNUSED(filename)
-  return Format::JSON;
+  if (filename.endsWith(".bom")) {
+    return Format::Binary;
+  } else {
+    return Format::JSON;
+  }
 }
 
-
 }  // namespace omm
+
+namespace oms = omm::serialization;  // NOLINT(misc-unused-alias-decls)
+template bool omm::SceneSerialization::save<oms::JSONSerializer>(oms::JSONSerializer& serializer) const;
+template bool omm::SceneSerialization::load<oms::JSONDeserializer>(oms::JSONDeserializer& deserializer) const;
+template bool omm::SceneSerialization::save<oms::BinSerializer>(oms::BinSerializer& serializer) const;
+template bool omm::SceneSerialization::load<oms::BinDeserializer>(oms::BinDeserializer& deserializer) const;

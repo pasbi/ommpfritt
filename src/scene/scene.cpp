@@ -44,6 +44,14 @@
 
 namespace
 {
+
+constexpr auto ROOT_POINTER = "root";
+constexpr auto STYLES_POINTER = "styles";
+constexpr auto ANIMATOR_POINTER = "animation";
+constexpr auto NAMED_COLORS_POINTER = "colors";
+constexpr auto EXPORT_OPTIONS_POINTER = "export_options";
+constexpr auto JOINED_POINTS_POINTER =  "joined_points";
+
 template<typename PropertyT, typename PropertyOwners>
 std::set<PropertyT*>
 find_properties(const PropertyOwners& property_owners,
@@ -103,9 +111,8 @@ std::set<omm::AbstractPropertyOwner*> collect_apos_without_nodes(const omm::Scen
 
 namespace omm
 {
-Scene::Scene(PythonEngine& python_engine)
-    : python_engine(python_engine)
-    , point_selection(std::make_unique<PointSelection>(*this))
+Scene::Scene()
+    : point_selection(std::make_unique<PointSelection>(*this))
     , m_mail_box(new MailBox())
     , m_object_tree(new ObjectTree(make_root(), *this))
     , m_styles(new StyleList(*this))
@@ -231,6 +238,46 @@ bool Scene::save_as(const QString& filename)
 bool Scene::load_from(const QString& filename)
 {
   return SceneSerialization{*this}.load(filename);
+}
+
+void Scene::serialize(serialization::SerializerWorker& serializer)
+{
+  object_tree().root().serialize(*serializer.sub(ROOT_POINTER));
+
+  serializer.sub(STYLES_POINTER)->set_value(styles().ordered_items(), [](const auto* style, auto& worker_i) {
+    style->serialize(worker_i);
+  });
+
+  m_animator->serialize(*serializer.sub(ANIMATOR_POINTER));
+  m_named_colors->serialize(*serializer.sub(NAMED_COLORS_POINTER));
+  export_options().serialize(*serializer.sub(EXPORT_OPTIONS_POINTER));
+  m_joined_points->serialize(*serializer.sub(JOINED_POINTS_POINTER));
+}
+
+void Scene::deserialize(serialization::DeserializerWorker& deserializer)
+{
+  auto new_root = make_root();
+  new_root->deserialize(*deserializer.sub(ROOT_POINTER));
+
+  std::deque<std::unique_ptr<Style>> styles;
+  deserializer.sub(STYLES_POINTER)->get_items([this, &styles](auto& worker_i) {
+    auto style = std::make_unique<Style>(this);
+    style->deserialize(worker_i);
+    styles.push_back(std::move(style));
+  });
+
+  history().set_saved_index();
+
+  object_tree().replace_root(std::move(new_root));
+  this->styles().set(std::move(styles));
+  animator().invalidate();
+
+  object_tree().root().update_recursive();
+
+  animator().deserialize(*deserializer.sub(ANIMATOR_POINTER));
+  named_colors().deserialize(*deserializer.sub(NAMED_COLORS_POINTER));
+  m_export_options->deserialize(*deserializer.sub(EXPORT_OPTIONS_POINTER));
+  m_joined_points->deserialize(*deserializer.sub(JOINED_POINTS_POINTER));
 }
 
 void Scene::reset()

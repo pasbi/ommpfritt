@@ -1,18 +1,18 @@
 #pragma once
 
-#include "external/json_fwd.hpp"
 #include "serializers/abstractdeserializer.h"
+#include <QDataStream>
 
 namespace omm::serialization
 {
 
-class JSONDeserializer : public AbstractDeserializer
+class BinDeserializer : public AbstractDeserializer
 {
 public:
-  explicit JSONDeserializer(const nlohmann::json& json);
+  explicit BinDeserializer(QDataStream& stream);
   std::unique_ptr<DeserializerWorker> worker() override;
 private:
-  const nlohmann::json& m_json;
+  QDataStream& m_stream;
 };
 
 }  // namespace omm::serialization

@@ -25,12 +25,14 @@ jobs:
       - run: cmake -S omm
                    -B $GITHUB_WORKSPACE/omm-build
                    -G"MSYS Makefiles"
-                   -DBUILD_TESTING=TRUE
+                   -DBUILD_TESTING=ON
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dependencies
                    -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/omm-install
                    -DPython3_ROOT_DIR=/mingw64/bin
-      - run: cmake --build $GITHUB_WORKSPACE/omm-build --target all --config Release -j4
+      - run: echo "PYTHONPATH=$(python3 -c "import sys; print(';'.join(sys.path))")" >> $GITHUB_ENV
+      - run: echo "PYTHONHOME=$(python3 -c "import sys; print(sys.executable)")" >> GITHUB_ENV
+      - run: PYTHONPATH="${PYTHONPATH}" PYTHONHOME="${PYTHONHOME}" cmake --build $GITHUB_WORKSPACE/omm-build --target all --config Release -j4
       - run: cmake --build $GITHUB_WORKSPACE/omm-build --target install --config Release -j4
       - run: python $GITHUB_WORKSPACE/omm-build/generate-icons.py
       - run: cmake -S omm  -B $GITHUB_WORKSPACE/omm-build
@@ -55,6 +57,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build
+      - run: cmake -S omm -B $GITHUB_WORKSPACE/omm-build -DBUILD_TESTING=OFF
       - run: cmake --build $GITHUB_WORKSPACE/omm-build --target package --config Release -j4
       - uses: actions/upload-artifact@v2
         with:

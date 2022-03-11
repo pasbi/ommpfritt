@@ -1,5 +1,6 @@
 #include <type_traits>
 #include <utility>
+#include "functional"
 
 
 namespace util
@@ -24,7 +25,7 @@ template<typename C> concept has_reserve = requires(const C c)
 
 template<typename F, typename A> concept transformer = requires(F f)
 {
-  { f(std::declval<A>()) };
+  { std::invoke(f, std::declval<A>()) };
 };
 
 template<has_push_back C, typename T> void push_back(C& cs, T&& val)
@@ -44,13 +45,13 @@ template<typename ValueType,
          transformer<ValueType> F>
 auto transform_helper(Container&& cs, const F& f = F{})
 {
-  using ReturnValueType = std::decay_t<decltype(f(std::declval<ValueType>()))>;
+  using ReturnValueType = std::decay_t<decltype(std::invoke(f, std::declval<ValueType>()))>;
   ReturnContainer<ReturnValueType> transformed;
   if constexpr (has_reserve<ReturnContainer<ReturnValueType>>) {
     transformed.reserve(cs.size());
   }
   for (auto&& c : cs) {
-    transform_detail::push_back(transformed, f(std::move(c)));
+    transform_detail::push_back(transformed, std::invoke(f, std::move(c)));
   }
   return transformed;
 }
@@ -157,7 +158,7 @@ auto transform(Container&& cs)
   return transform_helper<value_type, ReturnContainer>(std::forward<Container>(cs), f);
 }
 
-// overload for explicit return container type and functor
+// overload for implicit return container type and functor
 template<template<typename...> typename Container,
          typename... ContainerArgs,
          transform_detail::transformer<typename std::decay_t<Container<ContainerArgs...>>::value_type> F>
@@ -167,7 +168,7 @@ auto transform(const Container<ContainerArgs...>& cs, const F& f)
   return transform_helper<typename Container<ContainerArgs...>::value_type, Container>(cs, f);
 }
 
-// overload for explicit return container type and functor (move)
+// overload for implicit return container type and functor (move)
 template<template<typename...> typename Container, typename... ContainerArgs, typename F>
 auto transform(Container<ContainerArgs...>&& cs, const F& f)
 {

@@ -1,4 +1,5 @@
 target_sources(libommpfritt PRIVATE
+  array.cpp
   array.h
   abstractserializer.cpp
   abstractserializer.h
@@ -11,3 +12,4 @@ target_sources(libommpfritt PRIVATE
 )
 
 add_subdirectory(json)
+add_subdirectory(bin)

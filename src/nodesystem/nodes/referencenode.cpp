@@ -85,8 +85,10 @@ void ReferenceNode::deserialize(serialization::DeserializerWorker& worker)
 void ReferenceNode::serialize(serialization::SerializerWorker& worker) const
 {
   Node::serialize(worker);
-  for (auto&& [type, map] : m_forwarded_ports) {
-    worker.sub(ptr(type))->set_value(::get_keys(map));
+  for (auto type : {PortType::Input, PortType::Output}) {
+    const auto it = m_forwarded_ports.find(type);
+    const auto keys = it == m_forwarded_ports.end() ? std::set<QString>{} : ::get_keys(it->second);
+    worker.sub(ptr(type))->set_value(keys);
   }
 }
 
@@ -112,7 +114,7 @@ ReferenceNode::make_property_action(PortType port_type, const QString& key, cons
   return action;
 }
 
-AbstractPort& ReferenceNode::add_forwarding_port(PortType port_type, const QString& key)
+AbstractPort& ReferenceNode::add_forwarding_port(const PortType port_type, const QString& key)
 {
   const auto get_property = [this, key]() -> Property* {
     AbstractPropertyOwner* reference = this->reference();

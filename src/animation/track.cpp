@@ -154,12 +154,12 @@ void Track::deserialize(serialization::DeserializerWorker& worker)
   m_interpolation = worker.sub(INTERPOLATION_KEY)->get<Interpolation>();
 
   worker.sub(KNOTS_KEY)->get_items([this, type](auto& worker_i) {
+    const int frame = worker_i.sub(FRAME_KEY)->get_int();
     auto knot = std::make_unique<Knot>(*worker_i.sub(VALUE_KEY), type);
     if (is_numerical()) {
       knot->left_offset = worker_i.sub(LEFT_VALUE_KEY)->get(type);
       knot->right_offset = worker_i.sub(RIGHT_VALUE_KEY)->get(type);
     }
-    const int frame = worker_i.sub(FRAME_KEY)->get_int();
     m_knots.insert(std::pair(frame, std::move(knot)));
   });
 }

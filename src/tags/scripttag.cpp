@@ -63,7 +63,7 @@ void ScriptTag::force_evaluate()
   using namespace py::literals;
   const auto code = property(ScriptTag::CODE_PROPERTY_KEY)->value<QString>();
   auto locals = py::dict("this"_a = TagWrapper::make(*this), "scene"_a = SceneWrapper(*scene));
-  scene->python_engine.exec(code, locals, this);
+  PythonEngine::instance().exec(code, locals, this);
   owner->update();
 }
 

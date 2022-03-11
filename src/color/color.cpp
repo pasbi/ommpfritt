@@ -430,7 +430,7 @@ bool operator<(const Color& a, const Color& b)
       assert(b.m_current_model == Color::Model::Named);
       return a.m_name < b.m_name;
     } else {
-      return a.m_components < b.m_components;
+      return a.m_components < b.m_components;  // NOLINT(modernize-use-nullptr)
     }
   }
 }
@@ -467,8 +467,8 @@ void Color::serialize(serialization::SerializerWorker& worker) const
 void Color::deserialize(serialization::DeserializerWorker& worker)
 {
   try {
-    const auto v = worker.sub("rgba")->get<std::vector<double>>();
     const auto n = worker.sub("name")->get_string();
+    const auto v = worker.sub("rgba")->get<std::vector<double>>();
     if (n.isEmpty()) {
       m_current_model = Color::Model::RGBA;
       m_components = {v.at(0), v.at(1), v.at(2), v.at(3)};

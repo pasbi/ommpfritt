@@ -1,18 +1,130 @@
 {
     "animation": {
-        "current-frame": 21,
+        "current-frame": 1,
         "end-frame": 100,
-        "filename-pattern": "",
-        "overwrite-file": true,
         "play-mode": 0,
         "start-frame": 1
     },
     "colors": [],
+    "export_options": {
+        "animated": false,
+        "end": 0,
+        "format": 0,
+        "pattern": "",
+        "scale": 0.0,
+        "start": 0,
+        "view": 0,
+        "x_resolution": 0
+    },
+    "joined_points": {
+        "forest": []
+    },
     "root": {
         "children": [
             {
-                "children": [],
-                "id": 11657966089213757796,
+                "children": [
+                    {
+                        "children": [],
+                        "id": 11308566827380806858,
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "viewport-visibility",
+                                "type": "OptionProperty",
+                                "value": 0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "visibility",
+                                "type": "OptionProperty",
+                                "value": 0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "is_active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "name",
+                                "type": "StringProperty",
+                                "value": "RectangleObject 1"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "position",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    -330.970965308922,
+                                    -29.294073834517036
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "scale",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    0.6728424413224423,
+                                    0.5535171139565446
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "rotation",
+                                "type": "FloatProperty",
+                                "value": -2.327831131540037
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "shear",
+                                "type": "FloatProperty",
+                                "value": -1.8118328427772164e-16
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "size",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    200.0,
+                                    200.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "r",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "tension",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    1.0,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "tags": [],
+                        "type": "RectangleObject"
+                    }
+                ],
+                "id": 12646803904840948628,
                 "properties": [
                     {
                         "animatable": true,
@@ -50,7 +162,7 @@
                             "interpolation": 1,
                             "knots": [
                                 {
-                                    "frame": 7,
+                                    "frame": 1,
                                     "left-value": [
                                         0.0,
                                         0.0
@@ -60,12 +172,12 @@
                                         0.0
                                     ],
                                     "value": [
-                                        -24.12706242497248,
-                                        0.0
+                                        -355.27482540103233,
+                                        -272.9263559372168
                                     ]
                                 },
                                 {
-                                    "frame": 96,
+                                    "frame": 19,
                                     "left-value": [
                                         0.0,
                                         0.0
@@ -75,8 +187,53 @@
                                         0.0
                                     ],
                                     "value": [
-                                        16.810498543209462,
-                                        -14.380444716337081
+                                        385.8613997733067,
+                                        141.16880479511224
+                                    ]
+                                },
+                                {
+                                    "frame": 42,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        227.0464943788058,
+                                        -310.57137054924664
+                                    ]
+                                },
+                                {
+                                    "frame": 71,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        -318.80621749562783,
+                                        169.40256575413474
+                                    ]
+                                },
+                                {
+                                    "frame": 100,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        -519.9717643286626,
+                                        -304.68933701611695
                                     ]
                                 }
                             ],
@@ -84,18 +241,84 @@
                         },
                         "type": "FloatVectorProperty",
                         "value": [
-                            -17.687446092898917,
-                            -2.262092427288979
+                            -355.27482540103233,
+                            -272.9263559372168
                         ]
                     },
                     {
                         "animatable": true,
-                        "animated": false,
+                        "animated": true,
                         "key": "scale",
+                        "track": {
+                            "interpolation": 1,
+                            "knots": [
+                                {
+                                    "frame": 1,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        1.0000000000000013,
+                                        1.0
+                                    ]
+                                },
+                                {
+                                    "frame": 29,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        2.5861395439275223,
+                                        2.5861395439275183
+                                    ]
+                                },
+                                {
+                                    "frame": 64,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        0.36261902655112216,
+                                        0.3626190265511216
+                                    ]
+                                },
+                                {
+                                    "frame": 91,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        0.36261902655112216,
+                                        1.9626190265511232
+                                    ]
+                                }
+                            ],
+                            "type": "FloatVector"
+                        },
                         "type": "FloatVectorProperty",
                         "value": [
-                            0.6000000000000001,
-                            0.9999999999999999
+                            1.0000000000000013,
+                            1.0
                         ]
                     },
                     {
@@ -106,28 +329,22 @@
                             "interpolation": 1,
                             "knots": [
                                 {
-                                    "frame": 7,
+                                    "frame": 64,
                                     "left-value": 0.0,
                                     "right-value": 0.0,
-                                    "value": 22.360642563818065
+                                    "value": 0.0
                                 },
                                 {
-                                    "frame": 21,
+                                    "frame": 100,
                                     "left-value": 0.0,
                                     "right-value": 0.0,
-                                    "value": -95.7122105142338
-                                },
-                                {
-                                    "frame": 96,
-                                    "left-value": 0.0,
-                                    "right-value": 0.0,
-                                    "value": 68.52483264812918
+                                    "value": 10.855947947404731
                                 }
                             ],
                             "type": "Float"
                         },
                         "type": "FloatProperty",
-                        "value": -95.7122105142338
+                        "value": 0.0
                     },
                     {
                         "animatable": true,
@@ -142,8 +359,8 @@
                         "key": "r",
                         "type": "FloatVectorProperty",
                         "value": [
-                            1.0,
-                            1.0
+                            100.0,
+                            100.0
                         ]
                     },
                     {
@@ -165,7 +382,7 @@
                 "type": "Ellipse"
             }
         ],
-        "id": 14530128855743225119,
+        "id": 12364422356493440555,
         "properties": [
             {
                 "animatable": true,
@@ -201,8 +418,8 @@
                 "key": "position",
                 "type": "FloatVectorProperty",
                 "value": [
-                    968.8560921163163,
-                    467.2059867313434
+                    787.8371222056332,
+                    396.5004615696906
                 ]
             },
             {
@@ -211,8 +428,8 @@
                 "key": "scale",
                 "type": "FloatVectorProperty",
                 "value": [
-                    46.79989657946607,
-                    46.79989657946579
+                    0.8500461569690564,
+                    0.8500461569690565
                 ]
             },
             {
@@ -228,6 +445,13 @@
                 "key": "shear",
                 "type": "FloatProperty",
                 "value": 0.0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "join",
+                "type": "BoolProperty",
+                "value": false
             }
         ],
         "tags": []

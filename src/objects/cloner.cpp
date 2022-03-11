@@ -443,7 +443,7 @@ void Cloner::set_by_script(Object& object, std::size_t i)
                                "copy"_a = ObjectWrapper::make(object),
                                "this"_a = ObjectWrapper::make(*this),
                                "scene"_a = SceneWrapper(*scene()));
-  scene()->python_engine.exec(property(CODE_PROPERTY_KEY)->value<QString>(), locals, this);
+  PythonEngine::instance().exec(property(CODE_PROPERTY_KEY)->value<QString>(), locals, this);
 }
 
 void Cloner::set_fillrandom(Object& object, std::mt19937& rng)

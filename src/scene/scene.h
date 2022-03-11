@@ -49,7 +49,7 @@ class Scene : public QObject
 {
   Q_OBJECT
 public:
-  Scene(PythonEngine& python_engine);
+  Scene();
   ~Scene() override;
 
   Scene(Scene&&) = delete;
@@ -77,15 +77,14 @@ private:
 
   // === Save/Load ====
 public:
+  friend class SceneSerialization;
+  void deserialize(serialization::DeserializerWorker& deserializer);
+  void serialize(serialization::SerializerWorker& serializer);
   bool save_as(const QString& filename);
   bool load_from(const QString& filename);
   [[nodiscard]] QString filename() const;
 
   static constexpr auto TYPE = "Scene";
-
-  // === Python ===
-public:
-  PythonEngine& python_engine;
 
   // === Objects, Tags and Styles and Selections ===
 public:
@@ -250,8 +249,6 @@ private:
   std::unique_ptr<DisjointPathPointSetForest> m_joined_points;
 public:
   [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
-
-  friend class SceneSerialization;
 };
 
 }  // namespace omm

@@ -2,12 +2,23 @@
     "animation": {
         "current-frame": 77,
         "end-frame": 100,
-        "filename-pattern": "",
-        "overwrite-file": true,
         "play-mode": 0,
         "start-frame": 1
     },
     "colors": [],
+    "export_options": {
+        "animated": true,
+        "end": 17,
+        "format": 0,
+        "pattern": "{name}{frame:04}.png",
+        "scale": 6.9533392334306e-310,
+        "start": 14,
+        "view": 0,
+        "x_resolution": 1000
+    },
+    "joined_points": {
+        "forest": []
+    },
     "root": {
         "children": [
             {
@@ -107,68 +118,9 @@
                         "nodes": {
                             "nodes": [
                                 {
-                                    "connection": [
-                                        {
-                                            "in": 0,
-                                            "node": 4816786456898073630,
-                                            "out": 2
-                                        }
-                                    ],
-                                    "id": 3456011278757218053,
-                                    "input": [
-                                        "position"
-                                    ],
-                                    "pos": [
-                                        372.1762135866368,
-                                        175.09333737766147
-                                    ],
-                                    "properties": [
-                                        {
-                                            "animatable": true,
-                                            "animated": false,
-                                            "filter": {
-                                                "flag": {
-                                                    "terms": [
-                                                        {
-                                                            "terms": []
-                                                        }
-                                                    ]
-                                                },
-                                                "kind": {
-                                                    "terms": [
-                                                        {
-                                                            "i": 0,
-                                                            "v": true
-                                                        },
-                                                        {
-                                                            "i": 1,
-                                                            "v": true
-                                                        },
-                                                        {
-                                                            "i": 2,
-                                                            "v": true
-                                                        },
-                                                        {
-                                                            "i": 3,
-                                                            "v": true
-                                                        },
-                                                        {
-                                                            "i": 4,
-                                                            "v": true
-                                                        }
-                                                    ]
-                                                }
-                                            },
-                                            "key": "ref",
-                                            "type": "ReferenceProperty",
-                                            "value": 661090558569976046
-                                        }
-                                    ],
-                                    "type": "ReferenceNode"
-                                },
-                                {
                                     "connection": [],
                                     "id": 3153577948518313557,
+                                    "input": [],
                                     "output": [
                                         "position"
                                     ],
@@ -216,6 +168,67 @@
                                             "key": "ref",
                                             "type": "ReferenceProperty",
                                             "value": 6193732420348438995
+                                        }
+                                    ],
+                                    "type": "ReferenceNode"
+                                },
+                                {
+                                    "connection": [
+                                        {
+                                            "in": 0,
+                                            "node": 4816786456898073630,
+                                            "out": 2
+                                        }
+                                    ],
+                                    "id": 3456011278757218053,
+                                    "input": [
+                                        "position"
+                                    ],
+                                    "output": [],
+                                    "pos": [
+                                        372.1762135866368,
+                                        175.09333737766147
+                                    ],
+                                    "properties": [
+                                        {
+                                            "animatable": true,
+                                            "animated": false,
+                                            "filter": {
+                                                "flag": {
+                                                    "terms": [
+                                                        {
+                                                            "terms": []
+                                                        }
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "terms": [
+                                                        {
+                                                            "i": 0,
+                                                            "v": true
+                                                        },
+                                                        {
+                                                            "i": 1,
+                                                            "v": true
+                                                        },
+                                                        {
+                                                            "i": 2,
+                                                            "v": true
+                                                        },
+                                                        {
+                                                            "i": 3,
+                                                            "v": true
+                                                        },
+                                                        {
+                                                            "i": 4,
+                                                            "v": true
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "key": "ref",
+                                            "type": "ReferenceProperty",
+                                            "value": 661090558569976046
                                         }
                                     ],
                                     "type": "ReferenceNode"
@@ -477,6 +490,13 @@
                 "key": "shear",
                 "type": "FloatProperty",
                 "value": 0.0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "join",
+                "type": "BoolProperty",
+                "value": false
             }
         ],
         "tags": []
