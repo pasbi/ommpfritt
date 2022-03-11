@@ -9,8 +9,7 @@ class IntegerProperty;
 
 class IntegerPropertyConfigWidget : public NumericPropertyConfigWidget<IntegerProperty>
 {
-public:
-  using NumericPropertyConfigWidget<IntegerProperty>::NumericPropertyConfigWidget;
+  Q_OBJECT
 };
 
 }  // namespace omm

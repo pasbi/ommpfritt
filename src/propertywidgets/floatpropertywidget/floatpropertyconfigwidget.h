@@ -9,8 +9,7 @@ class FloatProperty;
 
 class FloatPropertyConfigWidget : public NumericPropertyConfigWidget<FloatProperty>
 {
-public:
-  using NumericPropertyConfigWidget<FloatProperty>::NumericPropertyConfigWidget;
+  Q_OBJECT
 };
 
 }  // namespace omm

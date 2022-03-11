@@ -8,8 +8,6 @@ namespace omm
 class IntegerVectorPropertyConfigWidget : public VectorPropertyConfigWidget<IntegerVectorProperty>
 {
   Q_OBJECT
-public:
-  using VectorPropertyConfigWidget<IntegerVectorProperty>::VectorPropertyConfigWidget;
 };
 
 }  // namespace omm

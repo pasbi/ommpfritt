@@ -19,8 +19,8 @@ class AbstractPropertyConfigWidget
 
 public:
   explicit AbstractPropertyConfigWidget() = default;
-  virtual void init(const PropertyConfiguration& configuration) = 0;
-  virtual void update(PropertyConfiguration& configuration) const = 0;
+  virtual void init(const PropertyConfiguration&);
+  virtual void update(PropertyConfiguration&) const;
 
 protected:
   void hideEvent(QHideEvent* event) override;
@@ -36,6 +36,7 @@ public:
   {
     return QString(PropertyT::TYPE()) + "ConfigWidget";
   }
+
   [[nodiscard]] QString type() const override
   {
     return TYPE();
