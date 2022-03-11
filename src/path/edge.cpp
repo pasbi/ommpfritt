@@ -5,6 +5,11 @@
 namespace omm
 {
 
+Edge::Edge(PathPoint& a, PathPoint& b)
+    : a(&a), b(&b)
+{
+}
+
 QString Edge::label() const
 {
   const auto* separator = flipped ? "++" : "--";

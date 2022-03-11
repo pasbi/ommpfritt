@@ -13,6 +13,7 @@ class Edge
 {
 public:
   Edge() = default;
+  explicit Edge(PathPoint& a, PathPoint& b);
   [[nodiscard]] QString label() const;
 
   [[nodiscard]] Point start_geometry() const;

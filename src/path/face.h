@@ -44,7 +44,9 @@ public:
   [[nodiscard]] double compute_aabb_area() const;
   [[nodiscard]] QString to_string() const;
 
-  friend bool operator==(const Face& a, const Face& b);
+  bool operator==(const Face& other) const;
+  bool operator!=(const Face& other) const;
+  bool operator<(const Face& other) const;
 
 private:
   std::deque<Edge> m_edges;

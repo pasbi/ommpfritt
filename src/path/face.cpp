@@ -136,30 +136,48 @@ QString Face::to_string() const
   return static_cast<QStringList>(edges).join(", ");
 }
 
-bool operator==(const Face& a, const Face& b)
+bool Face::operator==(const Face& other) const
 {
-  const auto points_a = a.path_points();
-  const auto points_b = b.path_points();
-  if (points_a.size() != points_b.size()) {
+  const auto points = path_points();
+  const auto other_points = other.path_points();
+  if (points.size() != other_points.size()) {
     return false;
   }
-  const auto points_b_reversed = std::deque(points_b.rbegin(), points_b.rend());
-  QStringList pa;
-  QStringList pb;
-  for (std::size_t i = 0; i < points_a.size(); ++i) {
-    pa.append(QString{"%1"}.arg(points_a.at(i)->index()));
-    pb.append(QString{"%1"}.arg(points_b.at(i)->index()));
-  }
+  const auto other_points_reversed = std::deque(other_points.rbegin(), other_points.rend());
 
-  for (std::size_t offset = 0; offset < points_a.size(); ++offset) {
-    if (equal_at_offset(points_a, points_b, offset)) {
+  for (std::size_t offset = 0; offset < points.size(); ++offset) {
+    if (equal_at_offset(points, other_points, offset)) {
       return true;
     }
-    if (equal_at_offset(points_a, points_b_reversed, offset)) {
+    if (equal_at_offset(points, other_points_reversed, offset)) {
       return true;
     }
   }
   return false;
+}
+
+bool Face::operator!=(const Face& other) const
+{
+  return !(*this == other);
+}
+
+bool Face::operator<(const Face& other) const
+{
+  const auto points = path_points();
+  const auto other_points = other.path_points();
+  if (points.size() != other_points.size()) {
+    return points.size() < other_points.size();
+  }
+
+  for (std::size_t i = 0; i < points.size(); ++i) {
+    const auto pindex = points.at(i)->index();
+    const auto other_pindex = other_points.at(i)->index();
+    if (pindex < other_pindex) {
+      return pindex < other_pindex;
+    }
+  }
+
+  return false;  // faces are equal
 }
 
 }  // namespace omm
