@@ -50,18 +50,6 @@ bool scene_eq(const nlohmann::json& a, const nlohmann::json& b)
   return std::all_of(diff.begin(), diff.end(), operation_is_numerically_negligible);
 }
 
-QStringList test_files()
-{
-  return {
-    "sample-scenes/basic.omm",
-    "sample-scenes/animation.omm",
-    "sample-scenes/python.omm",
-    "sample-scenes/glshader.omm",
-    "sample-scenes/nodes.omm",
-    "icons/icons.omm",
-  };
-}
-
 class BinaryBuffer
 {
 public:
@@ -189,72 +177,16 @@ TEST(serialization, SceneEq)
   EXPECT_TRUE(scene_eq(b, b));
 }
 
-TEST(serialization, JSONScene)
+TEST(serialization, JSONInvalidScene)
 {
-  for (const auto& fn : static_cast<const QStringList>(test_files())) {
-    LINFO << "loading " << fn;
-    const auto abs_fn = QString{source_directory} + "/" + fn;
-
-    ommtest::Application qt_app{options()};
-
-    std::ifstream ifstream{abs_fn.toStdString()};
-    nlohmann::json json_file;
-    ifstream >> json_file;
-    omm::serialization::JSONDeserializer deserializer(json_file);
-    EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(deserializer));
-
-    nlohmann::json store;
-    omm::serialization::JSONSerializer serializer(store);
-    EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.save(serializer));
-    if (!scene_eq(json_file, store)) {
-      const auto diff = nlohmann::json::diff(json_file, store);
-      LINFO << "diff: " << QString::fromStdString(diff.dump(2));
-      LINFO << "store: " << QString::fromStdString(store.dump(4));
-      EXPECT_TRUE(scene_eq(json_file, store));
-    }
-  }
-
   ommtest::Application qt_app{options()};
   nlohmann::json json_file;
   omm::serialization::JSONDeserializer deserializer(json_file);
   EXPECT_FALSE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(deserializer));
 }
 
-TEST(serialization, BinaryScene)
+TEST(serialization, BinaryInvalidScene)
 {
-  for (const auto& fn : static_cast<const QStringList>(test_files())) {
-    LINFO << "loading " << fn;
-    const auto abs_fn = QString{source_directory} + "/" + fn;
-    std::ifstream ifstream{abs_fn.toStdString()};
-
-    ommtest::Application qt_app{options()};
-
-    nlohmann::json json_file;
-    ifstream >> json_file;
-    omm::serialization::JSONDeserializer deserializer(json_file);
-    EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(deserializer));
-
-    QByteArray buffer;
-    QDataStream serialize_stream{&buffer, QIODevice::WriteOnly};
-    omm::serialization::BinSerializer bin_serializer(serialize_stream);
-    EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.save(bin_serializer));
-
-    QDataStream deserialize_stream{buffer};
-    omm::serialization::BinDeserializer bin_deserializer(deserialize_stream);
-    EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(bin_deserializer));
-
-    nlohmann::json store;
-    omm::serialization::JSONSerializer serializer{store};
-    EXPECT_TRUE(omm::SceneSerialization{*qt_app.omm_app().scene}.save(serializer));
-
-    if (!scene_eq(json_file, store)) {
-      const auto diff = nlohmann::json::diff(json_file, store);
-      LINFO << "diff: " << QString::fromStdString(diff.dump(2));
-      LINFO << "store: " << QString::fromStdString(store.dump(4));
-      EXPECT_TRUE(scene_eq(json_file, store));
-    }
-  }
-
   ommtest::Application qt_app{options()};
   nlohmann::json json_file;
   omm::serialization::JSONDeserializer deserializer(json_file);
@@ -298,3 +230,117 @@ TEST(serialization, BinaryString)
 
   EXPECT_EQ(value, other_value);
 }
+
+class SceneFromFileInvariance : public testing::TestWithParam<QString>
+{
+protected:
+  SceneFromFileInvariance()
+      : m_app(ommtest::Application(options()))
+      , m_scene(*m_app.omm_app().scene)
+  {
+  }
+
+  bool test_json_serialization(const QString& fn)
+  {
+    const auto abs_fn = QString{source_directory} + "/" + fn;
+    LINFO << "loading " << abs_fn;
+    return load_json(abs_fn) && save_json() && compare();
+  }
+
+  bool test_binary_serialization(const QString& fn)
+  {
+    const auto abs_fn = QString{source_directory} + "/" + fn;
+    LINFO << "loading " << abs_fn;
+
+    QByteArray buffer;
+    return load_json(abs_fn) && save_bin(buffer) && load_bin(buffer) && save_json() && compare();
+  }
+
+  std::string reason() const
+  {
+    return m_reason;
+  }
+
+  bool load_json(const QString& filename)
+  {
+    std::ifstream ifstream{filename.toStdString()};
+    ifstream >> m_expected;
+    omm::serialization::JSONDeserializer deserializer(m_expected);
+    if (!omm::SceneSerialization{m_scene}.load(deserializer)) {
+      m_reason = "JSON Deserialization failed.";
+      return false;
+    }
+    return true;
+  }
+
+  bool save_json()
+  {
+    omm::serialization::JSONSerializer serializer(m_actual);
+    if (!omm::SceneSerialization{m_scene}.save(serializer)) {
+      m_reason = "JSON Serialization failed.";
+      return false;
+    }
+    return true;
+  }
+
+  bool load_bin(const QByteArray& buffer)
+  {
+    QDataStream deserialize_stream{buffer};
+    omm::serialization::BinDeserializer bin_deserializer(deserialize_stream);
+    if (!omm::SceneSerialization{m_scene}.load(bin_deserializer)) {
+      m_reason = "Binary deserialization failed.";
+      return false;
+    }
+    return true;
+  }
+
+  bool save_bin(QByteArray& buffer)
+  {
+    QDataStream serialize_stream{&buffer, QIODevice::WriteOnly};
+    omm::serialization::BinSerializer bin_serializer(serialize_stream);
+    if (!omm::SceneSerialization{m_scene}.save(bin_serializer)) {
+      m_reason = "Binary serialization failed.";
+      return false;
+    }
+    return true;
+  }
+
+  bool compare()
+  {
+    if (!scene_eq(m_expected, m_actual)) {
+      m_reason = "Serializing after Deserialization is not identity: ";
+      m_reason += "Expected: " + m_expected.dump(4) + "\n\n";
+      m_reason += "Actual: " + m_actual.dump(4) + "\n\n";
+      m_reason += "Diff: " + nlohmann::json::diff(m_expected, m_actual).dump(4);
+      return false;
+    }
+
+    return true;
+  }
+
+private:
+  ommtest::Application m_app;
+  omm::Scene& m_scene;
+  nlohmann::json m_expected;
+  nlohmann::json m_actual;
+  std::string m_reason;
+};
+
+TEST_P(SceneFromFileInvariance, JSON)
+{
+  EXPECT_TRUE(test_json_serialization(GetParam())) << reason();
+}
+
+TEST_P(SceneFromFileInvariance, Binary)
+{
+  EXPECT_TRUE(test_binary_serialization(GetParam())) << reason();
+}
+
+INSTANTIATE_TEST_SUITE_P(Serialization, SceneFromFileInvariance, testing::Values(
+    "sample-scenes/basic.omm",
+    "sample-scenes/animation.omm",
+    "sample-scenes/python.omm",
+    "sample-scenes/glshader.omm",
+    "sample-scenes/nodes.omm",
+    "icons/icons.omm"
+));
