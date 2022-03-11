@@ -25,7 +25,7 @@ jobs:
       - run: cmake -S omm
                    -B $GITHUB_WORKSPACE/omm-build
                    -G"MSYS Makefiles"
-                   -DBUILD_TESTING=TRUE
+                   -DBUILD_TESTING=ON
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dependencies
                    -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/omm-install
@@ -57,6 +57,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: build
+      - run: cmake -S omm -B $GITHUB_WORKSPACE/omm-build -DBUILD_TESTING=OFF
       - run: cmake --build $GITHUB_WORKSPACE/omm-build --target package --config Release -j4
       - uses: actions/upload-artifact@v2
         with:
