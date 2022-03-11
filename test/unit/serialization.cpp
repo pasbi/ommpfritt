@@ -106,47 +106,6 @@ private:
   nlohmann::json m_store;
 };
 
-template<typename Buffer> void test_property_serialization()
-{
-  const QString default_value = "foo";
-  omm::StringProperty property(default_value);
-  // only user properties are fully serialized and can be tested easily.
-  property.set_category(omm::Property::USER_PROPERTY_CATEGROY_NAME).set_label("foo-label");
-  property.set(QString{"bar"});
-
-  Buffer buffer;
-  buffer.serialize([&property](auto& serializer) {
-    property.serialize(*serializer.worker());
-  });
-
-  omm::StringProperty other_property;
-  buffer.deserialize([&other_property](auto& deserializer) {
-    other_property.deserialize(*deserializer.worker());
-  });
-
-  EXPECT_EQ(property.value(), other_property.value());
-  EXPECT_EQ(property.default_value(), other_property.default_value());
-}
-
-template<typename Buffer> void test_object_serialization()
-{
-  omm::Ellipse ellipse(nullptr);
-
-  Buffer buffer;
-  buffer.serialize([&ellipse](auto& serializer) {
-    ellipse.serialize(*serializer.worker());
-  });
-
-  buffer.write("/tmp/foo.bin");
-
-  omm::Ellipse other_ellipse(nullptr);
-  buffer.deserialize([&other_ellipse](auto& deserializer) {
-    other_ellipse.deserialize(*deserializer.worker());
-  });
-
-  EXPECT_TRUE(ellipse.eq(other_ellipse));
-}
-
 }  // namespace
 
 TEST(serialization, SceneEq)
@@ -193,24 +152,51 @@ TEST(serialization, BinaryInvalidScene)
   EXPECT_FALSE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(deserializer));
 }
 
-TEST(serialization, BinaryProperty)
+template<typename Buffer>
+class BufferSerialization : public testing::Test
 {
-  test_property_serialization<BinaryBuffer>();
+protected:
+  Buffer buffer;
+};
+
+using BufferTypes = ::testing::Types<BinaryBuffer, JSONBuffer>;
+TYPED_TEST_SUITE(BufferSerialization, BufferTypes);
+
+TYPED_TEST(BufferSerialization, Property)
+{
+  const QString default_value = "foo";
+  omm::StringProperty property(default_value);
+  // only user properties are fully serialized and can be tested easily.
+  property.set_category(omm::Property::USER_PROPERTY_CATEGROY_NAME).set_label("foo-label");
+  property.set(QString{"bar"});
+
+  this->buffer.serialize([&property](auto& serializer) {
+    property.serialize(*serializer.worker());
+  });
+
+  omm::StringProperty other_property;
+  this->buffer.deserialize([&other_property](auto& deserializer) {
+    other_property.deserialize(*deserializer.worker());
+  });
+
+  EXPECT_EQ(property.value(), other_property.value());
+  EXPECT_EQ(property.default_value(), other_property.default_value());
 }
 
-TEST(serialization, JSONProperty)
+TYPED_TEST(BufferSerialization, Object)
 {
-  test_property_serialization<JSONBuffer>();
-}
+  omm::Ellipse ellipse(nullptr);
 
-TEST(serialization, BinaryObject)
-{
-  test_object_serialization<BinaryBuffer>();
-}
+  this->buffer.serialize([&ellipse](auto& serializer) {
+    ellipse.serialize(*serializer.worker());
+  });
 
-TEST(serialization, JSONObject)
-{
-  test_object_serialization<JSONBuffer>();
+  omm::Ellipse other_ellipse(nullptr);
+  this->buffer.deserialize([&other_ellipse](auto& deserializer) {
+    other_ellipse.deserialize(*deserializer.worker());
+  });
+
+  EXPECT_TRUE(ellipse.eq(other_ellipse));
 }
 
 TEST(serialization, BinaryString)
