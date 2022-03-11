@@ -84,7 +84,7 @@ TEST(TransformTest, move)
   vector.emplace_back(2);
   vector.emplace_back(3);
   vector.emplace_back(4);
-  const auto f = [](NoCopy&& v) -> decltype(auto) { return std::move(v); };
+  static constexpr auto f = [](NoCopy&& v) -> decltype(auto) { return std::move(v); };
   auto deque = util::transform<std::deque>(std::move(vector), f);
 
   std::deque<NoCopy> expected_deque;
