@@ -12,10 +12,11 @@ class AbstractPropertyOwner;
 class Color;
 class TriggerPropertyDummyValueType;
 class SplineType;
+class FaceList;
 
 enum class Type{
   Invalid, Float, Integer, Option, FloatVector,
-  IntegerVector, String, Color, Reference, Bool, Spline, Trigger
+  IntegerVector, String, Color, Reference, Bool, Spline, Trigger, FaceList
 };
 
 constexpr bool is_integral(const Type type)
@@ -46,7 +47,7 @@ constexpr bool is_color(const Type type)
 constexpr auto variant_types = std::array{
       Type::Bool, Type::Float, Type::Color, Type::Integer, Type::IntegerVector,
       Type::FloatVector, Type::Reference, Type::String, Type::Option, Type::Trigger,
-      Type::FloatVector, Type::IntegerVector, Type::Spline, Type::Invalid
+      Type::FloatVector, Type::IntegerVector, Type::Spline, Type::FaceList, Type::Invalid
 };
 
 constexpr std::string_view variant_type_name(const Type type) noexcept
@@ -74,6 +75,8 @@ constexpr std::string_view variant_type_name(const Type type) noexcept
     return QT_TRANSLATE_NOOP("DataType", "IntegerVector");
   case Type::Spline:
     return QT_TRANSLATE_NOOP("DataType", "Spline");
+  case Type:: FaceList:
+    return QT_TRANSLATE_NOOP("DataType", "FaceList");
   case Type:: Invalid:
     return QT_TRANSLATE_NOOP("DataType", "Invalid");
   }
@@ -107,6 +110,8 @@ template<typename T> constexpr Type get_variant_type() noexcept
     return Type::IntegerVector;
   } else if constexpr (std::is_same_v<T, SplineType>) {
     return Type::Spline;
+  } else if constexpr (std::is_same_v<T, FaceList>) {
+    return Type::FaceList;
   } else {
     return Type::Invalid;
   }
