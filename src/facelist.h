@@ -33,7 +33,7 @@ public:
   [[nodiscard]] bool operator<(const FaceList& other) const;
 
   PathObject* path_object() const;
-  const std::deque<Face> faces() const;
+  std::deque<Face> faces() const;
 
 private:
   PathObject* m_path_object = nullptr;

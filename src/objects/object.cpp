@@ -6,6 +6,7 @@
 #include "path/lib2geomadapter.h"
 #include "path/path.h"
 #include "path/pathvector.h"
+#include "path/face.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -666,7 +667,7 @@ void Object::draw_object(Painter& renderer,
         renderer.set_style(style, *this, options);
         painter->save();
         painter->setPen(Qt::NoPen);
-        painter->drawPath(faces.at(f));
+        painter->drawPath(faces.at(f).to_q_painter_path());
         painter->restore();
       }
 

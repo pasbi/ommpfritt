@@ -177,34 +177,29 @@ QPainterPath PathVector::outline() const
   return outline;
 }
 
-std::vector<QPainterPath> PathVector::faces() const
+std::vector<Face> PathVector::faces() const
 {
   Graph graph{*this};
   graph.remove_articulation_edges();
-  const auto faces = graph.compute_faces();
-  std::vector<QPainterPath> qpps;
-  qpps.reserve(faces.size());
-  for (const auto& face : faces) {
-    qpps.emplace_back(Path::to_painter_path(face.points()));
-  }
+  auto faces = graph.compute_faces();
 
-  for (bool path_changed = true; path_changed;)
+  for (bool changed = true; changed;)
   {
-    path_changed = false;
-    for (auto& q1 : qpps) {
-      for (auto& q2 : qpps) {
-        if (&q1 == &q2) {
+    changed = false;
+    for (auto& f1 : faces) {
+      for (auto& f2 : faces) {
+        if (&f1 == &f2) {
           continue;
         }
-        if (q1.contains(q2)) {
-          path_changed = true;
-          q1 -= q2;
+        if (f1.contains(f2)) {
+          changed = true;
+          f1 ^= f2;
         }
       }
     }
   }
 
-  return qpps;
+  return faces;
 }
 
 std::size_t PathVector::point_count() const

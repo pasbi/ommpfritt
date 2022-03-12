@@ -37,6 +37,12 @@ public:
   // That is, requirement (2) and (3) conflict.
   // In practice that is no problem because the equality operator is not required.
   friend bool operator==(const Edge&, const Edge&) = delete;
+
+  /**
+   * @brief operator < returns true if and only if this edge is considered less than @code other.
+   * @note This operator is implemented arbitrarily to enable `set<Edge>`.
+   */
+  bool operator<(const Edge& other) const;
 };
 
 }  // namespace omm

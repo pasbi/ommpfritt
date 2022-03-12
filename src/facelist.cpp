@@ -170,4 +170,9 @@ bool FaceList::operator<(const FaceList& other) const
   return false;  // face lists are equal
 }
 
+std::deque<Face> FaceList::faces() const
+{
+  return util::transform(m_faces, [](const auto& face) { return *face; });
+}
+
 }  // namespace omm

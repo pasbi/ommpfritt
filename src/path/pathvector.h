@@ -23,6 +23,7 @@ class PathPoint;
 class PathObject;
 class DisjointPathPointSetForest;
 class Scene;
+class Face;
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class PathVector
@@ -54,7 +55,7 @@ public:
   [[nodiscard]] PathPoint& point_at_index(std::size_t index) const;
 
   [[nodiscard]] QPainterPath outline() const;
-  [[nodiscard]] std::vector<QPainterPath> faces() const;
+  [[nodiscard]] std::vector<Face> faces() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;
