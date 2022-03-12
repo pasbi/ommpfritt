@@ -69,6 +69,11 @@ bool PathPoint::is_dangling() const
   return scene == nullptr || !scene->contains(path_object);
 }
 
+bool PathPoint::eq(const PathPoint* p1, PathPoint* p2)
+{
+  return p1 == p2 || (p1 != nullptr && p1->joined_points().contains(p2));
+}
+
 QString PathPoint::debug_id() const
 {
   auto joins = util::transform<const PathPoint*, ::transparent_set>(joined_points());

@@ -10,19 +10,14 @@ namespace
 
 using namespace omm;
 
-bool same_point(const PathPoint* p1, const PathPoint* p2)
-{
-  return p1 == p2 || (p1 != nullptr && p1->joined_points().contains(p2));
-}
-
 bool align_last_edge(const Edge& second_last, Edge& last)
 {
   assert(!last.flipped);
-  if (same_point(second_last.end_point(), last.b)) {
+  if (PathPoint::eq(second_last.end_point(), last.b)) {
     last.flipped = true;
     return true;
   } else {
-    return same_point(second_last.end_point(), last.a);
+    return PathPoint::eq(second_last.end_point(), last.a);
   }
 }
 
@@ -30,18 +25,18 @@ bool align_two_edges(Edge& second_last, Edge& last)
 {
   assert(!last.flipped);
   assert(!second_last.flipped);
-  if (same_point(second_last.b, last.b)) {
+  if (PathPoint::eq(second_last.b, last.b)) {
     last.flipped = true;
     return true;
-  } else if (same_point(second_last.a, last.a)) {
+  } else if (PathPoint::eq(second_last.a, last.a)) {
     second_last.flipped = true;
     return true;
-  } else if (same_point(second_last.a, last.b)) {
+  } else if (PathPoint::eq(second_last.a, last.b)) {
     second_last.flipped = true;
     last.flipped = true;
     return true;
   } else {
-    return same_point(second_last.b, last.a);
+    return PathPoint::eq(second_last.b, last.a);
   }
 }
 
@@ -54,7 +49,7 @@ bool equal_at_offset(const Ts& ts, const Rs& rs, const std::size_t offset)
 
   for (std::size_t i = 0; i < ts.size(); ++i) {
     const auto j = (i + offset) % ts.size();
-    if (!same_point(ts.at(i), rs.at(j))) {
+    if (!PathPoint::eq(ts.at(i), rs.at(j))) {
       return false;
     }
   }
