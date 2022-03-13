@@ -25,7 +25,7 @@ public:
   Face& operator=(Face&&) = default;
 
   bool add_edge(const Edge& edge);
-  QPainterPath to_painter_path() const;
+  [[nodiscard]] QPainterPath to_painter_path() const;
 
   /**
    * @brief points returns the geometry of each point around the face with proper tangents.
@@ -35,7 +35,6 @@ public:
    * @see path_points
    */
   [[nodiscard]] std::list<Point> points() const;
-  [[nodiscard]] QPainterPath to_q_painter_path() const;
 
   /**
    * @brief path_points returns the points around the face.

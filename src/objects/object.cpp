@@ -667,7 +667,7 @@ void Object::draw_object(Painter& renderer,
         renderer.set_style(style, *this, options);
         painter->save();
         painter->setPen(Qt::NoPen);
-        painter->drawPath(faces.at(f).to_q_painter_path());
+        painter->drawPath(faces.at(f).to_painter_path());
         painter->restore();
       }
 

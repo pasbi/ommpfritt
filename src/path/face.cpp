@@ -102,11 +102,6 @@ std::list<Point> Face::points() const
   return points;
 }
 
-QPainterPath Face::to_q_painter_path() const
-{
-  return Path::to_painter_path(points());
-}
-
 std::deque<PathPoint*> Face::path_points() const
 {
   std::deque<PathPoint*> points;
