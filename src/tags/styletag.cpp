@@ -25,7 +25,7 @@ StyleTag::StyleTag(Object& owner) : Tag(owner)
       .set_category(category);
 
   create_property<FaceListProperty>(FACE_LIST_PROPERTY_KEY)
-      .set_label(QObject::tr("Faces ..."))
+      .set_label(QObject::tr("Faces"))
       .set_category(category);
 }
 
