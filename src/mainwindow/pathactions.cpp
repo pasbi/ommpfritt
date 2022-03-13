@@ -1,4 +1,12 @@
 #include "mainwindow/pathactions.h"
+  } else {
+    worker.sub(EMPTY_POINTER)->set_value(false);
+    worker.sub(PATH_ID_POINTER)->set_value(path_points.front()->path_vector()->path_object()->id());
+    worker.set_value(path_points, [](const auto* path_point, auto& worker) {
+      worker.set_value(path_point->index());
+    });
+  }
+}
 #include "commands/addcommand.h"
 #include "commands/joinpointscommand.h"
 #include "commands/modifypointscommand.h"
@@ -13,6 +21,7 @@
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
 #include "objects/pathobject.h"
+#include "path/face.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/pathvector.h"
@@ -167,6 +176,29 @@ void remove_selected_points(Application& app)
   }
 }
 
+void remove_selected_faces(Application& app)
+{
+  Q_UNUSED(app)
+}
+
+void convert_objects(Application& app)
+{
+  const auto convertibles = util::remove_if(app.scene->item_selection<Object>(), [](const Object* o) {
+    return !(o->flags() & Flag::Convertible);
+  });
+  if (!convertibles.empty()) {
+    Scene& scene = *app.scene;
+    auto macro = scene.history().start_macro(QObject::tr("convert"));
+    scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
+    const auto converted_objects = convert_objects_recursively(app, convertibles);
+    scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
+    const auto is_path = [](auto&& object) { return object->type() == PathObject::TYPE; };
+    if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
+      scene.set_mode(SceneMode::Vertex);
+    }
+  }
+}
+
 void remove_selected_items(Application& app)
 {
   switch (app.scene_mode()) {
@@ -175,6 +207,9 @@ void remove_selected_items(Application& app)
     break;
   case SceneMode::Object:
     app.scene->remove(app.main_window(), app.scene->selection());
+    break;
+  case SceneMode::Face:
+    remove_selected_faces(app);
     break;
   }
 }
@@ -212,6 +247,14 @@ void select_all(Application& app)
   case SceneMode::Object:
     app.scene->set_selection(down_cast(app.scene->object_tree().items()));
     break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->geometry().faces()) {
+        path_object->set_face_selected(face, true);
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
+    break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();
 }
@@ -229,6 +272,14 @@ void deselect_all(Application& app)
     break;
   case SceneMode::Object:
     app.scene->set_selection({});
+    break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->geometry().faces()) {
+        path_object->set_face_selected(face, false);
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
     break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();
@@ -257,6 +308,14 @@ void invert_selection(Application& app)
   case SceneMode::Object:
     app.scene->set_selection(down_cast(set_difference(app.scene->object_tree().items(),
                                                       app.scene->item_selection<Object>())));
+    break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->geometry().faces()) {
+        path_object->set_face_selected(face, path_object->is_face_selected(face));
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
     break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();

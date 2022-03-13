@@ -121,6 +121,18 @@ PathVector PathObject::compute_path_vector() const
   return pv;
 }
 
+void PathObject::set_face_selected(const Face& face, bool s)
+{
+  Q_UNUSED(face)
+  Q_UNUSED(s)
+}
+
+bool PathObject::is_face_selected(const Face& face) const
+{
+  Q_UNUSED(face)
+  return false;
+}
+
 #ifdef DRAW_POINT_IDS
 void PathObject::draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const
 {

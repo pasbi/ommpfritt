@@ -46,7 +46,7 @@ enum class Flag {
 
 enum class InterpolationMode { Linear, Smooth, Bezier };
 enum class HandleStatus { Hovered, Active, Inactive };
-enum class SceneMode { Object, Vertex };
+enum class SceneMode { Object, Vertex, Face };
 
 }  // namespace omm
 

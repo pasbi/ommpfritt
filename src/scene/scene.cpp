@@ -40,6 +40,7 @@
 #include "scene/objecttree.h"
 #include "scene/stylelist.h"
 #include "scene/pointselection.h"
+#include "scene/faceselection.h"
 #include "tools/toolbox.h"
 
 namespace
@@ -113,6 +114,7 @@ namespace omm
 {
 Scene::Scene()
     : point_selection(std::make_unique<PointSelection>(*this))
+    , face_selection(std::make_unique<FaceSelection>(*this))
     , m_mail_box(new MailBox())
     , m_object_tree(new ObjectTree(make_root(), *this))
     , m_styles(new StyleList(*this))

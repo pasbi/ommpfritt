@@ -5,6 +5,8 @@ target_sources(libommpfritt PRIVATE
   knifetool.h
   pathtool.cpp
   pathtool.h
+  selectfacestool.cpp
+  selectfacestool.h
   selectobjectstool.cpp
   selectobjectstool.h
   selectpointsbasetool.cpp

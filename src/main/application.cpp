@@ -89,7 +89,7 @@ auto init_mode_selectors()
                                                activation_actions)});
   };
 
-  insert("scene_mode", "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex"});
+  insert("scene_mode", "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex", "scene_mode.face"});
   return map;
 }
 

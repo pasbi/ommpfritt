@@ -157,6 +157,8 @@ Q_SIGNALS:
    */
   void point_selection_changed();
 
+  void face_selection_changed();
+
   /**
    * @brief scene_reseted is emitted when the scene was reset.
    */
