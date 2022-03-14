@@ -2,6 +2,8 @@ target_sources(libommpfritt PRIVATE
   abstractselecthandle.cpp
   abstractselecthandle.h
   boundingboxhandle.h
+  facehandle.cpp
+  facehandle.h
   handle.cpp
   handle.h
   moveaxishandle.h

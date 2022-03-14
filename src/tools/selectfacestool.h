@@ -15,6 +15,10 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectFacesTool");
   Vec2f selection_center() const override;
   void transform_objects(omm::ObjectTransformation transformation) override;
+  void reset() override;
+
+private:
+  void make_handles();
 };
 
 }  // namespace

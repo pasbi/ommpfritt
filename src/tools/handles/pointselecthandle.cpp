@@ -53,7 +53,7 @@ bool PointSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
   return false;
 }
 
-bool PointSelectHandle ::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event)
+bool PointSelectHandle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event)
 {
   if (AbstractSelectHandle::mouse_move(delta, pos, event)) {
     return true;

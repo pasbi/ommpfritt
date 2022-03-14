@@ -211,6 +211,11 @@ bool Face::contains(const Face& other) const
   return p_this.contains(p_other);
 }
 
+bool Face::contains(const Vec2f& pos) const
+{
+  return to_painter_path().contains(pos.to_pointf());
+}
+
 bool Face::operator==(const Face& other) const
 {
   const auto points = path_points();

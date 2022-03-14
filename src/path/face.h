@@ -3,6 +3,7 @@
 #include <QString>
 #include <list>
 #include <deque>
+#include "geometry/vec2.h"
 
 class QPainterPath;
 
@@ -52,6 +53,7 @@ public:
   [[nodiscard]] Face operator^(const Face& other) const;
   Face& operator^=(const Face& other);
   [[nodiscard]] bool contains(const Face& other) const;
+  [[nodiscard]] bool contains(const Vec2f& pos) const;
 
   [[nodiscard]] bool operator==(const Face& other) const;
   [[nodiscard]] bool operator!=(const Face& other) const;
