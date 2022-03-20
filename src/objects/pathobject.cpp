@@ -24,9 +24,9 @@ namespace omm
 
 class Style;
 
-PathObject::PathObject(Scene* scene)
+PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
   : Object(scene)
-  , m_path_vector(std::make_unique<PathVector>(this))
+  , m_path_vector(std::move(path_vector))
 {
   static const auto category = QObject::tr("path");
 
@@ -42,7 +42,18 @@ PathObject::PathObject(Scene* scene)
         geometry().update_joined_points_geometry();
       }
     });
+  }
+}
 
+PathObject::PathObject(Scene* scene, const PathVector& path_vector)
+  : PathObject(scene, std::make_unique<PathVector>(path_vector, this))
+{
+}
+
+PathObject::PathObject(Scene* scene)
+  : PathObject(scene, std::make_unique<PathVector>(this))
+{
+  if (const auto* const scene = this->scene(); scene != nullptr) {
     m_path_vector->share_joined_points(scene->joined_points());
   }
 }
@@ -51,7 +62,7 @@ PathObject::PathObject(const PathObject& other)
   : Object(other)
   , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
 {
-  if (auto* scene = this->scene(); scene != nullptr) {
+  if (const auto*  const scene = this->scene(); scene != nullptr) {
     m_path_vector->share_joined_points(scene->joined_points());
   }
 }

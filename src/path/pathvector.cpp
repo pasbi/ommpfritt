@@ -57,7 +57,8 @@ PathVector::PathVector(PathObject* path_object)
 
 bool PathVector::joined_points_shared() const
 {
-  return m_shared_joined_points != nullptr;
+  assert((m_shared_joined_points == nullptr) != (m_owned_joined_points.get() == nullptr));
+  return m_owned_joined_points.get() == nullptr;
 }
 
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
@@ -93,7 +94,8 @@ std::unique_ptr<DisjointPathPointSetForest> PathVector::share_joined_points(Disj
 
 void PathVector::unshare_joined_points(std::unique_ptr<DisjointPathPointSetForest> joined_points)
 {
-  assert(!joined_points_shared());
+  assert(joined_points_shared());
+  m_shared_joined_points = nullptr;
   m_owned_joined_points = std::move(joined_points);
 }
 
