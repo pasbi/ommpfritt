@@ -20,6 +20,9 @@
 namespace
 {
 
+constexpr auto JOINED_POINTES_SHARED = "joined_points_shared";
+constexpr auto OWNED_JOINED_POINTS = "owned_joined_points";
+
 using namespace omm;
 
 std::map<PathPoint*, PathPoint*> map_points(const PathVector& from, const PathVector& to)
@@ -119,6 +122,11 @@ void PathVector::serialize(serialization::SerializerWorker& worker) const
       path->serialize(worker_i);
     }
   });
+  const bool shared = joined_points_shared();
+  worker.sub(JOINED_POINTES_SHARED)->set_value(shared);
+  if (!shared) {
+    worker.sub(OWNED_JOINED_POINTS)->set_value(*m_owned_joined_points);
+  }
 }
 
 void PathVector::deserialize(serialization::DeserializerWorker& worker)
@@ -128,6 +136,11 @@ void PathVector::deserialize(serialization::DeserializerWorker& worker)
     Path& path = *m_paths.emplace_back(std::make_unique<Path>(this));
     path.deserialize(worker_i);
   });
+  const bool shared = worker.sub(JOINED_POINTES_SHARED)->get_bool();
+  if (!shared) {
+    m_owned_joined_points = std::make_unique<DisjointPathPointSetForest>();
+    worker.sub(OWNED_JOINED_POINTS)->get(*m_owned_joined_points);
+  }
 }
 
 PathPoint& PathVector::point_at_index(std::size_t index) const
