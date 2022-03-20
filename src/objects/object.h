@@ -30,7 +30,6 @@ class Object
     , public AbstractFactory<QString, true, Object, Scene*>
 {
   Q_OBJECT
-  Scene* m_scene = nullptr;
 
 public:
   explicit Object(Scene* scene);
