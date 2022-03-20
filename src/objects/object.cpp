@@ -400,7 +400,6 @@ std::unique_ptr<Object> Object::convert(bool& keep_children) const
   auto converted = std::make_unique<PathObject>(scene(), this->path_vector());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
-  converted->geometry().share_joined_points(scene()->joined_points());
   converted->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
   keep_children = true;
   return converted;

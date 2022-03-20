@@ -101,4 +101,23 @@ void AbstractJoinPointsCommand::update_affected_paths() const
   }
 }
 
+ShareJoinedPointsCommand::ShareJoinedPointsCommand(Scene& scene, PathVector& pv)
+    : Command("Join shared points")
+    , m_scene(scene)
+    , m_pv(pv)
+{
+}
+
+void ShareJoinedPointsCommand::undo()
+{
+  m_scene.joined_points() = m_old_scene_joined_points;
+  m_pv.unshare_joined_points(std::move(m_old_other_joined_points));
+}
+
+void ShareJoinedPointsCommand::redo()
+{
+  m_old_scene_joined_points = m_scene.joined_points();
+  m_old_other_joined_points = m_pv.share_joined_points(m_scene.joined_points());
+}
+
 }  // namespace omm

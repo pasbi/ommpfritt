@@ -107,6 +107,9 @@ void convert_object(Application& app,
   }
   context.subject.capture(std::move(converted_object));
   app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
+  if (auto* const po = type_cast<PathObject*>(&ref); po != nullptr) {
+    app.scene->submit<ShareJoinedPointsCommand>(*app.scene, po->geometry());
+  }
   assert(ref.scene() == app.scene.get());
   ref.set_transformation(object_to_convert.transformation());
   converted_objects.insert(&ref);
