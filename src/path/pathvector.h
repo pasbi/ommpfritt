@@ -37,10 +37,11 @@ public:
   friend void swap(PathVector& a, PathVector& b) noexcept;
 
   /**
-   * @brief share_join_points use the `joined_points` forest to register joined points.
+   * @brief share_joined_points use the `joined_points` forest to register joined points.
    *  The currently owned joined points will be added to the shared joined points.
    */
-  void share_join_points(DisjointPathPointSetForest& joined_points);
+  std::unique_ptr<DisjointPathPointSetForest> share_joined_points(DisjointPathPointSetForest& joined_points);
+  void unshare_joined_points(std::unique_ptr<DisjointPathPointSetForest> joined_points);
 
   /**
    * @brief join_points_shared returns true if the joined points are shared or false otherwise.

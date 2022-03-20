@@ -81,14 +81,20 @@ PathVector& PathVector::operator=(const PathVector& other)
   return *this;
 }
 
-void PathVector::share_join_points(DisjointPathPointSetForest& joined_points)
+std::unique_ptr<DisjointPathPointSetForest> PathVector::share_joined_points(DisjointPathPointSetForest& joined_points)
 {
   assert(!joined_points_shared());
   m_shared_joined_points = &joined_points;
   for (const auto& set : m_owned_joined_points->sets()) {
     m_shared_joined_points->insert(set);
   }
-  m_owned_joined_points.reset();
+  return std::move(m_owned_joined_points);
+}
+
+void PathVector::unshare_joined_points(std::unique_ptr<DisjointPathPointSetForest> joined_points)
+{
+  assert(!joined_points_shared());
+  m_owned_joined_points = std::move(joined_points);
 }
 
 PathVector& PathVector::operator=(PathVector&& other) noexcept

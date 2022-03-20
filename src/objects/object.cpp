@@ -20,11 +20,12 @@
 #include "renderers/painteroptions.h"
 #include "renderers/style.h"
 #include "scene/contextes.h"
+#include "scene/disjointpathpointsetforest.h"
 #include "scene/mailbox.h"
 #include "scene/objecttree.h"
 #include "scene/scene.h"
-#include "serializers/json/jsonserializer.h"
 #include "serializers/abstractdeserializer.h"
+#include "serializers/json/jsonserializer.h"
 #include "tags/styletag.h"
 #include "tags/tag.h"
 
@@ -400,7 +401,7 @@ std::unique_ptr<Object> Object::convert(bool& keep_children) const
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
   converted->geometry() = PathVector{this->path_vector(), converted.get()};
-  converted->geometry().share_join_points(scene()->joined_points());
+  converted->geometry().share_joined_points(scene()->joined_points());
   converted->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
   keep_children = true;
   return converted;
