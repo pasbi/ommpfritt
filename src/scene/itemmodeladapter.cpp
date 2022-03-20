@@ -14,7 +14,7 @@ namespace
 {
 template<typename item_type, typename StructureT>
 bool can_move_drop_items(StructureT& structure,
-                         const std::vector<typename omm::Contextes<item_type>::Move>& contextes)
+                         const std::deque<typename omm::Contextes<item_type>::Move>& contextes)
 {
   using move_context_type = typename omm::Contextes<item_type>::Move;
   const auto is_strictly_valid = [&structure](const move_context_type& context) {
@@ -29,14 +29,14 @@ bool can_move_drop_items(StructureT& structure,
          && std::any_of(contextes.begin(), contextes.end(), is_strictly_valid);
 }
 
-template<typename ContextT, typename ItemModelAdapterT>
-typename std::enable_if<ContextT::is_tree_context, std::vector<ContextT>>::type
+template<typename ContextT, typename ItemModelAdapterT> requires ContextT::is_tree_context
+std::deque<ContextT>
 make_contextes(const ItemModelAdapterT& adapter,
                const QMimeData* data,
                int row,
                const QModelIndex& parent)
 {
-  std::vector<ContextT> contextes;
+  std::deque<ContextT> contextes;
   using item_type = typename ContextT::item_type;
 
   const auto* property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
@@ -52,7 +52,6 @@ make_contextes(const ItemModelAdapterT& adapter,
   const std::size_t pos = row < 0 ? new_parent.n_children() : static_cast<std::size_t>(row);
   omm::Object::remove_internal_children(items);
   const auto sorted_items = ContextT::item_type::sort(items);
-  contextes.reserve(items.size());
   const item_type* predecessor = (pos == 0) ? nullptr : &new_parent.tree_child(pos - 1);
   for (item_type* subject : sorted_items) {
     contextes.emplace_back(*subject, new_parent, predecessor);
@@ -61,15 +60,14 @@ make_contextes(const ItemModelAdapterT& adapter,
   return contextes;
 }
 
-template<typename ContextT, typename ItemModelAdapterT>
-typename std::enable_if<!ContextT::is_tree_context, std::vector<ContextT>>::type
-make_contextes(const ItemModelAdapterT& adapter,
-               const QMimeData* data,
-               int row,
-               const QModelIndex& parent)
+template<typename ContextT, typename ItemModelAdapterT> requires (!ContextT::is_tree_context)
+std::deque<ContextT> make_contextes(const ItemModelAdapterT& adapter,
+                                    const QMimeData* data,
+                                    int row,
+                                    const QModelIndex& parent)
 {
   if (parent.isValid()) {
-    return std::vector<ContextT>();  // it's a list, not a tree.
+    return std::deque<ContextT>();  // it's a list, not a tree.
   }
 
   using item_type = typename ContextT::item_type;
@@ -83,8 +81,7 @@ make_contextes(const ItemModelAdapterT& adapter,
     return {};
   }
 
-  std::vector<ContextT> contextes;
-  contextes.reserve(items.size());
+  std::deque<ContextT> contextes;
   const std::size_t pos = row < 0 ? adapter.rowCount() : row;
   const item_type* predecessor
       = (pos == 0) ? nullptr : &adapter.item_at(adapter.index(pos - 1, 0, parent));

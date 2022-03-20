@@ -478,7 +478,7 @@ Object& Application::insert_object(const QString& key, InsertionMode mode) const
 
   Object* parent = nullptr;
   Object* predecessor = nullptr;
-  std::vector<Object*> children;
+  std::deque<Object*> children;
   switch (mode) {
   case InsertionMode::AsChild:
     if (const auto selection = scene->item_selection<Object>(); selection.size() == 1) {
@@ -518,11 +518,11 @@ Object& Application::insert_object(const QString& key, InsertionMode mode) const
     move_context_t move_context(ref, *parent, predecessor);
     if (move_context.is_strictly_valid(scene->object_tree())) {
       // the move will fail if the object is already at the correct position.
-      scene->submit<move_command_t>(scene->object_tree(), std::vector{move_context});
+      scene->submit<move_command_t>(scene->object_tree(), std::deque{move_context});
     }
   } else if (parent != nullptr) {
     const move_context_t move_context(ref, *parent, nullptr);
-    scene->submit<move_command_t>(scene->object_tree(), std::vector{move_context});
+    scene->submit<move_command_t>(scene->object_tree(), std::deque{move_context});
   }
 
   ref.post_create_hook();

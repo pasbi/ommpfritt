@@ -11,7 +11,7 @@ using context_type = typename omm::MoveCommand<StructureT>::context_type;
 
 template<typename StructureT>
 auto make_old_contextes(const StructureT& structure,
-                        const std::vector<context_type<StructureT>>& new_contextes)
+                        const std::deque<context_type<StructureT>>& new_contextes)
 {
   const auto make_old_context = [&structure](const auto& new_context) {
     return context_type<StructureT>(new_context.subject,
@@ -26,7 +26,7 @@ namespace omm
 {
 template<typename StructureT>
 MoveCommand<StructureT>::MoveCommand(StructureT& structure,
-                                     const std::vector<context_type>& new_contextes)
+                                     const std::deque<context_type>& new_contextes)
     : Command(QObject::tr("reparent")),
       m_old_contextes(make_old_contextes(structure, new_contextes)), m_new_contextes(new_contextes),
       m_structure(structure)

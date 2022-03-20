@@ -136,9 +136,9 @@ template<typename T> const T* TreeElement<T>::lowest_common_ancestor(const T* a,
   return const_cast<const T*>(lowest_common_ancestor(const_cast<T*>(a), const_cast<T*>(b)));
 }
 
-template<typename T> std::vector<T*> TreeElement<T>::sort(const std::set<T*>& items)
+template<typename T> std::deque<T*> TreeElement<T>::sort(const std::set<T*>& items)
 {
-  std::vector vs(items.begin(), items.end());
+  std::deque vs(items.begin(), items.end());
   std::sort(vs.begin(), vs.end(), tree_gt<T>);
   return vs;
 }

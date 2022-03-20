@@ -34,7 +34,7 @@ public:
   static void remove_internal_children(std::set<T*>& items);
   static T* lowest_common_ancestor(T* a, T* b);
   static const T* lowest_common_ancestor(const T* a, const T* b);
-  static std::vector<T*> sort(const std::set<T*>& items);
+  static std::deque<T*> sort(const std::set<T*>& items);
 
 protected:
   virtual void on_child_added(T& child)
