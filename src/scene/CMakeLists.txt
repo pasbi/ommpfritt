@@ -27,6 +27,8 @@ target_sources(libommpfritt PRIVATE
   stylelist.h
   taglist.cpp
   taglist.h
+  toplevelsplit.cpp
+  toplevelsplit.h
 )
 
 add_subdirectory(history)
