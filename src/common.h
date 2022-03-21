@@ -248,53 +248,45 @@ template<typename T, typename... Args> std::unique_ptr<T> copy_unique_ptr(const 
 
 namespace omm
 {
-template<typename T> struct EnableBitMaskOperators : std::false_type {
-};
 
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator|(EnumT a, EnumT b)
+template<typename T> struct EnableBitMaskOperators : std::false_type { };
+
+template<typename EnumT> requires EnableBitMaskOperators<EnumT>::value EnumT operator|(EnumT a, EnumT b)
 {
   using underlying = std::underlying_type_t<EnumT>;
   return static_cast<EnumT>(static_cast<underlying>(a) | static_cast<underlying>(b));
 }
 
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator&(EnumT a, EnumT b)
+template<typename EnumT> requires EnableBitMaskOperators<EnumT>::value EnumT operator&(EnumT a, EnumT b)
 {
   using underlying = std::underlying_type_t<EnumT>;
   return static_cast<EnumT>(static_cast<underlying>(a) & static_cast<underlying>(b));
 }
 
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator~(EnumT a)
+template<typename EnumT> requires EnableBitMaskOperators<EnumT>::value EnumT operator~(EnumT a)
 {
   return static_cast<EnumT>(~static_cast<std::underlying_type_t<EnumT>>(a));
 }
 
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, bool> operator!(EnumT a)
+template<typename EnumT> requires EnableBitMaskOperators<EnumT>::value bool operator!(EnumT a)
 {
   return !static_cast<std::underlying_type_t<EnumT>>(a);
 }
 
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT&> operator|=(EnumT& a, EnumT b)
+template<typename EnumT> requires EnableBitMaskOperators<EnumT>::value EnumT& operator|=(EnumT& a, EnumT b)
 {
   a = a | b;
   return a;
 }
 
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT&> operator&=(EnumT& a, EnumT b)
+template<typename EnumT> requires EnableBitMaskOperators<EnumT>::value EnumT& operator&=(EnumT& a, EnumT b)
 {
   a = a & b;
   return a;
 }
 
-template<typename Vertex>
-std::pair<bool, std::list<Vertex>>
-topological_sort(std::set<Vertex> vertices,
-                 const std::function<std::set<Vertex>(Vertex)>& successors)
+template<typename Vertex> std::pair<bool, std::list<Vertex>>
+topological_sort(std::set<Vertex> vertices, const std::function<std::set<Vertex>(Vertex)>& successors)
 {
   // Kahn's algorithm
 

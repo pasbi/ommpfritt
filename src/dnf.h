@@ -155,9 +155,8 @@ public:
 
   Term() = default;
 
-  template<typename = typename std::enable_if<is_top_level>>
-
-  Term(E positives, E negatives) : terms(convert_literals(positives, negatives))
+  Term(E positives, E negatives) requires is_top_level
+      : terms(convert_literals(positives, negatives))
   {
   }
 

@@ -92,15 +92,19 @@ public:
   [[nodiscard]] std::set<AbstractPropertyOwner*> selection() const;
 
   template<typename ItemT>
-  std::enable_if_t<std::is_same_v<typename ItemT::factory_item_type, ItemT>, std::set<ItemT*>>
-  item_selection() const
+  requires std::is_same_v<typename ItemT::factory_item_type, ItemT>
+  std::set<ItemT*> item_selection() const
   {
-    return kind_cast<ItemT>(m_item_selection.at(ItemT::KIND));
+    if (const auto it = m_item_selection.find(ItemT::KIND); it == m_item_selection.end()) {
+      return {};
+    } else {
+      return kind_cast<ItemT>(it->second);
+    }
   }
 
   template<typename ItemT>
-  std::enable_if_t<!std::is_same_v<typename ItemT::factory_item_type, ItemT>, std::set<ItemT*>>
-  item_selection() const
+  requires (!std::is_same_v<typename ItemT::factory_item_type, ItemT>)
+  std::set<ItemT*> item_selection() const
   {
     auto items = item_selection<typename ItemT::factory_item_type>();
     std::erase_if(items, [](const auto* v) { return v->type() != ItemT::TYPE; });
