@@ -34,6 +34,7 @@ endmacro()
 
 package_add_test(color.cpp)
 package_add_test(common.cpp)
+package_add_test(converttest.cpp)
 package_add_test(dnftest.cpp)
 package_add_test(geometry.cpp)
 package_add_test(nodetest.cpp)
