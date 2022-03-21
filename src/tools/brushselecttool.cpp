@@ -27,8 +27,6 @@ bool BrushSelectTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMo
   if (SelectPointsBaseTool::mouse_move(delta, pos, event)) {
     return true;
   }
-
-  Q_UNUSED(delta);
   if (m_mouse_down) {
     modify_selection(pos, event);
     m_mouse_pos = pos;

@@ -95,8 +95,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   connect(&scene.mail_box(), &MailBox::object_selection_changed, this, &BoundingBoxManager::update_manager);
 
   connect(&scene.mail_box(), &MailBox::object_appearance_changed, this, [this](Object& o) {
-    auto* path = type_cast<PathObject*>(&o);
-    if (path != nullptr) {
+    if (o.type() == PathObject::TYPE) {
       update_manager();
     }
   });
