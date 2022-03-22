@@ -7,7 +7,7 @@ namespace omm
 TopLevelSplit::TopLevelSplit(std::set<Object*> objects)
 {
   const auto all = objects;
-  m_top_level_objects = std::move(objects);
+  m_top_level_objects = std::move(objects);  // NOLINT(cppcoreguidelines-prefer-member-initializer)
   Object::remove_internal_children(m_top_level_objects);
   std::set_difference(all.begin(),
                       all.end(),

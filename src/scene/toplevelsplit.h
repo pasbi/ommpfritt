@@ -18,8 +18,8 @@ class TopLevelSplit
 {
 public:
   TopLevelSplit(std::set<Object*> objects);
-  const std::set<Object*>& non_top_level_objects() const;
-  const std::set<Object*>& top_level_objects() const;
+  [[nodiscard]] const std::set<Object*>& non_top_level_objects() const;
+  [[nodiscard]] const std::set<Object*>& top_level_objects() const;
 
 private:
   std::set<Object*> m_non_top_level_objects;

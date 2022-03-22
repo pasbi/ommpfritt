@@ -69,7 +69,7 @@ void BrushSelectTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& event)
 {
   const bool extend_selection = !(event.modifiers() & Qt::ControlModifier);
-  const double radius = property(RADIUS_PROPERTY_KEY)->value<double>();
+  const auto radius = property(RADIUS_PROPERTY_KEY)->value<double>();
   std::list<Point*> points;
   bool is_noop = true;
   for (Object* object : scene()->item_selection<Object>()) {
@@ -103,7 +103,7 @@ void BrushSelectTool::draw(Painter& renderer) const
 {
   SelectPointsBaseTool::draw(renderer);
   if (m_mouse_down) {
-    const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
+    const auto r = property(RADIUS_PROPERTY_KEY)->value<double>();
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "foreground"));
     renderer.painter->setBrush(ui_color(HandleStatus::Active, "Handle", "background"));
     renderer.painter->drawEllipse(centered_rectangle(m_mouse_pos, r));

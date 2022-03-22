@@ -10,7 +10,7 @@
 namespace omm
 {
 
-class PathVector;
+class PathVector;  // NOLINT(bugprone-forward-declaration-namespace)
 
 class AbstractJoinPointsCommand : public Command
 {
@@ -55,9 +55,9 @@ private:
 class ShareJoinedPointsCommand : public Command
 {
 public:
-  explicit ShareJoinedPointsCommand(Scene& scene, PathVector& object);
-  void undo();
-  void redo();
+  explicit ShareJoinedPointsCommand(Scene& scene, PathVector& pv);
+  void undo() override;
+  void redo() override;
 
 private:
   Scene& m_scene;

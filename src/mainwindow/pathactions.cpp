@@ -133,9 +133,8 @@ std::set<Object*> convert_objects_recursively(Application& app, const std::set<O
       convert_object(app, *object_to_convert, move_contextes, converted_objects);
     }
 
-    app.scene->template submit<MoveCommand<ObjectTree>>(app.scene->object_tree(), move_contextes);
-    const auto selection = split.top_level_objects();
-    app.scene->template submit<RemoveCommand<ObjectTree>>(app.scene->object_tree(), selection);
+    app.scene->submit<MoveCommand<ObjectTree>>(app.scene->object_tree(), move_contextes);
+    app.scene->submit<RemoveCommand<ObjectTree>>(app.scene->object_tree(), split.top_level_objects());
 
     // process the left over items
     const auto cos = convert_objects_recursively(app, split.non_top_level_objects());
@@ -385,7 +384,7 @@ std::set<Object*> convert_objects(Application& app)
     Scene& scene = *app.scene;
     auto macro = scene.history().start_macro(QObject::tr("convert"));
     scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
-    const auto converted_objects = convert_objects_recursively(app, convertibles);
+    auto converted_objects = convert_objects_recursively(app, convertibles);
     scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
     const auto is_path = [](auto&& object) { return object->type() == PathObject::TYPE; };
     if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {

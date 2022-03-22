@@ -58,7 +58,7 @@ PathVector::PathVector(PathObject* path_object)
 bool PathVector::joined_points_shared() const
 {
   assert((m_shared_joined_points == nullptr) != (m_owned_joined_points.get() == nullptr));
-  return m_owned_joined_points.get() == nullptr;
+  return m_owned_joined_points == nullptr;
 }
 
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
