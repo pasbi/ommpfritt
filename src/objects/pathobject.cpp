@@ -62,7 +62,7 @@ PathObject::PathObject(const PathObject& other)
   : Object(other)
   , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
 {
-  if (const auto*  const scene = this->scene(); scene != nullptr) {
+  if (const auto*  const scene = this->scene(); scene != nullptr && other.path_vector().joined_points_shared()) {
     m_path_vector->share_joined_points(scene->joined_points());
   }
 }
