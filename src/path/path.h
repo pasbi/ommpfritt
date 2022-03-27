@@ -45,7 +45,7 @@ public:
   [[nodiscard]] PathPoint& at(std::size_t i) const;
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::size_t find(const PathPoint& point) const;
-  PathPoint& add_point(const Vec2f& pos);
+  PathPoint& add_point(const Point& point);
   void make_linear() const;
   void smoothen() const;
   [[nodiscard]] Point smoothen_point(std::size_t i) const;

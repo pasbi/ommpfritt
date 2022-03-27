@@ -58,14 +58,14 @@ void add_cubic_bezier_to_path(Path& omm_path, const Geom::CubicBezier& c)
 {
   const auto p0 = Vec2f(c[0]);
   if (omm_path.size() == 0) {
-    omm_path.add_point(p0);
+    omm_path.add_point(Point{p0});
   }
   auto& last_point = *omm_path.points().back();
   auto geometry = last_point.geometry();
   geometry.set_right_tangent(PolarCoordinates(Vec2f(c[1]) - p0));
   last_point.set_geometry(geometry);
   const auto p1 = Vec2f(c[3]);
-  auto& pref = omm_path.add_point(p1);
+  auto& pref = omm_path.add_point(Point{p1});
   geometry = pref.geometry();
   geometry.set_left_tangent(PolarCoordinates(Vec2f(c[2]) - p1));
   pref.set_geometry(geometry);

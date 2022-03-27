@@ -93,9 +93,9 @@ std::size_t Path::find(const PathPoint& point) const
   }
 }
 
-PathPoint& Path::add_point(const Vec2f& pos)
+PathPoint& Path::add_point(const Point& point)
 {
-  return *m_points.emplace_back(std::make_unique<PathPoint>(Point{pos}, *this));
+  return *m_points.emplace_back(std::make_unique<PathPoint>(point, *this));
 }
 
 void Path::make_linear() const
