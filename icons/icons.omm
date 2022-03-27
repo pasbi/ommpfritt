@@ -2235,7 +2235,7 @@
                                 "children": [],
                                 "id": 93825083947056,
                                 "path-vector": {
-                            "joined_points_shared": true,
+                                    "joined_points_shared": true,
                                     "segments": [
                                         {
                                             "points": [
@@ -2384,7 +2384,7 @@
                                 "children": [],
                                 "id": 93825034777200,
                                 "path-vector": {
-                            "joined_points_shared": true,
+                                    "joined_points_shared": true,
                                     "segments": [
                                         {
                                             "points": [
@@ -2865,7 +2865,7 @@
                                 "children": [],
                                 "id": 5622154328468358953,
                                 "path-vector": {
-                            "joined_points_shared": true,
+                                    "joined_points_shared": true,
                                     "segments": [
                                         {
                                             "points": [
@@ -3669,7 +3669,7 @@
                                 "children": [],
                                 "id": 93825070684176,
                                 "path-vector": {
-                            "joined_points_shared": true,
+                                    "joined_points_shared": true,
                                     "segments": [
                                         {
                                             "points": [
@@ -7049,7 +7049,7 @@
                                         "children": [],
                                         "id": 93825088061648,
                                         "path-vector": {
-                            "joined_points_shared": true,
+                                            "joined_points_shared": true,
                                             "segments": [
                                                 {
                                                     "points": [
@@ -7316,7 +7316,7 @@
                                 "children": [],
                                 "id": 93825090100208,
                                 "path-vector": {
-                            "joined_points_shared": true,
+                                    "joined_points_shared": true,
                                     "segments": [
                                         {
                                             "points": [
@@ -7672,7 +7672,7 @@
                                 "children": [],
                                 "id": 93825090250960,
                                 "path-vector": {
-                            "joined_points_shared": true,
+                                    "joined_points_shared": true,
                                     "segments": [
                                         {
                                             "points": [
@@ -8240,7 +8240,7 @@
                                         "children": [],
                                         "id": 140737152863728,
                                         "path-vector": {
-                            "joined_points_shared": true,
+                                            "joined_points_shared": true,
                                             "segments": [
                                                 {
                                                     "points": [
@@ -9462,7 +9462,7 @@
                                                 "children": [],
                                                 "id": 7224871665348369809,
                                                 "path-vector": {
-                            "joined_points_shared": true,
+                                                    "joined_points_shared": true,
                                                     "segments": [
                                                         {
                                                             "points": [
@@ -10736,7 +10736,7 @@
                                 "children": [],
                                 "id": 6798415826952283120,
                                 "path-vector": {
-                            "joined_points_shared": true,
+                                    "joined_points_shared": true,
                                     "segments": [
                                         {
                                             "points": [
@@ -11923,7 +11923,7 @@
                 "children": [],
                 "id": 14345555703757577909,
                 "path-vector": {
-                            "joined_points_shared": true,
+                    "joined_points_shared": true,
                     "segments": [
                         {
                             "points": [
