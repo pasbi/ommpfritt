@@ -68,8 +68,9 @@ omm::ObjectTransformation find_transformation(const omm::BoundingBox& old_bb,
 namespace omm
 {
 BoundingBoxManager::BoundingBoxManager(Scene& scene)
-    : Manager(tr("Bounding Box Manager"), scene), m_ui(new ::Ui::BoundingBoxManager),
-      m_transform_points_helper(scene, Space::Scene)
+    : Manager(tr("Bounding Box Manager"), scene)
+    , m_ui(new ::Ui::BoundingBoxManager)
+    , m_transform_points_helper(scene, Space::Scene)
 {
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
@@ -91,42 +92,22 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   connect(&scene.tool_box(), &ToolBox::active_tool_changed, this, adjust_mode);
   adjust_mode(scene.tool_box().active_tool());
 
-  connect(&scene.mail_box(),
-          &MailBox::object_selection_changed,
-          this,
-          [this](const std::set<Object*>&) { update_manager(); });
+  connect(&scene.mail_box(), &MailBox::object_selection_changed, this, &BoundingBoxManager::update_manager);
 
   connect(&scene.mail_box(), &MailBox::object_appearance_changed, this, [this](Object& o) {
-    auto* path = type_cast<PathObject*>(&o);
-    if (path != nullptr) {
+    if (o.type() == PathObject::TYPE) {
       update_manager();
     }
   });
 
-  connect(&scene.mail_box(), &MailBox::point_selection_changed, this, [this]() {
-    update_manager();
-  });
+  connect(&scene.mail_box(), &MailBox::point_selection_changed, this, &BoundingBoxManager::update_manager);
+  connect(&scene.mail_box(), &MailBox::transformation_changed, this, &BoundingBoxManager::update_manager);
 
-  connect(&scene.mail_box(), &MailBox::transformation_changed, this, [this]() {
-    update_manager();
-  });
-
-  connect(m_ui->sp_x,
-          &DoubleNumericEdit::value_changed,
-          this,
-          &BoundingBoxManager::update_bounding_box);
-  connect(m_ui->sp_y,
-          &DoubleNumericEdit::value_changed,
-          this,
-          &BoundingBoxManager::update_bounding_box);
-  connect(m_ui->sp_w,
-          &DoubleNumericEdit::value_changed,
-          this,
-          &BoundingBoxManager::update_bounding_box);
-  connect(m_ui->sp_h,
-          &DoubleNumericEdit::value_changed,
-          this,
-          &BoundingBoxManager::update_bounding_box);
+  static constexpr auto value_changed = &DoubleNumericEdit::value_changed;
+  connect(m_ui->sp_x, value_changed, this, &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_y, value_changed, this, &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_w, value_changed, this, &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_h, value_changed, this, &BoundingBoxManager::update_bounding_box);
 
   m_ui->sp_w->set_lower(0.0);
   m_ui->sp_h->set_lower(0.0);
@@ -144,14 +125,11 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     m_ui->sp_h->setEnabled(bb.height() > eps);
   };
 
-  connect(&m_transform_points_helper,
-          &TransformPointsHelper::initial_transformations_changed,
-          this,
-          update_spinbox_enabledness);
-  connect(&m_transform_objects_helper,
-          &TransformObjectsHelper::initial_transformations_changed,
-          this,
-          update_spinbox_enabledness);
+  static constexpr auto points_init_trans_changed = &TransformPointsHelper::initial_transformations_changed;
+  connect(&m_transform_points_helper, points_init_trans_changed, this, update_spinbox_enabledness);
+
+  static constexpr auto objects_init_trans_changed = &TransformObjectsHelper::initial_transformations_changed;
+  connect(&m_transform_objects_helper, objects_init_trans_changed, this, update_spinbox_enabledness);
 }
 
 BoundingBoxManager::~BoundingBoxManager() = default;
@@ -222,8 +200,7 @@ void BoundingBoxManager::update_bounding_box()
     return AspectRatio::Ignore;
   }();
 
-  const ObjectTransformation t
-      = find_transformation(m_old_bounding_box, new_bounding_box, aspect_ratio);
+  const ObjectTransformation t = find_transformation(m_old_bounding_box, new_bounding_box, aspect_ratio);
   switch (m_current_mode) {
   case Mode::Points:
     return scene().submit(m_transform_points_helper.make_command(t));

@@ -21,6 +21,7 @@
 #include "scene/mailbox.h"
 #include "scene/pointselection.h"
 #include "scene/scene.h"
+#include "scene/toplevelsplit.h"
 #include "tools/toolbox.h"
 #include "removeif.h"
 #include <QUndoStack>
@@ -89,64 +90,54 @@ void modify_tangents_smooth(Application& app)
   modify_tangents(InterpolationMode::Smooth, app);
 }
 
-std::set<Object*> convert_objects_recursively(Application& app, std::set<Object*> convertibles)
+void convert_object(Application& app,
+         const Object& object_to_convert,
+         std::deque<ObjectTreeMoveContext>& contextes,
+         std::set<Object*>& converted_objects)
 {
-  // split convertibles into [`convertibles`, `leftover_convertibles`]
-  // s.t. `convertibles` only contains top-level items, i.e. no item in `convertibles` has a parent
-  // in `convertibles`. That's important because the children of a converted object must not change.
-  // Porcess the left-over items later.
-  std::set<Object*> leftover_convertibles;
-  {
-    const auto all_convertibles = convertibles;
-    Object::remove_internal_children(convertibles);
-    std::set_difference(all_convertibles.begin(),
-                        all_convertibles.end(),
-                        convertibles.begin(),
-                        convertibles.end(),
-                        std::inserter(leftover_convertibles, leftover_convertibles.end()));
+  bool keep_children = true;
+  auto converted_object = object_to_convert.convert(keep_children);
+  auto& ref = *converted_object;
+  ref.set_object_tree(app.scene->object_tree());
+  assert(!object_to_convert.is_root());
+  ObjectTreeOwningContext context(ref, object_to_convert.tree_parent(), &object_to_convert);
+  const auto properties = util::transform<Property*>(app.scene->find_reference_holders(object_to_convert));
+  if (!properties.empty()) {
+    app.scene->submit<PropertiesCommand<ReferenceProperty>>(properties, &ref);
   }
+  context.subject.capture(std::move(converted_object));
+  app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
+  if (auto* const po = type_cast<PathObject*>(&ref); po != nullptr) {
+    app.scene->submit<ShareJoinedPointsCommand>(*app.scene, po->geometry());
+  }
+  assert(ref.scene() == app.scene.get());
+  ref.set_transformation(object_to_convert.transformation());
+  converted_objects.insert(&ref);
 
+  if (keep_children) {
+    const auto old_children = object_to_convert.tree_children();
+    std::transform(old_children.rbegin(),
+                   old_children.rend(),
+                   std::back_inserter(contextes),
+                   [&ref](auto* cc) { return ObjectTreeMoveContext(*cc, ref, nullptr); });
+  }
+}
+
+std::set<Object*> convert_objects_recursively(Application& app, const std::set<Object*>& convertibles)
+{
+  const TopLevelSplit split{convertibles};
   std::set<Object*> converted_objects;
-  if (!convertibles.empty()) {
-    std::list<ObjectTreeMoveContext> move_contextes;
-    for (auto&& c : convertibles) {
-      bool keep_children = true;
-      auto converted_object = c->convert(keep_children);
-      auto& ref = *converted_object;
-      ref.set_object_tree(app.scene->object_tree());
-      assert(!c->is_root());
-      ObjectTreeOwningContext context(ref, c->tree_parent(), c);
-      const auto properties = util::transform<Property*>(app.scene->find_reference_holders(*c));
-      if (!properties.empty()) {
-        app.scene->submit<PropertiesCommand<ReferenceProperty>>(properties, &ref);
-      }
-      context.subject.capture(std::move(converted_object));
-      app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
-      assert(ref.scene() == app.scene.get());
-      ref.set_transformation(c->transformation());
-      converted_objects.insert(&ref);
-
-      if (keep_children) {
-        const auto make_move_context = [&ref](auto* cc) {
-          return ObjectTreeMoveContext(*cc, ref, nullptr);
-        };
-        const auto old_children = c->tree_children();
-        std::transform(old_children.rbegin(),
-                       old_children.rend(),
-                       std::back_inserter(move_contextes),
-                       make_move_context);
-      }
+  if (!split.top_level_objects().empty()) {
+    std::deque<ObjectTreeMoveContext> move_contextes;
+    for (const auto* object_to_convert : split.top_level_objects()) {
+      convert_object(app, *object_to_convert, move_contextes, converted_objects);
     }
 
-    app.scene->template submit<MoveCommand<ObjectTree>>(
-        app.scene->object_tree(),
-        std::vector(move_contextes.begin(), move_contextes.end()));
-    const auto selection = util::transform<Object*>(convertibles);
-    using remove_command = RemoveCommand<ObjectTree>;
-    app.scene->template submit<remove_command>(app.scene->object_tree(), selection);
+    app.scene->submit<MoveCommand<ObjectTree>>(app.scene->object_tree(), move_contextes);
+    app.scene->submit<RemoveCommand<ObjectTree>>(app.scene->object_tree(), split.top_level_objects());
 
     // process the left over items
-    const auto cos = convert_objects_recursively(app, leftover_convertibles);
+    const auto cos = convert_objects_recursively(app, split.non_top_level_objects());
     converted_objects.insert(cos.begin(), cos.end());
   }
   return converted_objects;
@@ -172,24 +163,6 @@ void remove_selected_points(Application& app)
       }
       app.scene->submit(std::move(command));
       app.scene->update_tool();
-    }
-  }
-}
-
-void convert_objects(Application& app)
-{
-  const auto convertibles = util::remove_if(app.scene->item_selection<Object>(), [](const Object* o) {
-    return !(o->flags() & Flag::Convertible);
-  });
-  if (!convertibles.empty()) {
-    Scene& scene = *app.scene;
-    auto macro = scene.history().start_macro(QObject::tr("convert"));
-    scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
-    const auto converted_objects = convert_objects_recursively(app, convertibles);
-    scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
-    const auto is_path = [](auto&& object) { return object->type() == PathObject::TYPE; };
-    if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
-      scene.set_mode(SceneMode::Vertex);
     }
   }
 }
@@ -388,7 +361,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
   {"select all", select_all},
   {"deselect all", deselect_all},
   {"invert selection", invert_selection},
-  {"convert objects", convert_objects},
+  {"convert objects", path_actions::convert_objects},
   {"select connected points", select_connected_points},
   {"fill selection", fill_selection},
   {"extend selection", extend_selection},
@@ -401,6 +374,26 @@ const std::map<QString, std::function<void(Application& app)>> actions{
 
 namespace omm::path_actions
 {
+
+std::set<Object*> convert_objects(Application& app)
+{
+  const auto convertibles = util::remove_if(app.scene->item_selection<Object>(), [](const Object* o) {
+    return !(o->flags() & Flag::Convertible);
+  });
+  if (!convertibles.empty()) {
+    Scene& scene = *app.scene;
+    auto macro = scene.history().start_macro(QObject::tr("convert"));
+    scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
+    auto converted_objects = convert_objects_recursively(app, convertibles);
+    scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
+    const auto is_path = [](auto&& object) { return object->type() == PathObject::TYPE; };
+    if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
+      scene.set_mode(SceneMode::Vertex);
+    }
+    return converted_objects;
+  }
+  return {};
+}
 
 bool perform_action(Application& app, const QString& name)
 {

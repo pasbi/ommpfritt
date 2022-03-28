@@ -15,10 +15,9 @@ TransformPointsHelper::TransformPointsHelper(Scene& scene, Space space)
     : m_scene(scene), m_space(space)
 {
   update();
-  connect(&m_scene.mail_box(),
-          &MailBox::point_selection_changed,
-          this,
-          qOverload<>(&TransformPointsHelper::update));
+  connect(&m_scene.mail_box(), &MailBox::point_selection_changed, this, qOverload<>(&TransformPointsHelper::update));
+  connect(&m_scene.mail_box(), &MailBox::object_selection_changed, this, qOverload<>(&TransformPointsHelper::update));
+  connect(&m_scene.mail_box(), &MailBox::object_removed, this, [this]() { update({}); });
 }
 
 std::unique_ptr<ModifyPointsCommand>
@@ -71,7 +70,7 @@ void TransformPointsHelper::update(const std::set<PathObject*>& path_objects)
 void TransformPointsHelper::update()
 {
   m_initial_points.clear();
-  for (auto* path_object : m_path_objects) {
+  for (const auto* path_object : m_path_objects) {
     for (PathPoint* point : path_object->geometry().selected_points()) {
       m_initial_points[point] = point->geometry();
       for (PathPoint* buddy : point->joined_points()) {

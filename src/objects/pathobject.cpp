@@ -2,13 +2,14 @@
 
 #include "commands/modifypointscommand.h"
 #include "common.h"
+#include "path/path.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
-#include "scene/scene.h"
-#include "path/path.h"
+#include "scene/disjointpathpointsetforest.h"
 #include "scene/mailbox.h"
-#include "path/pathvector.h"
+#include "scene/scene.h"
 #include <QObject>
 
 #ifdef DRAW_POINT_IDS
@@ -23,9 +24,9 @@ namespace omm
 
 class Style;
 
-PathObject::PathObject(Scene* scene)
+PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
   : Object(scene)
-  , m_path_vector(std::make_unique<PathVector>(this))
+  , m_path_vector(std::move(path_vector))
 {
   static const auto category = QObject::tr("path");
 
@@ -41,8 +42,19 @@ PathObject::PathObject(Scene* scene)
         geometry().update_joined_points_geometry();
       }
     });
+  }
+}
 
-    m_path_vector->share_join_points(scene->joined_points());
+PathObject::PathObject(Scene* scene, const PathVector& path_vector)
+  : PathObject(scene, std::make_unique<PathVector>(path_vector, this))
+{
+}
+
+PathObject::PathObject(Scene* scene)
+  : PathObject(scene, std::make_unique<PathVector>(this))
+{
+  if (const auto* const scene = this->scene(); scene != nullptr) {
+    m_path_vector->share_joined_points(scene->joined_points());
   }
 }
 
@@ -50,8 +62,8 @@ PathObject::PathObject(const PathObject& other)
   : Object(other)
   , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
 {
-  if (auto* scene = this->scene(); scene != nullptr) {
-    m_path_vector->share_join_points(scene->joined_points());
+  if (const auto*  const scene = this->scene(); scene != nullptr && other.path_vector().joined_points_shared()) {
+    m_path_vector->share_joined_points(scene->joined_points());
   }
 }
 

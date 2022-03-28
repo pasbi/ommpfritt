@@ -98,17 +98,17 @@ public:
    */
   void set(const char*) = delete;
   virtual void set(const variant_type& value) = 0;
-  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, void> set(const EnumT& value)
+  template<typename EnumT> requires std::is_enum_v<EnumT> void set(const EnumT& value)
   {
     set(static_cast<std::size_t>(value));
   }
 
-  template<typename ValueT> std::enable_if_t<!std::is_enum_v<ValueT>, ValueT> value() const
+  template<typename ValueT> requires (!std::is_enum_v<ValueT>) ValueT value() const
   {
     return std::get<ValueT>(variant_value());
   }
 
-  template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT> value() const
+  template<typename ValueT> requires std::is_enum_v<ValueT> ValueT value() const
   {
     return static_cast<ValueT>(std::get<std::size_t>(variant_value()));
   }

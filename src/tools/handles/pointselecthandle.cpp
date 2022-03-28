@@ -20,10 +20,8 @@ PointSelectHandle::PointSelectHandle(Tool& tool, PathObject& path_object, PathPo
     : AbstractSelectHandle(tool)
     , m_path_object(path_object)
     , m_point(point)
-    , m_left_tangent_handle(
-          std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left))
-    , m_right_tangent_handle(
-          std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Right))
+    , m_left_tangent_handle(std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left))
+    , m_right_tangent_handle(std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Right))
 {
 }
 

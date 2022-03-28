@@ -15,6 +15,8 @@ class PathObject : public Object
 {
 public:
   explicit PathObject(Scene* scene);
+  explicit PathObject(Scene* scene, const PathVector& path_vector);
+  explicit PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector);
   PathObject(const PathObject& other);
   PathObject(PathObject&&) = delete;
   PathObject& operator=(PathObject&&) = delete;

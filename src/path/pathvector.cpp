@@ -20,6 +20,9 @@
 namespace
 {
 
+constexpr auto JOINED_POINTES_SHARED = "joined_points_shared";
+constexpr auto OWNED_JOINED_POINTS = "owned_joined_points";
+
 using namespace omm;
 
 std::map<PathPoint*, PathPoint*> map_points(const PathVector& from, const PathVector& to)
@@ -54,7 +57,8 @@ PathVector::PathVector(PathObject* path_object)
 
 bool PathVector::joined_points_shared() const
 {
-  return m_shared_joined_points != nullptr;
+  assert((m_shared_joined_points == nullptr) != (m_owned_joined_points.get() == nullptr));
+  return m_owned_joined_points == nullptr;
 }
 
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
@@ -78,14 +82,21 @@ PathVector& PathVector::operator=(const PathVector& other)
   return *this;
 }
 
-void PathVector::share_join_points(DisjointPathPointSetForest& joined_points)
+std::unique_ptr<DisjointPathPointSetForest> PathVector::share_joined_points(DisjointPathPointSetForest& joined_points)
 {
   assert(!joined_points_shared());
   m_shared_joined_points = &joined_points;
   for (const auto& set : m_owned_joined_points->sets()) {
     m_shared_joined_points->insert(set);
   }
-  m_owned_joined_points.reset();
+  return std::move(m_owned_joined_points);
+}
+
+void PathVector::unshare_joined_points(std::unique_ptr<DisjointPathPointSetForest> joined_points)
+{
+  assert(joined_points_shared());
+  m_shared_joined_points = nullptr;
+  m_owned_joined_points = std::move(joined_points);
 }
 
 PathVector& PathVector::operator=(PathVector&& other) noexcept
@@ -119,6 +130,11 @@ void PathVector::serialize(serialization::SerializerWorker& worker) const
       path->serialize(worker_i);
     }
   });
+  const bool shared = joined_points_shared();
+  worker.sub(JOINED_POINTES_SHARED)->set_value(shared);
+  if (!shared) {
+    worker.sub(OWNED_JOINED_POINTS)->set_value(*m_owned_joined_points);
+  }
 }
 
 void PathVector::deserialize(serialization::DeserializerWorker& worker)
@@ -128,6 +144,11 @@ void PathVector::deserialize(serialization::DeserializerWorker& worker)
     Path& path = *m_paths.emplace_back(std::make_unique<Path>(this));
     path.deserialize(worker_i);
   });
+  const bool shared = worker.sub(JOINED_POINTES_SHARED)->get_bool();
+  if (!shared) {
+    m_owned_joined_points = std::make_unique<DisjointPathPointSetForest>();
+    worker.sub(OWNED_JOINED_POINTS)->get(*m_owned_joined_points);
+  }
 }
 
 PathPoint& PathVector::point_at_index(std::size_t index) const

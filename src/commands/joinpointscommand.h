@@ -10,6 +10,8 @@
 namespace omm
 {
 
+class PathVector;  // NOLINT(bugprone-forward-declaration-namespace)
+
 class AbstractJoinPointsCommand : public Command
 {
 public:
@@ -48,6 +50,20 @@ public:
 
 private:
   DisjointPathPointSetForest m_old_forest;
+};
+
+class ShareJoinedPointsCommand : public Command
+{
+public:
+  explicit ShareJoinedPointsCommand(Scene& scene, PathVector& pv);
+  void undo() override;
+  void redo() override;
+
+private:
+  Scene& m_scene;
+  PathVector& m_pv;
+  DisjointPathPointSetForest m_old_scene_joined_points;
+  std::unique_ptr<DisjointPathPointSetForest> m_old_other_joined_points;
 };
 
 }  // namespace omm

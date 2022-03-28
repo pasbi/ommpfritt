@@ -42,7 +42,7 @@ public:
   void set_value(const AbstractPropertyOwner* ref);
   void set_value(const variant_type& variant);
 
-  template<typename T> std::enable_if_t<std::is_enum_v<T>> set_value(const T& t)
+  template<typename T> requires std::is_enum_v<T> void set_value(const T& t)
   {
     set_value(static_cast<std::size_t>(t));
   }

@@ -63,7 +63,7 @@ TEST(tree, sort)
   auto root = make_tree(3, 3, items);
 
   const auto test_sort = [&items](const std::set<QString>& item_names,
-                                  const std::vector<QString>& sorted_item_names) {
+                                  const std::deque<QString>& sorted_item_names) {
     EXPECT_EQ(omm::TreeTestItem::sort(get_items(items, item_names)),
               get_items(items, sorted_item_names));
   };
