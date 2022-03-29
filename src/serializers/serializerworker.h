@@ -40,6 +40,7 @@ public:
   void set_value(const Vec2f& value);
   void set_value(const Vec2i& value);
   void set_value(const AbstractPropertyOwner* ref);
+  void set_value(const Faces& faces);
   void set_value(const variant_type& variant);
 
   template<typename T> requires std::is_enum_v<T> void set_value(const T& t)

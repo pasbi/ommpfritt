@@ -1,5 +1,6 @@
 #pragma once
 
+#include "path/edge.h"
 #include <QString>
 #include <list>
 #include <deque>
@@ -7,9 +8,14 @@
 namespace omm
 {
 
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 class Point;
 class PathPoint;
-class Edge;
 
 class Face
 {
@@ -43,6 +49,10 @@ public:
   [[nodiscard]] const std::deque<Edge>& edges() const;
   [[nodiscard]] double compute_aabb_area() const;
   [[nodiscard]] QString to_string() const;
+
+  class ReferencePolisher;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
   friend bool operator==(const Face& a, const Face& b);
 

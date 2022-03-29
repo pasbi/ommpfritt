@@ -15,7 +15,7 @@ class SplineType;
 
 enum class Type{
   Invalid, Float, Integer, Option, FloatVector,
-  IntegerVector, String, Color, Reference, Bool, Spline, Trigger
+  IntegerVector, String, Color, Reference, Bool, Spline, Trigger, Faces,
 };
 
 constexpr bool is_integral(const Type type)
@@ -46,7 +46,7 @@ constexpr bool is_color(const Type type)
 constexpr auto variant_types = std::array{
       Type::Bool, Type::Float, Type::Color, Type::Integer, Type::IntegerVector,
       Type::FloatVector, Type::Reference, Type::String, Type::Option, Type::Trigger,
-      Type::FloatVector, Type::IntegerVector, Type::Spline, Type::Invalid
+      Type::FloatVector, Type::IntegerVector, Type::Spline, Type::Faces, Type::Invalid
 };
 
 constexpr std::string_view variant_type_name(const Type type) noexcept
@@ -74,6 +74,8 @@ constexpr std::string_view variant_type_name(const Type type) noexcept
     return QT_TRANSLATE_NOOP("DataType", "IntegerVector");
   case Type::Spline:
     return QT_TRANSLATE_NOOP("DataType", "Spline");
+  case Type::Faces:
+    return QT_TRANSLATE_NOOP("DataType", "Faces");
   case Type:: Invalid:
     return QT_TRANSLATE_NOOP("DataType", "Invalid");
   }

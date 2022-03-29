@@ -1,12 +1,21 @@
 #include "path/face.h"
 #include "common.h"
 #include "geometry/point.h"
-#include "path/pathpoint.h"
+#include "objects/pathobject.h"
 #include "path/edge.h"
+#include "path/path.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
+#include "serializers/deserializerworker.h"
+#include "serializers/serializerworker.h"
+#include "serializers/abstractdeserializer.h"
 #include <QStringList>
 
 namespace
 {
+
+static constexpr auto PATH_ID_POINTER = "path-id";
+static constexpr auto EMPTY_POINTER = "empty";
 
 using namespace omm;
 
@@ -65,6 +74,41 @@ bool equal_at_offset(const Ts& ts, const Rs& rs, const std::size_t offset)
 
 namespace omm
 {
+
+class Face::ReferencePolisher : public omm::serialization::ReferencePolisher
+{
+public:
+  explicit ReferencePolisher(const std::list<std::size_t>& point_indices, const std::size_t path_id, Face& face)
+    : m_point_indices(point_indices)
+    , m_path_id(path_id)
+    , m_face(face)
+  {
+  }
+
+private:
+  const std::list<std::size_t> m_point_indices;
+  const std::size_t m_path_id;
+  Face& m_face;
+
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override
+  {
+    const auto& path_vector = dynamic_cast<PathObject&>(*map.at(m_path_id)).geometry();
+    const auto retrieve_point = [&path_vector](const std::size_t point_index) {
+      return &path_vector.point_at_index(point_index);
+    };
+    const auto points = util::transform<std::vector>(m_point_indices, retrieve_point);
+    const auto n = points.size();
+    for (std::size_t i = 0; i < n; ++i) {
+      Edge edge;
+      edge.a = points.at(i);
+      edge.b = points.at((i + 1) % n);
+      if (!m_face.add_edge(edge)) {
+        LERROR << "Failed to add reconstruct face: could not add edge.";
+        return;
+      }
+    }
+  }
+};
 
 std::list<Point> Face::points() const
 {
@@ -134,6 +178,33 @@ QString Face::to_string() const
 {
   const auto edges = util::transform<QList>(m_edges, std::mem_fn(&Edge::label));
   return static_cast<QStringList>(edges).join(", ");
+}
+
+void Face::serialize(serialization::SerializerWorker& worker) const
+{
+  const auto path_points = this->path_points();
+  if (path_points.empty()) {
+    worker.sub(EMPTY_POINTER)->set_value(true);
+  } else {
+    worker.sub(EMPTY_POINTER)->set_value(false);
+    worker.sub(PATH_ID_POINTER)->set_value(path_points.front()->path_vector()->path_object()->id());
+    worker.set_value(path_points, [](const auto* path_point, auto& worker) {
+      worker.set_value(path_point->index());
+    });
+  }
+}
+
+void Face::deserialize(serialization::DeserializerWorker& worker)
+{
+  if (!worker.sub(EMPTY_POINTER)->get_bool()) {
+    const auto path_id = worker.sub(PATH_ID_POINTER)->get_size_t();
+    std::list<std::size_t> point_indices;
+    worker.get_items([&point_indices](auto& worker) {
+      point_indices.push_back(worker.get_size_t());
+    });
+    auto ref_polisher = std::make_unique<ReferencePolisher>(point_indices, path_id, *this);
+    worker.deserializer().register_reference_polisher(std::move(ref_polisher));
+  }
 }
 
 bool operator==(const Face& a, const Face& b)

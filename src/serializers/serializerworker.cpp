@@ -21,6 +21,13 @@ void SerializerWorker::set_value(const AbstractPropertyOwner* ref)
   set_value(ref == nullptr ? 0 : ref->id());
 }
 
+void SerializerWorker::set_value(const Faces& faces)
+{
+  set_value(faces, [](const auto& face, auto& serializer) {
+    face.serialize(serializer);
+  });
+}
+
 void SerializerWorker::set_value(const Vec2f& value)
 {
   serialize_vec2(*this, value);

@@ -69,6 +69,13 @@ template<> void DeserializerWorker::get<TriggerPropertyDummyValueType>(TriggerPr
 {
 }
 
+template<> void DeserializerWorker::get<Faces>(Faces& faces)
+{
+  get_items([&faces](auto& worker) {
+    faces.push_back(worker.template get<Face>());
+  });
+}
+
 variant_type DeserializerWorker::get(const QString& type)
 {
   if (type == "Bool") {
@@ -87,6 +94,8 @@ variant_type DeserializerWorker::get(const QString& type)
     return get<Vec2f>();
   } else if (type == "IntegerVector") {
     return get<Vec2i>();
+  } else if (type == "Faces") {
+    return get<Faces>();
   } else if (type == "SplineType") {
     return get<SplineType>();
   } else if (type == "Reference") {
