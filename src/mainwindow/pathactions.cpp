@@ -1,12 +1,4 @@
 #include "mainwindow/pathactions.h"
-  } else {
-    worker.sub(EMPTY_POINTER)->set_value(false);
-    worker.sub(PATH_ID_POINTER)->set_value(path_points.front()->path_vector()->path_object()->id());
-    worker.set_value(path_points, [](const auto* path_point, auto& worker) {
-      worker.set_value(path_point->index());
-    });
-  }
-}
 #include "commands/addcommand.h"
 #include "commands/joinpointscommand.h"
 #include "commands/modifypointscommand.h"
@@ -179,24 +171,6 @@ void remove_selected_points(Application& app)
 void remove_selected_faces(Application& app)
 {
   Q_UNUSED(app)
-}
-
-void convert_objects(Application& app)
-{
-  const auto convertibles = util::remove_if(app.scene->item_selection<Object>(), [](const Object* o) {
-    return !(o->flags() & Flag::Convertible);
-  });
-  if (!convertibles.empty()) {
-    Scene& scene = *app.scene;
-    auto macro = scene.history().start_macro(QObject::tr("convert"));
-    scene.submit<ObjectSelectionCommand>(*app.scene, convertibles);
-    const auto converted_objects = convert_objects_recursively(app, convertibles);
-    scene.submit<ObjectSelectionCommand>(*app.scene, converted_objects);
-    const auto is_path = [](auto&& object) { return object->type() == PathObject::TYPE; };
-    if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
-      scene.set_mode(SceneMode::Vertex);
-    }
-  }
 }
 
 void remove_selected_items(Application& app)

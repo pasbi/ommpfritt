@@ -190,7 +190,7 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
     const auto mat = value.to_qmatrix3x3();
     program->setUniformValue(location, mat);
   } else if constexpr (std::is_same_v<T, FaceList>) {
-    // FaceList is not available in GLSL
+    // faces is not available in GLSL
   } else {
     // statically fail here. If you're data type is not supported, add it explicitely.
     static_assert(std::is_same_v<T, int> && !std::is_same_v<T, int>);

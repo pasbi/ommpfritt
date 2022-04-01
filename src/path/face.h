@@ -1,5 +1,6 @@
 #pragma once
 
+#include "path/edge.h"
 #include <QString>
 #include <list>
 #include <deque>
@@ -10,9 +11,14 @@ class QPainterPath;
 namespace omm
 {
 
+namespace serialization
+{
+class SerializerWorker;
+class DeserializerWorker;
+}  // namespace serialization
+
 class Point;
 class PathPoint;
-class Edge;
 
 class Face
 {
@@ -58,6 +64,10 @@ public:
   [[nodiscard]] bool operator==(const Face& other) const;
   [[nodiscard]] bool operator!=(const Face& other) const;
   [[nodiscard]] bool operator<(const Face& other) const;
+
+  class ReferencePolisher;
+  void serialize(serialization::SerializerWorker& worker) const;
+  void deserialize(serialization::DeserializerWorker& worker);
 
 private:
   std::deque<Edge> m_edges;

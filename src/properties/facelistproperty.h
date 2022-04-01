@@ -9,10 +9,9 @@ namespace omm
 class FaceListProperty : public TypedProperty<FaceList>
 {
 public:
-  explicit FaceListProperty(const FaceList& default_value = FaceList{});
+  using TypedProperty::TypedProperty;
   void deserialize(serialization::DeserializerWorker& worker) override;
   void serialize(serialization::SerializerWorker& worker) const override;
-  static constexpr auto MODE_PROPERTY_KEY = "mode";
 
   static const PropertyDetail detail;
 };
