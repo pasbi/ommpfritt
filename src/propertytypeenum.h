@@ -76,7 +76,7 @@ constexpr std::string_view variant_type_name(const Type type) noexcept
   case Type::Spline:
     return QT_TRANSLATE_NOOP("DataType", "Spline");
   case Type::Faces:
-    return QT_TRANSLATE_NOOP("DataType", "Faces");
+    return QT_TRANSLATE_NOOP("DataType", "FaceList");
   case Type:: Invalid:
     return QT_TRANSLATE_NOOP("DataType", "Invalid");
   }
