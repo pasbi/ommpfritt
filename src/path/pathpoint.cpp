@@ -55,7 +55,8 @@ Point PathPoint::compute_joined_point_geometry(PathPoint& joined) const
 
 bool PathPoint::is_dangling() const
 {
-  if (path_vector() == nullptr || !path().contains(*this)) {
+  const auto* pv = path_vector();
+  if (pv == nullptr || !::contains(pv->paths(), &path()) || !path().contains(*this)) {
     return true;
   }
   if (!::contains(path_vector()->paths(), &path())) {
