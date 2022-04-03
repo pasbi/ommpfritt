@@ -100,14 +100,10 @@ SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
 }
 
 template<typename Container, typename S>
-bool contains(const Container& set, S&& key)
+bool contains(const Container& set, const S& key)
+    requires requires { { *begin(set) == key } -> std::same_as<bool>; }
 {
-  if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    return std::find(set.begin(), set.end(), const_cast<std::remove_const_t<S>>(key)) != set.end();
-  } else {
-    return std::find(set.begin(), set.end(), key) != set.end();
-  }
+  return std::find_if(begin(set), end(set), [&key](const auto& v) { return v == key; }) != end(set);
 }
 
 template<typename S, typename... Ts> bool contains(const std::map<Ts...>& map, S&& key)
