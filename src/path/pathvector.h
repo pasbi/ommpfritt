@@ -5,6 +5,7 @@
 #include <memory>
 
 class QPainterPath;
+class QPainter;
 
 namespace omm
 {
@@ -68,6 +69,7 @@ public:
   [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
   void update_joined_points_geometry() const;
   void join_points_by_position(const std::vector<Vec2f>& positions) const;
+  void draw_point_ids(QPainter& painter) const;
 
   /**
    * @brief is_valid returns true if this path vector is valid.

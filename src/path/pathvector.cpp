@@ -16,6 +16,7 @@
 #include "scene/mailbox.h"
 #include "removeif.h"
 #include <QObject>
+#include <QPainter>
 
 namespace
 {
@@ -290,6 +291,14 @@ void PathVector::join_points_by_position(const std::vector<Vec2f>& positions) co
       }
     }
     joined_points().insert(joint);
+  }
+}
+
+void PathVector::draw_point_ids(QPainter& painter) const
+{
+  for (const auto* point : points()) {
+    static constexpr QPointF offset{10.0, 10.0};
+    painter.drawText(point->geometry().position().to_pointf() + offset, point->debug_id());
   }
 }
 
