@@ -206,9 +206,17 @@ Face& Face::operator^=(const Face& other)
 
 bool Face::contains(const Face& other) const
 {
-  const QPainterPath p_this = Path::to_painter_path(points());
-  const QPainterPath p_other = Path::to_painter_path(other.points());
-  return p_this.contains(p_other);
+  const auto ps_other = other.path_points();
+  const auto ps_this = path_points();
+  const auto pp = to_painter_path();
+
+  std::set<const PathPoint*> distinct_points;
+  const auto other_point_not_outside = [&pp, &ps_this](const auto* p_other) {
+    const auto is_same = [p_other](const auto* p_this) { return PathPoint::eq(p_other, p_this); };
+    return std::any_of(ps_this.begin(), ps_this.end(), is_same) || pp.contains(p_other->geometry().position().to_pointf());
+  };
+
+  return std::all_of(ps_other.begin(), ps_other.end(), other_point_not_outside);
 }
 
 bool Face::contains(const Vec2f& pos) const
