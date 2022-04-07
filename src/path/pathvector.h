@@ -54,7 +54,7 @@ public:
   void deserialize(serialization::DeserializerWorker& worker);
   [[nodiscard]] PathPoint& point_at_index(std::size_t index) const;
 
-  [[nodiscard]] QPainterPath outline() const;
+  [[nodiscard]] QPainterPath to_painter_path() const;
   [[nodiscard]] std::vector<Face> faces() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;

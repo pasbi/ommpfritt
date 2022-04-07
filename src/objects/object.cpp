@@ -364,7 +364,7 @@ void Object::draw_recursive(Painter& renderer, PainterOptions options) const
 BoundingBox Object::bounding_box(const ObjectTransformation& transformation) const
 {
   if (is_active()) {
-    return BoundingBox{(path_vector().outline() * transformation.to_qtransform()).boundingRect()};
+    return BoundingBox{(path_vector().to_painter_path() * transformation.to_qtransform()).boundingRect()};
   } else {
     return BoundingBox{};
   }
@@ -659,7 +659,7 @@ void Object::draw_object(Painter& renderer,
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     const auto& path_vector = this->path_vector();
     const auto faces = path_vector.faces();
-    const auto& outline = path_vector.outline();
+    const auto& outline = path_vector.to_painter_path();
     if (!faces.empty() || !outline.isEmpty()) {
 
       for (std::size_t f = 0; f < faces.size(); ++f) {

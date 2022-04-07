@@ -163,7 +163,7 @@ PathPoint& PathVector::point_at_index(std::size_t index) const
   throw std::runtime_error{"Index out of bounds."};
 }
 
-QPainterPath PathVector::outline() const
+QPainterPath PathVector::to_painter_path() const
 {
   QPainterPath outline;
   for (const Path* path : paths()) {
