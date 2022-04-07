@@ -120,6 +120,15 @@ void Path::set_interpolation(InterpolationMode interpolation) const
   Q_UNREACHABLE();
 }
 
+QPainterPath Path::to_painter_path() const
+{
+  if (const auto points = this->points(); !points.empty()) {
+    return Path::to_painter_path(util::transform(points, &PathPoint::geometry));
+  } else {
+    return {};
+  }
+}
+
 std::vector<Vec2f> Path::compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation)
 {
   static constexpr double t = 1.0 / 3.0;

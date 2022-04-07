@@ -58,6 +58,7 @@ public:
   [[nodiscard]] PathVector* path_vector() const;
   void set_path_vector(PathVector* path_vector);
   void set_interpolation(InterpolationMode interpolation) const;
+  [[nodiscard]] QPainterPath to_painter_path() const;
 
   template<typename Points> static QPainterPath to_painter_path(const Points& points, bool close = false)
   {

@@ -167,12 +167,7 @@ QPainterPath PathVector::to_painter_path() const
 {
   QPainterPath outline;
   for (const Path* path : paths()) {
-    const auto points = path->points();
-    if (!points.empty()) {
-      outline.addPath(Path::to_painter_path(util::transform(points, [](const PathPoint* p) {
-        return p->geometry();
-      })));
-    }
+    outline.addPath(path->to_painter_path());
   }
   return outline;
 }
