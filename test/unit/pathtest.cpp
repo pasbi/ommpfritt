@@ -1,11 +1,19 @@
 #include "gtest/gtest.h"
-#include "path/pathvector.h"
-#include "path/path.h"
-#include "path/graph.h"
+#include "main/application.h"
+#include "objects/pathobject.h"
 #include "path/edge.h"
 #include "path/face.h"
+#include "path/graph.h"
+#include "path/path.h"
 #include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "scene/disjointpathpointsetforest.h"
+#include "scene/scene.h"
+#include "testutil.h"
+
+#include <QPainter>
+#include <QSvgGenerator>
+
 
 namespace
 {
@@ -38,18 +46,6 @@ private:
   }
 };
 
-auto make_face(const omm::PathVector& pv, const std::vector<std::pair<int, int>>& indices)
-{
-  omm::Face face;
-  for (const auto& [ai, bi] : indices) {
-    omm::Edge edge;
-    edge.a = &pv.point_at_index(ai);
-    edge.b = &pv.point_at_index(bi);
-    face.add_edge(edge);
-  }
-  return face;
-}
-
 omm::Face create_face(const std::deque<omm::Edge>& edges, const int offset, const bool reverse)
 {
   std::deque<omm::Edge> es;
@@ -69,6 +65,108 @@ omm::Face create_face(const std::deque<omm::Edge>& edges, const int offset, cons
   }
   return face;
 }
+
+double operator ""_u(long double d)
+{
+  return 80.0 * d;
+}
+
+double operator ""_deg(long double d)
+{
+  return d * M_PI / 180.0;
+}
+
+class FaceDetection : public ::testing::Test
+{
+protected:
+  using Path = omm::Path;
+  using Point = omm::Point;
+  using Graph = omm::Graph;
+  using Face = omm::Face;
+
+  template<typename... Args> Path& add_path(Args&&... args)
+  {
+    return m_path_vector.add_path(std::make_unique<Path>(std::forward<Args>(args)...));
+  }
+
+  void join(const std::set<omm::PathPoint*, std::less<>>& joint)
+  {
+    m_path_vector.joined_points().insert(joint);
+  }
+
+  void expect_face(const std::vector<std::pair<int, int>>& indices)
+  {
+    omm::Face face;
+    for (const auto& [ai, bi] : indices) {
+      omm::Edge edge;
+      edge.a = &m_path_vector.point_at_index(ai);
+      edge.b = &m_path_vector.point_at_index(bi);
+      face.add_edge(edge);
+    }
+    m_expected_faces.insert(face);
+  }
+
+  bool consistent_order(const Face& a, const Face& b)
+  {
+    // exactly one of them must be true.
+    return (a == b) + (a < b) + (b < a) == 1;
+  }
+
+  template<typename Faces> bool consistent_order(const Faces& faces)
+  {
+    for (auto i = faces.begin(); i != faces.end(); std::advance(i, 1)) {
+      for (auto j = std::next(i); j != faces.end(); std::advance(j, 1)) {
+        if (!consistent_order(*i, *j)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  void to_svg()
+  {
+    QSvgGenerator canvas;
+    canvas.setFileName("/tmp/pic.svg");
+    QPainter painter{&canvas};
+
+    for (const auto* path : m_path_vector.paths()) {
+      painter.drawPath(path->to_painter_path());
+    }
+    painter.setPen(QColor{128, 0, 0});
+    m_path_vector.draw_point_ids(painter);
+  }
+
+  void check()
+  {
+    // check if the operator< is consistent
+    ASSERT_TRUE(consistent_order(m_expected_faces));
+
+    const omm::Graph graph{m_path_vector};
+    const auto actual_faces = graph.compute_faces();
+    ASSERT_TRUE(consistent_order(actual_faces));
+    LINFO << "detected faces:";
+    for (const auto& f : actual_faces) {
+      LINFO << f.to_string();
+    }
+
+    EXPECT_EQ(m_expected_faces, actual_faces);
+
+    for (auto i = actual_faces.begin(); i != actual_faces.end(); std::advance(i, 1)) {
+      for (auto j = std::next(i); j != actual_faces.end(); std::advance(j, 1)) {
+        EXPECT_FALSE(i->contains(*j));
+        EXPECT_FALSE(j->contains(*i));
+      }
+    }
+
+    to_svg();
+  }
+
+private:
+  ommtest::Application m_application;  // required to use QPainters text render engine
+  omm::PathVector m_path_vector;
+  std::set<Face> m_expected_faces;
+};
 
 }  // namespace
 
@@ -125,47 +223,61 @@ TEST(Path, FaceEquality)
     EXPECT_NE(create_face(scrambled_edges, 0, true), create_face(loop.edges(), i, false));
     EXPECT_NE(create_face(scrambled_edges, i, true), create_face(loop.edges(), 0, true));
   }
-
 }
 
-TEST(Path, face_detection)
+TEST_F(FaceDetection, A)
 {
-
-  omm::PathVector path_vector;
-
-  // define following path vector:
-  //
   //   (3)  --- (2,8) --- (7)
   //    |         |        |
   //    |         |        |
   //  (0,4) --- (1,5) --- (6)
 
-  using omm::Path;
-  using omm::Point;
-  using omm::Graph;
+  const auto as = add_path(std::deque{
+                               Point{{0.0_u, 0.0_u}},  // 0
+                               Point{{1.0_u, 0.0_u}},  // 1
+                               Point{{1.0_u, 1.0_u}},  // 2
+                               Point{{0.0_u, 1.0_u}},  // 3
+                               Point{{0.0_u, 0.0_u}},  // 4
+                           }).points();
 
-  const auto as = path_vector.add_path(std::make_unique<Path>(std::deque<Point>{
-                                           Point{{0.0, 0.0}},  // 0
-                                           Point{{1.0, 0.0}},  // 1
-                                           Point{{1.0, 1.0}},  // 2
-                                           Point{{0.0, 1.0}},  // 3
-                                           Point{{0.0, 0.0}},  // 4
-                                       })).points();
+  const auto bs = add_path(std::deque{
+                               Point{{1.0_u, 0.0_u}},  // 5
+                               Point{{2.0_u, 0.0_u}},  // 6
+                               Point{{2.0_u, 1.0_u}},  // 7
+                               Point{{1.0_u, 1.0_u}},  // 8
+                           }).points();
 
-  const auto bs = path_vector.add_path(std::make_unique<Path>(std::deque<Point>{
-                                           Point{{1.0, 0.0}},  // 5
-                                           Point{{2.0, 0.0}},  // 6
-                                           Point{{2.0, 1.0}},  // 7
-                                           Point{{1.0, 1.0}},  // 8
-                                       })).points();
+  join({as[0], as[4]});
+  join({as[1], bs[0]});
+  join({as[2], bs[3]});
+  expect_face({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+  expect_face({{5, 6}, {6, 7}, {7, 8}, {1, 2}});
+  check();
+}
 
-  path_vector.joined_points().insert({as[0], as[4]});
-  path_vector.joined_points().insert({as[1], bs[0]});
-  path_vector.joined_points().insert({as[2], bs[3]});
+TEST_F(FaceDetection, B)
+{
+  //    +-- (1,5) --+
+  //    |     |     |
+  //    |     |    (4)
+  //    |     |     |
+  //    +- (0,2,3) -+
 
-  const Graph graph{path_vector};
-  const auto faces = graph.compute_faces();
-  ASSERT_EQ(faces.size(), 2);
-  ASSERT_EQ(faces[0], make_face(path_vector, {{0, 1}, {1, 2}, {2, 3}, {3, 4}}));
-  ASSERT_EQ(faces[1], make_face(path_vector, {{5, 6}, {6, 7}, {7, 8}, {1, 2}}));
+  using PC = omm::PolarCoordinates;
+  const auto& as = add_path(std::deque{
+                                Point{{0.0_u, 0.0_u}, PC{}, PC{180.0_deg, 1.0_u}}, // 0
+                                Point{{0.0_u, 2.0_u}, PC{180.0_deg, 1.0_u}, PC{-90.0_deg, 1.0_u}},  // 1
+                                Point{{0.0_u, 0.0_u}, PC{90.0_deg, 1.0_u}, PC{}},  // 2
+                            }).points();
+  const auto& bs = add_path(std::deque{
+                                Point{{0.0_u, 0.0_u}, PC{}, PC{0.0_deg, 1.0_u}},  // 3
+                                Point{{1.0_u, 1.0_u}, PC{-90.0_deg, 1.0_u}, PC{90.0_deg, 1.0_u}},  // 4
+                                Point{{0.0_u, 2.0_u}, PC{0.0_deg, 1.0_u}, PC{}},  // 5
+                            }).points();
+
+  join({as[0], as[2], bs[0]});
+  join({as[1], bs[2]});
+  expect_face({{0, 1}, {1, 2}});
+  expect_face({{3, 4}, {4, 5}, {}});
+  check();
 }
