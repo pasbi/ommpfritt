@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include "main/application.h"
-#include "main/options.h"
 #include "nodesystem/nodecompilerglsl.h"
 #include "nodesystem/nodecompilerpython.h"
 #include "nodesystem/nodemodel.h"
@@ -21,20 +20,12 @@
 namespace
 {
 
-std::unique_ptr<omm::Options> options()
-{
-  return std::make_unique<omm::Options>(false, // is_cli
-                                        false  // have_opengl
-  );
-}
-
 template<typename Compiler>
 class NodeTestFixture
 {
 public:
   NodeTestFixture()
-      : m_q_app(options())
-      , m_model(omm::nodes::NodeModel(Compiler::LANGUAGE, m_q_app.omm_app().scene.get()))
+      : m_model(omm::nodes::NodeModel(Compiler::LANGUAGE, m_q_app.omm_app().scene.get()))
       , m_compiler(m_model)
   {
   }

@@ -6,12 +6,24 @@
 #include <QProcessEnvironment>
 #include <QTimer>
 
+namespace
+{
+
+std::unique_ptr<omm::Options> options()
+{
+  return std::make_unique<omm::Options>(false, // is_cli
+                                        false  // have_opengl
+  );
+}
+
+}  // namespace
+
 namespace ommtest
 {
 
-Application::Application(std::unique_ptr<omm::Options> options)
+Application::Application()
     : m_q_application(argc, argv.data())
-    , m_omm_application(std::make_unique<omm::Application>(m_q_application, std::move(options)))
+    , m_omm_application(std::make_unique<omm::Application>(m_q_application, options()))
 {
 }
 
