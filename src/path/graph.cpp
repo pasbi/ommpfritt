@@ -90,14 +90,13 @@ Graph::Graph(const PathVector& path_vector)
   }
 }
 
-std::vector<Face> Graph::compute_faces() const
+std::set<Face> Graph::compute_faces() const
 {
-  using Faces =  std::list<Face>;
-  Faces faces;
+  std::set<Face> faces;
   struct Visitor : boost::planar_face_traversal_visitor
   {
-    Visitor(const Impl& impl, Faces& faces) : faces(faces), m_impl(impl) {}
-    Faces& faces;
+    Visitor(const Impl& impl, std::set<Face>& faces) : faces(faces), m_impl(impl) {}
+    std::set<Face>& faces;
     std::optional<Face> current_face;
 
     void begin_face()
@@ -113,7 +112,7 @@ std::vector<Face> Graph::compute_faces() const
 
     void end_face()
     {
-      faces.emplace_back(*current_face);
+      faces.insert(*current_face);
       current_face = std::nullopt;
     }
 
@@ -126,19 +125,15 @@ std::vector<Face> Graph::compute_faces() const
   Visitor visitor{*m_impl, faces};
   boost::planar_face_traversal(*m_impl, &embedding[0], visitor);
 
-  if (faces.empty()) {
-    return {};
+  if (!faces.empty()) {
+    // we don't want to include the largest face, which is contains the whole universe expect the path.
+    const auto it = std::max_element(faces.begin(), faces.end(), [](const auto& a, const auto& b) {
+      return a.compute_aabb_area() < b.compute_aabb_area();
+    });
+    faces.erase(it);
   }
 
-  // we don't want to include the largest face, which is contains the whole universe expect the path.
-  const auto areas = util::transform(faces, std::mem_fn(&Face::compute_aabb_area));
-  const auto largest_face_i = std::distance(areas.begin(), std::max_element(areas.begin(), areas.end()));
-  faces.erase(std::next(faces.begin(), largest_face_i));
-
-  // NOLINTNEXTLINE(modernize-return-braced-init-list)
-  std::vector vfaces(faces.begin(), faces.end());
-  vfaces.erase(std::unique(vfaces.begin(), vfaces.end()), vfaces.end());
-  return vfaces;
+  return faces;
 }
 
 void Graph::Impl::add_vertex(PathPoint* path_point)

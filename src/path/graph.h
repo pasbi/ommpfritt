@@ -3,7 +3,7 @@
 #include "geometry/point.h"
 #include <deque>
 #include <string>
-#include <vector>
+#include <set>
 #include <memory>
 
 namespace omm
@@ -25,7 +25,7 @@ public:
   Graph& operator=(Graph&& other) = default;
   ~Graph();
 
-  [[nodiscard]] std::vector<Face> compute_faces() const;
+  [[nodiscard]] std::set<Face> compute_faces() const;
   [[nodiscard]] QString to_dot() const;
 
   /**

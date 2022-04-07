@@ -661,14 +661,15 @@ void Object::draw_object(Painter& renderer,
     const auto faces = path_vector.faces();
     const auto& outline = path_vector.to_painter_path();
     if (!faces.empty() || !outline.isEmpty()) {
-
-      for (std::size_t f = 0; f < faces.size(); ++f) {
-        options.path_id = f;
+      std::size_t i = 0;
+      for (const auto& face : faces) {
+        options.path_id = i;
         renderer.set_style(style, *this, options);
         painter->save();
         painter->setPen(Qt::NoPen);
-        painter->drawPath(faces.at(f).to_painter_path());
+        painter->drawPath(face.to_painter_path());
         painter->restore();
+        i += 1;
       }
 
       painter->save();
