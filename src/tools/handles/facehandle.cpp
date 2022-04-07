@@ -9,7 +9,7 @@ namespace omm
 {
 
 FaceHandle::FaceHandle(Tool& tool, PathObject& path_object, const Face& face)
-    : Handle(tool)
+    : AbstractSelectHandle(tool)
     , m_path_object(path_object)
     , m_face(face)
     , m_path(face.to_painter_path())
@@ -39,7 +39,17 @@ ObjectTransformation FaceHandle::transformation() const
 
 bool FaceHandle::is_selected() const
 {
-  return tool.scene()->face_selection->faces().contains(m_face);
+  return tool.scene()->face_selection->is_selected(m_face);
+}
+
+void FaceHandle::set_selected(bool selected)
+{
+  tool.scene()->face_selection->set_selected(m_face, selected);
+}
+
+void FaceHandle::clear()
+{
+  return tool.scene()->face_selection->clear();
 }
 
 }  // namespace omm
