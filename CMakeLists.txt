@@ -16,6 +16,7 @@ option(USE_QT_5_12 "Allow to use Qt 5.12. Set this option to true for static ana
                     Builds with this configuration are not supposed to be run."
                     OFF
 )
+option(DRAW_POINT_IDS "Draw the id of path points next to the point." OFF)
 option(WERROR "Error on compiler warnings. Not available for MSVC." ON)
 
 if (USE_QT_5_12)

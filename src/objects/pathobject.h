@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include "config.h"
 #include <memory>
 
 namespace omm
