@@ -58,31 +58,6 @@ bool equal_at_offset(const Ts& ts, const Rs& rs, const std::size_t offset)
   return true;
 }
 
-struct EdgePartition
-{
-  explicit EdgePartition(const std::deque<Edge>& as, const std::deque<Edge>& bs)
-  {
-    const auto set_a = std::set(as.begin(), as.end());
-    const auto set_b = std::set(bs.begin(), bs.end());
-    for (const auto& a : as) {
-      if (set_b.contains(a)) {
-        both.push_back(a);
-      } else {
-        only_a.push_back(a);
-      }
-    }
-    for (const auto& b : bs) {
-      if (!set_a.contains(b)) {
-        only_b.push_back(b);
-      }
-    }
-  }
-
-  std::list<Edge> only_a;
-  std::list<Edge> both;
-  std::list<Edge> only_b;
-};
-
 }  // namespace
 
 namespace omm
@@ -178,30 +153,6 @@ bool Face::is_valid() const
     }
   }
   return true;
-}
-
-Face Face::operator^(const Face& other) const
-{
-  assert(contains(other));
-  auto [only_a_edges, both_edges, only_b_edges] = EdgePartition{edges(), other.edges()};
-  auto edges = std::deque(only_a_edges.begin(), only_a_edges.end());
-  if (PathPoint::eq(only_a_edges.back().end_point(), only_b_edges.front().start_point())) {
-    edges.insert(edges.end(), only_b_edges.begin(), only_b_edges.end());
-  } else {
-    for (auto& e : only_b_edges) {
-      e.flipped = !e.flipped;
-    }
-    edges.insert(edges.end(), only_b_edges.rbegin(), only_b_edges.rend());
-  }
-  assert(PathPoint::eq(only_a_edges.back().end_point(), only_b_edges.front().start_point()));
-  assert(PathPoint::eq(only_a_edges.front().start_point(), only_b_edges.back().end_point()));
-  return Face{std::move(edges)};
-}
-
-Face& Face::operator^=(const Face& other)
-{
-  *this = *this ^ other;
-  return *this;
 }
 
 bool Face::contains(const Face& other) const

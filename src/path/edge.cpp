@@ -40,12 +40,4 @@ PathPoint* Edge::end_point() const
   return flipped ? a : b;
 }
 
-bool Edge::operator<(const Edge& other) const
-{
-  static constexpr auto to_tuple = [](const Edge& e) {
-    return std::tuple{e.flipped, e.a, e.b};
-  };
-  return to_tuple(*this) < to_tuple(other);
-}
-
 }  // namespace omm

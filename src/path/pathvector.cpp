@@ -177,26 +177,7 @@ std::set<Face> PathVector::faces() const
 {
   Graph graph{*this};
   graph.remove_articulation_edges();
-  auto faces_set = graph.compute_faces();
-  std::vector faces(faces_set.begin(), faces_set.end());
-
-  for (bool changed = true; changed;)
-  {
-    changed = false;
-    for (auto& f1 : faces) {
-      for (auto& f2 : faces) {
-        if (&f1 == &f2) {
-          continue;
-        }
-        if (f1.contains(f2)) {
-          changed = true;
-          f1 ^= f2;
-        }
-      }
-    }
-  }
-
-  return std::set(faces.begin(), faces.end());
+  return graph.compute_faces();
 }
 
 std::size_t PathVector::point_count() const

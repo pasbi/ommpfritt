@@ -25,24 +25,7 @@ public:
   PathPoint* a = nullptr;
   PathPoint* b = nullptr;
 
-  // Edge equality is not unabiguously implementable.
-  // It's clear that numerical coincidence should not matter (1).
-  // Also, direction should not matter, because we're dealing with undirected graphs (2).
-  // It'd be also a good idea to distinguish joined points (two edges between A and B are not equal)
-  // because tangents can make these edges appear very different (3).
-  // Usually, multiple edges only occur between joined points and can be distinguished well.
-  // However, consider the loop (A) --e1-- (B) --e2-- (A):
-  // e1 and e2 are not distinguishable when ignoring direction, no joined points are involved to
-  // distinguish.
-  // That is, requirement (2) and (3) conflict.
-  // In practice that is no problem because the equality operator is not required.
-  friend bool operator==(const Edge&, const Edge&) = delete;
 
-  /**
-   * @brief operator < returns true if and only if this edge is considered less than @code other.
-   * @note This operator is implemented arbitrarily to enable `set<Edge>`.
-   */
-  bool operator<(const Edge& other) const;
 };
 
 }  // namespace omm
