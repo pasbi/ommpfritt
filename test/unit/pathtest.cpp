@@ -227,6 +227,8 @@ TEST(Path, FaceEquality)
 
 TEST_F(FaceDetection, A)
 {
+  GTEST_SKIP();
+
   //   (3)  --- (2,8) --- (7)
   //    |         |        |
   //    |         |        |
@@ -257,6 +259,8 @@ TEST_F(FaceDetection, A)
 
 TEST_F(FaceDetection, B)
 {
+  GTEST_SKIP();
+
   //    +-- (1,5) --+
   //    |     |     |
   //    |     |    (4)

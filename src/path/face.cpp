@@ -164,7 +164,8 @@ bool Face::contains(const Face& other) const
   std::set<const PathPoint*> distinct_points;
   const auto other_point_not_outside = [&pp, &ps_this](const auto* p_other) {
     const auto is_same = [p_other](const auto* p_this) { return PathPoint::eq(p_other, p_this); };
-    return std::any_of(ps_this.begin(), ps_this.end(), is_same) || pp.contains(p_other->geometry().position().to_pointf());
+    return std::any_of(ps_this.begin(), ps_this.end(), is_same)
+           || pp.contains(p_other->geometry().position().to_pointf());
   };
 
   return std::all_of(ps_other.begin(), ps_other.end(), other_point_not_outside);
