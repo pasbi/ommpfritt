@@ -61,7 +61,7 @@ public:
   using Embedding = std::vector<std::deque<EdgeDescriptor>>;
   using adjacency_list::adjacency_list;
   [[nodiscard]] const Vertex& data(VertexDescriptor vertex) const;
-  [[nodiscard]] Vertex& data(VertexDescriptor vertex);
+  [[maybe_unused, nodiscard]] Vertex& data(VertexDescriptor vertex);
   [[nodiscard]] const Edge& data(EdgeDescriptor edge_descriptor) const;
   [[nodiscard]] Edge& data(EdgeDescriptor edge_descriptor);
   void add_vertex(PathPoint* path_point);
@@ -93,37 +93,7 @@ Graph::Graph(const PathVector& path_vector)
 std::set<Face> Graph::compute_faces() const
 {
   std::set<Face> faces;
-  struct Visitor : boost::planar_face_traversal_visitor
-  {
-    Visitor(const Impl& impl, std::set<Face>& faces) : faces(faces), m_impl(impl) {}
-    std::set<Face>& faces;
-    std::optional<Face> current_face;
 
-    void begin_face()
-    {
-      current_face = Face{};
-    }
-
-    void next_edge(const Impl::EdgeDescriptor edge)
-    {
-      [[maybe_unused]] bool success = current_face->add_edge(m_impl.data(edge));
-      assert(success);
-    }
-
-    void end_face()
-    {
-      faces.insert(*current_face);
-      current_face = std::nullopt;
-    }
-
-  private:
-    const Impl& m_impl;
-  };
-
-  identify_edges(*m_impl);
-  const auto embedding = m_impl->compute_embedding();
-  Visitor visitor{*m_impl, faces};
-  boost::planar_face_traversal(*m_impl, &embedding[0], visitor);
 
   if (!faces.empty()) {
     // we don't want to include the largest face, which is contains the whole universe expect the path.
@@ -138,40 +108,14 @@ std::set<Face> Graph::compute_faces() const
 
 void Graph::Impl::add_vertex(PathPoint* path_point)
 {
-  // if a point is not joined, we need a set containing only that lonely point.
-  const auto vertex_points = [path_point]() -> ::transparent_set<PathPoint*> {
-    if (auto set = path_point->joined_points(); set.empty()) {
-      return {path_point};
-    } else {
-      return set;
-    }
-  }();
-
-  // if a vertex was already assigned to a joined point, re-use that vertex.
-  for (auto* jp : vertex_points) {
-    if (const auto it = m_vertex_index_map.find(jp); it != m_vertex_index_map.end()) {
-      m_vertex_index_map.emplace(path_point, it->second);
-      return;
-    }
-  }
-
-  // if none of this point's joints has a vertex assigned, create a new one.
-  const auto n = boost::add_vertex(*this);
-  m_vertex_index_map.emplace(path_point, n);
-  m_joint_map.emplace_back(vertex_points);
-  data(lookup_vertex(path_point)).points = vertex_points;
+  (void) path_point;
 }
 
 bool Graph::Impl::add_edge(PathPoint* a, PathPoint* b)
 {
-  assert(&a->path() == &b->path());
-  const auto ai = m_vertex_index_map.at(a);
-  const auto bi = m_vertex_index_map.at(b);
-  const auto [edge, was_inserted] = boost::add_edge(ai, bi, *this);
-  auto& edge_data = data(edge);
-  edge_data.a = a;
-  edge_data.b = b;
-  return was_inserted;
+  (void) a;
+  (void) b;
+  return  false;
 }
 
 Graph::Impl::VertexDescriptor Graph::Impl::lookup_vertex(const PathPoint* p) const
@@ -200,21 +144,9 @@ Graph::Impl::Embedding Graph::Impl::compute_embedding() const
 
 PolarCoordinates Graph::Impl::get_direction_at(const Edge& edge, VertexDescriptor vertex) const
 {
-  const auto compute_edge_direction = [](const Point& major, const Point& minor, const auto& get_tangent) {
-    static constexpr double eps = 0.00001;
-    if (const auto tangent = get_tangent(major); tangent.magnitude > eps) {
-      return tangent;
-    } else {
-      return PolarCoordinates{-major.position() + minor.position()};
-    }
-  };
-  const auto& joint = m_joint_map.at(vertex);
-  if (joint.contains(edge.a)) {
-    return compute_edge_direction(edge.a->geometry(), edge.b->geometry(), std::mem_fn(&Point::left_tangent));
-  } else {
-    assert(joint.contains(edge.b));
-    return compute_edge_direction(edge.b->geometry(), edge.a->geometry(), std::mem_fn(&Point::right_tangent));
-  }
+  (void) edge;
+  (void) vertex;
+  return PolarCoordinates{};
 }
 
 Graph::~Graph() = default;
@@ -256,7 +188,7 @@ QString Graph::to_dot() const
     dot += "\"];\n";
   }
   dot += "}";
-  return dot;\
+  return dot;
 }
 
 void Graph::remove_articulation_edges() const

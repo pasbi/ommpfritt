@@ -20,41 +20,6 @@ static constexpr auto PATH_ID_POINTER = "path";
 namespace omm
 {
 
-class FaceList::ReferencePolisher : public omm::serialization::ReferencePolisher
-{
-public:
-  explicit ReferencePolisher(const std::size_t path_id)
-      : m_path_id(path_id)
-  {
-  }
-
-  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override
-  {
-    const auto& path_object = dynamic_cast<const omm::PathObject&>(*map.at(m_path_id));
-    const auto& path_vector = path_object.path_vector();
-    for (std::size_t i = 0; i < m_faces.size(); ++i) {
-      for (const auto& edge_repr : m_face_reprs.at(i)) {
-        auto& p1 = path_vector.point_at_index(edge_repr.first);
-        auto& p2 = path_vector.point_at_index(edge_repr.second);
-        m_faces.at(i)->add_edge(Edge{p1, p2});
-      }
-    }
-  }
-
-  using EdgeRepr = std::pair<std::size_t, std::size_t>;
-  using FaceRepr = std::deque<EdgeRepr>;
-
-  FaceRepr& start_face(Face& face)
-  {
-    m_faces.emplace_back(&face);
-    return m_face_reprs.emplace_back();
-  }
-
-private:
-  const std::size_t m_path_id;
-  std::deque<FaceRepr> m_face_reprs;
-  std::deque<Face*> m_faces;
-};
 
 FaceList::FaceList() = default;
 FaceList::~FaceList() = default;
@@ -90,41 +55,12 @@ void swap(FaceList& a, FaceList& b) noexcept
 
 void FaceList::serialize(serialization::SerializerWorker& worker) const
 {
-  auto path_id_worker = worker.sub(PATH_ID_POINTER);
-  if (m_path_object == nullptr) {
-    path_id_worker->set_value(static_cast<std::size_t>(0));
-  } else {
-    path_id_worker->set_value(m_path_object->id());
-    worker.sub(FACES_POINTER)->set_value(m_faces, [](const auto& f, auto& face_worker) {
-      face_worker.set_value(f->edges(), [](const Edge& edge, auto& edge_worker) {
-        edge_worker.set_value(std::vector{edge.a->index(), edge.b->index()});
-      });
-    });
-  }
+  (void) worker;
 }
 
 void FaceList::deserialize(serialization::DeserializerWorker& worker)
 {
-  m_faces.clear();
-  m_path_object = nullptr;
-  const auto path_id = worker.sub(PATH_ID_POINTER)->get<std::size_t>();
-  if (path_id == 0) {
-    return;
-  }
-
-  auto reference_polisher = std::make_unique<ReferencePolisher>(path_id);
-  worker.sub(FACES_POINTER)->get_items([this, &reference_polisher](auto& face_worker) {
-    auto& face_repr = reference_polisher->start_face(*m_faces.emplace_back(std::make_unique<Face>()));
-    face_worker.get_items([&face_repr](auto& edge_worker) {
-      const auto ids = edge_worker.template get<std::vector<std::size_t>>();
-      if (ids.size() != 2) {
-        throw serialization::AbstractDeserializer::DeserializeError("Expected two points per edge.");
-      }
-      face_repr.emplace_back(ids[0], ids[1]);
-    });
-  });
-
-  worker.deserializer().register_reference_polisher(std::move(reference_polisher));
+  (void) worker;
 }
 
 bool FaceList::operator==(const FaceList& other) const

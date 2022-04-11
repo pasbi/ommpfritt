@@ -51,7 +51,6 @@ constexpr auto STYLES_POINTER = "styles";
 constexpr auto ANIMATOR_POINTER = "animation";
 constexpr auto NAMED_COLORS_POINTER = "colors";
 constexpr auto EXPORT_OPTIONS_POINTER = "export_options";
-constexpr auto JOINED_POINTS_POINTER =  "joined_points";
 
 template<typename PropertyT, typename PropertyOwners>
 std::set<PropertyT*>
@@ -123,7 +122,6 @@ Scene::Scene()
     , m_animator(new Animator(*this))
     , m_named_colors(new NamedColors())
     , m_export_options(new ExportOptions())
-    , m_joined_points(new DisjointPathPointSetForest())
 {
   object_tree().root().set_object_tree(object_tree());
   for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, nodes::Node::KIND}) {
@@ -227,11 +225,6 @@ void Scene::set_export_options(const ExportOptions& export_options)
   }
 }
 
-DisjointPathPointSetForest& Scene::joined_points() const
-{
-  return *m_joined_points;
-}
-
 bool Scene::save_as(const QString& filename)
 {
   return SceneSerialization{*this}.save(filename);
@@ -253,7 +246,6 @@ void Scene::serialize(serialization::SerializerWorker& serializer)
   m_animator->serialize(*serializer.sub(ANIMATOR_POINTER));
   m_named_colors->serialize(*serializer.sub(NAMED_COLORS_POINTER));
   export_options().serialize(*serializer.sub(EXPORT_OPTIONS_POINTER));
-  m_joined_points->serialize(*serializer.sub(JOINED_POINTS_POINTER));
 }
 
 void Scene::deserialize(serialization::DeserializerWorker& deserializer)
@@ -279,7 +271,6 @@ void Scene::deserialize(serialization::DeserializerWorker& deserializer)
   animator().deserialize(*deserializer.sub(ANIMATOR_POINTER));
   named_colors().deserialize(*deserializer.sub(NAMED_COLORS_POINTER));
   m_export_options->deserialize(*deserializer.sub(EXPORT_OPTIONS_POINTER));
-  m_joined_points->deserialize(*deserializer.sub(JOINED_POINTS_POINTER));
 }
 
 void Scene::reset()

@@ -23,7 +23,6 @@ class EnhancedPathVector;
 class Path;
 class PathPoint;
 class PathObject;
-class DisjointPathPointSetForest;
 class Scene;
 class Face;
 
@@ -38,18 +37,6 @@ public:
   PathVector& operator=(PathVector&& other) noexcept;
   ~PathVector();
   friend void swap(PathVector& a, PathVector& b) noexcept;
-
-  /**
-   * @brief share_joined_points use the `joined_points` forest to register joined points.
-   *  The currently owned joined points will be added to the shared joined points.
-   */
-  std::unique_ptr<DisjointPathPointSetForest> share_joined_points(DisjointPathPointSetForest& joined_points);
-  void unshare_joined_points(std::unique_ptr<DisjointPathPointSetForest> joined_points);
-
-  /**
-   * @brief join_points_shared returns true if the joined points are shared or false otherwise.
-   */
-  [[nodiscard]] bool joined_points_shared() const;
 
   static constexpr auto SEGMENTS_POINTER = "segments";
   void serialize(serialization::SerializerWorker& worker) const;
@@ -67,9 +54,6 @@ public:
   [[nodiscard]] std::deque<PathPoint*> selected_points() const;
   void deselect_all_points() const;
   [[nodiscard]] PathObject* path_object() const;
-  [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
-  void update_joined_points_geometry() const;
-  void join_points_by_position(const std::vector<Vec2f>& positions) const;
   void draw_point_ids(QPainter& painter) const;
 
   /**
@@ -82,8 +66,6 @@ public:
 
 private:
   PathObject* m_path_object = nullptr;
-  DisjointPathPointSetForest* m_shared_joined_points = nullptr;
-  std::unique_ptr<DisjointPathPointSetForest> m_owned_joined_points;
   std::deque<std::unique_ptr<Path>> m_paths;
 };
 

@@ -110,11 +110,7 @@ void PointSelectHandle::draw(QPainter& painter) const
   const auto rect = Tool::centered_rectangle({}, r);
   painter.setPen(ui_color(status, "point"));
   painter.setBrush(ui_color(status, "point fill"));
-  if (m_point.joined_points().size() > 1) {
-    painter.drawRect(rect);
-  } else {
-    painter.drawEllipse(rect);
-  }
+  painter.drawEllipse(rect);
 }
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent)
@@ -165,16 +161,6 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta,
   std::map<PathPoint*, Point> map;
   if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
     new_secondary = Point::mirror_tangent(secondary, primary, new_primary);
-    for (auto* buddy : m_point.joined_points()) {
-      if (buddy != &m_point) {
-        auto geometry = buddy->geometry();
-        const auto left = Point::mirror_tangent(geometry.left_tangent(), primary, new_primary);
-        const auto right = Point::mirror_tangent(geometry.right_tangent(), primary, new_primary);
-        geometry.set_left_tangent(left);
-        geometry.set_right_tangent(right);
-        map[buddy] = geometry;
-      }
-    }
   }
 
   set_primary_secondary_tangent(new_point, new_primary, new_secondary, tangent);

@@ -5,39 +5,54 @@
 namespace omm
 {
 
-Edge::Edge(PathPoint& a, PathPoint& b)
-    : a(&a), b(&b)
+Edge::Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* path)
+    : m_path(path), m_a(a), m_b(b)
 {
 }
 
 QString Edge::label() const
 {
-  const auto* separator = flipped ? "++" : "--";
-  return QString{"%1%2%3"}.arg(start_point()->index()).arg(separator).arg(end_point()->index());
+  static constexpr auto p2s = [](const auto& p) {
+    if (p == nullptr) {
+      return QString{"null"};
+    } else {
+      return QString{"%1"}.arg(p->index());
+    }
+  };
+  return QString{"%1--%3"}.arg(p2s(m_a), p2s(m_b));
 }
 
-Point Edge::start_geometry() const
+void Edge::flip() noexcept
 {
-  const auto g = start_point()->geometry();
-//  return flipped ? g.flipped() : g;
-  return flipped ?  g : g.flipped();
+  std::swap(m_a, m_b);
 }
 
-Point Edge::end_geometry() const
+bool Edge::has_point(const PathPoint* p) noexcept
 {
-  const auto g = end_point()->geometry();
-//  return flipped ? g.flipped() : g;
-  return flipped ?  g : g.flipped();
+  return p == m_a.get() || p == m_b.get();
 }
 
-PathPoint* Edge::start_point() const
+std::shared_ptr<PathPoint> Edge::a() const noexcept
 {
-  return flipped ? b : a;
+  return m_a;
 }
 
-PathPoint* Edge::end_point() const
+std::shared_ptr<PathPoint> Edge::b() const noexcept
 {
-  return flipped ? a : b;
+  return m_b;
+}
+
+bool Edge::operator<(const Edge& other) const noexcept
+{
+  static constexpr auto as_tuple = [](const Edge& e) {
+    return std::tuple{e.a().get(), e.b().get()};
+  };
+  return as_tuple(*this) < as_tuple(other);
+}
+
+Path* Edge::path() const
+{
+  return m_path;
 }
 
 }  // namespace omm

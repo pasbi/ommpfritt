@@ -22,36 +22,9 @@ namespace
 
 using namespace omm;
 
-Path& make_reflection(PathVector& pv, const Path& original, const Mirror::Direction direction, const double eps)
-{
-  auto& path = pv.add_path(std::make_unique<Path>(original, &pv));
-  const auto s = Vec2f{direction == Mirror::Direction::Horizontal ? -1.0 : 1.0,
-                       direction == Mirror::Direction::Vertical ? -1.0 : 1.0};
-  const auto transform = ObjectTransformation{}.scaled(s);
-  for (auto* p : path.points()) {
-    p->set_geometry(transform.apply(p->geometry()));
-  }
 
-  const auto join_if_close = [&pv, eps2 = eps * eps](PathPoint& p1, PathPoint& p2) {
-    if ((p1.geometry().position() - p2.geometry().position()).euclidean_norm2() < eps2) {
-      pv.joined_points().insert({&p1, &p2});
-      auto g1 = p1.geometry();
-      auto g2 = p2.geometry();
-      const auto p = (g1.position() + g2.position()) / 2.0;
-      g1.set_position(p);
-      p1.set_geometry(g1);
 
-      g2.set_position(p);
-      p2.set_geometry(g2);
-    }
-  };
 
-  if (const auto n = path.size(); n > 1) {
-    join_if_close(path.at(0), original.at(0));
-    join_if_close(path.at(n - 1), original.at(n - 1));
-  }
-  return path;
-}
 
 
 ObjectTransformation get_mirror_t(Mirror::Direction direction)
@@ -202,35 +175,7 @@ void Mirror::update_object_mode()
 
 void Mirror::update_path_mode()
 {
-  const auto n_children = this->n_children();
-  if (n_children != 1) {
-    m_reflection.reset();
-  } else {
-    const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
-    Object& child = this->tree_child(0);
-    auto reflection = std::make_unique<PathObject>(scene());
-    reflection->geometry().unshare_joined_points(std::make_unique<DisjointPathPointSetForest>());
-    assert(!reflection->geometry().joined_points_shared());
-    auto& pv = reflection->geometry();
-    for (const auto* const path : child.path_vector().paths()) {
-      auto& original = pv.add_path(std::make_unique<Path>(*path, &pv));
-      if (const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
-          direction == Direction::Both)
-      {
-        auto& reflection = make_reflection(pv, original, Direction::Horizontal, eps);
-        make_reflection(pv, original, Direction::Vertical, eps);
-        make_reflection(pv, reflection, Direction::Vertical, eps);
-      } else {
-        make_reflection(pv, original, direction, eps);
-      }
-    }
-    const auto interpolation = child.has_property(PathObject::INTERPOLATION_PROPERTY_KEY)
-                             ? child.property(PathObject::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
-                             : InterpolationMode::Bezier;
-    reflection->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
 
-    m_reflection = std::move(reflection);
-  }
 }
 
 void Mirror::update_property_visibility()

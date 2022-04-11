@@ -1,6 +1,5 @@
 #pragma once
 
-#include "path/edge.h"
 #include <QString>
 #include <list>
 #include <deque>
@@ -19,19 +18,14 @@ class DeserializerWorker;
 
 class Point;
 class PathPoint;
+class Edge;
 
 class Face
 {
 public:
   Face() = default;
-  ~Face();
-  Face(const Face&) = default;
-  Face(std::deque<Edge> edges);
-  Face(Face&&) = default;
-  Face& operator=(const Face&) = default;
-  Face& operator=(Face&&) = default;
+  Face(std::deque<Edge*> edges);
 
-  bool add_edge(const Edge& edge);
   [[nodiscard]] QPainterPath to_painter_path() const;
 
   /**
@@ -41,7 +35,7 @@ public:
    *  that's quite convenient for drawing paths.
    * @see path_points
    */
-  [[nodiscard]] std::list<Point> points() const;
+  [[nodiscard]] std::vector<Point> points() const;
 
   /**
    * @brief path_points returns the points around the face.
@@ -50,11 +44,13 @@ public:
    *  That's quite convenient for checking face equality.
    * @see points
    */
-  [[nodiscard]] std::deque<PathPoint*> path_points() const;
-  [[nodiscard]] const std::deque<Edge>& edges() const;
+  [[nodiscard]] std::vector<PathPoint*> path_points() const;
+  [[nodiscard]] const std::deque<Edge*>& edges() const;
   [[nodiscard]] double compute_aabb_area() const;
   [[nodiscard]] QString to_string() const;
-  [[nodiscard]] bool is_valid() const;
+  [[nodiscard]] bool is_valid() const noexcept;
+  [[nodiscard]] bool empty() const noexcept;
+  [[nodiscard]] std::size_t size() const noexcept;
 
   [[nodiscard]] bool contains(const Face& other) const;
   [[nodiscard]] bool contains(const Vec2f& pos) const;
@@ -62,13 +58,14 @@ public:
   [[nodiscard]] bool operator==(const Face& other) const;
   [[nodiscard]] bool operator!=(const Face& other) const;
   [[nodiscard]] bool operator<(const Face& other) const;
+  void normalize();
 
   class ReferencePolisher;
   void serialize(serialization::SerializerWorker& worker) const;
   void deserialize(serialization::DeserializerWorker& worker);
 
 private:
-  std::deque<Edge> m_edges;
+  std::deque<Edge*> m_edges;
 };
 
 }  // namespace omm

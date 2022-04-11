@@ -42,13 +42,14 @@ void Tip::on_property_value_changed(Property* property)
 
 PathVector Tip::compute_path_vector() const
 {
-  auto points = m_marker_properties.shape(1.0);
-  PathVector pv;
-  auto path = std::make_unique<Path>(std::move(points));
-  const auto path_points = path->points();
-  pv.add_path(std::move(path));
-  pv.joined_points().insert({path_points.front(), path_points.back()});
-  return pv;
+  return {};
+//  auto points = m_marker_properties.shape(1.0);
+//  PathVector pv;
+//  auto path = std::make_unique<Path>(std::move(points));
+//  const auto path_points = path->points();
+//  pv.add_path(std::move(path));
+//  pv.joined_points().insert({path_points.front(), path_points.back()});
+//  return pv;
 }
 
 }  // namespace omm

@@ -2,6 +2,7 @@
 #include "commands/addcommand.h"
 #include "commands/joinpointscommand.h"
 #include "commands/modifypointscommand.h"
+#include "commands/addremovepointscommand.h"
 #include "commands/movecommand.h"
 #include "commands/objectselectioncommand.h"
 #include "commands/propertycommand.h"
@@ -96,32 +97,10 @@ void convert_object(Application& app,
          std::deque<ObjectTreeMoveContext>& contextes,
          std::set<Object*>& converted_objects)
 {
-  bool keep_children = true;
-  auto converted_object = object_to_convert.convert(keep_children);
-  auto& ref = *converted_object;
-  ref.set_object_tree(app.scene->object_tree());
-  assert(!object_to_convert.is_root());
-  ObjectTreeOwningContext context(ref, object_to_convert.tree_parent(), &object_to_convert);
-  const auto properties = util::transform<Property*>(app.scene->find_reference_holders(object_to_convert));
-  if (!properties.empty()) {
-    app.scene->submit<PropertiesCommand<ReferenceProperty>>(properties, &ref);
-  }
-  context.subject.capture(std::move(converted_object));
-  app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
-  if (auto* const po = type_cast<PathObject*>(&ref); po != nullptr) {
-    app.scene->submit<ShareJoinedPointsCommand>(*app.scene, po->geometry());
-  }
-  assert(ref.scene() == app.scene.get());
-  ref.set_transformation(object_to_convert.transformation());
-  converted_objects.insert(&ref);
-
-  if (keep_children) {
-    const auto old_children = object_to_convert.tree_children();
-    std::transform(old_children.rbegin(),
-                   old_children.rend(),
-                   std::back_inserter(contextes),
-                   [&ref](auto* cc) { return ObjectTreeMoveContext(*cc, ref, nullptr); });
-  }
+  (void) app;
+  (void) object_to_convert;
+  (void) contextes;
+  (void) converted_objects;
 }
 
 std::set<Object*> convert_objects_recursively(Application& app, const std::set<Object*>& convertibles)
@@ -158,7 +137,7 @@ void remove_selected_points(Application& app)
     }
 
     if (!removed_points.empty()) {
-      auto command = std::make_unique<RemovePointsCommand>(*path_object, std::move(removed_points));
+      auto command = std::make_unique<RemovePointsCommand>(std::move(removed_points));
       if (!macro) {
         macro = app.scene->history().start_macro(command->actionText());
       }
@@ -297,35 +276,7 @@ void invert_selection(Application& app)
 
 void select_connected_points(Application& app)
 {
-  std::set<const Path*> selected_paths;
-  foreach_subpath(app, [&selected_paths](const auto* path) {
-    const auto points = path->points();
-    if (std::any_of(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected))) {
-      selected_paths.insert(path);
-    }
-  });
-
-  for (bool selected_paths_changed = true; selected_paths_changed;) {
-    selected_paths_changed = false;
-    for (const auto* path : selected_paths) {
-      for (auto* point : path->points()) {
-        for (auto* joined_point : point->joined_points()) {
-          const auto& other_path = joined_point->path();
-          if (const auto [_, was_inserted] = selected_paths.insert(&other_path); was_inserted) {
-            selected_paths_changed = true;
-          }
-        }
-      }
-    }
-  }
-
-  for (const auto* path : selected_paths) {
-    for (auto* point : path->points()) {
-      point->set_selected(true);
-    }
-  }
-
-  Q_EMIT app.mail_box().scene_appearance_changed();
+  (void) app;
 }
 
 void fill_selection(Application& app)
@@ -378,12 +329,12 @@ void shrink_selection(Application& app)
 
 void join_points(Application& app)
 {
-  app.scene->submit<JoinPointsCommand>(*app.scene, std::deque{app.scene->point_selection->points()});
+  (void) app;
 }
 
 void disjoin_points(Application& app)
 {
-  app.scene->submit<DisjoinPointsCommand>(*app.scene, std::deque{app.scene->point_selection->points()});
+  (void) app;
 }
 
 const std::map<QString, std::function<void(Application& app)>> actions{

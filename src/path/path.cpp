@@ -1,9 +1,12 @@
 #include "path/path.h"
 #include "geometry/point.h"
+#include "path/edge.h"
 #include "path/pathpoint.h"
+#include "path/pathview.h"
 #include "serializers/abstractserializer.h"
 #include "serializers/serializerworker.h"
 #include "serializers/deserializerworker.h"
+#include "pathview.h"
 #include <2geom/pathvector.h>
 
 namespace
@@ -11,28 +14,8 @@ namespace
 
 using namespace omm;
 
-auto copy(const std::deque<std::unique_ptr<PathPoint>>& vs, Path& path)
-{
-  std::decay_t<decltype(vs)> copy;
-  for (auto&& v : vs) {
-    copy.emplace_back(std::make_unique<PathPoint>(v->geometry(), path));
-  }
-  return copy;
-}
 
-auto to_path_points(std::vector<Point>&& points, Path& path)
-{
-  return util::transform<std::deque>(std::move(points), [&path](auto&& point) {
-    return std::make_unique<PathPoint>(point, path);
-  });
-}
 
-auto to_path_points(std::deque<Point>&& points, Path& path)
-{
-  return util::transform(std::move(points), [&path](auto&& point) {
-    return std::make_unique<PathPoint>(point, path);
-  });
-}
 
 }  // namespace
 
@@ -40,67 +23,28 @@ namespace omm
 {
 
 Path::Path(PathVector* path_vector)
-  : m_path_vector(path_vector)
+    : m_path_vector(path_vector)
 {
+
 }
 
-Path::Path(std::deque<Point>&& points, PathVector* path_vector)
-  : m_points(to_path_points(std::move(points), *this))
-  , m_path_vector(path_vector)
+Path::Path(const Path& path, PathVector* path_vector)
+    : m_path_vector(path_vector)
 {
-}
-
-Path::Path(std::vector<Point>&& points, PathVector* path_vector)
-  : m_points(to_path_points(std::move(points), *this))
-  , m_path_vector(path_vector)
-{
-}
-
-Path::Path(const Path& other, PathVector* path_vector)
-  : m_points(copy(other.m_points, *this))
-  , m_path_vector(path_vector)
-{
+  (void) path;  // TODO
 }
 
 Path::~Path() = default;
 
-std::size_t Path::size() const
-{
-  return m_points.size();
-}
-
-PathPoint& Path::at(std::size_t i) const
-{
-  return *m_points.at(i);
-}
-
 bool Path::contains(const PathPoint& point) const
 {
-  return  std::any_of(m_points.begin(), m_points.end(), [&point](const auto& candidate) {
-    return &point == candidate.get();
-  });
-}
-
-std::size_t Path::find(const PathPoint& point) const
-{
-  const auto it = std::find_if(m_points.begin(), m_points.end(), [&point](const auto& candidate) {
-    return &point == candidate.get();
-  });
-  if (it == m_points.end()) {
-    throw std::out_of_range("No such point in path.");
-  } else {
-    return std::distance(m_points.begin(), it);
-  }
-}
-
-PathPoint& Path::add_point(const Point& point)
-{
-  return *m_points.emplace_back(std::make_unique<PathPoint>(point, *this));
+  const auto points = this->points();
+  return std::find(points.begin(), points.end(), &point) != points.end();
 }
 
 void Path::make_linear() const
 {
-  for (const auto& point : m_points) {
+  for (const auto& point : points()) {
     point->set_geometry(point->geometry().nibbed());
   }
 }
@@ -164,74 +108,143 @@ void Path::set_path_vector(PathVector* path_vector)
 
 void Path::smoothen() const
 {
-  for (std::size_t i = 0; i < m_points.size(); ++i) {
-    m_points[i]->set_geometry(smoothen_point(i));
-  }
 }
 
 Point Path::smoothen_point(std::size_t i) const
 {
-  const std::size_t n = m_points.size();
-  PathPoint* left = nullptr;
-  PathPoint* right = nullptr;
-  Point copy = m_points[i]->geometry();
-  if (m_points.size() < 2) {
-    return copy;
-  }
-  if (i == 0) {
-    left = m_points.at(0).get();
-    right = m_points.at(1).get();
-  } else if (i == n - 1) {
-    left = m_points.at(n - 2).get();
-    right = m_points.at(n - 1).get();
-  } else {
-    left = m_points.at(i - 1).get();
-    right = m_points.at(i + 1).get();
-  }
-  const Vec2f d = (left->geometry().position() - right->geometry().position()) / 6.0;
-  copy.set_right_tangent(PolarCoordinates(-d));
-  copy.set_left_tangent(PolarCoordinates(d));
-  return copy;
-}
-
-std::deque<PathPoint*> Path::points() const
-{
-  return util::transform(m_points, [](const auto& pt) { return pt.get(); });
-}
-
-void Path::insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint>>&& points)
-{
-  m_points.insert(std::next(m_points.begin(), static_cast<std::ptrdiff_t>(i)),
-                  std::make_move_iterator(points.begin()),
-                  std::make_move_iterator(points.end()));
-}
-
-std::deque<std::unique_ptr<PathPoint> > Path::extract(std::size_t start, std::size_t size)
-{
-  std::deque<std::unique_ptr<PathPoint>> points(size);
-  for (std::size_t i = 0; i < size; ++i) {
-    std::swap(points[i], m_points[i + start]);
-  }
-  const auto begin = std::next(m_points.begin(), static_cast<std::ptrdiff_t>(start));
-  const auto end = std::next(begin, static_cast<std::ptrdiff_t>(size));
-  m_points.erase(begin, end);
-  return points;
+  Q_UNUSED(i)
+  return {};
 }
 
 void Path::serialize(serialization::SerializerWorker& worker) const
 {
-  worker.sub(POINTS_POINTER)->set_value(m_points, [](const auto& point, auto& worker_i) {
-    point->geometry().serialize(worker_i);
-  });
+  (void) worker;
 }
 
 void Path::deserialize(serialization::DeserializerWorker& worker)
 {
-  worker.sub(POINTS_POINTER)->get_items([this](auto& worker_i) {
-    Point geometry;
-    geometry.deserialize(worker_i);
-    m_points.emplace_back(std::make_unique<PathPoint>(geometry, *this));
+  (void) worker;
+}
+
+Edge& Path::add_edge(std::unique_ptr<Edge> edge)
+{
+  const auto try_emplace = [this](std::unique_ptr<Edge>& edge) {
+    if (m_edges.empty() || m_edges.back()->b() == edge->a()) {
+      m_edges.emplace_back(std::move(edge));
+    } else if (m_edges.front()->a() == edge->b()) {
+      m_edges.emplace_front(std::move(edge));
+    } else {
+      return false;
+    }
+    return true;
+  };
+
+  auto& ref = *edge;
+
+  if (!try_emplace(edge)) {
+    edge->flip();
+    if (!try_emplace(edge)) {
+      throw PathException{"Cannot add edge to path."};
+    }
+  }
+
+  return ref;
+}
+
+std::pair<std::deque<std::unique_ptr<Edge>>, Edge*> Path::remove(const PathView& path_view, std::unique_ptr<Edge> bridge)
+{
+  const auto first = std::next(m_edges.begin(), std::max(static_cast<std::size_t>(1), path_view.begin()) - 1);
+  const auto last = std::next(m_edges.begin(), std::min(path_view.end(), m_edges.size()));
+
+  std::deque<std::unique_ptr<Edge>> removed_edges;
+  Edge* new_edge = nullptr;
+
+  std::copy(std::move_iterator{first}, std::move_iterator{last}, std::back_inserter(removed_edges));
+
+  if (path_view.begin() > 0 && path_view.begin() + path_view.size() < m_edges.size()) {
+    const auto& previous_edge = *std::next(first, -1);
+    const auto& next_edge = *std::next(last, 1);
+    auto new_edge_own = [&previous_edge, &next_edge, &bridge, this]() {
+      if (bridge == nullptr) {
+        return std::make_unique<Edge>(previous_edge->b(), next_edge->a(), this);
+      } else {
+        assert(bridge->a() == previous_edge->b());
+        assert(bridge->b() == next_edge->a());
+        assert(bridge->path() == this);
+        return std::move(bridge);
+      }
+    }();
+    new_edge = new_edge_own.get();
+    m_edges.insert(std::next(last), std::move(new_edge_own));
+  } else {
+    assert(bridge == nullptr);
+  }
+  m_edges.erase(first, last);
+  assert(is_valid());
+  return {std::move(removed_edges), new_edge};
+}
+
+std::deque<std::unique_ptr<Edge> > Path::replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges)
+{
+  assert(is_valid());
+  std::deque<std::unique_ptr<Edge>> removed;
+  const auto begin = std::next(m_edges.begin(), path_view.begin());
+  const auto end = std::next(begin, path_view.size());
+  std::copy(std::move_iterator{begin}, std::move_iterator{end}, std::back_inserter(removed));
+  m_edges.erase(begin, end);
+  m_edges.insert(std::next(begin, path_view.begin()),
+                 std::move_iterator{edges.begin()},
+                 std::move_iterator{edges.end()});
+  assert(is_valid());
+  return removed;
+}
+
+std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> Path::cut(Edge& edge, std::shared_ptr<PathPoint> p)
+{
+  const auto it = std::find_if(m_edges.begin(), m_edges.end(), [&edge](const auto& u) {
+    return u.get() == &edge;
   });
+  if (it == m_edges.end()) {
+    throw PathException("Edge not found.");
+  }
+
+  const auto insert = [this](const auto pos, auto edge) -> Edge& {
+    auto& r = *edge;
+    m_edges.insert(pos, std::move(edge));
+    return r;
+  };
+  auto& r1 = insert(std::next(it, 1), std::make_unique<Edge>(edge.a(), p, this));
+  auto& r2 = insert(std::next(it, 2), std::make_unique<Edge>(p, edge.b(), this));
+
+  auto removed_edge = std::move(*it);
+  m_edges.erase(it);
+  assert(is_valid());
+  return {std::move(removed_edge), &r1, &r2};
+}
+
+bool Path::is_valid() const
+{
+  return is_valid(m_edges);
+}
+
+std::vector<PathPoint*> Path::points() const
+{
+  if (m_edges.empty()) {
+    return {};
+  }
+
+  std::vector<PathPoint*> points;
+  points.reserve(m_edges.size() + 1);
+  points.emplace_back(m_edges.front()->a().get());
+  for (const auto& edge : m_edges) {
+    points.emplace_back(edge->b().get());
+  }
+  return points;
+}
+
+std::vector<Edge*> Path::edges() const
+{
+  return util::transform<std::vector>(m_edges, &std::unique_ptr<Edge>::get);
 }
 
 }  // namespace omm

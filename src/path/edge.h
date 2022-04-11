@@ -1,11 +1,12 @@
 #pragma once
 
 #include <QString>
-#include <vector>
+#include <memory>
 
 namespace omm
 {
 
+class Path;
 class PathPoint;
 class Point;
 
@@ -13,19 +14,19 @@ class Edge
 {
 public:
   Edge() = default;
-  explicit Edge(PathPoint& a, PathPoint& b);
+  explicit Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* path);
   [[nodiscard]] QString label() const;
+  void flip() noexcept;
+  [[nodiscard]] bool has_point(const PathPoint* p) noexcept;
+  [[nodiscard]] std::shared_ptr<PathPoint> a() const noexcept;
+  [[nodiscard]] std::shared_ptr<PathPoint> b() const noexcept;
+  [[nodiscard]] bool operator<(const Edge& other) const noexcept;
+  Path* path() const;
 
-  [[nodiscard]] Point start_geometry() const;
-  [[nodiscard]] Point end_geometry() const;
-  [[nodiscard]] PathPoint* start_point() const;
-  [[nodiscard]] PathPoint* end_point() const;
-
-  bool flipped = false;
-  PathPoint* a = nullptr;
-  PathPoint* b = nullptr;
-
-
+private:
+  Path* m_path;
+  std::shared_ptr<PathPoint> m_a = nullptr;
+  std::shared_ptr<PathPoint> m_b = nullptr;
 };
 
 }  // namespace omm

@@ -31,7 +31,6 @@ class PythonEngine;
 class StyleList;
 class ToolBox;
 struct ExportOptions;
-class DisjointPathPointSetForest;
 
 namespace nodes
 {
@@ -249,12 +248,6 @@ public:
 
 private:
   std::unique_ptr<ExportOptions> m_export_options;
-
-  // === Joined Points ===
-private:
-  std::unique_ptr<DisjointPathPointSetForest> m_joined_points;
-public:
-  [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
 };
 
 }  // namespace omm

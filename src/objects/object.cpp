@@ -268,13 +268,15 @@ QString Object::to_string() const
 
 PathVector Object::join(const std::vector<Object*>& objects)
 {
-  PathVector path_vector;
-  for (const auto* object : objects) {
-    for (const auto* path : object->path_vector().paths()) {
-      path_vector.add_path(std::make_unique<Path>(*path));
-    }
-  }
-  return path_vector;
+  (void) objects;
+  return {};
+//  PathVector path_vector;
+//  for (const auto* object : objects) {
+//    for (const auto* path : object->path_vector().paths()) {
+//      path_vector.add_path(std::make_unique<Path>(*path));
+//    }
+//  }
+//  return path_vector;
 }
 
 void Object::serialize(serialization::SerializerWorker& worker) const

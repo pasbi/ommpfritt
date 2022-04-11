@@ -16,15 +16,12 @@ class PathVector;
 class PathPoint
 {
 public:
-  explicit PathPoint(const Point& geometry, Path& path);
-  explicit PathPoint(Path& path);
+  explicit PathPoint(const Point& geometry, PathVector* path_vector);
   void set_geometry(const Point& point);
   [[nodiscard]] const Point& geometry() const;
-  PathPoint copy(Path& path) const;
-  [[nodiscard]] Path& path() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PathPoint", "PathPoint");
 
-  void set_selected(bool is_selected, bool update_buddies = true);
+  void set_selected(bool is_selected);
   [[nodiscard]] bool is_selected() const;
 
   // The PathPoint is identified by it's memory address, which hence must not change during its
@@ -37,13 +34,7 @@ public:
   PathPoint& operator=(PathPoint&& other) = delete;
   ~PathPoint() = default;
 
-  [[nodiscard]] ::transparent_set<PathPoint*> joined_points() const;
-  void join(::transparent_set<PathPoint*> buddies);
-  void disjoin();
   [[nodiscard]] PathVector* path_vector() const;
-  [[nodiscard]] Point compute_joined_point_geometry(PathPoint& joined) const;
-  [[nodiscard]] bool is_dangling() const;
-  static bool eq(const PathPoint* p1, const PathPoint* p2);
 
   /**
    * @brief debug_id returns an string to identify the point uniquely at this point in time
@@ -60,8 +51,8 @@ public:
   [[nodiscard]] std::size_t index() const;
 
 private:
+  PathVector* m_path_vector;
   Point m_geometry;
-  Path& m_path;
   bool m_is_selected = false;
 };
 

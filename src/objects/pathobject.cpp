@@ -35,14 +35,6 @@ PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
       .set_label(QObject::tr("interpolation"))
       .set_category(category);
   PathObject::update();
-
-  if (scene != nullptr) {
-    connect(&scene->mail_box(), &MailBox::transformation_changed, this, [this](const Object& o) {
-      if (&o == this) {
-        geometry().update_joined_points_geometry();
-      }
-    });
-  }
 }
 
 PathObject::PathObject(Scene* scene, const PathVector& path_vector)
@@ -53,18 +45,12 @@ PathObject::PathObject(Scene* scene, const PathVector& path_vector)
 PathObject::PathObject(Scene* scene)
   : PathObject(scene, std::make_unique<PathVector>(this))
 {
-  if (const auto* const scene = this->scene(); scene != nullptr) {
-    m_path_vector->share_joined_points(scene->joined_points());
-  }
 }
 
 PathObject::PathObject(const PathObject& other)
   : Object(other)
   , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
 {
-  if (const auto*  const scene = this->scene(); scene != nullptr && other.path_vector().joined_points_shared()) {
-    m_path_vector->share_joined_points(scene->joined_points());
-  }
 }
 
 PathObject::~PathObject() = default;

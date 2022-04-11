@@ -1,6 +1,7 @@
 #include "tools/pathtool.h"
 #include "commands/addcommand.h"
 #include "commands/modifypointscommand.h"
+#include "commands/addremovepointscommand.h"
 #include "commands/joinpointscommand.h"
 #include "main/application.h"
 #include "objects/pathobject.h"
@@ -72,7 +73,7 @@ public:
   void insert_point_segment(const Point& point, const std::size_t index)
   {
     std::deque<std::unique_ptr<PathPoint>> points;
-    m_current.point = points.emplace_back(std::make_unique<PathPoint>(point, *m_current.path)).get();
+    m_current.point = points.emplace_back(std::make_unique<PathPoint>(point, m_current.path->path_vector())).get();
     m_located_paths.emplace_back(m_current.path, index, std::move(points));
     if (m_target_point != nullptr) {
       m_points_to_join.insert({m_current.point, m_target_point});
@@ -81,25 +82,7 @@ public:
 
   void add_point(const Point& point)
   {
-    if (m_current.path == nullptr) {
-      // no path is selected: add the point to a newly created segment
-      auto new_path = std::make_unique<Path>(std::deque{point}, &m_current.path_object->geometry());
-      m_current.point = &new_path->at(0);
-      m_located_paths.emplace_back(std::move(new_path));
-    } else if (m_current.path->size() == 0 || m_current.path->points().back() == m_current.last_point) {
-      // segment is empty or last point of the segmet is selected: append point at end
-      insert_point_segment(point, m_current.path->size());
-    } else if (m_current.path->points().front() == m_current.last_point) {
-      // first point of segment is selected: append point at begin
-      insert_point_segment(point, 0);
-    } else {
-      // other point of segment is selected: add point to a newly created segment and join points
-      auto new_path = std::make_unique<Path>(std::deque{m_current.last_point->geometry(), point},
-                                             &m_current.path_object->geometry());
-      m_current.point = &new_path->at(1);
-      m_points_to_join = {&new_path->at(0), m_current.last_point};
-      m_located_paths.emplace_back(std::move(new_path));
-    }
+    (void) point;
   }
 
   void polish()
@@ -108,10 +91,7 @@ public:
     if (!m_points_to_join.empty()) {
       start_macro();
     }
-    m_scene.submit<AddPointsCommand>(current_path, std::move(m_located_paths));
-    if (!m_points_to_join.empty()) {
-      m_scene.submit<JoinPointsCommand>(m_scene, std::deque{m_points_to_join});
-    }
+    m_scene.submit<AddPointsCommand>(std::move(m_located_paths));
     current_path.geometry().deselect_all_points();
     m_current.point->set_selected(true);
     current_path.update();
@@ -141,7 +121,7 @@ private:
   PathTool::Current& m_current;
   std::unique_ptr<Macro> m_macro;
   PathPoint* m_target_point = nullptr;
-  std::deque<AddPointsCommand::OwnedLocatedPath> m_located_paths;
+  std::deque<OwnedLocatedPath> m_located_paths;
   ::transparent_set<PathPoint*> m_points_to_join;
 };
 
