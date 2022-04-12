@@ -14,7 +14,7 @@ public:
 
 protected:
   void on_property_value_changed(Property* property) override;
-  PathVector compute_path_vector() const override;
+  PathVectorGeometry compute_geometry() const override;
 
   static constexpr auto SIZE_PROPERTY_KEY = "size";
   static constexpr auto RADIUS_PROPERTY_KEY = "r";

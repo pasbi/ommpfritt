@@ -56,7 +56,7 @@ protected:
   void update_property_visibility(Mode mode);
 
 private:
-  PathVector compute_path_vector() const override;
+  PathVectorGeometry compute_geometry() const override;
 
   std::vector<std::unique_ptr<Object>> make_clones();
   std::vector<std::unique_ptr<Object>> copy_children(std::size_t count);

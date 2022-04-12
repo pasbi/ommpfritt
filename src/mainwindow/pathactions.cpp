@@ -17,7 +17,9 @@
 #include "path/face.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
+#include "path/pathgeometry.h"
 #include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
@@ -39,7 +41,7 @@ using namespace omm;
 template<typename F> void foreach_subpath(Application& app, F&& f)
 {
   for (auto* path_object : app.scene->item_selection<PathObject>()) {
-    for (auto* path : path_object->geometry().paths()) {
+    for (auto* path : path_object->path_vector().paths()) {
       f(path);
     }
   }
@@ -50,7 +52,7 @@ void modify_tangents(InterpolationMode mode, Application& app)
   std::map<PathPoint*, Point> map;
   const auto paths = app.scene->item_selection<PathObject>();
   for (PathObject* path_object : paths) {
-    for (const Path* path : path_object->geometry().paths()) {
+    for (const Path* path : path_object->path_vector().paths()) {
       const auto points = path->points();
       for (std::size_t i = 0; i < points.size(); ++i) {
         PathPoint* point = points[i];
@@ -59,7 +61,7 @@ void modify_tangents(InterpolationMode mode, Application& app)
           case InterpolationMode::Bezier:
             break;  // do nothing.
           case InterpolationMode::Smooth:
-            map[point] = path->smoothen_point(i);
+            map[point] = path->geometry().smoothen_point(i);
             break;
           case InterpolationMode::Linear:
             map[point] = point->geometry().nibbed();
@@ -128,7 +130,7 @@ void remove_selected_points(Application& app)
   std::unique_ptr<Macro> macro;
   for (auto* path_object : app.scene->item_selection<PathObject>()) {
     std::deque<PathView> removed_points;
-    for (Path* path : path_object->geometry().paths()) {
+    for (Path* path : path_object->path_vector().paths()) {
       const auto selected_ranges = find_coherent_ranges(path->points(),
                                                         std::mem_fn(&PathPoint::is_selected));
       for (const auto& range : selected_ranges) {
@@ -191,7 +193,7 @@ void select_all(Application& app)
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (auto* point : path_object->geometry().points()) {
+      for (auto* point : path_object->path_vector().points()) {
         point->set_selected(true);
       }
     }
@@ -202,7 +204,7 @@ void select_all(Application& app)
     break;
   case SceneMode::Face:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (const auto& face : path_object->geometry().faces()) {
+      for (const auto& face : path_object->path_vector().faces()) {
         path_object->set_face_selected(face, true);
       }
     }
@@ -217,7 +219,7 @@ void deselect_all(Application& app)
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (auto* point : path_object->geometry().points()) {
+      for (auto* point : path_object->path_vector().points()) {
         point->set_selected(false);
       }
     }
@@ -228,7 +230,7 @@ void deselect_all(Application& app)
     break;
   case SceneMode::Face:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (const auto& face : path_object->geometry().faces()) {
+      for (const auto& face : path_object->path_vector().faces()) {
         path_object->set_face_selected(face, false);
       }
     }
@@ -252,7 +254,7 @@ void invert_selection(Application& app)
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (auto* point : path_object->geometry().points()) {
+      for (auto* point : path_object->path_vector().points()) {
         point->set_selected(!point->is_selected());
       }
     }
@@ -264,7 +266,7 @@ void invert_selection(Application& app)
     break;
   case SceneMode::Face:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (const auto& face : path_object->geometry().faces()) {
+      for (const auto& face : path_object->path_vector().faces()) {
         path_object->set_face_selected(face, path_object->is_face_selected(face));
       }
     }
@@ -281,8 +283,8 @@ void select_connected_points(Application& app)
 
 void fill_selection(Application& app)
 {
-  foreach_subpath(app, [](const auto* segment) {
-    const auto points = segment->points();
+  foreach_subpath(app, [](const auto* path) {
+    const auto points = path->points();
     auto first_it = std::find_if(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected));
     auto last_it = std::find_if(points.rbegin(), points.rend(), std::mem_fn(&PathPoint::is_selected));
     if (first_it != points.end() && last_it != points.rend()) {
@@ -294,9 +296,9 @@ void fill_selection(Application& app)
 
 void extend_selection(Application& app)
 {
-  foreach_subpath(app, [](const auto* segment) {
+  foreach_subpath(app, [](const auto* path) {
     std::set<std::size_t> selection;
-    const auto points = segment->points();
+    const auto points = path->points();
     for (std::size_t i = 1; i < points.size() - 1; ++i) {
       if (points[i]->is_selected()) {
         selection.insert(i - 1);

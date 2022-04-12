@@ -22,7 +22,7 @@ class Point;
 class Property;
 class Scene;
 struct PainterOptions;
-class PathVector;
+class PathVectorGeometry;
 
 class Object
     : public PropertyOwner<Kind::Object>
@@ -85,7 +85,7 @@ private:
    * @note use `Object::geom_paths` or `Object::painter_path` to access the paths.
    * @return the paths.
    */
-  virtual PathVector compute_path_vector() const;
+  virtual PathVectorGeometry compute_geometry() const;
 
 public:
   enum class Interpolation { Natural, Distance };
@@ -98,7 +98,7 @@ private:
   class CachedGeomPathVectorGetter;
   std::unique_ptr<CachedGeomPathVectorGetter> m_cached_geom_path_vector_getter;
 public:
-  const PathVector& path_vector() const;
+  const PathVectorGeometry& geometry() const;
 
   TagList tags;
 
@@ -156,7 +156,7 @@ private:
   static const QBrush m_bounding_box_brush;
 
 protected:
-  static PathVector join(const std::vector<Object*>& objects);
+  static PathVectorGeometry join(const std::vector<Object*>& objects);
 };
 
 }  // namespace omm

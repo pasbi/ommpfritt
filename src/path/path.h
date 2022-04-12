@@ -1,10 +1,8 @@
 #pragma once
 
 #include "common.h"
-#include "geometry/vec2.h"
 #include <deque>
 #include <memory>
-#include <QPainterPath>
 
 namespace omm
 {
@@ -19,6 +17,7 @@ class Point;
 class PathPoint;
 class Edge;
 class PathView;
+class PathGeometry;
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path;
@@ -50,6 +49,7 @@ public:
   void deserialize(serialization::DeserializerWorker& worker);
 
   Edge& add_edge(std::unique_ptr<Edge> edge);
+  Edge& add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b);
 
   /**
    * @brief remove removes the points specified by given `path_view` and returns the ownership
@@ -77,36 +77,13 @@ public:
   PathPoint& add_point(const Point& point);
   void make_linear() const;
   void smoothen() const;
-  [[nodiscard]] Point smoothen_point(std::size_t i) const;
   void insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint>> points);
   [[nodiscard]] std::deque<std::unique_ptr<PathPoint>> extract(std::size_t start, std::size_t size);
-  [[nodiscard]] static std::vector<Vec2f>
-  compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation = InterpolationMode::Bezier);
+  PathGeometry geometry() const;
 
   [[nodiscard]] PathVector* path_vector() const;
   void set_path_vector(PathVector* path_vector);
   void set_interpolation(InterpolationMode interpolation) const;
-  [[nodiscard]] QPainterPath to_painter_path() const;
-
-  template<typename Points> static QPainterPath to_painter_path(const Points& points, bool close = false)
-  {
-    if (points.empty()) {
-      return {};
-    }
-    QPainterPath path;
-    path.moveTo(points.front().position().to_pointf());
-    for (auto it = points.begin(); next(it) != points.end(); ++it) {
-      path.cubicTo(it->right_position().to_pointf(),
-                   next(it)->left_position().to_pointf(),
-                   next(it)->position().to_pointf());
-    }
-    if (close) {
-      path.cubicTo(points.back().right_position().to_pointf(),
-                   points.front().left_position().to_pointf(),
-                   points.front().position().to_pointf());
-    }
-    return path;
-  }
 
   template<typename Edges> [[nodiscard]] static bool is_valid(const Edges& edges)
   {

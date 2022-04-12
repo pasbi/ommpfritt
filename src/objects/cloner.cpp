@@ -3,7 +3,7 @@
 #include <QObject>
 
 #include "objects/empty.h"
-#include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -192,7 +192,7 @@ void Cloner::update()
   Object::update();
 }
 
-PathVector Cloner::compute_path_vector() const
+PathVectorGeometry Cloner::compute_geometry() const
 {
   return join(util::transform(m_clones, [](const auto& up) { return up.get(); }));
 }

@@ -77,15 +77,6 @@ void PathVector::deserialize(serialization::DeserializerWorker& worker)
   (void) worker;
 }
 
-QPainterPath PathVector::to_painter_path() const
-{
-  QPainterPath outline;
-  for (const Path* path : paths()) {
-    outline.addPath(path->to_painter_path());
-  }
-  return outline;
-}
-
 std::set<Face> PathVector::faces() const
 {
   Graph graph{*this};
@@ -115,10 +106,15 @@ Path* PathVector::find_path(const PathPoint& point) const
   return nullptr;
 }
 
-Path& PathVector::add_path(std::unique_ptr<Path>&& path)
+Path& PathVector::add_path(std::unique_ptr<Path> path)
 {
   path->set_path_vector(this);
   return *m_paths.emplace_back(std::move(path));
+}
+
+Path& PathVector::add_path()
+{
+  return add_path(std::make_unique<Path>(this));
 }
 
 std::unique_ptr<Path> PathVector::remove_path(const Path &path)

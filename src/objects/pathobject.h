@@ -35,10 +35,10 @@ public:
   void on_property_value_changed(Property* property) override;
   Flag flags() const override;
 
-  const PathVector& geometry() const;
-  PathVector& geometry();
+  const PathVector& path_vector() const;
+  PathVector& path_vector();
 
-  PathVector compute_path_vector() const override;
+  PathVectorGeometry compute_geometry() const override;
   void set_face_selected(const Face& face, bool s);
   [[nodiscard]] bool is_face_selected(const Face& face) const;
 

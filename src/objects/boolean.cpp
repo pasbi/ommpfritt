@@ -1,5 +1,5 @@
 #include "objects/boolean.h"
-#include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "properties/optionproperty.h"
 #include "path/lib2geomadapter.h"
 #include <2geom/2geom.h>
@@ -94,7 +94,7 @@ void Boolean::polish()
   listen_to_children_changes();
 }
 
-PathVector Boolean::compute_path_vector() const
+PathVectorGeometry Boolean::compute_geometry() const
 {
   return {};
 }

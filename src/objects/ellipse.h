@@ -20,7 +20,7 @@ public:
   void on_property_value_changed(Property* property) override;
 
 private:
-  PathVector compute_path_vector() const override;
+  PathVectorGeometry compute_geometry() const override;
 };
 
 }  // namespace omm

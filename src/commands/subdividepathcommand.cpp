@@ -9,7 +9,7 @@ namespace
 using namespace omm;
 
 
-auto compute_cuts(const PathVector& path_vector)
+auto compute_cuts(const PathVectorGeometry& path_vector)
 {
   (void) path_vector;
   std::list<Geom::PathVectorTime> cuts;

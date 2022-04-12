@@ -104,12 +104,12 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
 namespace omm
 {
 
-class Object::CachedGeomPathVectorGetter : public CachedGetter<PathVector, Object>
+class Object::CachedGeomPathVectorGetter : public CachedGetter<PathVectorGeometry, Object>
 {
 public:
   using CachedGetter::CachedGetter;
 private:
-  PathVector compute() const override;
+  PathVectorGeometry compute() const override;
 };
 
 const QPen Object::m_bounding_box_pen = make_bounding_box_pen();
@@ -266,7 +266,7 @@ QString Object::to_string() const
   return QString("%1[%2]").arg(type(), name());
 }
 
-PathVector Object::join(const std::vector<Object*>& objects)
+PathVectorGeometry Object::join(const std::vector<Object*>& objects)
 {
   (void) objects;
   return {};

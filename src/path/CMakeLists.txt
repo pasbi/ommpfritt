@@ -11,8 +11,12 @@ target_sources(libommpfritt PRIVATE
   pathpoint.h
   path.cpp
   path.h
+  pathgeometry.cpp
+  pathgeometry.h
   pathvector.cpp
   pathvector.h
+  pathvectorgeometry.cpp
+  pathvectorgeometry.h
   pathview.cpp
   pathview.h
 )
