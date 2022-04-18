@@ -19,6 +19,10 @@ public:
   compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation = InterpolationMode::Bezier);
   [[nodiscard]] QPainterPath to_painter_path() const;
   [[nodiscard]] Point smoothen_point(std::size_t i) const;
+  void set_interpolation(InterpolationMode interpolation);
+  void make_linear();
+  void smoothen();
+  const std::vector<Point>& points() const;
 
 private:
   std::vector<Point> m_points;

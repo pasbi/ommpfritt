@@ -71,7 +71,7 @@ void TransformPointsHelper::update()
 {
   m_initial_points.clear();
   for (const auto* path_object : m_path_objects) {
-    for (PathPoint* point : path_object->geometry().selected_points()) {
+    for (PathPoint* point : path_object->path_vector().selected_points()) {
       m_initial_points[point] = point->geometry();
     }
   }

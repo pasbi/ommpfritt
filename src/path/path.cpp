@@ -6,18 +6,10 @@
 #include "serializers/abstractserializer.h"
 #include "serializers/serializerworker.h"
 #include "serializers/deserializerworker.h"
-#include "pathview.h"
+#include "path/pathview.h"
+#include "path/pathgeometry.h"
 #include <2geom/pathvector.h>
 
-namespace
-{
-
-using namespace omm;
-
-
-
-
-}  // namespace
 
 namespace omm
 {
@@ -25,13 +17,22 @@ namespace omm
 Path::Path(PathVector* path_vector)
     : m_path_vector(path_vector)
 {
+}
 
+Path::Path(const PathGeometry& geometry, PathVector* path_vector)
+    : m_path_vector(path_vector)
+{
+  const auto ps = geometry.points();
+  for (std::size_t i = 1; i < ps.size(); ++i) {
+    add_edge(std::make_unique<PathPoint>(ps[i - 1], path_vector),
+             std::make_unique<PathPoint>(ps[i], path_vector));
+  }
 }
 
 Path::Path(const Path& path, PathVector* path_vector)
-    : m_path_vector(path_vector)
+    : m_edges(::copy(path.m_edges))
+    , m_path_vector(path_vector)
 {
-  (void) path;  // TODO
 }
 
 Path::~Path() = default;
@@ -40,60 +41,6 @@ bool Path::contains(const PathPoint& point) const
 {
   const auto points = this->points();
   return std::find(points.begin(), points.end(), &point) != points.end();
-}
-
-void Path::make_linear() const
-{
-  for (const auto& point : points()) {
-    point->set_geometry(point->geometry().nibbed());
-  }
-}
-
-void Path::set_interpolation(InterpolationMode interpolation) const
-{
-  switch (interpolation) {
-  case InterpolationMode::Bezier:
-    return;
-  case InterpolationMode::Smooth:
-    smoothen();
-    return;
-  case InterpolationMode::Linear:
-    make_linear();
-    return;
-  }
-  Q_UNREACHABLE();
-}
-
-QPainterPath Path::to_painter_path() const
-{
-  if (const auto points = this->points(); !points.empty()) {
-    return Path::to_painter_path(util::transform(points, &PathPoint::geometry));
-  } else {
-    return {};
-  }
-}
-
-std::vector<Vec2f> Path::compute_control_points(const Point& a, const Point& b, InterpolationMode interpolation)
-{
-  static constexpr double t = 1.0 / 3.0;
-  switch (interpolation) {
-  case InterpolationMode::Bezier:
-    [[fallthrough]];
-  case InterpolationMode::Smooth:
-    return {a.position(),
-            a.right_position(),
-            b.left_position(),
-            b.position()};
-    break;
-  case InterpolationMode::Linear:
-    return {a.position(),
-            ((1.0 - t) * a.position() + t * b.position()),
-            ((1.0 - t) * b.position() + t * a.position()),
-            b.position()};
-    break;
-  }
-  Q_UNREACHABLE();
-  return {};
 }
 
 PathVector* Path::path_vector() const
@@ -106,14 +53,9 @@ void Path::set_path_vector(PathVector* path_vector)
   m_path_vector = path_vector;
 }
 
-void Path::smoothen() const
+PathGeometry Path::geometry() const
 {
-}
-
-Point Path::smoothen_point(std::size_t i) const
-{
-  Q_UNUSED(i)
-  return {};
+  return PathGeometry{util::transform(points(), &PathPoint::geometry)};
 }
 
 void Path::serialize(serialization::SerializerWorker& worker) const
@@ -124,6 +66,11 @@ void Path::serialize(serialization::SerializerWorker& worker) const
 void Path::deserialize(serialization::DeserializerWorker& worker)
 {
   (void) worker;
+}
+
+Edge& Path::add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b)
+{
+  return add_edge(std::make_unique<Edge>(a, b, this));
 }
 
 Edge& Path::add_edge(std::unique_ptr<Edge> edge)

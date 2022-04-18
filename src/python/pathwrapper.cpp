@@ -16,11 +16,8 @@ void PathWrapper::define_python_interface(py::object& module)
 py::object PathWrapper::points()
 {
   auto& path_object = dynamic_cast<wrapped_type&>(wrapped);
-  std::vector<PathPointWrapper> point_wrappers;
-  point_wrappers.reserve(path_object.geometry().point_count());
-  for (PathPoint* point : path_object.geometry().points()) {
-    point_wrappers.emplace_back(*point);
-  }
+  static constexpr auto wrap = [](auto* path_point) { return PathPointWrapper{*path_point}; };
+  const auto point_wrappers = util::transform<std::vector>(path_object.path_vector().points(), wrap);
   return py::cast(point_wrappers);
 }
 

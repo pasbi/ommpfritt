@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "path/pathgeometry.h"
 
 class QPainterPath;
 
@@ -13,7 +14,8 @@ class PathVectorGeometry
 {
 public:
   explicit PathVectorGeometry(std::vector<PathGeometry> paths);
-  PathVectorGeometry() = default;
+  PathVectorGeometry() noexcept;
+  ~PathVectorGeometry();
   const std::vector<PathGeometry>& paths() const;
   QPainterPath to_painter_path() const;
 

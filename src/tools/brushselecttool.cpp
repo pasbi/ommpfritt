@@ -46,7 +46,7 @@ bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
     }
     for (Object* object : scene()->item_selection<Object>()) {
       if (auto* path_object = type_cast<PathObject*>(object); path_object != nullptr) {
-        for (auto* point : path_object->geometry().points()) {
+        for (auto* point : path_object->path_vector().points()) {
           point->set_selected(false);
         }
       }
@@ -75,7 +75,7 @@ void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& eve
   for (Object* object : scene()->item_selection<Object>()) {
     auto* path_object = type_cast<PathObject*>(object);
     if (path_object != nullptr) {
-      for (auto* point : path_object->geometry().points()) {
+      for (auto* point : path_object->path_vector().points()) {
         // we can't transform `pos` with path's inverse transformation because if it scales,
         // `radius` will be wrong.
         const auto gt = path_object->global_transformation(Space::Viewport);

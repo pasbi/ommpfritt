@@ -2,7 +2,7 @@
 
 #include "commands/propertycommand.h"
 #include "objects/empty.h"
-#include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
 #include "renderers/painteroptions.h"
@@ -158,10 +158,10 @@ void Instance::update()
   Object::update();
 }
 
-PathVector Instance::compute_path_vector() const
+PathVectorGeometry Instance::compute_geometry() const
 {
   if (m_reference) {
-    return PathVector{m_reference->path_vector(), nullptr};
+    return m_reference->geometry();
   } else {
     return {};
   }

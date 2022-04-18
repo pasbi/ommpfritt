@@ -23,6 +23,7 @@ class EnhancedPathVector;
 class Path;
 class PathPoint;
 class PathObject;
+class PathVectorGeometry;
 class Scene;
 class Face;
 
@@ -31,6 +32,7 @@ class PathVector
 {
 public:
   PathVector(PathObject* path_object = nullptr);
+  PathVector(const PathVectorGeometry& geometry, PathObject* path_object = nullptr);
   PathVector(const PathVector& other, PathObject* path_object = nullptr);
   PathVector(PathVector&& other) noexcept;
   PathVector& operator=(const PathVector& other);
@@ -56,6 +58,8 @@ public:
   void deselect_all_points() const;
   [[nodiscard]] PathObject* path_object() const;
   void draw_point_ids(QPainter& painter) const;
+  PathVectorGeometry geometry() const;
+
 
   /**
    * @brief is_valid returns true if this path vector is valid.

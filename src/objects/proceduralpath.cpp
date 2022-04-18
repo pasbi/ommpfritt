@@ -3,7 +3,7 @@
 #include "objects/pathobject.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
-#include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/stringproperty.h"
@@ -92,7 +92,7 @@ void ProceduralPath::update()
   Object::update();
 }
 
-PathVector ProceduralPath::compute_path_vector() const
+PathVectorGeometry ProceduralPath::compute_geometry() const
 {
   return {};
 //  PathVector pv;

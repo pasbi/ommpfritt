@@ -23,7 +23,7 @@ auto make_tab_widget_page(omm::PathObject& path_object, std::list<omm::PointEdit
   auto widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>();
 
-  for (auto* point : path_object.geometry().points()) {
+  for (auto* point : path_object.path_vector().points()) {
     auto point_edit = std::make_unique<omm::PointEdit>(path_object, *point);
     point_edits.push_back(point_edit.get());
     layout->addWidget(point_edit.release());

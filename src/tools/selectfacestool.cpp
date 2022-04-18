@@ -39,8 +39,7 @@ void SelectFacesTool::reset()
 void SelectFacesTool::make_handles()
 {
   for (auto* path_object : scene()->item_selection<PathObject>()) {
-    const auto faces = path_object->geometry().faces();
-    for (const auto& face : faces) {
+    for (const auto& face : path_object->faces()) {
       auto handle = std::make_unique<FaceHandle>(*this, *path_object, face);
       push_handle(std::move(handle));
     }

@@ -15,7 +15,7 @@ PointSelection::PointSelection(Scene& scene) : m_scene(scene)
 {
   ::transparent_set<PathPoint*> selected_points;
   for (auto* path_object : type_casts<PathObject*>(m_scene.item_selection<Object>())) {
-    for (auto* point : path_object->geometry().selected_points()) {
+    for (auto* point : path_object->path_vector().selected_points()) {
       selected_points.insert(point);
     }
   }

@@ -36,6 +36,7 @@ class Path
 {
 public:
   explicit Path(PathVector* path_vector = nullptr);
+  explicit Path(const PathGeometry& geometry, PathVector* path_vector = nullptr);
   explicit Path(const Path& path, PathVector* path_vector);
   explicit Path(std::vector<std::unique_ptr<Edge>> edges, PathVector* path_vector = nullptr);
   ~Path();

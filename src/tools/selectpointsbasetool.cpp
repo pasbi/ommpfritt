@@ -76,7 +76,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
     return true;
   } else if (allow_clear && event.buttons() == Qt::LeftButton) {
     for (auto* path_object : path_objects) {
-      path_object->geometry().deselect_all_points();
+      path_object->path_vector().deselect_all_points();
     }
     Q_EMIT scene()->mail_box().point_selection_changed();
     return false;
@@ -88,7 +88,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 void SelectPointsBaseTool::make_handles()
 {
   for (auto* path_object : scene()->item_selection<PathObject>()) {
-    const auto points = path_object->geometry().points();
+    const auto points = path_object->path_vector().points();
     for (auto* point : points) {
       auto handle = std::make_unique<PointSelectHandle>(*this, *path_object, *point);
       push_handle(std::move(handle));

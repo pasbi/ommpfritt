@@ -2,7 +2,7 @@
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "path/path.h"
-#include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include <QObject>
 
 namespace omm
@@ -36,7 +36,7 @@ Flag LineObject::flags() const
   return Object::flags() | Flag::Convertible;
 }
 
-PathVector LineObject::compute_path_vector() const
+PathVectorGeometry LineObject::compute_geometry() const
 {
   return {};
 }

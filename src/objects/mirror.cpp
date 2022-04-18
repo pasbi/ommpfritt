@@ -4,6 +4,7 @@
 #include "objects/empty.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "path/lib2geomadapter.h"
 #include "objects/pathobject.h"
 #include "properties/boolproperty.h"
@@ -21,11 +22,6 @@ namespace
 {
 
 using namespace omm;
-
-
-
-
-
 
 ObjectTransformation get_mirror_t(Mirror::Direction direction)
 {
@@ -133,7 +129,7 @@ std::unique_ptr<Object> Mirror::convert(bool& keep_children) const
   }
 }
 
-PathVector Mirror::compute_path_vector() const
+PathVectorGeometry Mirror::compute_geometry() const
 {
   if (!is_active()) {
     return {};
@@ -142,7 +138,7 @@ PathVector Mirror::compute_path_vector() const
   case Mode::Path:
     return type_cast<PathObject&>(*m_reflection).geometry();
   case Mode::Object:
-    return PathVector{m_reflection->path_vector(), nullptr};
+    return m_reflection->geometry();
   default:
     Q_UNREACHABLE();
   }

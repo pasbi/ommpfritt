@@ -55,4 +55,36 @@ Point PathGeometry::smoothen_point(std::size_t i) const
   return {};  // TODO
 }
 
+void PathGeometry::set_interpolation(InterpolationMode interpolation)
+{
+  switch (interpolation) {
+  case InterpolationMode::Bezier:
+    return;
+  case InterpolationMode::Smooth:
+    smoothen();
+    return;
+  case InterpolationMode::Linear:
+    make_linear();
+    return;
+  }
+  Q_UNREACHABLE();
+}
+
+void PathGeometry::make_linear()
+{
+  for (auto& point : m_points) {
+    point = point.nibbed();
+  }
+}
+
+void PathGeometry::smoothen()
+{
+
+}
+
+const std::vector<Point>& PathGeometry::points() const
+{
+  return m_points;
+}
+
 }  // namespace omm

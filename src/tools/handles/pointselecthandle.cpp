@@ -174,7 +174,7 @@ std::pair<bool, bool> PointSelectHandle::tangents_active() const
   const auto* interpolation_property = m_path_object.property(PathObject::INTERPOLATION_PROPERTY_KEY);
   const auto interpolation_mode = interpolation_property->value<InterpolationMode>();
   if ((interpolation_mode == InterpolationMode::Bezier && m_point.is_selected())) {
-    const auto points = m_path_object.geometry().find_path(m_point)->points();
+    const auto points = m_path_object.path_vector().find_path(m_point)->points();
     assert(!points.empty());
     return {points.front() != &m_point, points.back() != &m_point};
   } else {
@@ -192,7 +192,7 @@ void PointSelectHandle::set_selected(bool selected)
 
 void PointSelectHandle::clear()
 {
-  for (auto* point : m_path_object.geometry().points()) {
+  for (auto* point : m_path_object.path_vector().points()) {
     point->set_selected(false);
   }
 }

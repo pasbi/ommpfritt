@@ -3,7 +3,9 @@
 #include "commands/modifypointscommand.h"
 #include "common.h"
 #include "path/path.h"
+#include "path/pathgeometry.h"
 #include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
@@ -37,8 +39,8 @@ PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
   PathObject::update();
 }
 
-PathObject::PathObject(Scene* scene, const PathVector& path_vector)
-  : PathObject(scene, std::make_unique<PathVector>(path_vector, this))
+PathObject::PathObject(Scene* scene, const PathVectorGeometry& geometry)
+  : PathObject(scene, std::make_unique<PathVector>(geometry, this))
 {
 }
 
@@ -86,25 +88,25 @@ Flag PathObject::flags() const
   return Flag::None;
 }
 
-const PathVector& PathObject::geometry() const
+const PathVector& PathObject::path_vector() const
 {
   return *m_path_vector;
 }
 
-PathVector& PathObject::geometry()
+PathVector& PathObject::path_vector()
 {
   return *m_path_vector;
 }
 
-PathVector PathObject::compute_path_vector() const
+PathVectorGeometry PathObject::compute_geometry() const
 {
   const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
 
-  PathVector pv{*m_path_vector};
-  for (auto* path : pv.paths()) {
-    path->set_interpolation(interpolation);
+  auto paths = m_path_vector->geometry().paths();
+  for (auto& path : paths) {
+    path.set_interpolation(interpolation);
   }
-  return pv;
+  return PathVectorGeometry{std::move(paths)};
 }
 
 void PathObject::set_face_selected(const Face& face, bool s)

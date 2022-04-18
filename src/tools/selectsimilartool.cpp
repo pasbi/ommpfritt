@@ -105,7 +105,7 @@ void SelectSimilarTool::update_selection()
 {
   const auto strategy = property(STRATEGY_PROPERTY_KEY)->value<MatchStrategy>();
   for (const auto* path_object : scene()->item_selection<PathObject>()) {
-    for (auto* point : path_object->geometry().points()) {
+    for (auto* point : path_object->path_vector().points()) {
       if (m_base_selection.contains(point)) {
         const auto is_similar = [point, path_object, this](const PathPoint* b) {
           return this->is_similar(*path_object, point->geometry(), b->geometry());
@@ -132,7 +132,7 @@ void SelectSimilarTool::update_base_selection()
 {
   m_base_selection.clear();
   for (const auto* path_object : scene()->item_selection<PathObject>()) {
-    for (auto* point : path_object->geometry().points()) {
+    for (auto* point : path_object->path_vector().points()) {
       if (point->is_selected()) {
         m_base_selection.insert(point);
       }

@@ -1,7 +1,7 @@
 #include "objects/tip.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
-#include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 #include "scene/disjointpathpointsetforest.h"
@@ -40,7 +40,7 @@ void Tip::on_property_value_changed(Property* property)
   }
 }
 
-PathVector Tip::compute_path_vector() const
+PathVectorGeometry Tip::compute_geometry() const
 {
   return {};
 //  auto points = m_marker_properties.shape(1.0);

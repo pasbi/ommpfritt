@@ -15,6 +15,7 @@ class Edge
 public:
   Edge() = default;
   explicit Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* path);
+  explicit Edge(const Edge& edge, Path* path);
   [[nodiscard]] QString label() const;
   void flip() noexcept;
   [[nodiscard]] bool has_point(const PathPoint* p) noexcept;

@@ -6,7 +6,9 @@
 #include "path/lib2geomadapter.h"
 #include "path/path.h"
 #include "path/pathvector.h"
+#include "path/pathvectorgeometry.h"
 #include "path/face.h"
+#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -104,20 +106,11 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
 namespace omm
 {
 
-class Object::CachedGeomPathVectorGetter : public CachedGetter<PathVectorGeometry, Object>
-{
-public:
-  using CachedGetter::CachedGetter;
-private:
-  PathVectorGeometry compute() const override;
-};
-
 const QPen Object::m_bounding_box_pen = make_bounding_box_pen();
-const QBrush Object::m_bounding_box_brush = Qt::NoBrush;
-
 Object::Object(Scene* scene)
     : PropertyOwner(scene)
-    , m_cached_geom_path_vector_getter(std::make_unique<CachedGeomPathVectorGetter>(*this))
+    , m_cached_geometry_getter(make_simple_cached_getter(*this, &Object::compute_geometry))
+    , m_cached_faces_getter(make_simple_cached_getter(*this, &Object::compute_faces))
     , tags(*this)
 {
   static constexpr double STEP = 0.1;
@@ -164,7 +157,8 @@ Object::Object(Scene* scene)
 Object::Object(const Object& other)
     : PropertyOwner(other)
     , TreeElement(other)
-    , m_cached_geom_path_vector_getter(std::make_unique<CachedGeomPathVectorGetter>(*this))
+    , m_cached_geometry_getter(make_simple_cached_getter(*this, &Object::compute_geometry))
+    , m_cached_faces_getter(make_simple_cached_getter(*this, &Object::compute_faces))
     , tags(other.tags, *this)
     , m_draw_children(other.m_draw_children)
     , m_object_tree(other.m_object_tree)
@@ -366,7 +360,7 @@ void Object::draw_recursive(Painter& renderer, PainterOptions options) const
 BoundingBox Object::bounding_box(const ObjectTransformation& transformation) const
 {
   if (is_active()) {
-    return BoundingBox{(path_vector().to_painter_path() * transformation.to_qtransform()).boundingRect()};
+    return BoundingBox{(geometry().to_painter_path() * transformation.to_qtransform()).boundingRect()};
   } else {
     return BoundingBox{};
   }
@@ -402,7 +396,7 @@ Object& Object::adopt(std::unique_ptr<Object> adoptee, const std::size_t pos)
 
 std::unique_ptr<Object> Object::convert(bool& keep_children) const
 {
-  auto converted = std::make_unique<PathObject>(scene(), this->path_vector());
+  auto converted = std::make_unique<PathObject>(scene(), this->geometry());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
   converted->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
@@ -463,7 +457,8 @@ void Object::post_create_hook()
 
 void Object::update()
 {
-  m_cached_geom_path_vector_getter->invalidate();
+  m_cached_faces_getter->invalidate();
+  m_cached_geometry_getter->invalidate();
   if (Scene* scene = this->scene(); scene != nullptr) {
     Q_EMIT scene->mail_box().object_appearance_changed(*this);
   }
@@ -547,7 +542,7 @@ std::deque<const omm::Style*> Object::find_styles() const
 
 Point Object::pos(const Geom::PathVectorTime& t) const
 {
-  const auto paths = omm_to_geom(path_vector());
+  const auto paths = omm_to_geom(geometry());
   if (const auto n = paths.curveCount(); n == 0) {
     return Point{};
   } else if (t.path_index >= paths.size()) {
@@ -571,12 +566,17 @@ Point Object::pos(const Geom::PathVectorTime& t) const
 
 bool Object::contains(const Vec2f& point) const
 {
-  const auto path_vector = omm_to_geom(this->path_vector());
+  const auto path_vector = omm_to_geom(this->geometry());
   const auto winding = path_vector.winding(Geom::Point{point.x, point.y});
   return std::abs(winding) % 2 == 1;
 }
 
-PathVector Object::compute_path_vector() const
+PathVectorGeometry Object::compute_geometry() const
+{
+  return {};
+}
+
+std::vector<Face> Object::compute_faces() const
 {
   return {};
 }
@@ -584,7 +584,7 @@ PathVector Object::compute_path_vector() const
 Geom::PathVectorTime Object::compute_path_vector_time(double t, Interpolation interpolation) const
 {
   t = std::clamp(t, 0.0, almost_one);
-  const auto& path_vector = this->path_vector();
+  const auto& path_vector = this->geometry();
   if (path_vector.paths().empty()) {
     return {0, 0, 0.0};
   }
@@ -612,7 +612,7 @@ Object::compute_path_vector_time(int path_index, double t, Interpolation interpo
   }
 
   t = std::clamp(t, 0.0, almost_one);
-  const auto path_vector = omm_to_geom(this->path_vector());
+  const auto path_vector = omm_to_geom(this->geometry());
   if (static_cast<std::size_t>(path_index) >= path_vector.size()) {
     return {static_cast<std::size_t>(path_index), 0, 0.0};
   }
@@ -659,21 +659,21 @@ void Object::draw_object(Painter& renderer,
 {
   options.object_id = id();
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
-    const auto& path_vector = this->path_vector();
-    const auto faces = path_vector.faces();
-    const auto& outline = path_vector.to_painter_path();
-    if (!faces.empty() || !outline.isEmpty()) {
-      std::size_t i = 0;
-      for (const auto& face : faces) {
-        options.path_id = i;
-        renderer.set_style(style, *this, options);
-        painter->save();
-        painter->setPen(Qt::NoPen);
-        painter->drawPath(face.to_painter_path());
-        painter->restore();
-        i += 1;
-      }
+    const auto& faces = this->faces();
+    const auto& geometry = this->geometry();
+    const auto& outline = geometry.to_painter_path();
+    std::size_t face_id = 0;
+    for (const auto& face : faces) {
+      options.path_id = face_id;
+      renderer.set_style(style, *this, options);
+      painter->save();
+      painter->setPen(Qt::NoPen);
+      painter->drawPath(face.to_painter_path());
+      painter->restore();
+      face_id += 1;
+    }
 
+    if (!outline.isEmpty()) {
       painter->save();
       options.path_id = 0;
       renderer.set_style(style, *this, options);
@@ -681,17 +681,17 @@ void Object::draw_object(Painter& renderer,
       painter->drawPath(outline);
       painter->restore();
 
-      const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
-      const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
+//      const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
+//      const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
 
-      for (std::size_t path_index = 0; path_index < path_vector.paths().size(); ++path_index) {
-        const auto pos = [this, path_index](const double t) {
-          const auto tt = compute_path_vector_time(static_cast<int>(path_index), t);
-          return this->pos(tt).rotated(M_PI_2);
-        };
-        style.start_marker->draw_marker(renderer, pos(0.0), marker_color, width);
-        style.end_marker->draw_marker(renderer, pos(1.0), marker_color, width);
-      }
+//      for (std::size_t path_index = 0; path_index < geometry.paths().size(); ++path_index) {
+//        const auto pos = [this, path_index](const double t) {
+//          const auto tt = compute_path_vector_time(static_cast<int>(path_index), t);
+//          return this->pos(tt).rotated(M_PI_2);
+//        };
+//        style.start_marker->draw_marker(renderer, pos(0.0), marker_color, width);
+//        style.end_marker->draw_marker(renderer, pos(1.0), marker_color, width);
+//      }
     }
   }
 }
@@ -753,14 +753,14 @@ void Object::listen_to_children_changes()
   connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
 }
 
-PathVector Object::CachedGeomPathVectorGetter::compute() const
+const PathVectorGeometry& Object::geometry() const
 {
-  return m_self.compute_path_vector();
+  return m_cached_geometry_getter->operator()();
 }
 
-const PathVector& Object::path_vector() const
+const std::vector<Face>& Object::faces() const
 {
-  return m_cached_geom_path_vector_getter->operator()();
+  return m_cached_faces_getter->operator()();
 }
 
 }  // namespace omm

@@ -85,7 +85,9 @@ private:
    * @note use `Object::geom_paths` or `Object::painter_path` to access the paths.
    * @return the paths.
    */
+public:
   virtual PathVectorGeometry compute_geometry() const;
+  virtual std::vector<Face> compute_faces() const;
 
 public:
   enum class Interpolation { Natural, Distance };
@@ -95,10 +97,11 @@ public:
   compute_path_vector_time(int path_index, double t, Interpolation = Interpolation::Natural) const;
 
 private:
-  class CachedGeomPathVectorGetter;
-  std::unique_ptr<CachedGeomPathVectorGetter> m_cached_geom_path_vector_getter;
+  std::unique_ptr<CachedGetter<PathVectorGeometry, Object>> m_cached_geometry_getter;
+  std::unique_ptr<CachedGetter<std::vector<Face>, Object>> m_cached_faces_getter;
 public:
   const PathVectorGeometry& geometry() const;
+  const std::vector<Face>& faces() const;
 
   TagList tags;
 

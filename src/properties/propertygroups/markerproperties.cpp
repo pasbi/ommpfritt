@@ -1,5 +1,6 @@
 #include "properties/propertygroups/markerproperties.h"
 #include "objects/tip.h"
+#include "path/pathgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
@@ -58,7 +59,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
   }
   p.setPen(Qt::NoPen);
   p.setBrush(color.to_qcolor());
-  QPainterPath path = Path::to_painter_path(shape(width), true);
+  const auto path = PathGeometry{shape(width)}.to_painter_path();
   p.drawPath(path);
   p.restore();
 }

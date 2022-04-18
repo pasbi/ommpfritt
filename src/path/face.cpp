@@ -3,6 +3,7 @@
 #include "geometry/point.h"
 #include "path/edge.h"
 #include "path/path.h"
+#include "path/pathgeometry.h"
 #include "path/pathpoint.h"
 #include <QPainterPath>
 #include <QStringList>
@@ -43,7 +44,7 @@ std::vector<PathPoint*> Face::path_points() const
 
 QPainterPath Face::to_painter_path() const
 {
-  return Path::to_painter_path(points());
+  return PathGeometry{points()}.to_painter_path();
 }
 
 const std::deque<Edge*>& Face::edges() const
