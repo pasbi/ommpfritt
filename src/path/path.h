@@ -75,6 +75,7 @@ public:
   [[nodiscard]] PathPoint& at(std::size_t i) const;
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::size_t find(const PathPoint& point) const;
+  [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& point) const;
   PathPoint& add_point(const Point& point);
   void make_linear() const;
   void smoothen() const;
@@ -88,6 +89,12 @@ public:
 
   template<typename Edges> [[nodiscard]] static bool is_valid(const Edges& edges)
   {
+    if (edges.empty()) {
+      return true;
+    }
+    if (!std::all_of(edges.begin(), edges.end(), [](const auto& edge) { return edge->a() && edge->b(); })) {
+      return false;
+    }
     for (auto it = begin(edges); next(it) != end(edges); advance(it, 1)) {
       if ((*it)->b() != (*next(it))->a()) {
         return false;

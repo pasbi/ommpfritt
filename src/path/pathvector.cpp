@@ -138,6 +138,16 @@ std::unique_ptr<Path> PathVector::remove_path(const Path &path)
   return extracted_path;
 }
 
+std::shared_ptr<PathPoint> PathVector::share(const PathPoint& path_point) const
+{
+  for (const auto& path : m_paths) {
+    if (const auto& a = path->share(path_point); a != nullptr) {
+      return a;
+    }
+  }
+  return {};
+}
+
 std::deque<PathPoint*> PathVector::points() const
 {
   std::deque<PathPoint*> points;

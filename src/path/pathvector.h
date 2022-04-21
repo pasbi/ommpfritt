@@ -53,6 +53,7 @@ public:
   Path& add_path(std::unique_ptr<Path> path);
   Path& add_path();
   std::unique_ptr<Path> remove_path(const Path& path);
+  [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& path_point) const;
   [[nodiscard]] std::deque<PathPoint*> points() const;
   [[nodiscard]] std::deque<PathPoint*> selected_points() const;
   void deselect_all_points() const;

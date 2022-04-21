@@ -43,6 +43,24 @@ bool Path::contains(const PathPoint& point) const
   return std::find(points.begin(), points.end(), &point) != points.end();
 }
 
+std::shared_ptr<PathPoint> Path::share(const PathPoint& point) const
+{
+  if (m_edges.empty()) {
+    return {};
+  }
+  if (const auto& a = m_edges.front()->a(); a.get() == &point) {
+    return a;
+  }
+
+  for (const auto& edge : m_edges) {
+    if (const auto& b = edge->b(); b.get() == &point) {
+      return b;
+    }
+  }
+
+  return {};
+}
+
 PathVector* Path::path_vector() const
 {
   return m_path_vector;
@@ -75,6 +93,7 @@ Edge& Path::add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b)
 
 Edge& Path::add_edge(std::unique_ptr<Edge> edge)
 {
+  assert(edge->a() && edge->b());
   const auto try_emplace = [this](std::unique_ptr<Edge>& edge) {
     if (m_edges.empty() || m_edges.back()->b() == edge->a()) {
       m_edges.emplace_back(std::move(edge));
