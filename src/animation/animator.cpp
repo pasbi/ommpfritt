@@ -56,7 +56,7 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 
   connect(this, &Animator::track_inserted, this, [this](Track& track) {
     for (std::size_t c = 0; c < track.property().n_channels(); c++) {
-      m_channel_proxies.insert({{&track, c}, std::make_unique<ChannelProxy>(track, c)});
+      m_channel_proxies.emplace(std::pair{&track, c}, std::make_unique<ChannelProxy>(track, c));
     }
   });
   connect(this, &Animator::track_removed, this, [this](Track& track) {
@@ -177,7 +177,7 @@ void Animator::invalidate()
   for (Property* property : accelerator().properties()) {
     for (std::size_t c = 0; c < property->n_channels(); ++c) {
       Track* track = property->track();
-      m_channel_proxies.insert({{track, c}, std::make_unique<ChannelProxy>(*track, c)});
+      m_channel_proxies.emplace(std::pair{track, c}, std::make_unique<ChannelProxy>(*track, c));
     }
   }
   endResetModel();
