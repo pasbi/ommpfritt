@@ -10,7 +10,7 @@ namespace omm
 class Path;
 class PathPoint;
 
-struct PathView
+class PathView
 {
 public:
   explicit PathView(Path& path, std::size_t begin, std::size_t size);

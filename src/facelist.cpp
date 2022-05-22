@@ -12,8 +12,8 @@
 namespace
 {
 
-static constexpr auto FACES_POINTER = "faces";
-static constexpr auto PATH_ID_POINTER = "path";
+//static constexpr auto FACES_POINTER = "faces";
+//static constexpr auto PATH_ID_POINTER = "path";
 
 }  // namespace
 

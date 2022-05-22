@@ -158,7 +158,7 @@ std::deque<std::unique_ptr<Edge> > Path::replace(const PathView& path_view, std:
   const auto end = std::next(begin, path_view.size());
   std::copy(std::move_iterator{begin}, std::move_iterator{end}, std::back_inserter(removed));
   m_edges.erase(begin, end);
-  m_edges.insert(std::next(begin, path_view.begin()),
+  m_edges.insert(std::next(m_edges.begin(), path_view.begin()),
                  std::move_iterator{edges.begin()},
                  std::move_iterator{edges.end()});
   assert(is_valid());

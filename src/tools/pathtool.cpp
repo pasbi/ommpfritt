@@ -17,6 +17,30 @@
 #include "tools/selecttool.h"
 #include <QMouseEvent>
 
+namespace
+{
+
+template<typename T, typename... Ts> void emplace_back(auto& cs, T&& arg, Ts&&... args)
+{
+  cs.emplace_back(std::forward<T>(arg));
+  if constexpr (sizeof...(args) > 0) {
+    emplace_back(cs, std::forward<Ts>(args)...);
+  }
+}
+
+template<template<typename...> typename Container, typename... Args> decltype(auto) make(Args&&... args)
+{
+  using T = std::tuple_element_t<0, std::tuple<std::decay_t<Args>...>>;
+  Container<T> cs;
+  if constexpr (requires(Container<T> cs, std::size_t n) { cs.reserve(n); }) {
+    cs.reserve(sizeof...(args));
+  }
+  emplace_back(cs, std::forward<Args>(args)...);
+  return cs;
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -38,40 +62,49 @@ public:
     assert(is_valid());
   }
 
-  void append_point(std::shared_ptr<PathPoint> a, const Point& b_point)
-  {
-    assert(is_valid());
-    auto b = std::make_unique<PathPoint>(b_point, &current_path_vector());
-    m_current_point = b.get();
-    m_last_edge = &m_current_path->add_edge(a, std::move(b));
-    assert(is_valid());
-  }
-
   void branch_path(const Point& point)
   {
-    assert(is_valid());
-    auto a = current_path_vector().share(*m_last_point);
-    assert(a);
-    m_current_path = &current_path_vector().add_path();
-    append_point(a, point);
-    assert(is_valid());
+    (void) point;
+//    assert(is_valid());
+//    auto a = current_path_vector().share(*m_last_point);
+//    assert(a);
+//    m_current_path = &current_path_vector().add_path();
+//    append_point(a, point);
+//    assert(is_valid());
+  }
+
+  template<typename... Args> void submit_add_points_command(Args&&... args)
+  {
+    auto command = std::make_unique<AddPointsCommand>(std::forward<Args>(args)...);
+    const auto new_edges = command->new_edges();
+    assert(new_edges.size() <= 1);
+    m_scene.submit(std::move(command));
+    m_last_edge = new_edges.empty() ? nullptr : new_edges.front();
   }
 
   void add_point(Point point)
   {
+    ensure_active_path_object();
     assert(is_valid());
     point = m_current_path_object->global_transformation(Space::Viewport).inverted().apply(point);
     if (m_last_point == nullptr) {
       create_first_path_point(point);
     } else if (m_last_edge != nullptr) {
-      append_point(m_last_edge->b(), point);
+      auto b = std::make_unique<PathPoint>(point, &current_path_vector());
+      m_current_point = b.get();
+      OwnedLocatedPath olp{m_current_path, m_current_path->points().size() - 1, ::make<std::deque>(std::move(b))};
+      submit_add_points_command(*m_current_path_object, ::make<std::deque>(std::move(olp)));
     } else if (m_first_point != nullptr) {
-      append_point(std::move(m_first_point), point);
+      auto b = std::make_unique<PathPoint>(point, &current_path_vector());
+      m_current_point = b.get();
+      OwnedLocatedPath olp{m_current_path,
+                           m_current_path->points().size(),
+                           ::make<std::deque>(std::move(m_first_point), std::move(b))};
+      submit_add_points_command(*m_current_path_object, ::make<std::deque>(std::move(olp)));
     } else {
       branch_path(point);
     }
     assert(is_valid());
-    m_current_path_object->update();
   }
 
   void find_tie()
@@ -92,7 +125,7 @@ public:
     }
   }
 
-  void ensure_active_path()
+  void ensure_active_path_object()
   {
     if (m_current_path_object == nullptr) {
       start_macro();
@@ -143,6 +176,7 @@ public:
   {
     m_last_point = m_current_point;
     m_current_point = nullptr;
+    m_macro.reset();
   }
 
   void end()
@@ -271,7 +305,6 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
     return true;
   } else {
     if (event.button() == Qt::LeftButton) {
-      m_path_builder->ensure_active_path();
       m_path_builder->add_point(Point{pos});
       reset();
       return true;
