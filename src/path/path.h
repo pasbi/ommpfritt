@@ -76,7 +76,6 @@ public:
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::size_t find(const PathPoint& point) const;
   [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& point) const;
-  PathPoint& add_point(const Point& point);
   void make_linear() const;
   void smoothen() const;
   void insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint>> points);

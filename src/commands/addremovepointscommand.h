@@ -17,7 +17,7 @@ class Edge;
 class OwnedLocatedPath
 {
 public:
-  explicit OwnedLocatedPath(Path* path, std::size_t point_offset, std::deque<std::unique_ptr<PathPoint>> points);
+  explicit OwnedLocatedPath(Path* path, std::size_t point_offset, std::deque<std::shared_ptr<PathPoint>> points);
   ~OwnedLocatedPath();
   OwnedLocatedPath(OwnedLocatedPath&& other) = default;
   OwnedLocatedPath& operator=(OwnedLocatedPath&& other) = default;
@@ -31,7 +31,7 @@ public:
 private:
   Path* m_path = nullptr;
   std::size_t m_point_offset;
-  std::deque<std::unique_ptr<PathPoint>> m_points;
+  std::deque<std::shared_ptr<PathPoint>> m_points;
 };
 
 

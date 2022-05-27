@@ -62,17 +62,6 @@ public:
     assert(is_valid());
   }
 
-  void branch_path(const Point& point)
-  {
-    (void) point;
-//    assert(is_valid());
-//    auto a = current_path_vector().share(*m_last_point);
-//    assert(a);
-//    m_current_path = &current_path_vector().add_path();
-//    append_point(a, point);
-//    assert(is_valid());
-  }
-
   template<typename... Args> void submit_add_points_command(Args&&... args)
   {
     auto command = std::make_unique<AddPointsCommand>(std::forward<Args>(args)...);
@@ -92,17 +81,24 @@ public:
     } else if (m_last_edge != nullptr) {
       auto b = std::make_unique<PathPoint>(point, &current_path_vector());
       m_current_point = b.get();
-      OwnedLocatedPath olp{m_current_path, m_current_path->points().size() - 1, ::make<std::deque>(std::move(b))};
+      OwnedLocatedPath olp{m_current_path,
+                           m_current_path->points().size() - 1,
+                           ::make<std::deque, std::shared_ptr<PathPoint>>(std::move(b))};
       submit_add_points_command(*m_current_path_object, ::make<std::deque>(std::move(olp)));
     } else if (m_first_point != nullptr) {
       auto b = std::make_unique<PathPoint>(point, &current_path_vector());
       m_current_point = b.get();
       OwnedLocatedPath olp{m_current_path,
                            m_current_path->points().size(),
-                           ::make<std::deque>(std::move(m_first_point), std::move(b))};
+                           ::make<std::deque, std::shared_ptr<PathPoint>>(std::move(m_first_point), std::move(b))};
       submit_add_points_command(*m_current_path_object, ::make<std::deque>(std::move(olp)));
     } else {
-      branch_path(point);
+      auto b = std::make_unique<PathPoint>(point, &current_path_vector());
+      auto root = m_last_point->path_vector()->share(*m_last_point);
+      m_current_point = b.get();
+      m_current_path = &current_path_vector().add_path();
+      OwnedLocatedPath olp{m_current_path, 0, ::make<std::deque>(root, std::move(b))};
+      submit_add_points_command(*m_current_path_object, ::make<std::deque>(std::move(olp)));
     }
     assert(is_valid());
   }
