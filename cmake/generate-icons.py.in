@@ -88,6 +88,7 @@ def find_items():
 
 def process_canned_icons():
     for fn in glob("@CMAKE_SOURCE_DIR@/icons/*.png"):
+        print(f"XX {fn}")
         item = os.path.splitext(os.path.basename(fn))[0]
         for resolution in required_resolutions(item):
             cp = subprocess.run([
@@ -96,6 +97,7 @@ def process_canned_icons():
                 "-resize", f'{resolution}x{resolution}!',
                 icon_filename(item, resolution)
             ])
+            print(f"YY {cp.args}")
             if cp.returncode == 0:
                 yield ((resolution, item))
             else:
@@ -103,12 +105,16 @@ def process_canned_icons():
 
 def generate_application_icon():
     if not platform_windows:
+        print("Don't create ico on non-windows platforms.")
         return
 
     fns = [icon_filename(application_icon_name, resolution) for resolution in required_resolutions(application_icon_name)]
-    cp = subprocess.run(['convert'] + fns + ['@CMAKE_BINARY_DIR@/omm.ico'])
+    cp = subprocess.run(['convert'] + fns + ['@CMAKE_BINARY_DIR@/omm.ico'], capture_output=True)
+    print(f"zz {cp.args}")
     if cp.returncode != 0:
         print(f"Error: Failed to generate application icon (code {cp.returncode}).")
+        print(f"\n\nSTDOUT:\n{cp.stdout}")
+        print(f"\n\nSTDERR:\n{cp.stderr}")
     else:
         print("Generate application icon SUCCEEDED.")
 
