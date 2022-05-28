@@ -187,3 +187,8 @@ add_custom_target(appimage
 add_custom_target(icons
                   COMMAND Python3::Interpreter "${CMAKE_BINARY_DIR}/generate-icons.py"
                   COMMENT "Generating icons")
+
+find_file(poppler_include "poppler/qt5/poppler-qt5.h")
+if (NOT poppler_include)
+    message(FATAL_ERROR "poppler/qt5/poppler-qt5.h not found.")
+endif()
