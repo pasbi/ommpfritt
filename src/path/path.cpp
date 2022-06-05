@@ -46,8 +46,13 @@ bool Path::contains(const PathPoint& point) const
 std::shared_ptr<PathPoint> Path::share(const PathPoint& point) const
 {
   if (m_edges.empty()) {
-    return {};
+    if (m_last_point.get() == &point) {
+      return m_last_point;
+    } else {
+      return {};
+    }
   }
+
   if (const auto& a = m_edges.front()->a(); a.get() == &point) {
     return a;
   }
@@ -71,6 +76,31 @@ void Path::set_path_vector(PathVector* path_vector)
   m_path_vector = path_vector;
 }
 
+void Path::set_single_point(std::shared_ptr<PathPoint> single_point)
+{
+  assert(m_edges.empty());
+  assert(!m_last_point);
+  m_last_point = single_point;
+}
+
+std::shared_ptr<PathPoint> Path::extract_single_point()
+{
+  assert(m_edges.empty());
+  assert(m_last_point);
+  auto last_point = m_last_point;
+  m_last_point.reset();
+  return last_point;
+}
+
+void Path::set_last_point_from_edges()
+{
+  if (m_edges.empty()) {
+    m_last_point = nullptr;
+  } else {
+    m_last_point = m_edges.back()->b();
+  }
+}
+
 PathGeometry Path::geometry() const
 {
   return PathGeometry{util::transform(points(), &PathPoint::geometry)};
@@ -91,12 +121,27 @@ Edge& Path::add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b)
   return add_edge(std::make_unique<Edge>(a, b, this));
 }
 
+std::shared_ptr<PathPoint> Path::last_point() const
+{
+  return m_last_point;
+}
+
+std::shared_ptr<PathPoint> Path::first_point() const
+{
+  if (m_edges.empty()) {
+    return m_last_point;
+  } else {
+    return m_edges.front()->a();
+  }
+}
+
 Edge& Path::add_edge(std::unique_ptr<Edge> edge)
 {
   assert(edge->a() && edge->b());
   const auto try_emplace = [this](std::unique_ptr<Edge>& edge) {
-    if (m_edges.empty() || m_edges.back()->b() == edge->a()) {
+    if (m_last_point.get() == edge->a().get()) {
       m_edges.emplace_back(std::move(edge));
+      m_last_point = m_edges.back()->b();
     } else if (m_edges.front()->a() == edge->b()) {
       m_edges.emplace_front(std::move(edge));
     } else {
@@ -127,7 +172,7 @@ std::pair<std::deque<std::unique_ptr<Edge>>, Edge*> Path::remove(const PathView&
 
   std::copy(std::move_iterator{first}, std::move_iterator{last}, std::back_inserter(removed_edges));
 
-  if (path_view.begin() > 0 && path_view.begin() + path_view.size() < m_edges.size()) {
+  if (path_view.begin() > 0 && path_view.end() < m_edges.size()) {
     const auto& previous_edge = *std::next(first, -1);
     const auto& next_edge = *std::next(last, 1);
     auto new_edge_own = [&previous_edge, &next_edge, &bridge, this]() {
@@ -146,23 +191,71 @@ std::pair<std::deque<std::unique_ptr<Edge>>, Edge*> Path::remove(const PathView&
     assert(bridge == nullptr);
   }
   m_edges.erase(first, last);
+  set_last_point_from_edges();
   assert(is_valid());
   return {std::move(removed_edges), new_edge};
 }
 
-std::deque<std::unique_ptr<Edge> > Path::replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges)
+/**
+ * @brief Path::replace replaces the points selected by @param path_view with @param edges.
+ * @param path_view the point selection to be removed
+ * @param edges the edges that fill the gap.
+ *  The first point of the first edge in this deque must match the last point left of the gap,
+ *  unless there are no points left of the gap.
+ *  The last point of the last edge in this deque must match the first point right of the gap,
+ *  unless there are no points right of the gap.
+ * @return The edges that have been removed.
+ */
+std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges)
 {
   assert(is_valid());
-  std::deque<std::unique_ptr<Edge>> removed;
-  const auto begin = std::next(m_edges.begin(), path_view.begin());
-  const auto end = std::next(begin, path_view.size());
-  std::copy(std::move_iterator{begin}, std::move_iterator{end}, std::back_inserter(removed));
-  m_edges.erase(begin, end);
-  m_edges.insert(std::next(m_edges.begin(), path_view.begin()),
-                 std::move_iterator{edges.begin()},
-                 std::move_iterator{edges.end()});
+
+  const auto swap_edges = [this](const auto& begin, const auto& end, std::deque<std::unique_ptr<Edge>>&& edges) {
+    std::deque<std::unique_ptr<Edge>> removed_edges;
+    std::copy(std::move_iterator(begin), std::move_iterator(end), std::back_inserter(removed_edges));
+    auto gap_begin = m_edges.erase(begin, end);
+    m_edges.insert(gap_begin, std::move_iterator(edges.begin()), std::move_iterator(edges.end()));
+    return removed_edges;
+  };
+
+  const bool set_last_point_from_edges = [this, &edges, path_view]() {
+    if (edges.empty() && path_view.point_count() == points().size() - 1) {
+      // There will be no edges left but m_last_point needs to be set.
+
+      if (path_view.begin() > 0) {
+        // all edges will be removed and all points except the first one.
+        m_last_point = first_point();
+      } // else all edges will be removed and all points except the last one.
+
+      return false;  // Don't update m_last_point later,
+    } else {
+      return true;  // Do update m_last_point later
+    }
+  }();
+
+  std::deque<std::unique_ptr<Edge>> removed_edges;
+  if (path_view.begin() == 0 && path_view.end() == points().size()) {
+    // all points are replaced
+    removed_edges = swap_edges(m_edges.begin(), m_edges.end(), std::move(edges));
+  } else if (path_view.begin() == 0) {
+    // append left
+    removed_edges = swap_edges(m_edges.begin(), m_edges.begin() + path_view.point_count(), std::move(edges));
+  } else if (path_view.end() == points().size()) {
+    // append right
+    removed_edges = swap_edges(m_edges.end() - path_view.point_count(), m_edges.end(), std::move(edges));
+  } else {
+    // append middle
+    const auto begin = m_edges.begin() + path_view.begin() - 1;
+    removed_edges = swap_edges(begin,
+                               begin + path_view.point_count() + 1,
+                               std::move(edges));
+  }
+
+  if (set_last_point_from_edges) {
+    this->set_last_point_from_edges();
+  }
   assert(is_valid());
-  return removed;
+  return removed_edges;
 }
 
 std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> Path::cut(Edge& edge, std::shared_ptr<PathPoint> p)
@@ -190,12 +283,19 @@ std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> Path::cut(Edge& edge, std::share
 
 bool Path::is_valid() const
 {
+  if (m_last_point && !m_edges.empty() && m_edges.back()->b() != m_last_point) {
+    LERROR << "Is not valid because last point is inconsistent.";
+    return false;
+  }
   return is_valid(m_edges);
 }
 
 std::vector<PathPoint*> Path::points() const
 {
   if (m_edges.empty()) {
+    if (m_last_point) {
+      return {m_last_point.get()};
+    }
     return {};
   }
 

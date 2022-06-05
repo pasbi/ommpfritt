@@ -13,11 +13,7 @@ Edge::Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* pat
 QString Edge::label() const
 {
   static constexpr auto p2s = [](const auto& p) {
-    if (p == nullptr) {
-      return QString{"null"};
-    } else {
-      return QString{"%1"}.arg(p->index());
-    }
+    return QString::asprintf("%8p", static_cast<void*>(p.get()));
   };
   return QString{"%1--%3"}.arg(p2s(m_a), p2s(m_b));
 }

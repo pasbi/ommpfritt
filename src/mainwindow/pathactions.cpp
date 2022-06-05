@@ -139,7 +139,7 @@ void remove_selected_points(Application& app)
     }
 
     if (!removed_points.empty()) {
-      auto command = std::make_unique<RemovePointsCommand>(*path_object, std::move(removed_points));
+      auto command = std::make_unique<RemovePointsCommand>(std::move(removed_points), path_object);
       if (!macro) {
         macro = app.scene->history().start_macro(command->actionText());
       }

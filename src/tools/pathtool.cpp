@@ -69,7 +69,7 @@ public:
   {
     std::deque<OwnedLocatedPath> owlps;
     owlps.emplace_back(&path, point_offset, std::move(points));
-    auto command = std::make_unique<AddPointsCommand>(path_object, std::move(owlps));
+    auto command = std::make_unique<AddPointsCommand>(std::move(owlps), &path_object);
     const auto new_edges = command->new_edges();
     assert(new_edges.size() <= 1);
     m_scene.submit(std::move(command));

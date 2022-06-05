@@ -15,19 +15,45 @@ namespace omm
 class AddRemovePointsCommand::ChangeSet
 {
 public:
-  explicit ChangeSet(const PathView& view, std::deque<std::unique_ptr<Edge>> edges)
+  explicit ChangeSet(const PathView& view,
+                     std::deque<std::unique_ptr<Edge>> edges,
+                     std::shared_ptr<PathPoint> single_point)
     : m_view(view)
     , m_owned_edges(std::move(edges))
+    , m_owned_point(std::move(single_point))
   {
+    assert((m_owned_point == nullptr) != m_owned_edges.empty());
   }
 
   void swap()
   {
-    PathView view2{m_view.path(), m_view.begin(), m_owned_edges.size()};
-    LINFO << "RUHURHG" << (void*) &m_view.path() << "\n\n";
-    std::cout << std::endl;
-    m_owned_edges = m_view.path().replace(m_view, std::move(m_owned_edges));
-    m_view = view2;
+    std::size_t added_point_count = 0;
+
+    if (m_view.path().points().empty() && m_owned_point) {
+      // path empty, add single point
+      assert(m_owned_edges.empty());
+      m_view.path().set_single_point(std::move(m_owned_point));
+      added_point_count = 1;
+    } else if (m_view.path().points().size() == 1 && m_view.point_count() == 1) {
+      // path contains only a single point which is going to be removed
+      m_owned_point = m_view.path().extract_single_point();
+      added_point_count = 0;
+    } else {
+      // all other cases are handled by Path::replace
+      auto& path = m_view.path();
+      if (m_owned_edges.empty()) {
+        added_point_count = 0;
+      } else if (path.points().empty()) {
+        added_point_count = m_owned_edges.size() + 1;
+      } else if (m_view.begin() == 0 || m_view.end() == path.points().size()) {
+        added_point_count = m_owned_edges.size();
+      } else {
+        added_point_count = m_owned_edges.size() - 1;
+      }
+      m_owned_edges = path.replace(m_view, std::move(m_owned_edges));
+    }
+
+    m_view = PathView{m_view.path(), m_view.begin(), added_point_count};
   }
 
   std::vector<Edge*> owned_edges() const
@@ -38,6 +64,7 @@ public:
 private:
   PathView m_view;
   std::deque<std::unique_ptr<Edge>> m_owned_edges;
+  std::shared_ptr<PathPoint> m_owned_point;
 };
 
 OwnedLocatedPath::~OwnedLocatedPath() = default;
@@ -49,7 +76,7 @@ OwnedLocatedPath::OwnedLocatedPath(Path* const path, const std::size_t point_off
 {
 }
 
-std::deque<std::unique_ptr<Edge> > OwnedLocatedPath::create_edges()
+std::deque<std::unique_ptr<Edge>> OwnedLocatedPath::create_edges() const
 {
   std::deque<std::unique_ptr<Edge>> edges;
   for (std::size_t i = 1; i < m_points.size(); ++i) {
@@ -63,17 +90,36 @@ std::deque<std::unique_ptr<Edge> > OwnedLocatedPath::create_edges()
 
   if (m_point_offset > 0) {
     // if there is something left of this, add the linking edge
-    auto right_fringe = m_path->edges()[m_point_offset - 1]->b();
+    std::shared_ptr<PathPoint> right_fringe;
+    if (m_path->edges().empty()) {
+      right_fringe = m_path->last_point();
+    } else {
+      right_fringe = m_path->edges()[m_point_offset - 1]->a();
+    }
     edges.emplace_front(std::make_unique<Edge>(right_fringe, front, m_path));
   }
 
-  if (const auto index = m_point_offset + m_points.size(); index + 1 < points.size()) {
+  if (m_point_offset < m_path->points().size()) {
     // if there is something right of this, add the linking edge
-    auto left_fringe = m_path->edges()[index]->a();
+    std::shared_ptr<PathPoint> left_fringe;
+    if (m_path->edges().empty()) {
+      left_fringe = m_path->first_point();
+    } else {
+      left_fringe = m_path->edges()[m_point_offset]->a();
+    }
     edges.emplace_back(std::make_unique<Edge>(back, left_fringe, m_path));
   }
 
   return edges;
+}
+
+std::shared_ptr<PathPoint> OwnedLocatedPath::single_point() const
+{
+  if (m_points.size() == 1 && m_path->points().size() == 0) {
+    return m_points.front();
+  } else {
+    return {};
+  }
 }
 
 std::size_t OwnedLocatedPath::point_offset() const
@@ -94,17 +140,27 @@ namespace
 auto make_change_set_for_add(omm::OwnedLocatedPath points_to_add)
 {
   omm::PathView path_view_to_remove{*points_to_add.path(), points_to_add.point_offset(), 0};
-  return omm::AddRemovePointsCommand::ChangeSet{path_view_to_remove, points_to_add.create_edges()};
+  return omm::AddRemovePointsCommand::ChangeSet{path_view_to_remove,
+                                                points_to_add.create_edges(),
+                                                points_to_add.single_point()};
 }
 
 auto make_change_set_for_remove(const omm::PathView& path_view)
 {
   std::deque<std::unique_ptr<omm::Edge>> edges;
+  std::shared_ptr<omm::PathPoint> single_point;
   auto& path = path_view.path();
-  auto& left = *path.edges().at(path_view.begin());
-  auto& right = *path.edges().at(path_view.end());
-  edges.emplace_back(std::make_unique<omm::Edge>(left.b(), right.a(), &path));
-  return omm::AddRemovePointsCommand::ChangeSet{path_view, std::move(edges)};
+
+  if (path_view.point_count() == 1) {
+    assert(path_view.path().points().size() == 1);
+    single_point = path_view.path().share(*path_view.path().points().front());
+    assert(single_point);
+  } else  if (path_view.begin() > 0 && path_view.end() < path.edges().size()) {
+    auto& left = *path.edges().at(path_view.begin() - 1);
+    auto& right = *path.edges().at(path_view.end() - 1);
+    edges.emplace_back(std::make_unique<omm::Edge>(left.a(), right.b(), &path));
+  }
+  return omm::AddRemovePointsCommand::ChangeSet{path_view, std::move(edges), single_point};
 }
 
 }  // namespace
@@ -113,8 +169,8 @@ namespace omm
 {
 
 AddRemovePointsCommand::AddRemovePointsCommand(const QString& label,
-                                               PathObject& path_object,
-                                               std::deque<ChangeSet> changes)
+                                               std::deque<ChangeSet> changes,
+                                               PathObject* const path_object)
     : Command(label)
     , m_change_sets(std::move(changes))
     , m_path_object(path_object)
@@ -147,14 +203,16 @@ std::deque<Edge*> AddRemovePointsCommand::owned_edges() const
 
 void AddRemovePointsCommand::update()
 {
-  m_path_object.update();
-  m_path_object.scene()->update_tool();
+  if (m_path_object != nullptr) {
+    m_path_object->update();
+    m_path_object->scene()->update_tool();
+  }
 }
 
-AddPointsCommand::AddPointsCommand(PathObject& path_object, std::deque<OwnedLocatedPath> points_to_add)
+AddPointsCommand::AddPointsCommand(std::deque<OwnedLocatedPath> points_to_add, PathObject* const path_object)
     : AddRemovePointsCommand(static_label(),
-                             path_object,
-                             util::transform(std::move(points_to_add), make_change_set_for_add))
+                             util::transform(std::move(points_to_add), make_change_set_for_add),
+                             path_object)
     , m_new_edges(owned_edges())  // owned_edges are new edges before calling redo.
 {
 }
@@ -179,10 +237,10 @@ std::deque<Edge*> AddPointsCommand::new_edges() const
   return m_new_edges;
 }
 
-RemovePointsCommand::RemovePointsCommand(PathObject& path_object, const std::deque<PathView>& points_to_remove)
+RemovePointsCommand::RemovePointsCommand(const std::deque<PathView>& points_to_remove, PathObject* const path_object)
     : AddRemovePointsCommand(static_label(),
-                             path_object,
-                             util::transform(points_to_remove, make_change_set_for_remove))
+                             util::transform(points_to_remove, make_change_set_for_remove),
+                             path_object)
 {
 }
 

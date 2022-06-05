@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.h"
+#include "logging.h"
 #include <deque>
 #include <memory>
 
@@ -51,6 +52,8 @@ public:
 
   Edge& add_edge(std::unique_ptr<Edge> edge);
   Edge& add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b);
+  std::shared_ptr<PathPoint> last_point() const;
+  std::shared_ptr<PathPoint> first_point() const;
 
   /**
    * @brief remove removes the points specified by given `path_view` and returns the ownership
@@ -76,15 +79,13 @@ public:
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::size_t find(const PathPoint& point) const;
   [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& point) const;
-  void make_linear() const;
-  void smoothen() const;
-  void insert_points(std::size_t i, std::deque<std::unique_ptr<PathPoint>> points);
-  [[nodiscard]] std::deque<std::unique_ptr<PathPoint>> extract(std::size_t start, std::size_t size);
   PathGeometry geometry() const;
 
   [[nodiscard]] PathVector* path_vector() const;
   void set_path_vector(PathVector* path_vector);
   void set_interpolation(InterpolationMode interpolation) const;
+  void set_single_point(std::shared_ptr<PathPoint> single_point);
+  std::shared_ptr<PathPoint> extract_single_point();
 
   template<typename Edges> [[nodiscard]] static bool is_valid(const Edges& edges)
   {
@@ -92,10 +93,12 @@ public:
       return true;
     }
     if (!std::all_of(edges.begin(), edges.end(), [](const auto& edge) { return edge->a() && edge->b(); })) {
+      LERROR << "Is not valid because one or more edges contain invalid points.";
       return false;
     }
     for (auto it = begin(edges); next(it) != end(edges); advance(it, 1)) {
       if ((*it)->b() != (*next(it))->a()) {
+        LERROR << "Is not valid because edges are not connected.";
         return false;
       }
     }
@@ -103,8 +106,10 @@ public:
   }
 
 private:
+  std::shared_ptr<PathPoint> m_last_point;
   std::deque<std::unique_ptr<Edge>> m_edges;
   PathVector* m_path_vector;
+  void set_last_point_from_edges();
 };
 
 }  // namespace
