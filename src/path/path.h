@@ -68,6 +68,17 @@ public:
    *  edge was added).
    */
   std::pair<std::deque<std::unique_ptr<Edge>>, Edge*> remove(const PathView& path_view, std::unique_ptr<Edge> bridge = nullptr);
+
+  /**
+   * @brief Path::replace replaces the points selected by @param path_view with @param edges.
+   * @param path_view the point selection to be removed
+   * @param edges the edges that fill the gap.
+   *  The first point of the first edge in this deque must match the last point left of the gap,
+   *  unless there are no points left of the gap.
+   *  The last point of the last edge in this deque must match the first point right of the gap,
+   *  unless there are no points right of the gap.
+   * @return The edges that have been removed.
+   */
   std::deque<std::unique_ptr<Edge>> replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges);
 
   std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> cut(Edge& edge, std::shared_ptr<PathPoint> p);
@@ -104,6 +115,8 @@ public:
     }
     return true;
   }
+
+  QString print_edge_info() const;
 
 private:
   std::shared_ptr<PathPoint> m_last_point;

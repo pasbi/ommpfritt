@@ -92,6 +92,16 @@ std::shared_ptr<PathPoint> Path::extract_single_point()
   return last_point;
 }
 
+QString Path::print_edge_info() const
+{
+  auto lines = util::transform<QList>(this->edges(), &Edge::label);
+  lines.push_front(QString::asprintf("== Path 0x%p, Edges %zu", static_cast<const void*>(this), edges().size()));
+  if (edges().empty()) {
+    lines.append(QString::asprintf("Single point: 0x%p", static_cast<const void*>(m_last_point.get())));
+  }
+  return lines.join("\n");
+}
+
 void Path::set_last_point_from_edges()
 {
   if (m_edges.empty()) {
@@ -196,16 +206,6 @@ std::pair<std::deque<std::unique_ptr<Edge>>, Edge*> Path::remove(const PathView&
   return {std::move(removed_edges), new_edge};
 }
 
-/**
- * @brief Path::replace replaces the points selected by @param path_view with @param edges.
- * @param path_view the point selection to be removed
- * @param edges the edges that fill the gap.
- *  The first point of the first edge in this deque must match the last point left of the gap,
- *  unless there are no points left of the gap.
- *  The last point of the last edge in this deque must match the first point right of the gap,
- *  unless there are no points right of the gap.
- * @return The edges that have been removed.
- */
 std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges)
 {
   assert(is_valid());
