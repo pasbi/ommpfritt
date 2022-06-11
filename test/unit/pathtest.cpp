@@ -136,10 +136,10 @@ protected:
     return m_stack.submit(std::make_unique<omm::AddPointsCommand>(std::move(olps)));
   }
 
-  const auto& submit_remove_single_point_front_command()
+  const auto& submit_remove_point_command(const std::size_t offset = 0, const std::size_t n = 1)
   {
     std::deque<omm::PathView> ptrs;
-    ptrs.emplace_back(m_path, 0, 1);
+    ptrs.emplace_back(m_path, offset, n);
     return m_stack.submit(std::make_unique<omm::RemovePointsCommand>(ptrs));
   }
 
@@ -184,17 +184,6 @@ TEST_F(PathAddPointsCommandTest, AddSinglePoint)
   ASSERT_EQ(path().points().size(), 1);
   ASSERT_NO_FATAL_FAILURE(stack().undo());
   ASSERT_TRUE(path().points().empty());
-  ASSERT_NO_FATAL_FAILURE(stack().redo());
-}
-
-TEST_F(PathAddPointsCommandTest, RemoveSinglePoint)
-{
-  ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command());
-  const auto one_point = path().points();
-  ASSERT_EQ(path().points().size() , 1);
-  ASSERT_NO_FATAL_FAILURE(submit_remove_single_point_front_command());
-  ASSERT_TRUE(path().points().empty());
-  ASSERT_NO_FATAL_FAILURE(stack().undo());
   ASSERT_NO_FATAL_FAILURE(stack().redo());
 }
 
@@ -275,3 +264,35 @@ TEST_F(PathAddPointsCommandTest, AddPointsMiddle_B)
   ASSERT_NO_FATAL_FAILURE(stack().undo());
   ASSERT_NO_FATAL_FAILURE(stack().redo());
 }
+
+struct RemovePointsTestParameter
+{
+  std::size_t n_points_before;
+  std::size_t removed_point_index;
+  std::size_t n_removed_points;
+};
+
+class RemovePointsCommandTest
+    : public PathAddPointsCommandTest
+    , public ::testing::WithParamInterface<RemovePointsTestParameter>
+{
+};
+
+TEST_P(RemovePointsCommandTest, RemovePoints)
+{
+  const auto p = GetParam();
+  ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command(0, p.n_points_before));
+  ASSERT_EQ(path().points().size(), p.n_points_before);
+  ASSERT_NO_FATAL_FAILURE(submit_remove_point_command(p.removed_point_index, p.n_removed_points));
+  ASSERT_EQ(path().points().size(), p.n_points_before - p.n_removed_points);
+  ASSERT_NO_FATAL_FAILURE(stack().undo());
+  ASSERT_NO_FATAL_FAILURE(stack().redo());
+}
+
+using V = RemovePointsTestParameter;
+INSTANTIATE_TEST_SUITE_P(_, RemovePointsCommandTest,
+                         ::testing::Values(
+                             V{1, 0, 1}, V{2, 0, 1}, V{2, 1, 1}, V{3, 0, 1}, V{3, 1, 1}, V{3, 2, 1},
+                             V{2, 0, 2}, V{3, 0, 2}, V{3, 1, 2},
+                             V{5, 0, 5}, V{5, 0, 2}, V{5, 1, 2}, V{5, 3, 2}
+                          ));
