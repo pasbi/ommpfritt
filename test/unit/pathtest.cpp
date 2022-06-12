@@ -6,6 +6,8 @@
 #include "path/pathvector.h"
 #include "path/pathview.h"
 
+#include <fmt/format.h>
+
 
 namespace
 {
@@ -91,10 +93,10 @@ private:
   std::deque<StackItem> m_stack;
 };
 
-class PathAddPointsCommandUndoRedoStackMock : public UndoRedoStackMock<std::vector<omm::PathPoint*>>
+class PathCommandUndoRedoStackMock : public UndoRedoStackMock<std::vector<omm::PathPoint*>>
 {
 public:
-  explicit PathAddPointsCommandUndoRedoStackMock(const omm::Path& path)
+  explicit PathCommandUndoRedoStackMock(const omm::Path& path)
       : m_path(path)
   {
   }
@@ -108,10 +110,10 @@ private:
   const omm::Path& m_path;
 };
 
-class PathAddPointsCommandTest : public ::testing::Test
+class PathCommandTest : public ::testing::Test
 {
 protected:
-  explicit PathAddPointsCommandTest()
+  explicit PathCommandTest()
       : m_path(m_path_vector.add_path())
       , m_stack(m_path)
   {
@@ -165,7 +167,7 @@ protected:
     return std::set(points.begin(), points.end()).size() == points.size();
   }
 
-  PathAddPointsCommandUndoRedoStackMock& stack()
+  PathCommandUndoRedoStackMock& stack()
   {
     return m_stack;
   }
@@ -173,12 +175,89 @@ protected:
 private:
   omm::PathVector m_path_vector;
   omm::Path& m_path;
-  PathAddPointsCommandUndoRedoStackMock m_stack;
+  PathCommandUndoRedoStackMock m_stack;
+};
+
+struct RemoveAddPointsCommandTestParameter
+{
+  using Info = ::testing::TestParamInfo<RemoveAddPointsCommandTestParameter>;
+  const std::size_t initial_point_count;
+  const std::size_t offset;
+  const std::size_t count;
+protected:
+  static std::string name_generator(const Info& info, std::string_view what);
+};
+
+struct RemovePointsCommandTestParameter : RemoveAddPointsCommandTestParameter
+{
+  static std::string name_generator(const Info& info)
+  {
+    return RemoveAddPointsCommandTestParameter::name_generator(info, "remove");
+  }
+};
+
+struct AddPointsCommandTestParameter : RemoveAddPointsCommandTestParameter
+{
+  static std::string name_generator(const Info& info)
+  {
+    return RemoveAddPointsCommandTestParameter::name_generator(info, "add");
+  }
+};
+
+class RemovePointsCommandTest
+    : public PathCommandTest
+    , public ::testing::WithParamInterface<RemoveAddPointsCommandTestParameter>
+{
+};
+
+std::string RemoveAddPointsCommandTestParameter::name_generator(const Info& info, const std::string_view what)
+{
+  const auto begin = info.param.offset;
+  const auto end = begin + info.param.count - 1;
+  const auto n = info.param.initial_point_count;
+  return fmt::format("{}_points_{}_to_{}_from_{}_point_path", what, begin, end, n);
+}
+
+class AddPointsCommandTest
+    : public PathCommandTest
+    , public ::testing::WithParamInterface<RemoveAddPointsCommandTestParameter>
+{
+};
+
+class Range
+{
+public:
+  Range(std::size_t begin, std::size_t end, const std::vector<Range>& ranges = {})
+      : begin(begin), end(end), ranges(ranges)
+  {
+  }
+
+  operator std::vector<std::size_t>() const
+  {
+    std::list<std::size_t> items;
+    for (std::size_t i = begin; i < end; ++i) {
+      items.push_back(i);
+    }
+    for (const auto& r : ranges) {
+      const auto vs = static_cast<std::vector<std::size_t>>(r);
+      items.insert(items.end(), vs.begin(), vs.end());
+    }
+    return std::vector(items.begin(), items.end());
+  }
+
+  friend Range operator+(const Range& a, const Range& b)
+  {
+    return Range{0, 0, {a, b}};
+  }
+
+  const std::size_t begin;
+  const std::size_t end;
+  std::vector<Range> ranges;
 };
 
 }  // namespace
 
-TEST_F(PathAddPointsCommandTest, AddSinglePoint)
+TEST_F(PathCommandTest, AddSinglePoint)
 {
   ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command());
   ASSERT_EQ(path().points().size(), 1);
@@ -187,7 +266,7 @@ TEST_F(PathAddPointsCommandTest, AddSinglePoint)
   ASSERT_NO_FATAL_FAILURE(stack().redo());
 }
 
-TEST_F(PathAddPointsCommandTest, AddTwoPoints)
+TEST_F(PathCommandTest, AddTwoPoints)
 {
   ASSERT_NO_FATAL_FAILURE(submit_add_edge_command());
   ASSERT_TRUE(has_distinct_points());
@@ -196,7 +275,7 @@ TEST_F(PathAddPointsCommandTest, AddTwoPoints)
   ASSERT_NO_FATAL_FAILURE(stack().redo());
 }
 
-TEST_F(PathAddPointsCommandTest, AddThreePointsFrontOneByOne)
+TEST_F(PathCommandTest, AddThreePointsFrontOneByOne)
 {
   ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command());
   ASSERT_EQ(path().points().size(), 1);
@@ -215,7 +294,7 @@ TEST_F(PathAddPointsCommandTest, AddThreePointsFrontOneByOne)
   ASSERT_EQ(path().points().size(), 3);
 }
 
-TEST_F(PathAddPointsCommandTest, AddPointsMiddle_A)
+TEST_F(PathCommandTest, AddPointsMiddle_A)
 {
   ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command(0, 4));
   ASSERT_TRUE(has_distinct_points());
@@ -249,7 +328,7 @@ TEST_F(PathAddPointsCommandTest, AddPointsMiddle_A)
   ASSERT_EQ(path().points().size(), 9);
 }
 
-TEST_F(PathAddPointsCommandTest, AddPointsMiddle_B)
+TEST_F(PathCommandTest, AddPointsMiddle_B)
 {
   ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command(0, 4));
   const auto four_points = path().points();
@@ -265,34 +344,75 @@ TEST_F(PathAddPointsCommandTest, AddPointsMiddle_B)
   ASSERT_NO_FATAL_FAILURE(stack().redo());
 }
 
-struct RemovePointsTestParameter
-{
-  std::size_t n_points_before;
-  std::size_t removed_point_index;
-  std::size_t n_removed_points;
-};
-
-class RemovePointsCommandTest
-    : public PathAddPointsCommandTest
-    , public ::testing::WithParamInterface<RemovePointsTestParameter>
-{
-};
-
 TEST_P(RemovePointsCommandTest, RemovePoints)
 {
   const auto p = GetParam();
-  ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command(0, p.n_points_before));
-  ASSERT_EQ(path().points().size(), p.n_points_before);
-  ASSERT_NO_FATAL_FAILURE(submit_remove_point_command(p.removed_point_index, p.n_removed_points));
-  ASSERT_EQ(path().points().size(), p.n_points_before - p.n_removed_points);
+  ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command(0, p.initial_point_count));
+  const auto initial_points = path().points();
+  ASSERT_EQ(initial_points.size(), p.initial_point_count);
+  ASSERT_NO_FATAL_FAILURE(submit_remove_point_command(p.offset, p.count));
+  const auto final_points = path().points();
+  ASSERT_EQ(final_points.size(), p.initial_point_count - p.count);
+  ASSERT_TRUE(check_correspondence(initial_points, Range(0, p.offset) + Range(p.offset + p.count, p.initial_point_count),
+                                   final_points, Range(0, final_points.size())));
   ASSERT_NO_FATAL_FAILURE(stack().undo());
   ASSERT_NO_FATAL_FAILURE(stack().redo());
 }
 
-using V = RemovePointsTestParameter;
-INSTANTIATE_TEST_SUITE_P(_, RemovePointsCommandTest,
-                         ::testing::Values(
-                             V{1, 0, 1}, V{2, 0, 1}, V{2, 1, 1}, V{3, 0, 1}, V{3, 1, 1}, V{3, 2, 1},
-                             V{2, 0, 2}, V{3, 0, 2}, V{3, 1, 2},
-                             V{5, 0, 5}, V{5, 0, 2}, V{5, 1, 2}, V{5, 3, 2}
-                          ));
+INSTANTIATE_TEST_SUITE_P(X, RemovePointsCommandTest,
+                         ::testing::ValuesIn(std::vector<RemoveAddPointsCommandTestParameter>{
+                                              {.initial_point_count = 1, .offset = 0, .count = 1},
+                                              {.initial_point_count = 2, .offset = 0, .count = 1},
+                                              {.initial_point_count = 2, .offset = 1, .count = 1},
+                                              {.initial_point_count = 3, .offset = 0, .count = 1},
+                                              {.initial_point_count = 3, .offset = 1, .count = 1},
+                                              {.initial_point_count = 3, .offset = 2, .count = 1},
+                                              {.initial_point_count = 2, .offset = 0, .count = 2},
+                                              {.initial_point_count = 3, .offset = 0, .count = 2},
+                                              {.initial_point_count = 3, .offset = 1, .count = 2},
+                                              {.initial_point_count = 5, .offset = 0, .count = 5},
+                                              {.initial_point_count = 5, .offset = 0, .count = 2},
+                                              {.initial_point_count = 5, .offset = 1, .count = 2},
+                                              {.initial_point_count = 5, .offset = 3, .count = 2}
+                                                     }),
+                          &RemovePointsCommandTestParameter::name_generator);
+
+TEST_P(AddPointsCommandTest, AddPoints)
+{
+  const auto p = GetParam();
+  if (p.initial_point_count > 0) {
+    ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command(0, p.initial_point_count));
+  }
+  const auto initial_points = path().points();
+  ASSERT_EQ(initial_points.size(), p.initial_point_count);
+  LINFO << "before: " << path().print_edge_info();
+  ASSERT_NO_FATAL_FAILURE(submit_add_n_points_command(p.offset, p.count));
+  const auto final_points = path().points();
+  ASSERT_EQ(final_points.size(), p.initial_point_count + p.count);
+  LINFO << "after: " << path().print_edge_info();
+  ASSERT_TRUE(check_correspondence(initial_points, Range(0, p.initial_point_count),
+                                   final_points, Range(0, p.offset) + Range(p.offset + p.count, final_points.size())));
+  ASSERT_NO_FATAL_FAILURE(stack().undo());
+  ASSERT_NO_FATAL_FAILURE(stack().redo());
+}
+
+INSTANTIATE_TEST_SUITE_P(X, AddPointsCommandTest,
+                         ::testing::ValuesIn(std::vector<RemoveAddPointsCommandTestParameter>{
+                                              {.initial_point_count = 0, .offset = 0, .count = 1},
+                                              {.initial_point_count = 0, .offset = 0, .count = 2},
+                                              {.initial_point_count = 0, .offset = 0, .count = 3},
+                                              {.initial_point_count = 2, .offset = 0, .count = 1},
+                                              {.initial_point_count = 2, .offset = 1, .count = 1},
+                                              {.initial_point_count = 2, .offset = 2, .count = 1},
+                                              {.initial_point_count = 2, .offset = 0, .count = 2},
+                                              {.initial_point_count = 2, .offset = 1, .count = 2},
+                                              {.initial_point_count = 2, .offset = 2, .count = 2},
+                                              {.initial_point_count = 2, .offset = 0, .count = 3},
+                                              {.initial_point_count = 2, .offset = 1, .count = 3},
+                                              {.initial_point_count = 2, .offset = 2, .count = 3},
+                                              {.initial_point_count = 3, .offset = 0, .count = 2},
+                                              {.initial_point_count = 3, .offset = 1, .count = 2},
+                                              {.initial_point_count = 3, .offset = 2, .count = 2},
+                                              {.initial_point_count = 3, .offset = 3, .count = 2},
+                                            }),
+                          &AddPointsCommandTestParameter::name_generator);
