@@ -83,16 +83,17 @@ std::deque<std::unique_ptr<Edge>> OwnedLocatedPath::create_edges() const
     edges.emplace_back(std::make_unique<Edge>(std::move(m_points[i - 1]), std::move(m_points[i]), m_path));
   }
 
-  std::shared_ptr<PathPoint> front = edges.empty() ? std::move(m_points.front()) : edges.front()->a();
-  std::shared_ptr<PathPoint> back = edges.empty() ? std::move(m_points.back()) : edges.back()->b();
+  std::shared_ptr<PathPoint> front = edges.empty() ? m_points.front() : edges.front()->a();
+  std::shared_ptr<PathPoint> back = edges.empty() ? m_points.back() : edges.back()->b();
 
-  const auto points = m_path->points();
 
   if (m_point_offset > 0) {
     // if there is something left of this, add the linking edge
     std::shared_ptr<PathPoint> right_fringe;
     if (m_path->edges().empty()) {
       right_fringe = m_path->last_point();
+    } else if (m_point_offset > 1) {
+      right_fringe = m_path->edges()[m_point_offset - 2]->b();
     } else {
       right_fringe = m_path->edges()[m_point_offset - 1]->a();
     }
@@ -104,8 +105,10 @@ std::deque<std::unique_ptr<Edge>> OwnedLocatedPath::create_edges() const
     std::shared_ptr<PathPoint> left_fringe;
     if (m_path->edges().empty()) {
       left_fringe = m_path->first_point();
+    } else if (m_point_offset > 0) {
+      left_fringe = m_path->edges().at(m_point_offset - 1)->b();
     } else {
-      left_fringe = m_path->edges()[m_point_offset]->a();
+      left_fringe = m_path->edges().at(m_point_offset)->a();
     }
     edges.emplace_back(std::make_unique<Edge>(back, left_fringe, m_path));
   }
