@@ -208,6 +208,7 @@ std::pair<std::deque<std::unique_ptr<Edge>>, Edge*> Path::remove(const PathView&
 
 std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges)
 {
+  assert(is_valid(edges));
   assert(is_valid());
 
   const auto swap_edges = [this](const auto& begin, const auto& end, std::deque<std::unique_ptr<Edge>>&& edges) {
@@ -255,6 +256,7 @@ std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::
     this->set_last_point_from_edges();
   }
   assert(is_valid());
+  assert(is_valid(removed_edges));
   return removed_edges;
 }
 

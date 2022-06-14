@@ -57,8 +57,11 @@ public:
   {
     assert(is_valid());
     m_current_path = &current_path_vector().add_path();
-    m_first_point = std::make_unique<PathPoint>(pos, &current_path_vector());
-    m_current_point = m_first_point.get();
+    std::deque<OwnedLocatedPath> owlps;
+    auto point = std::make_shared<PathPoint>(pos, &current_path_vector());
+    m_current_point = point.get();
+    owlps.emplace_back(m_current_path, 0, std::deque{std::move(point)});
+    m_scene.submit<AddPointsCommand>(std::move(owlps), current_path_vector().path_object());
     assert(is_valid());
   }
 
@@ -71,9 +74,10 @@ public:
     owlps.emplace_back(&path, point_offset, std::move(points));
     auto command = std::make_unique<AddPointsCommand>(std::move(owlps), &path_object);
     const auto new_edges = command->new_edges();
-    assert(new_edges.size() <= 1);
     m_scene.submit(std::move(command));
-    m_last_edge = new_edges.empty() ? nullptr : new_edges.front();
+    if (!new_edges.empty()) {
+      m_last_point = new_edges.back()->b().get();
+    }
   }
 
   void add_point(Point point)
@@ -84,22 +88,18 @@ public:
     if (m_last_point == nullptr) {
       create_first_path_point(point);
     } else {
-      auto b = std::make_unique<PathPoint>(point, &current_path_vector());
+      auto b = std::make_shared<PathPoint>(point, &current_path_vector());
       m_current_point = b.get();
-      std::deque<std::shared_ptr<PathPoint>> points;
-      std::size_t point_offset = 0;
-      if (m_last_edge != nullptr) {
-        point_offset = m_current_path->points().size() - 1;
-      } else if (m_first_point != nullptr) {
-        point_offset = m_current_path->points().size();
-        points.emplace_back(std::move(m_first_point));
+      if (m_last_point == m_current_path->last_point().get()) {
+        // append
+        submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
       } else {
-        point_offset = 0;
-        points.emplace_back(m_last_point->path_vector()->share(*m_last_point));
+        // branch
+        assert(m_last_point != nullptr);
+        auto root = current_path_vector().share(*m_last_point);
         m_current_path = &current_path_vector().add_path();
+        submit_add_points_command(*m_current_path_object, *m_current_path, 0, {root, b});
       }
-      points.emplace_back(std::move(b));
-      submit_add_points_command(*m_current_path_object, *m_current_path, point_offset, std::move(points));
     }
     assert(is_valid());
   }
@@ -147,11 +147,6 @@ public:
   bool has_active_point() const
   {
     return m_current_point != nullptr;
-  }
-
-  bool is_floating() const
-  {
-    return m_first_point != nullptr;
   }
 
   bool move_tangents(const Vec2f& delta)
@@ -210,7 +205,6 @@ private:
   Path* m_current_path = nullptr;
   PathPoint* m_last_point = nullptr;
   PathPoint* m_current_point = nullptr;
-  std::unique_ptr<PathPoint> m_first_point;
   Edge* m_last_edge;
   Scene& m_scene;
   std::unique_ptr<Macro> m_macro;
@@ -336,11 +330,6 @@ void PathTool::reset()
 void PathTool::draw(Painter& painter) const
 {
   SelectPointsBaseTool::draw(painter);
-  if (m_path_builder->is_floating()) {
-//    const auto pos = transformation().apply_to_position(m_current->first_point->geometry().position());
-//    const auto pos = m_current->first_point->geometry().position();
-    painter.painter->fillRect(centered_rectangle({0, 0}, 10), Qt::red);
-  }
 }
 
 }  // namespace omm

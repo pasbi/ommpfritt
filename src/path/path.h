@@ -88,7 +88,6 @@ public:
 
   [[nodiscard]] PathPoint& at(std::size_t i) const;
   [[nodiscard]] bool contains(const PathPoint& point) const;
-  [[nodiscard]] std::size_t find(const PathPoint& point) const;
   [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& point) const;
   PathGeometry geometry() const;
 

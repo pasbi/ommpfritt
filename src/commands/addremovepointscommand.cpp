@@ -22,6 +22,7 @@ public:
     , m_owned_edges(std::move(edges))
     , m_owned_point(std::move(single_point))
   {
+    assert(Path::is_valid(m_owned_edges));
     assert((m_owned_point == nullptr) || m_owned_edges.empty());
   }
 
@@ -74,6 +75,7 @@ OwnedLocatedPath::OwnedLocatedPath(Path* const path, const std::size_t point_off
     , m_point_offset(point_offset)
     , m_points(std::move(points))
 {
+  assert(std::none_of(m_points.begin(), m_points.end(), [](const auto& p) { return p.get() == nullptr; }));
 }
 
 std::deque<std::unique_ptr<Edge>> OwnedLocatedPath::create_edges() const
@@ -113,6 +115,7 @@ std::deque<std::unique_ptr<Edge>> OwnedLocatedPath::create_edges() const
     edges.emplace_back(std::make_unique<Edge>(back, left_fringe, m_path));
   }
 
+  assert(Path::is_valid(edges));
   return edges;
 }
 
