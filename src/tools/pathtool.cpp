@@ -93,12 +93,14 @@ public:
       if (m_last_point == m_current_path->last_point().get()) {
         // append
         submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
-      } else {
+      } else if (auto root = current_path_vector().share(*m_last_point); root != nullptr) {
         // branch
         assert(m_last_point != nullptr);
-        auto root = current_path_vector().share(*m_last_point);
         m_current_path = &current_path_vector().add_path();
         submit_add_points_command(*m_current_path_object, *m_current_path, 0, {root, b});
+      } else {
+        // m_last_point has been removed (e.g. by undo)
+        submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
       }
     }
     assert(is_valid());
@@ -122,9 +124,30 @@ public:
     }
   }
 
+  PathObject* find_selected_path_object() const
+  {
+    const auto selection = m_scene.selection();
+    static constexpr auto is_path_object = [](const auto* item) { return item->type() == PathObject::TYPE; };
+    const auto it = std::find_if(selection.begin(), selection.end(), is_path_object);
+    if (it == selection.end()) {
+      return nullptr;
+    } else {
+      return dynamic_cast<PathObject*>(*it);
+    }
+  }
+
   void ensure_active_path_object()
   {
-    if (m_current_path_object == nullptr) {
+    if (m_scene.contains(m_current_path_object) && m_scene.selection().contains(m_current_path_object)) {
+      // everything can stay as it is, we have an existing and selected m_current_path_object.
+      return;
+    } else if (auto* const selected_path_object = find_selected_path_object(); selected_path_object != nullptr) {
+      // There is a path object selected, but it's not m_current_path_object.
+      // Use the selected path object.
+      m_current_path_object = selected_path_object;
+    } else {
+      // There is no path object selected and m_current_path_object doesn't exist currently.
+      // Create a new one.
       start_macro();
       static constexpr auto insert_mode = Application::InsertionMode::Default;
       auto& path_object = Application::instance().insert_object(PathObject::TYPE, insert_mode);
@@ -132,6 +155,8 @@ public:
       m_current_path_object->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
       m_scene.set_selection({m_current_path_object});
     }
+    m_current_point = nullptr;
+    m_last_point = nullptr;
   }
 
   bool has_active_path_object() const
