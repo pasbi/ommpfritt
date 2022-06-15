@@ -80,6 +80,23 @@ public:
     }
   }
 
+  void add_point(std::shared_ptr<PathPoint>&& b)
+  {
+    m_current_point = b.get();
+    if (m_last_point == m_current_path->last_point().get()) {
+      // append
+      submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
+    } else if (auto root = current_path_vector().share(*m_last_point); root != nullptr) {
+      // branch
+      assert(m_last_point != nullptr);
+      m_current_path = &current_path_vector().add_path();
+      submit_add_points_command(*m_current_path_object, *m_current_path, 0, {root, b});
+    } else {
+      // m_last_point has been removed (e.g. by undo), also append.
+      submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
+    }
+  }
+
   void add_point(Point point)
   {
     ensure_active_path_object();
@@ -88,38 +105,33 @@ public:
     if (m_last_point == nullptr) {
       create_first_path_point(point);
     } else {
-      auto b = std::make_shared<PathPoint>(point, &current_path_vector());
-      m_current_point = b.get();
-      if (m_last_point == m_current_path->last_point().get()) {
-        // append
-        submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
-      } else if (auto root = current_path_vector().share(*m_last_point); root != nullptr) {
-        // branch
-        assert(m_last_point != nullptr);
-        m_current_path = &current_path_vector().add_path();
-        submit_add_points_command(*m_current_path_object, *m_current_path, 0, {root, b});
-      } else {
-        // m_last_point has been removed (e.g. by undo)
-        submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
-      }
+      add_point(std::make_shared<PathPoint>(point, &current_path_vector()));
     }
     assert(is_valid());
   }
 
   void find_tie()
   {
+    assert(is_valid());
+    m_current_point = nullptr;
     if (const auto selected_paths = m_scene.item_selection<PathObject>(); selected_paths.empty()) {
-      assert(is_valid());
-      return;
+      m_current_path_object = nullptr;
     } else {
-      assert(is_valid());
       m_current_path_object = *selected_paths.begin();
-      if (const auto ps = m_current_path_object->path_vector().selected_points(); ps.empty()) {
-        m_current_path_object = nullptr;
-      } else {
+      if (const auto ps = m_current_path_object->path_vector().selected_points(); !ps.empty()) {
         m_current_point = *ps.begin();
       }
-      assert(is_valid());
+    }
+    assert(is_valid());
+  }
+
+  void close_path()
+  {
+    if (const auto selection = current_path_vector().selected_points(); m_last_point != nullptr && !selection.empty()) {
+      if (auto end = current_path_vector().share(**selection.begin()); end) {
+        // it may be that start and end have been removed from the path in the meanwhile (undo)
+        add_point(std::move(end));
+      }
     }
   }
 
@@ -253,8 +265,12 @@ bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEven
 bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
   const auto control_modifier = static_cast<bool>(event.modifiers() & Qt::ControlModifier);
-  if (!control_modifier && SelectPointsBaseTool::mouse_press(pos, event, false)) {
-    m_path_builder->find_tie();
+  if (SelectPointsBaseTool::mouse_press(pos, event, false)) {
+    if (control_modifier) {
+      m_path_builder->close_path();
+    } else {
+      m_path_builder->find_tie();
+    }
     return true;
   } else {
     if (event.button() == Qt::LeftButton) {
