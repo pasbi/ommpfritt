@@ -118,7 +118,6 @@ public:
         m_current_path_object = nullptr;
       } else {
         m_current_point = *ps.begin();
-        m_last_edge = nullptr;
       }
       assert(is_valid());
     }
@@ -230,71 +229,9 @@ private:
   Path* m_current_path = nullptr;
   PathPoint* m_last_point = nullptr;
   PathPoint* m_current_point = nullptr;
-  Edge* m_last_edge;
   Scene& m_scene;
   std::unique_ptr<Macro> m_macro;
 };
-
-//class LeftButtonPressImpl
-//{
-//public:
-//  explicit LeftButtonPressImpl(Scene& scene, PathTool::Current& current)
-//    : m_scene(scene)
-//    , m_current(current)
-//  {
-//  }
-
-////  void find_target_point(Tool& tool, const Vec2f& pos)
-////  {
-////    for (auto* handle : tool.handles()) {
-////      const auto* point_select_handle = dynamic_cast<PointSelectHandle*>(handle);
-////      if (point_select_handle != nullptr && point_select_handle->contains_global(pos)) {
-////        m_target_point = &point_select_handle->point();
-////        return;
-////      }
-////    }
-////  }
-
-////  void insert_point_segment(const Point& point, const std::size_t index)
-////  {
-////    std::deque<std::unique_ptr<PathPoint>> points;
-////    m_current.point = points.emplace_back(std::make_unique<PathPoint>(point, m_current.path->path_vector())).get();
-////    m_located_paths.emplace_back(m_current.path, index, std::move(points));
-////    if (m_target_point != nullptr) {
-////      m_points_to_join.insert({m_current.point, m_target_point});
-////    }
-////  }
-
-//  void add_point(const Point& point)
-//  {
-//  }
-
-//  void polish()
-//  {
-//    PathObject& current_path = *m_current.point->path_vector()->path_object();
-//    if (!m_points_to_join.empty()) {
-//      start_macro();
-//    }
-//    m_scene.submit<AddPointsCommand>(std::move(m_located_paths));
-//    current_path.geometry().deselect_all_points();
-//    m_current.point->set_selected(true);
-//    current_path.update();
-//  }
-
-
-//  void start_macro()
-//  {
-//    if (m_macro == nullptr) {
-//      m_macro = m_scene.history().start_macro(AddPointsCommand::static_label());
-//    }
-//  }
-
-//private:
-//  PathTool::Current& m_current;
-////  PathPoint* m_target_point = nullptr;
-//  std::deque<OwnedLocatedPath> m_located_paths;
-//  ::transparent_set<PathPoint*> m_points_to_join;
-//};
 
 PathTool::PathTool(Scene& scene)
   : SelectPointsBaseTool(scene)
