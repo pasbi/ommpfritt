@@ -525,19 +525,17 @@ void Scene::set_mode(SceneMode mode)
 
 bool Scene::contains(const AbstractPropertyOwner* apo) const
 {
+  if (apo == nullptr) {
+    return false;
+  }
+  static constexpr auto contains = [](const auto& container, const auto& key) {
+    return end(container) != std::find(begin(container), end(container), key);
+  };
   switch (apo->kind) {
-  case Kind::Tag: {
-    const auto tags = this->tags();
-    // the std::set::find does not allow keys of type `const Tag*`.
-    // NOLINTNEXTLINE(performance-inefficient-algorithm)
-    return tags.end() != std::find(tags.begin(), tags.end(), dynamic_cast<const Tag*>(apo));
-  }
-  case Kind::Node: {
-    const auto nodes = this->collect_nodes();
-    // the std::set::find does not allow keys of type `const Tag*`.
-    // NOLINTNEXTLINE(performance-inefficient-algorithm)
-    return nodes.end() != std::find(nodes.begin(), nodes.end(), dynamic_cast<const nodes::Node*>(apo));
-  }
+  case Kind::Tag:
+    return contains(this->tags(), dynamic_cast<const Tag*>(apo));
+  case Kind::Node:
+    return contains(this->collect_nodes(), dynamic_cast<const nodes::Node*>(apo));
   case Kind::Object:
     return object_tree().contains(dynamic_cast<const Object&>(*apo));
   case Kind::Style:
