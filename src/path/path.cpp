@@ -3,9 +3,6 @@
 #include "path/edge.h"
 #include "path/pathpoint.h"
 #include "path/pathview.h"
-#include "serializers/abstractserializer.h"
-#include "serializers/serializerworker.h"
-#include "serializers/deserializerworker.h"
 #include "path/pathview.h"
 #include "path/pathgeometry.h"
 #include <2geom/pathvector.h>
@@ -33,6 +30,7 @@ Path::Path(const Path& path, PathVector* path_vector)
     : m_edges(::copy(path.m_edges))
     , m_path_vector(path_vector)
 {
+  set_last_point_from_edges();
 }
 
 Path::~Path() = default;
@@ -116,16 +114,6 @@ PathGeometry Path::geometry() const
   return PathGeometry{util::transform(points(), &PathPoint::geometry)};
 }
 
-void Path::serialize(serialization::SerializerWorker& worker) const
-{
-  (void) worker;
-}
-
-void Path::deserialize(serialization::DeserializerWorker& worker)
-{
-  (void) worker;
-}
-
 Edge& Path::add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b)
 {
   return add_edge(std::make_unique<Edge>(a, b, this));
@@ -148,11 +136,11 @@ std::shared_ptr<PathPoint> Path::first_point() const
 Edge& Path::add_edge(std::unique_ptr<Edge> edge)
 {
   assert(edge->a() && edge->b());
+
   const auto try_emplace = [this](std::unique_ptr<Edge>& edge) {
-    if (m_last_point.get() == edge->a().get()) {
+    if (m_last_point == nullptr || last_point().get() == edge->a().get()) {
       m_edges.emplace_back(std::move(edge));
-      m_last_point = m_edges.back()->b();
-    } else if (m_edges.front()->a() == edge->b()) {
+    } else if (first_point().get() == edge->b().get()) {
       m_edges.emplace_front(std::move(edge));
     } else {
       return false;
@@ -169,6 +157,7 @@ Edge& Path::add_edge(std::unique_ptr<Edge> edge)
     }
   }
 
+  set_last_point_from_edges();
   return ref;
 }
 

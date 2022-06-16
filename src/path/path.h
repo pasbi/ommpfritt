@@ -8,12 +8,6 @@
 namespace omm
 {
 
-namespace serialization
-{
-class SerializerWorker;
-class DeserializerWorker;
-}  // namespace serialization
-
 class Point;
 class PathPoint;
 class Edge;
@@ -39,16 +33,12 @@ public:
   explicit Path(PathVector* path_vector = nullptr);
   explicit Path(const PathGeometry& geometry, PathVector* path_vector = nullptr);
   explicit Path(const Path& path, PathVector* path_vector);
-  explicit Path(std::vector<std::unique_ptr<Edge>> edges, PathVector* path_vector = nullptr);
   ~Path();
   Path(Path&&) = delete;
   Path& operator=(const Path&) = delete;
   Path& operator=(Path&&) = delete;
 
   static constexpr auto POINTS_POINTER = "points";
-
-  void serialize(serialization::SerializerWorker& worker) const;
-  void deserialize(serialization::DeserializerWorker& worker);
 
   Edge& add_edge(std::unique_ptr<Edge> edge);
   Edge& add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b);

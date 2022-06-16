@@ -9,6 +9,7 @@
 #include "scene/scene.h"
 #include "scene/disjointpathpointsetforest.h"
 #include "objects/pathobject.h"
+#include "path/edge.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/pathvectorgeometry.h"
@@ -79,12 +80,55 @@ PathVector::~PathVector() = default;
 
 void PathVector::serialize(serialization::SerializerWorker& worker) const
 {
-  (void) worker;
+  using PointIndices = std::map<const PathPoint*, std::size_t>;
+  PointIndices point_indices;
+  std::vector<std::vector<std::size_t>> iss;
+  iss.reserve(m_paths.size());
+  for (const auto& path : m_paths) {
+    std::list<std::size_t> is;
+    for (const auto* const point : path->points()) {
+      const auto [it, was_inserted] = point_indices.try_emplace(point, point_indices.size());
+      is.emplace_back(it->second);
+    }
+    iss.emplace_back(is.begin(), is.end());
+  }
+
+  std::vector<const PathPoint*> point_indices_vec(point_indices.size());
+  for (const auto& [point, index] : point_indices) {
+    point_indices_vec.at(index) = point;
+  }
+
+  worker.sub("geometries")->set_value(point_indices_vec, [](const PathPoint* const point, auto& worker) {
+    worker.set_value(point->geometry());
+  });
+
+  worker.sub("paths")->set_value(iss);
 }
 
 void PathVector::deserialize(serialization::DeserializerWorker& worker)
 {
-  (void) worker;
+  const auto points = [&worker, this]() {
+    std::vector<Point> geometries;
+    worker.sub("geometries")->get(geometries);
+    return util::transform(geometries, [this](const auto& geometry) {
+      return std::make_shared<PathPoint>(geometry, this);
+    });
+  }();
+
+  std::vector<std::vector<std::size_t>> iss;
+  worker.sub("paths")->get(iss);
+  for (const auto& is : iss) {
+    auto& path = add_path();
+    if (is.size() == 1) {
+      path.set_single_point(points.at(is.front()));
+    } else {
+      for (std::size_t i = 1; i < is.size(); ++i) {
+        const auto& a = points.at(is.at(i - 1));
+        const auto& b = points.at(is.at(i));
+        path.add_edge(std::make_unique<Edge>(a, b, &path));
+      }
+    }
+  }
 }
 
 std::set<Face> PathVector::faces() const
