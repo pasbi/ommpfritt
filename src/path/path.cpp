@@ -172,39 +172,6 @@ Edge& Path::add_edge(std::unique_ptr<Edge> edge)
   return ref;
 }
 
-std::pair<std::deque<std::unique_ptr<Edge>>, Edge*> Path::remove(const PathView& path_view, std::unique_ptr<Edge> bridge)
-{
-  const auto first = std::next(m_edges.begin(), std::max(static_cast<std::size_t>(1), path_view.begin()) - 1);
-  const auto last = std::next(m_edges.begin(), std::min(path_view.end(), m_edges.size()));
-
-  std::deque<std::unique_ptr<Edge>> removed_edges;
-  Edge* new_edge = nullptr;
-
-  std::copy(std::move_iterator{first}, std::move_iterator{last}, std::back_inserter(removed_edges));
-
-  if (path_view.begin() > 0 && path_view.end() < m_edges.size()) {
-    const auto& previous_edge = *std::next(first, -1);
-    const auto& next_edge = *std::next(last, 1);
-    auto new_edge_own = [&previous_edge, &next_edge, &bridge, this]() {
-      if (bridge == nullptr) {
-        return std::make_unique<Edge>(previous_edge->b(), next_edge->a(), this);
-      } else {
-        assert(bridge->a() == previous_edge->b());
-        assert(bridge->b() == next_edge->a());
-        assert(bridge->path() == this);
-        return std::move(bridge);
-      }
-    }();
-    new_edge = new_edge_own.get();
-    m_edges.insert(std::next(last), std::move(new_edge_own));
-  } else {
-    assert(bridge == nullptr);
-  }
-  m_edges.erase(first, last);
-  set_last_point_from_edges();
-  assert(is_valid());
-  return {std::move(removed_edges), new_edge};
-}
 
 std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges)
 {

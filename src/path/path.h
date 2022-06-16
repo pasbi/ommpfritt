@@ -56,20 +56,6 @@ public:
   std::shared_ptr<PathPoint> first_point() const;
 
   /**
-   * @brief remove removes the points specified by given `path_view` and returns the ownership
-   *  of the touching edges.
-   *  Inserts the given edge `bridge` to fill the gap and returns a pointer to `bridge`.
-   * @param path_view specifies the points to remove
-   * @param bridge Connects the two floating pathes.
-   *  May be `nullptr`, in which case a new edge is created, if necessary.
-   *  No bridge must be specified if no connection is required (because front, back or all points
-   *  were removed).
-   * @return ownership of the removed edges and a pointer to the new edge (or nullptr if no such
-   *  edge was added).
-   */
-  std::pair<std::deque<std::unique_ptr<Edge>>, Edge*> remove(const PathView& path_view, std::unique_ptr<Edge> bridge = nullptr);
-
-  /**
    * @brief Path::replace replaces the points selected by @param path_view with @param edges.
    * @param path_view the point selection to be removed
    * @param edges the edges that fill the gap.
