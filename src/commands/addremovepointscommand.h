@@ -49,13 +49,13 @@ public:
   std::deque<Edge*> owned_edges() const;
 
 protected:
-  explicit AddRemovePointsCommand(const QString& label, std::deque<ChangeSet> changes, PathObject* path_object = nullptr);
+  explicit AddRemovePointsCommand(const QString& label, ChangeSet changes, PathObject* path_object = nullptr);
   ~AddRemovePointsCommand() override;
   void restore_bridges();
   void restore_edges();
 
 private:
-  std::deque<ChangeSet> m_change_sets;
+  std::unique_ptr<ChangeSet> m_change_set;
   PathObject* m_path_object;
   void update();
 };
@@ -63,7 +63,7 @@ private:
 class AddPointsCommand : public AddRemovePointsCommand
 {
 public:
-  explicit AddPointsCommand(std::deque<OwnedLocatedPath> points_to_add, PathObject* path_object = nullptr);
+  explicit AddPointsCommand(OwnedLocatedPath points_to_add, PathObject* path_object = nullptr);
   void undo() override;
   void redo() override;
   static QString static_label();
@@ -80,7 +80,7 @@ private:
 class RemovePointsCommand : public AddRemovePointsCommand
 {
 public:
-  explicit RemovePointsCommand(const std::deque<PathView>& points_to_remove, PathObject* path_object = nullptr);
+  explicit RemovePointsCommand(const PathView& points_to_remove, PathObject* path_object = nullptr);
   void undo() override;
   void redo() override;
   static QString static_label();

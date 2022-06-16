@@ -57,11 +57,10 @@ public:
   {
     assert(is_valid());
     m_current_path = &current_path_vector().add_path();
-    std::deque<OwnedLocatedPath> owlps;
     auto point = std::make_shared<PathPoint>(pos, &current_path_vector());
     m_current_point = point.get();
-    owlps.emplace_back(m_current_path, 0, std::deque{std::move(point)});
-    m_scene.submit<AddPointsCommand>(std::move(owlps), current_path_vector().path_object());
+    OwnedLocatedPath olp(m_current_path, 0, std::deque{std::move(point)});
+    m_scene.submit<AddPointsCommand>(std::move(olp), current_path_vector().path_object());
     assert(is_valid());
   }
 
@@ -70,9 +69,8 @@ public:
                                  const std::size_t point_offset,
                                  std::deque<std::shared_ptr<PathPoint>>&& points)
   {
-    std::deque<OwnedLocatedPath> owlps;
-    owlps.emplace_back(&path, point_offset, std::move(points));
-    auto command = std::make_unique<AddPointsCommand>(std::move(owlps), &path_object);
+    OwnedLocatedPath olp(&path, point_offset, std::move(points));
+    auto command = std::make_unique<AddPointsCommand>(std::move(olp), &path_object);
     const auto new_edges = command->new_edges();
     m_scene.submit(std::move(command));
     if (!new_edges.empty()) {

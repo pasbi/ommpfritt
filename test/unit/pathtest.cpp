@@ -132,17 +132,12 @@ protected:
     for (std::size_t i = 0; i < n; ++i) {
       points.emplace_back(std::make_unique<omm::PathPoint>(omm::Point{}, m_path.path_vector()));
     }
-    omm::OwnedLocatedPath olp{&m_path, offset, points};
-    std::deque<omm::OwnedLocatedPath> olps;
-    olps.emplace_back(std::move(olp));
-    return m_stack.submit(std::make_unique<omm::AddPointsCommand>(std::move(olps)));
+    return m_stack.submit(std::make_unique<omm::AddPointsCommand>(omm::OwnedLocatedPath{&m_path, offset, points}));
   }
 
   const auto& submit_remove_point_command(const std::size_t offset = 0, const std::size_t n = 1)
   {
-    std::deque<omm::PathView> ptrs;
-    ptrs.emplace_back(m_path, offset, n);
-    return m_stack.submit(std::make_unique<omm::RemovePointsCommand>(ptrs));
+    return m_stack.submit(std::make_unique<omm::RemovePointsCommand>(omm::PathView(m_path, offset, n)));
   }
 
   const auto& submit_add_edge_command()
@@ -150,10 +145,7 @@ protected:
     std::deque<std::shared_ptr<omm::PathPoint>> points;
     points.emplace_back(std::make_unique<omm::PathPoint>(omm::Point{}, m_path.path_vector()));
     points.emplace_back(std::make_unique<omm::PathPoint>(omm::Point{}, m_path.path_vector()));
-    omm::OwnedLocatedPath olp{&m_path, 0, points};
-    std::deque<omm::OwnedLocatedPath> olps;
-    olps.emplace_back(std::move(olp));
-    return m_stack.submit(std::make_unique<omm::AddPointsCommand>(std::move(olps)));
+    return m_stack.submit(std::make_unique<omm::AddPointsCommand>(omm::OwnedLocatedPath(&m_path, 0, points)));
   }
 
   omm::Path& path() const

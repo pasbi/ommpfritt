@@ -170,10 +170,10 @@ namespace omm
 {
 
 AddRemovePointsCommand::AddRemovePointsCommand(const QString& label,
-                                               std::deque<ChangeSet> changes,
+                                               ChangeSet changes,
                                                PathObject* const path_object)
     : Command(label)
-    , m_change_sets(std::move(changes))
+    , m_change_set(std::make_unique<ChangeSet>(std::move(changes)))
     , m_path_object(path_object)
 {
 }
@@ -182,23 +182,21 @@ AddRemovePointsCommand::~AddRemovePointsCommand() = default;
 
 void AddRemovePointsCommand::restore_bridges()
 {
-  std::for_each(m_change_sets.begin(), m_change_sets.end(), [](auto& cs) { cs.swap(); });
+  m_change_set->swap();
   update();
 }
 
 void AddRemovePointsCommand::restore_edges()
 {
-  std::for_each(m_change_sets.rbegin(), m_change_sets.rend(), [](auto& cs) { cs.swap(); });
+  m_change_set->swap();
   update();
 }
 
 std::deque<Edge*> AddRemovePointsCommand::owned_edges() const
 {
   std::deque<Edge*> new_edges;
-  for (const auto& cs : m_change_sets) {
-    const auto& oe = cs.owned_edges();
-    new_edges.insert(new_edges.end(), oe.begin(), oe.end());
-  }
+  const auto& oe = m_change_set->owned_edges();
+  new_edges.insert(new_edges.end(), oe.begin(), oe.end());
   return new_edges;
 }
 
@@ -210,10 +208,8 @@ void AddRemovePointsCommand::update()
   }
 }
 
-AddPointsCommand::AddPointsCommand(std::deque<OwnedLocatedPath> points_to_add, PathObject* const path_object)
-    : AddRemovePointsCommand(static_label(),
-                             util::transform(std::move(points_to_add), make_change_set_for_add),
-                             path_object)
+AddPointsCommand::AddPointsCommand(OwnedLocatedPath points_to_add, PathObject* const path_object)
+    : AddRemovePointsCommand(static_label(), make_change_set_for_add(std::move(points_to_add)), path_object)
     , m_new_edges(owned_edges())  // owned_edges are new edges before calling redo.
 {
 }
@@ -238,10 +234,8 @@ std::deque<Edge*> AddPointsCommand::new_edges() const
   return m_new_edges;
 }
 
-RemovePointsCommand::RemovePointsCommand(const std::deque<PathView>& points_to_remove, PathObject* const path_object)
-    : AddRemovePointsCommand(static_label(),
-                             util::transform(points_to_remove, make_change_set_for_remove),
-                             path_object)
+RemovePointsCommand::RemovePointsCommand(const PathView& points_to_remove, PathObject* const path_object)
+    : AddRemovePointsCommand(static_label(), make_change_set_for_remove(points_to_remove), path_object)
 {
 }
 

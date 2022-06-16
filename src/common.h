@@ -366,6 +366,7 @@ template<typename Vs, typename F> auto find_coherent_ranges(const Vs& vs, F&& f)
   {
     std::size_t start;
     std::size_t size;
+    bool operator<(const Range& other) const noexcept { return start < other.start; }
   };
 
   std::deque<Range> ranges;

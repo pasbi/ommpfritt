@@ -129,22 +129,17 @@ void remove_selected_points(Application& app)
 {
   std::unique_ptr<Macro> macro;
   for (auto* path_object : app.scene->item_selection<PathObject>()) {
-    std::deque<PathView> removed_points;
     for (Path* path : path_object->path_vector().paths()) {
-      const auto selected_ranges = find_coherent_ranges(path->points(),
-                                                        std::mem_fn(&PathPoint::is_selected));
+      auto selected_ranges = find_coherent_ranges(path->points(), std::mem_fn(&PathPoint::is_selected));
+      std::sort(selected_ranges.rbegin(), selected_ranges.rend());
       for (const auto& range : selected_ranges) {
-        removed_points.emplace_back(*path, range.start, range.size);
+        auto command = std::make_unique<RemovePointsCommand>(PathView(*path, range.start, range.size), path_object);
+        if (!macro) {
+          macro = app.scene->history().start_macro(command->actionText());
+        }
+        app.scene->submit(std::move(command));
+        app.scene->update_tool();
       }
-    }
-
-    if (!removed_points.empty()) {
-      auto command = std::make_unique<RemovePointsCommand>(std::move(removed_points), path_object);
-      if (!macro) {
-        macro = app.scene->history().start_macro(command->actionText());
-      }
-      app.scene->submit(std::move(command));
-      app.scene->update_tool();
     }
   }
 }
