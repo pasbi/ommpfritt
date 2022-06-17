@@ -121,16 +121,25 @@ PathVector PathObject::compute_path_vector() const
   return pv;
 }
 
+void PathObject::set_face_selected(const Face& face, bool s)
+{
+  Q_UNUSED(face)
+  Q_UNUSED(s)
+}
+
+bool PathObject::is_face_selected(const Face& face) const
+{
+  Q_UNUSED(face)
+  return false;
+}
+
 #ifdef DRAW_POINT_IDS
 void PathObject::draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const
 {
   Object::draw_object(renderer, style, options);
   renderer.painter->save();
   renderer.painter->setPen(Qt::white);
-  for (const auto* point : path_vector().points()) {
-    static constexpr QPointF offset{10.0, 10.0};
-    renderer.painter->drawText(point->geometry().position().to_pointf() + offset, point->debug_id());
-  }
+  path_vector().draw_point_ids(*renderer.painter);
   renderer.painter->restore();
 }
 #endif  // DRAW_POINT_IDS

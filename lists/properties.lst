@@ -5,6 +5,7 @@
   "items": [
     "BoolProperty",
     "ColorProperty",
+    "FaceListProperty",
     "FloatProperty",
     "IntegerProperty",
     "OptionProperty",

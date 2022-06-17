@@ -13,6 +13,7 @@
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
 #include "objects/pathobject.h"
+#include "path/face.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/pathvector.h"
@@ -167,6 +168,11 @@ void remove_selected_points(Application& app)
   }
 }
 
+void remove_selected_faces(Application& app)
+{
+  Q_UNUSED(app)
+}
+
 void remove_selected_items(Application& app)
 {
   switch (app.scene_mode()) {
@@ -175,6 +181,9 @@ void remove_selected_items(Application& app)
     break;
   case SceneMode::Object:
     app.scene->remove(app.main_window(), app.scene->selection());
+    break;
+  case SceneMode::Face:
+    remove_selected_faces(app);
     break;
   }
 }
@@ -212,6 +221,14 @@ void select_all(Application& app)
   case SceneMode::Object:
     app.scene->set_selection(down_cast(app.scene->object_tree().items()));
     break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->geometry().faces()) {
+        path_object->set_face_selected(face, true);
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
+    break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();
 }
@@ -229,6 +246,14 @@ void deselect_all(Application& app)
     break;
   case SceneMode::Object:
     app.scene->set_selection({});
+    break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->geometry().faces()) {
+        path_object->set_face_selected(face, false);
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
     break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();
@@ -257,6 +282,14 @@ void invert_selection(Application& app)
   case SceneMode::Object:
     app.scene->set_selection(down_cast(set_difference(app.scene->object_tree().items(),
                                                       app.scene->item_selection<Object>())));
+    break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->geometry().faces()) {
+        path_object->set_face_selected(face, path_object->is_face_selected(face));
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
     break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();

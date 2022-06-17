@@ -13,9 +13,6 @@ public:
   [[nodiscard]] bool contains_global(const Vec2f& point) const override;
   void draw(QPainter& painter) const override;
   Vec2f position = Vec2f::o();
-
-protected:
-  bool transform_in_tool_space{};
 };
 
 template<typename ToolT> class MoveParticleHandle : public ParticleHandle

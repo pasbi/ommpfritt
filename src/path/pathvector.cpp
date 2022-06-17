@@ -16,6 +16,7 @@
 #include "scene/mailbox.h"
 #include "removeif.h"
 #include <QObject>
+#include <QPainter>
 
 namespace
 {
@@ -163,48 +164,20 @@ PathPoint& PathVector::point_at_index(std::size_t index) const
   throw std::runtime_error{"Index out of bounds."};
 }
 
-QPainterPath PathVector::outline() const
+QPainterPath PathVector::to_painter_path() const
 {
   QPainterPath outline;
   for (const Path* path : paths()) {
-    const auto points = path->points();
-    if (!points.empty()) {
-      outline.addPath(Path::to_painter_path(util::transform(points, [](const PathPoint* p) {
-        return p->geometry();
-      })));
-    }
+    outline.addPath(path->to_painter_path());
   }
   return outline;
 }
 
-std::vector<QPainterPath> PathVector::faces() const
+std::set<Face> PathVector::faces() const
 {
   Graph graph{*this};
   graph.remove_articulation_edges();
-  const auto faces = graph.compute_faces();
-  std::vector<QPainterPath> qpps;
-  qpps.reserve(faces.size());
-  for (const auto& face : faces) {
-    qpps.emplace_back(Path::to_painter_path(face.points()));
-  }
-
-  for (bool path_changed = true; path_changed;)
-  {
-    path_changed = false;
-    for (auto& q1 : qpps) {
-      for (auto& q2 : qpps) {
-        if (&q1 == &q2) {
-          continue;
-        }
-        if (q1.contains(q2)) {
-          path_changed = true;
-          q1 -= q2;
-        }
-      }
-    }
-  }
-
-  return qpps;
+  return graph.compute_faces();
 }
 
 std::size_t PathVector::point_count() const
@@ -300,6 +273,14 @@ void PathVector::join_points_by_position(const std::vector<Vec2f>& positions) co
       }
     }
     joined_points().insert(joint);
+  }
+}
+
+void PathVector::draw_point_ids(QPainter& painter) const
+{
+  for (const auto* point : points()) {
+    static constexpr QPointF offset{10.0, 10.0};
+    painter.drawText(point->geometry().position().to_pointf() + offset, point->debug_id());
   }
 }
 

@@ -1,7 +1,6 @@
 #include "config.h"
 #include "gtest/gtest.h"
 #include "main/application.h"
-#include "main/options.h"
 #include "mainwindow/exporter.h"
 #include "objects/view.h"
 #include "scene/scene.h"
@@ -19,11 +18,6 @@ class NonUniqueException : public std::runtime_error
 public:
   using std::runtime_error::runtime_error;
 };
-
-auto options()
-{
-  return std::make_unique<omm::Options>(false, false);
-}
 
 auto& find_unique_item(omm::Scene& scene, const QString& name)
 {
@@ -76,8 +70,7 @@ class Icon : public ::testing::TestWithParam<IconTestParameter>
 {
 protected:
   Icon()
-    : m_app(ommtest::Application(options()))
-    , m_scene(*m_app.omm_app().scene)
+    : m_scene(*m_app.omm_app().scene)
   {
   }
 

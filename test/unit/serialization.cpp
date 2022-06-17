@@ -19,13 +19,6 @@
 namespace
 {
 
-std::unique_ptr<omm::Options> options()
-{
-  return std::make_unique<omm::Options>(false, // is_cli
-                                        false  // have_opengl
-  );
-}
-
 bool scene_eq(const nlohmann::json& a, const nlohmann::json& b)
 {
   static constexpr auto object_t = nlohmann::detail::value_t::object;
@@ -138,7 +131,7 @@ TEST(serialization, SceneEq)
 
 TEST(serialization, JSONInvalidScene)
 {
-  ommtest::Application qt_app{options()};
+  ommtest::Application qt_app;
   nlohmann::json json_file;
   omm::serialization::JSONDeserializer deserializer(json_file);
   EXPECT_FALSE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(deserializer));
@@ -146,7 +139,7 @@ TEST(serialization, JSONInvalidScene)
 
 TEST(serialization, BinaryInvalidScene)
 {
-  ommtest::Application qt_app{options()};
+  ommtest::Application qt_app;
   nlohmann::json json_file;
   omm::serialization::JSONDeserializer deserializer(json_file);
   EXPECT_FALSE(omm::SceneSerialization{*qt_app.omm_app().scene}.load(deserializer));
@@ -221,8 +214,7 @@ class SceneFromFileInvariance : public testing::TestWithParam<QString>
 {
 protected:
   SceneFromFileInvariance()
-      : m_app(ommtest::Application(options()))
-      , m_scene(*m_app.omm_app().scene)
+      : m_scene(*m_app.omm_app().scene)
   {
   }
 

@@ -10,6 +10,7 @@ target_sources(libommpfritt PRIVATE
 add_subdirectory(boolpropertywidget)
 add_subdirectory(colorpropertywidget)
 add_subdirectory(numericpropertywidget)
+add_subdirectory(facelistpropertywidget)
 add_subdirectory(floatpropertywidget)
 add_subdirectory(floatvectorpropertywidget)
 add_subdirectory(integerpropertywidget)

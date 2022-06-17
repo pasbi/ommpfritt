@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include "config.h"
 #include <memory>
 
 namespace omm
@@ -38,6 +39,8 @@ public:
   PathVector& geometry();
 
   PathVector compute_path_vector() const override;
+  void set_face_selected(const Face& face, bool s);
+  [[nodiscard]] bool is_face_selected(const Face& face) const;
 
 #ifdef DRAW_POINT_IDS
   void draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const override;

@@ -8,8 +8,9 @@
 
 namespace omm
 {
-template<typename NumericPropertyT>
-class NumericPropertyWidget : public PropertyWidget<NumericPropertyT>
+
+template<typename NumericPropertyT> class NumericPropertyWidget
+    : public PropertyWidget<NumericPropertyT>
 {
 public:
   using value_type = typename NumericPropertyT::value_type;
@@ -18,10 +19,7 @@ public:
 protected:
   void update_edit() override;
   void update_configuration() override;
-  auto spinbox() const
-  {
-    return m_spinbox;
-  }
+  NumericMultiValueEdit<value_type>* spinbox() const;
 
 private:
   NumericMultiValueEdit<value_type>* m_spinbox;

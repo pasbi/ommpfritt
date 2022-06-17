@@ -3,8 +3,10 @@
 #include "geometry/vec2.h"
 #include <deque>
 #include <memory>
+#include <set>
 
 class QPainterPath;
+class QPainter;
 
 namespace omm
 {
@@ -23,6 +25,7 @@ class PathPoint;
 class PathObject;
 class DisjointPathPointSetForest;
 class Scene;
+class Face;
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class PathVector
@@ -53,8 +56,8 @@ public:
   void deserialize(serialization::DeserializerWorker& worker);
   [[nodiscard]] PathPoint& point_at_index(std::size_t index) const;
 
-  [[nodiscard]] QPainterPath outline() const;
-  [[nodiscard]] std::vector<QPainterPath> faces() const;
+  [[nodiscard]] QPainterPath to_painter_path() const;
+  [[nodiscard]] std::set<Face> faces() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;
@@ -67,6 +70,7 @@ public:
   [[nodiscard]] DisjointPathPointSetForest& joined_points() const;
   void update_joined_points_geometry() const;
   void join_points_by_position(const std::vector<Vec2f>& positions) const;
+  void draw_point_ids(QPainter& painter) const;
 
   /**
    * @brief is_valid returns true if this path vector is valid.

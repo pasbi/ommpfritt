@@ -29,7 +29,7 @@ std::vector<char*> string_array_to_charpp(std::array<std::string, N>& string_arr
 class Application
 {
 public:
-  explicit Application(std::unique_ptr<omm::Options> options);
+  explicit Application();
   ~Application();
   omm::Application& omm_app() const;
 

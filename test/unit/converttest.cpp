@@ -3,7 +3,6 @@
 #include "external/json.hpp"
 #include "gtest/gtest.h"
 #include "main/application.h"
-#include "main/options.h"
 #include "mainwindow/pathactions.h"
 #include "objects/ellipse.h"
 #include "objects/pathobject.h"
@@ -14,21 +13,10 @@
 #include "scene/disjointpathpointsetforest.h"
 #include "testutil.h"
 
-namespace
-{
-
-std::unique_ptr<omm::Options> options()
-{
-  return std::make_unique<omm::Options>(false, // is_cli
-                                        false  // have_opengl
-  );
-}
-
-}  // namespace
 
 TEST(convert, ellipse)
 {
-  ommtest::Application test_app(::options());
+  ommtest::Application test_app;
   auto& app = test_app.omm_app();
 
   auto& e = app.insert_object(omm::Ellipse::TYPE, omm::Application::InsertionMode::Default);

@@ -8,12 +8,13 @@
 #include "objects/pathobject.h"
 #include "scene/scene.h"
 
-static constexpr auto FOREST_POINTER = "forest";
-static constexpr auto PATH_ID_POINTER = "path-id";
-static constexpr auto INDEX_POINTER = "index";
 
 namespace
 {
+
+static constexpr auto FOREST_POINTER = "forest";
+static constexpr auto PATH_ID_POINTER = "path-id";
+static constexpr auto INDEX_POINTER = "index";
 
 struct PathPointId
 {
@@ -51,8 +52,8 @@ private:
     for (const auto& set : m_joined_point_indices) {
       auto& forest_set = m_ref.m_forest.emplace_back();
       for (const auto& [path_id, point_index] : set) {
-        auto* path_object = dynamic_cast<PathObject*>(map.at(path_id));
-        auto& path_point = path_object->geometry().point_at_index(point_index);
+        const auto& path_object = dynamic_cast<PathObject&>(*map.at(path_id));
+        auto& path_point = path_object.geometry().point_at_index(point_index);
         forest_set.insert(&path_point);
       }
     }

@@ -3,6 +3,7 @@
 #include "scene/scene.h"
 #include "tools/selectobjectstool.h"
 #include "tools/selectpointstool.h"
+#include "tools/selectfacestool.h"
 #include "tools/selecttool.h"
 
 namespace
@@ -38,6 +39,7 @@ namespace omm
 const decltype(ToolBox::m_default_tools) ToolBox::m_default_tools {
   {omm::SceneMode::Object, omm::SelectObjectsTool::TYPE},
   {omm::SceneMode::Vertex, omm::SelectPointsTool::TYPE},
+  {omm::SceneMode::Face, omm::SelectFacesTool::TYPE},
 };
 
 ToolBox::ToolBox(Scene& scene)

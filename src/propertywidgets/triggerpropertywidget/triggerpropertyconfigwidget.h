@@ -1,22 +1,14 @@
 #pragma once
 
 #include "propertywidgets/propertyconfigwidget.h"
+#include "properties/triggerproperty.h"
 
 namespace omm
 {
 
-class TriggerProperty;
-
 class TriggerPropertyConfigWidget : public PropertyConfigWidget<TriggerProperty>
 {
-public:
-  using PropertyConfigWidget::PropertyConfigWidget;
-  void init(const PropertyConfiguration&) override
-  {
-  }
-  void update(PropertyConfiguration&) const override
-  {
-  }
+  Q_OBJECT
 };
 
 }  // namespace omm

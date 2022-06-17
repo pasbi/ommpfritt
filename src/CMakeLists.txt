@@ -9,6 +9,8 @@ target_sources(libommpfritt PRIVATE
   dnf.h
   enumnames.cpp
   enumnames.h
+  facelist.cpp
+  facelist.h
   logging.cpp
   logging.h
   maybeowner.h

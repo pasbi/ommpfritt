@@ -1,8 +1,10 @@
 #include "path/face.h"
 #include "common.h"
 #include "geometry/point.h"
-#include "path/pathpoint.h"
 #include "path/edge.h"
+#include "path/path.h"
+#include "path/pathpoint.h"
+#include <QPainterPath>
 #include <QStringList>
 
 namespace
@@ -10,19 +12,14 @@ namespace
 
 using namespace omm;
 
-bool same_point(const PathPoint* p1, const PathPoint* p2)
-{
-  return p1 == p2 || (p1 != nullptr && p1->joined_points().contains(p2));
-}
-
 bool align_last_edge(const Edge& second_last, Edge& last)
 {
   assert(!last.flipped);
-  if (same_point(second_last.end_point(), last.b)) {
+  if (PathPoint::eq(second_last.end_point(), last.b)) {
     last.flipped = true;
     return true;
   } else {
-    return same_point(second_last.end_point(), last.a);
+    return PathPoint::eq(second_last.end_point(), last.a);
   }
 }
 
@@ -30,18 +27,18 @@ bool align_two_edges(Edge& second_last, Edge& last)
 {
   assert(!last.flipped);
   assert(!second_last.flipped);
-  if (same_point(second_last.b, last.b)) {
+  if (PathPoint::eq(second_last.b, last.b)) {
     last.flipped = true;
     return true;
-  } else if (same_point(second_last.a, last.a)) {
+  } else if (PathPoint::eq(second_last.a, last.a)) {
     second_last.flipped = true;
     return true;
-  } else if (same_point(second_last.a, last.b)) {
+  } else if (PathPoint::eq(second_last.a, last.b)) {
     second_last.flipped = true;
     last.flipped = true;
     return true;
   } else {
-    return same_point(second_last.b, last.a);
+    return PathPoint::eq(second_last.b, last.a);
   }
 }
 
@@ -54,7 +51,7 @@ bool equal_at_offset(const Ts& ts, const Rs& rs, const std::size_t offset)
 
   for (std::size_t i = 0; i < ts.size(); ++i) {
     const auto j = (i + offset) % ts.size();
-    if (!same_point(ts.at(i), rs.at(j))) {
+    if (!PathPoint::eq(ts.at(i), rs.at(j))) {
       return false;
     }
   }
@@ -91,6 +88,12 @@ std::deque<PathPoint*> Face::path_points() const
 
 Face::~Face() = default;
 
+Face::Face(std::deque<Edge> edges)
+    : m_edges(std::move(edges))
+{
+  assert(is_valid());
+}
+
 bool Face::add_edge(const Edge& edge)
 {
   assert(!edge.flipped);
@@ -101,6 +104,11 @@ bool Face::add_edge(const Edge& edge)
     return align_last_edge(m_edges[m_edges.size() - 2], m_edges.back());
   }
   return true;
+}
+
+QPainterPath Face::to_painter_path() const
+{
+  return Path::to_painter_path(points());
 }
 
 const std::deque<Edge>& Face::edges() const
@@ -136,30 +144,80 @@ QString Face::to_string() const
   return static_cast<QStringList>(edges).join(", ");
 }
 
-bool operator==(const Face& a, const Face& b)
+bool Face::is_valid() const
 {
-  const auto points_a = a.path_points();
-  const auto points_b = b.path_points();
-  if (points_a.size() != points_b.size()) {
+  const auto n = m_edges.size();
+  for (std::size_t i = 0; i < n; ++i) {
+    if (!PathPoint::eq(m_edges[i].end_point(), m_edges[(i + 1) % n].start_point())) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool Face::contains(const Face& other) const
+{
+  const auto ps_other = other.path_points();
+  const auto ps_this = path_points();
+  const auto pp = to_painter_path();
+
+  std::set<const PathPoint*> distinct_points;
+  const auto other_point_not_outside = [&pp, &ps_this](const auto* p_other) {
+    const auto is_same = [p_other](const auto* p_this) { return PathPoint::eq(p_other, p_this); };
+    return std::any_of(ps_this.begin(), ps_this.end(), is_same)
+           || pp.contains(p_other->geometry().position().to_pointf());
+  };
+
+  return std::all_of(ps_other.begin(), ps_other.end(), other_point_not_outside);
+}
+
+bool Face::contains(const Vec2f& pos) const
+{
+  return to_painter_path().contains(pos.to_pointf());
+}
+
+bool Face::operator==(const Face& other) const
+{
+  const auto points = path_points();
+  const auto other_points = other.path_points();
+  if (points.size() != other_points.size()) {
     return false;
   }
-  const auto points_b_reversed = std::deque(points_b.rbegin(), points_b.rend());
-  QStringList pa;
-  QStringList pb;
-  for (std::size_t i = 0; i < points_a.size(); ++i) {
-    pa.append(QString{"%1"}.arg(points_a.at(i)->index()));
-    pb.append(QString{"%1"}.arg(points_b.at(i)->index()));
-  }
+  const auto other_points_reversed = std::deque(other_points.rbegin(), other_points.rend());
 
-  for (std::size_t offset = 0; offset < points_a.size(); ++offset) {
-    if (equal_at_offset(points_a, points_b, offset)) {
+  for (std::size_t offset = 0; offset < points.size(); ++offset) {
+    if (equal_at_offset(points, other_points, offset)) {
       return true;
     }
-    if (equal_at_offset(points_a, points_b_reversed, offset)) {
+    if (equal_at_offset(points, other_points_reversed, offset)) {
       return true;
     }
   }
   return false;
+}
+
+bool Face::operator!=(const Face& other) const
+{
+  return !(*this == other);
+}
+
+bool Face::operator<(const Face& other) const
+{
+  const auto points = path_points();
+  const auto other_points = other.path_points();
+  if (points.size() != other_points.size()) {
+    return points.size() < other_points.size();
+  }
+
+  for (std::size_t i = 0; i < points.size(); ++i) {
+    const auto pindex = points.at(i)->index();
+    const auto other_pindex = other_points.at(i)->index();
+    if (pindex < other_pindex) {
+      return pindex < other_pindex;
+    }
+  }
+
+  return false;  // faces are equal
 }
 
 }  // namespace omm

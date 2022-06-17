@@ -20,6 +20,7 @@ namespace omm
 class Animator;
 class ColorProperty;
 class Command;
+class FaceSelection;
 class HistoryModel;
 class MailBox;
 class NamedColors;
@@ -125,6 +126,7 @@ public:
   bool remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection);
   bool contains(const AbstractPropertyOwner* apo) const;
   std::unique_ptr<PointSelection> point_selection;
+  std::unique_ptr<FaceSelection> face_selection;
 
 private:
   std::map<Kind, std::set<AbstractPropertyOwner*>> m_item_selection;
