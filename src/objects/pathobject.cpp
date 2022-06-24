@@ -9,7 +9,6 @@
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <QObject>

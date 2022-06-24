@@ -2,7 +2,6 @@
 #include "path/path.h"
 #include "path/pathvector.h"
 #include "objects/pathobject.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "scene/scene.h"
 
 namespace omm

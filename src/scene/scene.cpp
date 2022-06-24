@@ -33,7 +33,6 @@
 #include "main/application.h"
 #include "nodesystem/node.h"
 #include "nodesystem/nodemodel.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"

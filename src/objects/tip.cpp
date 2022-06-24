@@ -4,7 +4,6 @@
 #include "path/pathvectorgeometry.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
-#include "scene/disjointpathpointsetforest.h"
 
 namespace
 {

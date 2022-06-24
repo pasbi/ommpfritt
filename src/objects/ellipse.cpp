@@ -9,7 +9,6 @@
 #include "properties/floatvectorproperty.h"
 #include "properties/integerproperty.h"
 #include "scene/scene.h"
-#include "scene/disjointpathpointsetforest.h"
 #include <QObject>
 
 namespace omm

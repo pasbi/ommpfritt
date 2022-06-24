@@ -10,7 +10,6 @@
 #include "path/pathvector.h"
 #include "path/path.h"
 #include "scene/scene.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "testutil.h"
 
 

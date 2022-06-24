@@ -8,7 +8,6 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "scene/stylelist.h"
-#include "scene/disjointpathpointsetforest.h"
 
 #include <QDataStream>
 #include <QFile>

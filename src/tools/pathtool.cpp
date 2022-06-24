@@ -189,7 +189,7 @@ public:
       return false;
     }
 
-    const auto lt = PolarCoordinates(m_current_point->geometry().left_tangent().to_cartesian() + delta);
+    const auto lt = PolarCoordinates(m_current_point->geometry().left_tangent().to_cartesian() - delta);
     auto geometry = m_current_point->geometry();
     geometry.set_left_tangent(lt);
     geometry.set_right_tangent(-lt);

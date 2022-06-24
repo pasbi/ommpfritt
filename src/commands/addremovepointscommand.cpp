@@ -70,7 +70,9 @@ private:
 
 OwnedLocatedPath::~OwnedLocatedPath() = default;
 
-OwnedLocatedPath::OwnedLocatedPath(Path* const path, const std::size_t point_offset, std::deque<std::shared_ptr<PathPoint>> points)
+OwnedLocatedPath::OwnedLocatedPath(Path* const path,
+                                   const std::size_t point_offset,
+                                   std::deque<std::shared_ptr<PathPoint>> points)
     : m_path(path)
     , m_point_offset(point_offset)
     , m_points(std::move(points))

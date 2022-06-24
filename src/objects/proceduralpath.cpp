@@ -12,7 +12,6 @@
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
 #include "scene/scene.h"
-#include "scene/disjointpathpointsetforest.h"
 #include <QObject>
 
 namespace

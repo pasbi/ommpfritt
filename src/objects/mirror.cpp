@@ -12,7 +12,6 @@
 #include "properties/optionproperty.h"
 #include "renderers/painter.h"
 #include "renderers/painteroptions.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "scene/scene.h"
 #include <QObject>
 #include "path/path.h"

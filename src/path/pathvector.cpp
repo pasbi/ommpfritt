@@ -7,7 +7,6 @@
 #include "properties/optionproperty.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "objects/pathobject.h"
 #include "path/edge.h"
 #include "path/pathpoint.h"

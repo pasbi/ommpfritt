@@ -23,8 +23,6 @@
 #include "renderers/painteroptions.h"
 #include "renderers/style.h"
 #include "scene/contextes.h"
-#include "scene/disjointpathpointsetforest.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "scene/mailbox.h"
 #include "scene/objecttree.h"
 #include "scene/scene.h"

@@ -345,8 +345,10 @@ TEST_P(RemovePointsCommandTest, RemovePoints)
   ASSERT_NO_FATAL_FAILURE(submit_remove_point_command(p.offset, p.count));
   const auto final_points = path().points();
   ASSERT_EQ(final_points.size(), p.initial_point_count - p.count);
-  ASSERT_TRUE(check_correspondence(initial_points, Range(0, p.offset) + Range(p.offset + p.count, p.initial_point_count),
-                                   final_points, Range(0, final_points.size())));
+  ASSERT_TRUE(check_correspondence(initial_points,
+                                   Range(0, p.offset) + Range(p.offset + p.count, p.initial_point_count),
+                                   final_points,
+                                   Range(0, final_points.size())));
   ASSERT_NO_FATAL_FAILURE(stack().undo());
   ASSERT_NO_FATAL_FAILURE(stack().redo());
 }
