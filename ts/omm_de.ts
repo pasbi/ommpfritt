@@ -1784,10 +1784,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Ellipse</translation>
     </message>
     <message>
-        <source>show point dialog</source>
-        <translation>Punktdialog anzeigen</translation>
-    </message>
-    <message>
         <source>Instance</source>
         <translation>Instanz</translation>
     </message>
