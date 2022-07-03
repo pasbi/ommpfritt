@@ -40,7 +40,6 @@ public:
   ~PathVector();
   friend void swap(PathVector& a, PathVector& b) noexcept;
 
-  static constexpr auto SEGMENTS_POINTER = "segments";
   void serialize(serialization::SerializerWorker& worker) const;
   void deserialize(serialization::DeserializerWorker& worker);
   [[nodiscard]] PathPoint& point_at_index(std::size_t index) const;

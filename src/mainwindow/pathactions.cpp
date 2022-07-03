@@ -52,21 +52,9 @@ void modify_tangents(InterpolationMode mode, Application& app)
   std::map<PathPoint*, Point> map;
   const auto paths = app.scene->item_selection<PathObject>();
   for (PathObject* path_object : paths) {
-    for (const Path* path : path_object->path_vector().paths()) {
-      const auto points = path->points();
-      for (std::size_t i = 0; i < points.size(); ++i) {
-        PathPoint* point = points[i];
-        if (point->is_selected()) {
-          switch (mode) {
-          case InterpolationMode::Bezier:
-            break;  // do nothing.
-          case InterpolationMode::Smooth:
-            map[point] = path->geometry().smoothen_point(i);
-            break;
-          case InterpolationMode::Linear:
-            map[point] = point->geometry().nibbed();
-          }
-        }
+    for (auto* point : path_object->path_vector().points()) {
+      if (point->is_selected()) {
+        map[point] = point->set_interpolation(mode);
       }
     }
   }

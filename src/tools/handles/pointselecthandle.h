@@ -24,7 +24,7 @@ public:
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
   void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   [[nodiscard]] PathPoint& point() const;
-  void transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent);
+  void transform_tangent(const Vec2f& delta, const Point::TangentKey& tangent_key);
 
 protected:
   [[nodiscard]] ObjectTransformation transformation() const;
@@ -35,11 +35,12 @@ protected:
 private:
   PathObject& m_path_object;
   PathPoint& m_point;
-  std::unique_ptr<TangentHandle> m_left_tangent_handle;
-  std::unique_ptr<TangentHandle> m_right_tangent_handle;
+  std::map<Point::TangentKey, std::unique_ptr<TangentHandle>> m_tangent_handles;
   [[nodiscard]] std::pair<bool, bool> tangents_active() const;
+  std::map<Point::TangentKey, PolarCoordinates> other_tangents(const Point::TangentKey& tangent_key) const;
+  bool is_active(const Point::TangentKey& tangent_key) const;
 
-  void transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent tangent);
+  void transform_tangent(const Vec2f& delta, TangentMode mode, const Point::TangentKey& tangent_key);
 };
 
 }  // namespace

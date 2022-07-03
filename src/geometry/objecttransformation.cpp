@@ -236,8 +236,9 @@ ObjectTransformation ObjectTransformation::apply(const ObjectTransformation& t) 
 Point ObjectTransformation::apply(const Point& point) const
 {
   Point p(apply_to_position(point.position()));
-  p.set_left_tangent(apply_to_direction(point.left_tangent()));
-  p.set_right_tangent(apply_to_direction(point.right_tangent()));
+  for (const auto key : ::get_keys(point.tangents())) {
+    p.set_tangent(key, apply_to_direction(point.tangent(key)));
+  }
   return p;
 }
 

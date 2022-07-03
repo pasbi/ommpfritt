@@ -23,12 +23,13 @@ using namespace omm;
 
 double normal_distance(const Point& a, const Point& b)
 {
-  const auto normalize = [](double a, double b) {
-    return M_180_PI * PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
-  };
+  return 0.0;
+//  const auto normalize = [](double a, double b) {
+//    return M_180_PI * PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
+//  };
 
-  return std::min(normalize(a.left_tangent().argument, b.left_tangent().argument),
-                  normalize(a.right_tangent().argument, b.right_tangent().argument));
+//  return std::min(normalize(a.left_tangent().argument, b.left_tangent().argument),
+//                  normalize(a.right_tangent().argument, b.right_tangent().argument));
 }
 
 omm::Vec2f distance(const PathObject& path_object,

@@ -45,6 +45,7 @@ public:
   std::shared_ptr<PathPoint> last_point() const;
   std::shared_ptr<PathPoint> first_point() const;
 
+
   /**
    * @brief Path::replace replaces the points selected by @param path_view with @param edges.
    * @param path_view the point selection to be removed
@@ -57,12 +58,11 @@ public:
    */
   std::deque<std::unique_ptr<Edge>> replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges);
 
-  std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> cut(Edge& edge, std::shared_ptr<PathPoint> p);
+//  std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> cut(Edge& edge, std::shared_ptr<PathPoint> p);
   [[nodiscard]] bool is_valid() const;
   [[nodiscard]] std::vector<PathPoint*> points() const;
   [[nodiscard]] std::vector<Edge*> edges() const;
 
-  [[nodiscard]] PathPoint& at(std::size_t i) const;
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& point) const;
   PathGeometry geometry() const;

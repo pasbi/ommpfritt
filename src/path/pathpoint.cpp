@@ -4,6 +4,46 @@
 #include "objects/pathobject.h"
 #include "scene/scene.h"
 
+
+namespace
+{
+
+std::pair<omm::PolarCoordinates, omm::PolarCoordinates>
+compute_smooth_tangents(const omm::PathPoint& point, const omm::Path& path)
+{
+  const auto points = path.points();
+  const auto it = std::find_if(points.begin(), points.end(), [&point](const auto* candidate) {
+    return &point == candidate;
+  });
+  assert(it != points.end());
+  const auto* const bwd = it == points.begin() ? nullptr : *prev(it);
+  const auto* const fwd = next(it) == points.end() ? nullptr : *next(it);
+
+
+  const auto pos = point.geometry().position();
+
+  static constexpr auto t = 1.0 / 3.0;
+  using PC = omm::PolarCoordinates;
+  static constexpr auto lerp = [](const double t, const auto& a, const auto& b) {
+    return (1.0 - t) * a + t * b;
+  };
+
+  auto bwd_pc = bwd == nullptr ? PC() : PC(lerp(t, pos, bwd->geometry().position()) - pos);
+  auto fwd_pc = fwd == nullptr ? PC() : PC(lerp(t, pos, fwd->geometry().position()) - pos);
+
+  if (bwd != nullptr && fwd != nullptr) {
+    const auto p_bwd = bwd->geometry().position();
+    const auto p_fwd = fwd->geometry().position();
+    const auto p_bwd_reflected = (2.0 * pos - p_bwd);
+    fwd_pc.argument = omm::PolarCoordinates(lerp(0.5, p_bwd_reflected, p_fwd) - pos).argument;
+    bwd_pc.argument = (-fwd_pc).argument;
+  }
+
+  return {bwd_pc, fwd_pc};
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -11,6 +51,30 @@ PathPoint::PathPoint(const Point& geometry, PathVector* path_vector)
   : m_path_vector(path_vector)
   , m_geometry(geometry)
 {
+}
+
+Point PathPoint::set_interpolation(InterpolationMode mode) const
+{
+  auto copy = m_geometry;
+  auto& tangents = copy.tangents();
+  for (auto& [key, tangent] : tangents) {
+    switch (mode)
+    {
+    case InterpolationMode::Linear:
+      tangent.magnitude = 0.0;
+      break;
+    case InterpolationMode::Bezier:
+      break;
+    case InterpolationMode::Smooth:
+      if (key.direction == Point::Direction::Forward) {
+        const auto [bwd, fwd] = compute_smooth_tangents(*this, *key.path);
+        tangents[{key.path, Point::Direction::Forward}] = fwd;
+        tangents[{key.path, Point::Direction::Backward}] = bwd;
+      }
+      break;
+    }
+  }
+  return copy;
 }
 
 PathVector* PathPoint::path_vector() const
@@ -33,6 +97,11 @@ std::size_t PathPoint::index() const
 void PathPoint::set_geometry(const Point& point)
 {
   m_geometry = point;
+}
+
+Point& PathPoint::geometry()
+{
+  return m_geometry;
 }
 
 const Point& PathPoint::geometry() const

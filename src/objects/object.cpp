@@ -482,12 +482,12 @@ double Object::apply_border(double t, Border border)
 
 void Object::set_oriented_position(const Point& op, const bool align)
 {
-  auto transformation = global_transformation(Space::Scene);
-  if (align) {
-    transformation.set_rotation(op.rotation());
-  }
-  transformation.set_translation(op.position());
-  set_global_transformation(transformation, Space::Scene);
+//  auto transformation = global_transformation(Space::Scene);
+//  if (align) {
+//    transformation.set_rotation(op.rotation());
+//  }
+//  transformation.set_translation(op.position());
+//  set_global_transformation(transformation, Space::Scene);
 }
 
 bool Object::is_active() const

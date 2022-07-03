@@ -6,8 +6,8 @@
 
 namespace omm
 {
-TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tangent tangent)
-    : Handle(tool), m_master_handle(master_handle), m_tangent(tangent)
+TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, const Point::TangentKey& tangent_key)
+    : Handle(tool), m_master_handle(master_handle), m_tangent_key(tangent_key)
 {
 }
 
@@ -35,7 +35,7 @@ bool TangentHandle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMous
 {
   Handle::mouse_move(delta, pos, e);
   if (status() == HandleStatus::Active) {
-    m_master_handle.transform_tangent(delta, m_tangent);
+    m_master_handle.transform_tangent(delta, m_tangent_key);
     return true;
   } else {
     return false;

@@ -83,6 +83,7 @@ void PathVector::serialize(serialization::SerializerWorker& worker) const
   PointIndices point_indices;
   std::vector<std::vector<std::size_t>> iss;
   iss.reserve(m_paths.size());
+  std::map<const Path*, std::size_t> path_indices;
   for (const auto& path : m_paths) {
     std::list<std::size_t> is;
     for (const auto* const point : path->points()) {
@@ -90,6 +91,7 @@ void PathVector::serialize(serialization::SerializerWorker& worker) const
       is.emplace_back(it->second);
     }
     iss.emplace_back(is.begin(), is.end());
+    path_indices.emplace(path.get(), path_indices.size());
   }
 
   std::vector<const PathPoint*> point_indices_vec(point_indices.size());
@@ -97,8 +99,8 @@ void PathVector::serialize(serialization::SerializerWorker& worker) const
     point_indices_vec.at(index) = point;
   }
 
-  worker.sub("geometries")->set_value(point_indices_vec, [](const PathPoint* const point, auto& worker) {
-    worker.set_value(point->geometry());
+  worker.sub("geometries")->set_value(point_indices_vec, [&path_indices](const PathPoint* const point, auto& worker) {
+    point->geometry().serialize(worker, path_indices);
   });
 
   worker.sub("paths")->set_value(iss);
@@ -106,25 +108,33 @@ void PathVector::serialize(serialization::SerializerWorker& worker) const
 
 void PathVector::deserialize(serialization::DeserializerWorker& worker)
 {
-  const auto points = [&worker, this]() {
-    std::vector<Point> geometries;
-    worker.sub("geometries")->get(geometries);
-    return util::transform(geometries, [this](const auto& geometry) {
-      return std::make_shared<PathPoint>(geometry, this);
-    });
-  }();
-
   std::vector<std::vector<std::size_t>> iss;
   worker.sub("paths")->get(iss);
-  for (const auto& is : iss) {
+
+  std::map<Path*, std::vector<std::size_t>> point_indices_per_path;
+  std::vector<const Path*> paths;
+  paths.reserve(iss.size());
+  for (const auto& path_point_indices : iss) {
     auto& path = add_path();
-    if (is.size() == 1) {
-      path.set_single_point(points.at(is.front()));
+    point_indices_per_path.emplace(&path, path_point_indices);
+    paths.emplace_back(&path);
+  }
+
+  std::deque<std::shared_ptr<PathPoint>> points;
+  worker.sub("geometries")->get_items([this, &paths, &points](auto& worker) {
+    Point geometry;
+    geometry.deserialize(worker, paths);
+    points.emplace_back(std::make_shared<PathPoint>(geometry, this));
+  });
+
+  for (const auto& [path, point_indices] : point_indices_per_path) {
+    if (point_indices.size() == 1) {
+      path->set_single_point(points.at(point_indices.front()));
     } else {
-      for (std::size_t i = 1; i < is.size(); ++i) {
-        const auto& a = points.at(is.at(i - 1));
-        const auto& b = points.at(is.at(i));
-        path.add_edge(std::make_unique<Edge>(a, b, &path));
+      for (std::size_t i = 1; i < point_indices.size(); ++i) {
+        const auto& a = points.at(point_indices.at(i - 1));
+        const auto& b = points.at(point_indices.at(i));
+        path->add_edge(std::make_unique<Edge>(a, b, path));
       }
     }
   }

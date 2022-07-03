@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common.h"
 #include "geometry/point.h"
 #include "transparentset.h"
 #include <set>
@@ -19,6 +20,7 @@ public:
   explicit PathPoint(const Point& geometry, PathVector* path_vector);
   void set_geometry(const Point& point);
   [[nodiscard]] const Point& geometry() const;
+  [[nodiscard]] Point& geometry();
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PathPoint", "PathPoint");
 
   void set_selected(bool is_selected);
@@ -33,6 +35,7 @@ public:
   PathPoint& operator=(const PathPoint& other) = delete;
   PathPoint& operator=(PathPoint&& other) = delete;
   ~PathPoint() = default;
+  Point set_interpolation(InterpolationMode mode) const;
 
   [[nodiscard]] PathVector* path_vector() const;
 

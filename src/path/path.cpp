@@ -8,6 +8,33 @@
 #include <2geom/pathvector.h>
 
 
+namespace
+{
+
+/**
+ * @brief replace_tangents_key replaces the key `{old_path, *}` with `{new_path, *}`
+ *  or adds null-tangents at `{new_path, *}` (`*` stands for both directions).
+ */
+void replace_tangents_key(omm::Point& p, const omm::Path* old_path, const omm::Path& new_path)
+{
+  auto& tangents = p.tangents();
+  for (const auto& direction : {omm::Point::Direction::Backward, omm::Point::Direction::Forward}) {
+    const auto node = tangents.extract({old_path, direction});
+    tangents.try_emplace({&new_path, direction}, node.empty() ? omm::PolarCoordinates() : node.mapped());
+  }
+}
+
+void replace_tangents_key(const auto& edges, const omm::Path* old_path, const omm::Path& new_path)
+{
+  for (auto& edge : edges) {
+    for (auto& p : {edge->a(), edge->b()}) {
+      replace_tangents_key(p->geometry(), old_path, new_path);
+    }
+  }
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -20,9 +47,13 @@ Path::Path(const PathGeometry& geometry, PathVector* path_vector)
     : m_path_vector(path_vector)
 {
   const auto ps = geometry.points();
-  for (std::size_t i = 1; i < ps.size(); ++i) {
-    add_edge(std::make_unique<PathPoint>(ps[i - 1], path_vector),
-             std::make_unique<PathPoint>(ps[i], path_vector));
+  if (ps.size() == 1) {
+    set_single_point(std::make_shared<PathPoint>(ps.front(), path_vector));
+  } else {
+    for (std::size_t i = 1; i < ps.size(); ++i) {
+      add_edge(std::make_unique<PathPoint>(ps[i - 1], path_vector),
+               std::make_unique<PathPoint>(ps[i], path_vector));
+    }
   }
 }
 
@@ -30,6 +61,7 @@ Path::Path(const Path& path, PathVector* path_vector)
     : m_edges(::copy(path.m_edges))
     , m_path_vector(path_vector)
 {
+  ::replace_tangents_key(m_edges, &path, *this);
   set_last_point_from_edges();
 }
 
@@ -79,6 +111,7 @@ void Path::set_single_point(std::shared_ptr<PathPoint> single_point)
   assert(m_edges.empty());
   assert(!m_last_point);
   m_last_point = single_point;
+  replace_tangents_key(m_last_point->geometry(), nullptr, *this);
 }
 
 std::shared_ptr<PathPoint> Path::extract_single_point()
@@ -109,11 +142,6 @@ void Path::set_last_point_from_edges()
   }
 }
 
-PathGeometry Path::geometry() const
-{
-  return PathGeometry{util::transform(points(), &PathPoint::geometry)};
-}
-
 Edge& Path::add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b)
 {
   return add_edge(std::make_unique<Edge>(a, b, this));
@@ -136,6 +164,7 @@ std::shared_ptr<PathPoint> Path::first_point() const
 Edge& Path::add_edge(std::unique_ptr<Edge> edge)
 {
   assert(edge->a() && edge->b());
+  ::replace_tangents_key(std::vector{edge.get()}, nullptr, *this);
 
   const auto try_emplace = [this](std::unique_ptr<Edge>& edge) {
     if (m_last_point == nullptr || last_point().get() == edge->a().get()) {
@@ -166,6 +195,8 @@ std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::
 {
   assert(is_valid(edges));
   assert(is_valid());
+
+  ::replace_tangents_key(edges, nullptr, *this);
 
   const auto swap_edges = [this](const auto& begin, const auto& end, std::deque<std::unique_ptr<Edge>>&& edges) {
     std::deque<std::unique_ptr<Edge>> removed_edges;
@@ -208,6 +239,7 @@ std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::
                                std::move(edges));
   }
 
+
   if (set_last_point_from_edges) {
     this->set_last_point_from_edges();
   }
@@ -216,28 +248,28 @@ std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::
   return removed_edges;
 }
 
-std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> Path::cut(Edge& edge, std::shared_ptr<PathPoint> p)
-{
-  const auto it = std::find_if(m_edges.begin(), m_edges.end(), [&edge](const auto& u) {
-    return u.get() == &edge;
-  });
-  if (it == m_edges.end()) {
-    throw PathException("Edge not found.");
-  }
+//std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> Path::cut(Edge& edge, std::shared_ptr<PathPoint> p)
+//{
+//  const auto it = std::find_if(m_edges.begin(), m_edges.end(), [&edge](const auto& u) {
+//    return u.get() == &edge;
+//  });
+//  if (it == m_edges.end()) {
+//    throw PathException("Edge not found.");
+//  }
 
-  const auto insert = [this](const auto pos, auto edge) -> Edge& {
-    auto& r = *edge;
-    m_edges.insert(pos, std::move(edge));
-    return r;
-  };
-  auto& r1 = insert(std::next(it, 1), std::make_unique<Edge>(edge.a(), p, this));
-  auto& r2 = insert(std::next(it, 2), std::make_unique<Edge>(p, edge.b(), this));
+//  const auto insert = [this](const auto pos, auto edge) -> Edge& {
+//    auto& r = *edge;
+//    m_edges.insert(pos, std::move(edge));
+//    return r;
+//  };
+//  auto& r1 = insert(std::next(it, 1), std::make_unique<Edge>(edge.a(), p, this));
+//  auto& r2 = insert(std::next(it, 2), std::make_unique<Edge>(p, edge.b(), this));
 
-  auto removed_edge = std::move(*it);
-  m_edges.erase(it);
-  assert(is_valid());
-  return {std::move(removed_edge), &r1, &r2};
-}
+//  auto removed_edge = std::move(*it);
+//  m_edges.erase(it);
+//  assert(is_valid());
+//  return {std::move(removed_edge), &r1, &r2};
+//}
 
 bool Path::is_valid() const
 {
@@ -245,7 +277,14 @@ bool Path::is_valid() const
     LERROR << "Is not valid because last point is inconsistent.";
     return false;
   }
-  return is_valid(m_edges);
+
+  const auto all_points_have_tangents = std::all_of(m_edges.begin(), m_edges.end(), [this](const auto& edge) {
+    return edge->a()->geometry().tangents().contains({this, Point::Direction::Backward})
+        && edge->a()->geometry().tangents().contains({this, Point::Direction::Forward})
+        && edge->b()->geometry().tangents().contains({this, Point::Direction::Backward})
+        && edge->b()->geometry().tangents().contains({this, Point::Direction::Forward});
+  });
+  return is_valid(m_edges) && all_points_have_tangents;
 }
 
 std::vector<PathPoint*> Path::points() const
@@ -270,5 +309,23 @@ std::vector<Edge*> Path::edges() const
 {
   return util::transform<std::vector>(m_edges, &std::unique_ptr<Edge>::get);
 }
+
+PathGeometry Path::geometry() const
+{
+  auto ps = util::transform(points(), [this](const auto* const point) {
+    auto g = point->geometry();
+    auto tangents = g.tangents();
+    std::erase_if(tangents, [this](const auto& pair) {
+      return pair.first.path != this;
+    });
+    g.tangents().clear();
+    for (const auto& [key, value] : tangents) {
+      g.set_tangent({nullptr, key.direction}, value);
+    };
+    return g;
+  });
+  return PathGeometry(std::move(ps));
+}
+
 
 }  // namespace omm

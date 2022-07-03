@@ -19,8 +19,8 @@ std::vector<Vec2f> PathGeometry::compute_control_points(const Point& a, const Po
     [[fallthrough]];
   case InterpolationMode::Smooth:
     return {a.position(),
-            a.right_position(),
-            b.left_position(),
+            a.tangent_position(Point::Direction::Forward),
+            b.tangent_position(Point::Direction::Backward),
             b.position()};
     break;
   case InterpolationMode::Linear:
@@ -42,8 +42,8 @@ QPainterPath omm::PathGeometry::to_painter_path() const
     QPainterPath path;
     path.moveTo(m_points.front().position().to_pointf());
     for (auto it = m_points.begin(); next(it) != m_points.end(); ++it) {
-      path.cubicTo(it->right_position().to_pointf(),
-                   next(it)->left_position().to_pointf(),
+      path.cubicTo(it->tangent_position(Point::Direction::Forward).to_pointf(),
+                   next(it)->tangent_position(Point::Direction::Backward).to_pointf(),
                    next(it)->position().to_pointf());
     }
     return path;

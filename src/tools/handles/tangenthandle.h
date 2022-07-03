@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tools/handles/handle.h"
+#include "geometry/point.h"
 
 namespace omm
 {
@@ -10,8 +11,7 @@ class PointSelectHandle;
 class TangentHandle : public Handle
 {
 public:
-  enum class Tangent { Left, Right };
-  TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tangent tangent);
+  TangentHandle(Tool& tool, PointSelectHandle& master_handle, const Point::TangentKey& tangent_key);
   [[nodiscard]] double draw_epsilon() const override;
   void draw(QPainter& painter) const override;
   [[nodiscard]] bool contains_global(const Vec2f& point) const override;
@@ -22,7 +22,7 @@ public:
 
 private:
   PointSelectHandle& m_master_handle;
-  const Tangent m_tangent;
+  const Point::TangentKey m_tangent_key;
 };
 
 }  // namespace omm
