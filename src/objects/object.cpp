@@ -1,6 +1,7 @@
 #include "objects/object.h"
 
 #include "common.h"
+#include "geometry/orientedposition.h"
 #include "logging.h"
 #include "objects/pathobject.h"
 #include "path/lib2geomadapter.h"
@@ -480,14 +481,14 @@ double Object::apply_border(double t, Border border)
   Q_UNREACHABLE();
 }
 
-void Object::set_oriented_position(const Point& op, const bool align)
+void Object::set_oriented_position(const OrientedPosition& op, const bool align)
 {
-//  auto transformation = global_transformation(Space::Scene);
-//  if (align) {
-//    transformation.set_rotation(op.rotation());
-//  }
-//  transformation.set_translation(op.position());
-//  set_global_transformation(transformation, Space::Scene);
+  auto transformation = global_transformation(Space::Scene);
+  if (align) {
+    transformation.set_rotation(op.rotation);
+  }
+  transformation.set_translation(op.position);
+  set_global_transformation(transformation, Space::Scene);
 }
 
 bool Object::is_active() const
@@ -538,15 +539,15 @@ std::deque<const omm::Style*> Object::find_styles() const
   });
 }
 
-Point Object::pos(const Geom::PathVectorTime& t) const
+OrientedPosition Object::pos(const Geom::PathVectorTime& t) const
 {
   const auto paths = omm_to_geom(geometry());
   if (const auto n = paths.curveCount(); n == 0) {
-    return Point{};
+    return OrientedPosition{};
   } else if (t.path_index >= paths.size()) {
-    return Point{};
+    return OrientedPosition{};
   } else if (auto&& path = paths[t.path_index]; t.curve_index >= path.size()) {
-    return Point{};
+    return OrientedPosition{};
   } else {
     auto&& curve = path[t.curve_index];
 
@@ -556,9 +557,7 @@ Point Object::pos(const Geom::PathVectorTime& t) const
     const auto tangent = curve.unitTangentAt(s);
     auto position = curve.pointAt(s);
     const auto convert = [](const Geom::Point& p) { return Vec2{p.x(), p.y()}; };
-    return Point(convert(position),
-                 PolarCoordinates(convert(tangent)),
-                 PolarCoordinates(-convert(tangent)));
+    return {convert(position), PolarCoordinates(convert(tangent)).argument};
   }
 }
 

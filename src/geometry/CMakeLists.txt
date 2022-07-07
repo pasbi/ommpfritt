@@ -5,6 +5,7 @@ target_sources(libommpfritt PRIVATE
   matrix.h
   objecttransformation.cpp
   objecttransformation.h
+  orientedposition.h
   point.cpp
   point.h
   polarcoordinates.cpp

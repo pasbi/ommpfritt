@@ -119,7 +119,8 @@ Point Point::nibbed() const
   return copy;
 }
 
-void Point::serialize(serialization::SerializerWorker& worker, const std::map<const Path*, std::size_t>& path_indices) const
+void Point::serialize(serialization::SerializerWorker& worker,
+                      const std::map<const Path*, std::size_t>& path_indices) const
 {
   worker.sub(POSITION_POINTER)->set_value(m_position);
   worker.sub(TANGENTS_POINTER)->set_value(m_tangents, [&path_indices](const auto& pair, auto& worker) {

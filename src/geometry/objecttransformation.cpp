@@ -1,12 +1,16 @@
+#include "geometry/objecttransformation.h"
+
 #include "logging.h"
+#include "geometry/orientedposition.h"
+
 #include <QTransform>
 #include <cassert>
 #include <cmath>
 
-#include "geometry/objecttransformation.h"
 
 namespace omm
 {
+
 ObjectTransformation::ObjectTransformation() : m_translation(0, 0), m_scaling(1, 1)
 {
 }
@@ -235,11 +239,19 @@ ObjectTransformation ObjectTransformation::apply(const ObjectTransformation& t) 
 
 Point ObjectTransformation::apply(const Point& point) const
 {
-  Point p(apply_to_position(point.position()));
-  for (const auto key : ::get_keys(point.tangents())) {
-    p.set_tangent(key, apply_to_direction(point.tangent(key)));
+  Point p = point;
+  p.set_position(apply_to_position(point.position()));
+  for (auto& [key, tangent] : p.tangents()) {
+    tangent = apply_to_direction(tangent);
   }
   return p;
+}
+
+OrientedPosition ObjectTransformation::apply(const OrientedPosition& op) const
+{
+  static constexpr auto arbitrary_magnitude = 1.0;
+  const PolarCoordinates pc(op.rotation, arbitrary_magnitude);
+  return {apply_to_position(op.position), apply_to_direction(pc).argument};
 }
 
 PolarCoordinates ObjectTransformation::apply_to_position(const PolarCoordinates& point) const

@@ -23,6 +23,7 @@ class Property;
 class Scene;
 struct PainterOptions;
 class PathVectorGeometry;
+struct OrientedPosition;
 
 class Object
     : public PropertyOwner<Kind::Object>
@@ -75,7 +76,7 @@ public:
   bool is_visible(bool viewport) const;
   virtual std::deque<const Style*> find_styles() const;
 
-  virtual Point pos(const Geom::PathVectorTime& t) const;
+  virtual OrientedPosition pos(const Geom::PathVectorTime& t) const;
   virtual bool contains(const Vec2f& point) const;
 
 private:
@@ -144,7 +145,7 @@ private:
 public:
   void set_object_tree(ObjectTree& object_tree);
   void set_position_on_path(const Object& path, bool align, const Geom::PathVectorTime& t);
-  void set_oriented_position(const Point& op, bool align);
+  void set_oriented_position(const OrientedPosition& op, bool align);
 
   QString to_string() const override;
 

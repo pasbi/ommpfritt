@@ -30,7 +30,8 @@ public:
     const Path* path;
     Direction direction;
 
-    void serialize(serialization::SerializerWorker& worker, const std::map<const Path*, std::size_t>& path_indices) const;
+    void serialize(serialization::SerializerWorker& worker,
+                   const std::map<const Path*, std::size_t>& path_indices) const;
     void deserialize(serialization::DeserializerWorker& worker, const std::vector<const Path*>& paths);
 
     QString to_string() const;
