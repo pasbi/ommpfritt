@@ -240,7 +240,16 @@ std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::
 
 bool Path::is_valid() const
 {
-  if (m_last_point && !m_edges.empty() && m_edges.back()->b() != m_last_point) {
+  if (m_last_point == nullptr) {
+    if (m_edges.empty()) {
+      return true;
+    } else {
+      LERROR << "Last point may only be null if path is empty, but path has edges.";
+      return false;
+    }
+  }
+
+  if (!m_edges.empty() && m_edges.back()->b() != m_last_point) {
     LERROR << "Is not valid because last point is inconsistent.";
     return false;
   }
