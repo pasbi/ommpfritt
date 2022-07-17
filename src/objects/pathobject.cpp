@@ -24,9 +24,9 @@ namespace omm
 
 class Style;
 
-PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
+PathObject::PathObject(Scene* scene, const PathVector& path_vector)
   : Object(scene)
-  , m_path_vector(std::move(path_vector))
+  , m_path_vector(std::make_unique<PathVector>(path_vector, this))
 {
   static const auto category = QObject::tr("path");
 
@@ -37,9 +37,8 @@ PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
   PathObject::update();
 }
 
-
 PathObject::PathObject(Scene* scene)
-  : PathObject(scene, std::make_unique<PathVector>(this))
+    : PathObject(scene, {})
 {
 }
 

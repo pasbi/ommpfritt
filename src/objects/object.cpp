@@ -393,7 +393,7 @@ Object& Object::adopt(std::unique_ptr<Object> adoptee, const std::size_t pos)
 
 std::unique_ptr<Object> Object::convert(bool& keep_children) const
 {
-  auto converted = std::make_unique<PathObject>(scene(), std::make_unique<PathVector>(this->geometry()));
+  auto converted = std::make_unique<PathObject>(scene(), this->geometry());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
   converted->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
