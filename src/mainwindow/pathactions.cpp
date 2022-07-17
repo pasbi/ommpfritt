@@ -86,10 +86,33 @@ void convert_object(Application& app,
          std::deque<ObjectTreeMoveContext>& contextes,
          std::set<Object*>& converted_objects)
 {
-  (void) app;
-  (void) object_to_convert;
-  (void) contextes;
-  (void) converted_objects;
+  bool keep_children = true;
+  auto converted_object = object_to_convert.convert(keep_children);
+  auto& ref = *converted_object;
+  ref.set_object_tree(app.scene->object_tree());
+  assert(!object_to_convert.is_root());
+  ObjectTreeOwningContext context(ref, object_to_convert.tree_parent(), &object_to_convert);
+  const auto properties = util::transform<Property*>(app.scene->find_reference_holders(object_to_convert));
+  if (!properties.empty()) {
+    app.scene->submit<PropertiesCommand<ReferenceProperty>>(properties, &ref);
+  }
+  context.subject.capture(std::move(converted_object));
+  app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
+  assert(ref.scene() == app.scene.get());
+  ref.set_transformation(object_to_convert.transformation());
+  converted_objects.insert(&ref);
+
+  if (auto* const po = type_cast<PathObject*>(&ref); po != nullptr) {
+    assert(po->path_vector().path_object() == po);
+  }
+
+  if (keep_children) {
+    const auto old_children = object_to_convert.tree_children();
+    std::transform(old_children.rbegin(),
+                   old_children.rend(),
+                   std::back_inserter(contextes),
+                   [&ref](auto* cc) { return ObjectTreeMoveContext(*cc, ref, nullptr); });
+  }
 }
 
 std::set<Object*> convert_objects_recursively(Application& app, const std::set<Object*>& convertibles)
