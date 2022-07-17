@@ -1,6 +1,7 @@
 #include "commands/addremovepointscommand.h"
 #include "geometry/point.h"
 #include "gtest/gtest.h"
+#include "path/edge.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
@@ -410,3 +411,92 @@ INSTANTIATE_TEST_SUITE_P(X, AddPointsCommandTest,
                                               {.initial_point_count = 3, .offset = 3, .count = 2},
                                             }),
                           &AddPointsCommandTestParameter::name_generator);
+
+class PathVectorCopy : public ::testing::Test
+{
+public:
+  explicit PathVectorCopy()
+  {
+  }
+
+  omm::PathVector& make_copy()
+  {
+    pv_copy = pv_original;
+    return pv_copy;
+  }
+
+  void assert_valid() const
+  {
+    ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(pv_copy));
+    ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(pv_original));
+    ASSERT_NO_FATAL_FAILURE(assert_equiv_but_distinct());
+  }
+
+private:
+  static void assert_valid_tangents(const omm::PathVector& path_vector)
+  {
+    for (const auto* path : path_vector.paths()) {
+      for (const auto* const p : path->points()) {
+        for (const auto& [key, tangent] : p->geometry().tangents()) {
+//          ASSERT_TRUE(key.path == path || key.path == nullptr) << "key.path: " << key.path << ", path: " << path;
+        }
+      }
+    }
+  }
+
+  static void assert_equiv_but_distinct(const omm::Path& a, const omm::Path& b)
+  {
+    ASSERT_NE(&a, &b) << "Identical paths expected to be distinguishable.";
+    const auto ps_a = a.points();
+    const auto ps_b = b.points();
+    ASSERT_EQ(ps_a.size(), ps_b.size());
+    for (std::size_t i = 0; i < ps_a.size(); ++i) {
+      const auto& a = *ps_a.at(i);
+      const auto& b = *ps_b.at(i);
+      ASSERT_NE(&a, &b) << "Identical path points expected to be distinguishable.";
+      ASSERT_NE(&a.geometry(), &b.geometry()) << "Geometry shall not be shared among path points.";
+      ASSERT_EQ(a.geometry().position(), b.geometry().position());
+      ASSERT_EQ(a.geometry().tangents().size(), b.geometry().tangents().size());
+    }
+  }
+
+  void assert_equiv_but_distinct() const
+  {
+    const auto a_paths = pv_original.paths();
+    const auto b_paths = pv_copy.paths();
+    ASSERT_EQ(a_paths.size(), b_paths.size());
+    for (std::size_t i = 0; i < a_paths.size(); ++i) {
+      ASSERT_NO_FATAL_FAILURE(assert_equiv_but_distinct(*a_paths.at(i), *b_paths.at(i)));
+    }
+  }
+
+protected:
+  omm::PathVector pv_original;
+  omm::PathVector pv_copy;
+};
+
+TEST_F(PathVectorCopy, OE)
+{
+  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), &pv_original);
+  auto pv1_p1 = std::make_shared<omm::PathPoint>(omm::Point({0, 1}), &pv_original);
+  auto& pv1_path = pv_original.add_path();
+  pv1_path.add_edge(std::make_unique<omm::Edge>(pv1_p0, pv1_p1, &pv1_path));
+  pv1_p0->geometry().set_tangent({&pv1_path, omm::Point::Direction::Backward}, omm::PolarCoordinates());
+  pv1_p1->geometry().set_tangent({&pv1_path, omm::Point::Direction::Forward}, omm::PolarCoordinates());
+
+  ASSERT_NO_THROW(make_copy());
+
+  ASSERT_NO_FATAL_FAILURE(assert_valid());
+}
+
+TEST_F(PathVectorCopy, OP)
+{
+  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), &pv_original);
+  auto& pv1_path = pv_original.add_path();
+  pv1_path.set_single_point(pv1_p0);
+  pv1_p0->geometry().set_tangent({&pv1_path, omm::Point::Direction::Backward}, omm::PolarCoordinates());
+
+  ASSERT_NO_THROW(make_copy());
+
+  ASSERT_NO_FATAL_FAILURE(assert_valid());
+}

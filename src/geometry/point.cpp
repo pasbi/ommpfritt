@@ -76,9 +76,19 @@ const Point::TangentsMap& Point::tangents() const
   return m_tangents;
 }
 
-void Point::set_tangents(TangentsMap tangents)
+/**
+ * @brief replace_tangents_key replaces the key `{old_path, *}` with `{new_path, *}`
+ *  or adds null-tangents at `{new_path, *}` (`*` stands for both directions).
+ *  `old_path` and `new_path` are passed as key-value pairs via `paths_map`.
+ */
+void Point::replace_tangents_key(const std::map<const Path*, Path*>& paths_map)
 {
-  m_tangents = tangents;
+  for (const auto& [old_path, new_path] : paths_map) {
+    for (const auto& direction : {omm::Point::Direction::Backward, omm::Point::Direction::Forward}) {
+      const auto node = m_tangents.extract({old_path, direction});
+      m_tangents.try_emplace({new_path, direction}, node.empty() ? omm::PolarCoordinates() : node.mapped());
+    }
+  }
 }
 
 void swap(Point& a, Point& b)

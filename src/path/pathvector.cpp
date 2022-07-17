@@ -32,8 +32,31 @@ PathVector::PathVector(PathObject* path_object)
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
   : m_path_object(path_object)
 {
-  for (const auto* path : other.paths()) {
-    add_path(std::make_unique<Path>(*path, this));
+  std::map<const Path*, Path*> paths_map;
+  for (const auto* other_path : other.paths()) {
+    auto& path = add_path();
+    paths_map.try_emplace(other_path, &path);
+  }
+
+  std::map<const omm::PathPoint*, std::shared_ptr<PathPoint>> points_map;
+  for (const auto* const point : other.points()) {
+    auto geometry = point->geometry();
+    geometry.replace_tangents_key(paths_map);
+    points_map.try_emplace(point, std::make_shared<PathPoint>(geometry, this));
+  }
+
+  for (const auto* other_path : other.paths()) {
+    const auto other_edges = other_path->edges();
+    auto& path = *paths_map.at(other_path);
+    if (other_edges.empty()) {
+      path.set_single_point(points_map.at(other_path->last_point().get()));
+    } else {
+      for (const auto* other_edge : other_edges) {
+        const auto& a = points_map.at(other_edge->a().get());
+        const auto& b = points_map.at(other_edge->b().get());
+        path.add_edge(std::make_unique<Edge>(a, b, &path));
+      }
+    }
   }
 }
 

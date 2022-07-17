@@ -33,7 +33,6 @@ class Path
 {
 public:
   explicit Path(PathVector* path_vector = nullptr);
-  explicit Path(const Path& path, PathVector* path_vector);
   ~Path();
   Path(Path&&) = delete;
   Path& operator=(const Path&) = delete;

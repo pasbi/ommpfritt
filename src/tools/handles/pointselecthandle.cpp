@@ -37,6 +37,10 @@ PointSelectHandle::PointSelectHandle(Tool& tool, PathObject& path_object, PathPo
     , m_point(point)
     , m_tangent_handles(make_tangent_handles_map(tool, *this, ::get_keys(point.geometry().tangents())))
 {
+  assert(m_point.path_vector());
+  assert(&path_object == m_point.path_vector()->path_object());
+  assert(path_object.scene() == tool.scene());
+  assert(path_object.scene()->contains(&path_object));
 }
 
 ObjectTransformation PointSelectHandle::transformation() const

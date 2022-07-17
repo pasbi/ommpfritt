@@ -54,6 +54,7 @@ public:
   void set_tangent(const TangentKey& key, const PolarCoordinates& vector);
   TangentsMap& tangents();
   const TangentsMap& tangents() const;
+  void replace_tangents_key(const std::map<const Path*, Path*>& paths_map);
   void set_tangents(TangentsMap tangents);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
   friend void swap(Point& a, Point& b);
