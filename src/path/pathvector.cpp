@@ -11,7 +11,6 @@
 #include "path/edge.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
-#include "path/pathvectorgeometry.h"
 #include "path/graph.h"
 #include "path/face.h"
 #include "scene/mailbox.h"
@@ -252,13 +251,6 @@ void PathVector::draw_point_ids(QPainter& painter) const
     static constexpr QPointF offset{10.0, 10.0};
     painter.drawText(point->geometry().position().to_pointf() + offset, point->debug_id());
   }
-}
-
-PathVectorGeometry PathVector::geometry() const
-{
-  return PathVectorGeometry{util::transform<std::vector>(m_paths, [](const auto& path) {
-    return path->geometry();
-  })};
 }
 
 PathObject* PathVector::path_object() const

@@ -14,7 +14,6 @@ class Point;
 class PathPoint;
 class Edge;
 class PathView;
-class PathGeometry;
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class Path;
@@ -66,7 +65,6 @@ public:
 
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& point) const;
-  PathGeometry geometry() const;
 
   [[nodiscard]] PathVector* path_vector() const;
   void set_path_vector(PathVector* path_vector);

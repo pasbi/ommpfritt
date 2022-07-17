@@ -4,7 +4,6 @@
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/pathvector.h"
-#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/stringproperty.h"

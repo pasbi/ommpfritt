@@ -1,7 +1,6 @@
 #include "objects/text.h"
 #include "mainwindow/viewport/viewport.h"
 #include "path/pathvector.h"
-#include "path/pathvectorgeometry.h"
 #include "properties/floatproperty.h"
 #include "properties/stringproperty.h"
 #include "renderers/painter.h"

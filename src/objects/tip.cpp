@@ -1,7 +1,6 @@
 #include "objects/tip.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
-#include "path/pathvectorgeometry.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 #include "path/pathvector.h"

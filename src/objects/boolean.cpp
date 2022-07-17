@@ -1,5 +1,4 @@
 #include "objects/boolean.h"
-#include "path/pathvectorgeometry.h"
 #include "properties/optionproperty.h"
 #include "path/lib2geomadapter.h"
 #include "path/pathvector.h"

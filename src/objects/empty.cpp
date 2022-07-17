@@ -1,5 +1,4 @@
 #include "objects/empty.h"
-#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "path/pathvector.h"
 

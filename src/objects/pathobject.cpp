@@ -5,7 +5,6 @@
 #include "path/path.h"
 #include "path/pathgeometry.h"
 #include "path/pathvector.h"
-#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "renderers/style.h"

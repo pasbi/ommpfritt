@@ -4,7 +4,6 @@
 #include "objects/empty.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
-#include "path/pathvectorgeometry.h"
 #include "path/lib2geomadapter.h"
 #include "objects/pathobject.h"
 #include "properties/boolproperty.h"

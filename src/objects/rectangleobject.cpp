@@ -3,7 +3,6 @@
 #include "path/path.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
-#include "path/pathvectorgeometry.h"
 #include "properties/floatvectorproperty.h"
 
 namespace omm

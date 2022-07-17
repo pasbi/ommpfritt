@@ -2,7 +2,6 @@
 
 #include "commands/propertycommand.h"
 #include "objects/empty.h"
-#include "path/pathvectorgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
 #include "renderers/painteroptions.h"

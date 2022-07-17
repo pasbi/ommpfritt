@@ -23,7 +23,6 @@ class EnhancedPathVector;
 class Path;
 class PathPoint;
 class PathObject;
-class PathVectorGeometry;
 class Scene;
 class Face;
 
@@ -57,7 +56,6 @@ public:
   void deselect_all_points() const;
   [[nodiscard]] PathObject* path_object() const;
   void draw_point_ids(QPainter& painter) const;
-  PathVectorGeometry geometry() const;
 
 
   /**

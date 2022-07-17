@@ -19,7 +19,6 @@
 #include "path/path.h"
 #include "path/pathgeometry.h"
 #include "path/pathvector.h"
-#include "path/pathvectorgeometry.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"

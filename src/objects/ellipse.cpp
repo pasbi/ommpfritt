@@ -3,7 +3,6 @@
 #include "objects/pathobject.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
-#include "path/pathvectorgeometry.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"

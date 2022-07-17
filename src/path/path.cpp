@@ -277,23 +277,6 @@ std::vector<Edge*> Path::edges() const
   return util::transform<std::vector>(m_edges, &std::unique_ptr<Edge>::get);
 }
 
-PathGeometry Path::geometry() const
-{
-  auto ps = util::transform(points(), [this](const auto* const point) {
-    auto g = point->geometry();
-    auto tangents = g.tangents();
-    std::erase_if(tangents, [this](const auto& pair) {
-      return pair.first.path != this;
-    });
-    g.tangents().clear();
-    for (const auto& [key, value] : tangents) {
-      g.set_tangent({nullptr, key.direction}, value);
-    };
-    return g;
-  });
-  return PathGeometry(std::move(ps));
-}
-
 QPainterPath Path::to_painter_path() const
 {
   const auto points = this->points();

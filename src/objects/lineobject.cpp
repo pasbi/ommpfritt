@@ -2,7 +2,6 @@
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "path/path.h"
-#include "path/pathvectorgeometry.h"
 #include <QObject>
 #include "path/pathvector.h"
 

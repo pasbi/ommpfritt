@@ -4,7 +4,6 @@
 
 #include "geometry/orientedposition.h"
 #include "objects/empty.h"
-#include "path/pathvectorgeometry.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
