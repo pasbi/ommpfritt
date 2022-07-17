@@ -29,15 +29,6 @@ PathVector::PathVector(PathObject* path_object)
 {
 }
 
-PathVector::PathVector(const PathVectorGeometry& geometry, PathObject* path_object)
-    : m_path_object(path_object)
-    , m_paths(util::transform<std::deque>(geometry.paths(), [this](const auto& path_geometry) {
-        return std::make_unique<Path>(path_geometry, this);
-      }))
-{
-
-}
-
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
   : m_path_object(path_object)
 {

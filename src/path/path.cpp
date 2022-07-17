@@ -45,20 +45,6 @@ Path::Path(PathVector* path_vector)
 {
 }
 
-Path::Path(const PathGeometry& geometry, PathVector* path_vector)
-    : m_path_vector(path_vector)
-{
-  const auto ps = geometry.points();
-  if (ps.size() == 1) {
-    set_single_point(std::make_shared<PathPoint>(ps.front(), path_vector));
-  } else {
-    for (std::size_t i = 1; i < ps.size(); ++i) {
-      add_edge(std::make_unique<PathPoint>(ps[i - 1], path_vector),
-               std::make_unique<PathPoint>(ps[i], path_vector));
-    }
-  }
-}
-
 Path::Path(const Path& path, PathVector* path_vector)
     : m_edges(::copy(path.m_edges))
     , m_path_vector(path_vector)

@@ -32,7 +32,6 @@ class PathVector
 {
 public:
   PathVector(PathObject* path_object = nullptr);
-  PathVector(const PathVectorGeometry& geometry, PathObject* path_object = nullptr);
   PathVector(const PathVector& other, PathObject* path_object = nullptr);
   PathVector(PathVector&& other) noexcept;
   PathVector& operator=(const PathVector& other);
