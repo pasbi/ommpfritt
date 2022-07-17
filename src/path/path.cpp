@@ -7,6 +7,8 @@
 #include "path/pathgeometry.h"
 #include <2geom/pathvector.h>
 
+#include <QPainterPath>
+
 
 namespace
 {
@@ -325,6 +327,24 @@ PathGeometry Path::geometry() const
     return g;
   });
   return PathGeometry(std::move(ps));
+}
+
+QPainterPath Path::to_painter_path() const
+{
+  const auto points = this->points();
+  if (points.empty()) {
+    return {};
+  }
+  QPainterPath path;
+  path.moveTo(points.front()->geometry().position().to_pointf());
+  for (std::size_t i = 1; i < points.size(); ++i) {
+    const auto g1 = points.at(i - 1)->geometry();
+    const auto g2 = points.at(i)->geometry();
+    path.cubicTo(g1.tangent_position({this, Point::Direction::Forward}).to_pointf(),
+                 g2.tangent_position({this, Point::Direction::Backward}).to_pointf(),
+                 g2.position().to_pointf());
+  }
+  return path;
 }
 
 

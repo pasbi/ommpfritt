@@ -16,7 +16,6 @@ class PathObject : public Object
 {
 public:
   explicit PathObject(Scene* scene);
-  explicit PathObject(Scene* scene, const PathVectorGeometry& path_vector);
   explicit PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector);
   PathObject(const PathObject& other);
   PathObject(PathObject&&) = delete;
@@ -38,7 +37,7 @@ public:
   const PathVector& path_vector() const;
   PathVector& path_vector();
 
-  PathVectorGeometry compute_geometry() const override;
+  PathVector compute_geometry() const override;
   void set_face_selected(const Face& face, bool s);
   [[nodiscard]] bool is_face_selected(const Face& face) const;
 

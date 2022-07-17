@@ -9,9 +9,8 @@ namespace
 using namespace omm;
 
 
-auto compute_cuts(const PathVectorGeometry& path_vector)
+auto compute_cuts(const PathVector& path_vector)
 {
-  (void) path_vector;
   std::list<Geom::PathVectorTime> cuts;
   return std::vector(cuts.begin(), cuts.end());
 }
@@ -20,6 +19,7 @@ auto compute_cuts(const PathVectorGeometry& path_vector)
 
 namespace omm
 {
+
 SubdividePathCommand::SubdividePathCommand(PathObject& path_object)
     : CutPathCommand(QObject::tr("Subdivide Path"), path_object, compute_cuts(path_object.geometry()))
 {

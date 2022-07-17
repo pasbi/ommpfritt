@@ -4,6 +4,7 @@
 #include "path/path.h"
 #include "path/pathvectorgeometry.h"
 #include <QObject>
+#include "path/pathvector.h"
 
 namespace omm
 {
@@ -36,7 +37,7 @@ Flag LineObject::flags() const
   return Object::flags() | Flag::Convertible;
 }
 
-PathVectorGeometry LineObject::compute_geometry() const
+PathVector LineObject::compute_geometry() const
 {
   return {};
 }

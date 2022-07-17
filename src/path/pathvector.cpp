@@ -140,6 +140,15 @@ void PathVector::deserialize(serialization::DeserializerWorker& worker)
   }
 }
 
+QPainterPath PathVector::to_painter_path() const
+{
+  QPainterPath outline;
+  for (const auto* path : paths()) {
+    outline.addPath(path->to_painter_path());
+  }
+  return outline;
+}
+
 std::set<Face> PathVector::faces() const
 {
   Graph graph{*this};

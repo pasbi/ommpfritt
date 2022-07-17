@@ -38,10 +38,6 @@ PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
   PathObject::update();
 }
 
-PathObject::PathObject(Scene* scene, const PathVectorGeometry& geometry)
-  : PathObject(scene, std::make_unique<PathVector>(geometry, this))
-{
-}
 
 PathObject::PathObject(Scene* scene)
   : PathObject(scene, std::make_unique<PathVector>(this))
@@ -97,15 +93,9 @@ PathVector& PathObject::path_vector()
   return *m_path_vector;
 }
 
-PathVectorGeometry PathObject::compute_geometry() const
+PathVector PathObject::compute_geometry() const
 {
-  const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
-
-  auto paths = m_path_vector->geometry().paths();
-  for (auto& path : paths) {
-    path.set_interpolation(interpolation);
-  }
-  return PathVectorGeometry{std::move(paths)};
+  return *m_path_vector;
 }
 
 void PathObject::set_face_selected(const Face& face, bool s)

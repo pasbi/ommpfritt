@@ -259,7 +259,7 @@ QString Object::to_string() const
   return QString("%1[%2]").arg(type(), name());
 }
 
-PathVectorGeometry Object::join(const std::vector<Object*>& objects)
+PathVector Object::join(const std::vector<Object*>& objects)
 {
   (void) objects;
   return {};
@@ -395,7 +395,7 @@ Object& Object::adopt(std::unique_ptr<Object> adoptee, const std::size_t pos)
 
 std::unique_ptr<Object> Object::convert(bool& keep_children) const
 {
-  auto converted = std::make_unique<PathObject>(scene(), this->geometry());
+  auto converted = std::make_unique<PathObject>(scene(), std::make_unique<PathVector>(this->geometry()));
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
   converted->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
@@ -568,7 +568,7 @@ bool Object::contains(const Vec2f& point) const
   return std::abs(winding) % 2 == 1;
 }
 
-PathVectorGeometry Object::compute_geometry() const
+PathVector Object::compute_geometry() const
 {
   return {};
 }
@@ -750,7 +750,7 @@ void Object::listen_to_children_changes()
   connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
 }
 
-const PathVectorGeometry& Object::geometry() const
+const PathVector& Object::geometry() const
 {
   return m_cached_geometry_getter->operator()();
 }

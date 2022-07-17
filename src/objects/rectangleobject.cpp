@@ -1,6 +1,8 @@
 #include "objects/rectangleobject.h"
+#include "path/edge.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "path/pathvectorgeometry.h"
 #include "properties/floatvectorproperty.h"
 
@@ -34,7 +36,7 @@ QString RectangleObject::type() const
   return TYPE;
 }
 
-PathVectorGeometry RectangleObject::compute_geometry() const
+PathVector RectangleObject::compute_geometry() const
 {
   return {};
 //  std::deque<Point> points;

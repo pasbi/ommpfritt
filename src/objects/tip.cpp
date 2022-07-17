@@ -4,6 +4,7 @@
 #include "path/pathvectorgeometry.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
+#include "path/pathvector.h"
 
 namespace
 {
@@ -39,7 +40,7 @@ void Tip::on_property_value_changed(Property* property)
   }
 }
 
-PathVectorGeometry Tip::compute_geometry() const
+PathVector Tip::compute_geometry() const
 {
   return {};
 //  auto points = m_marker_properties.shape(1.0);

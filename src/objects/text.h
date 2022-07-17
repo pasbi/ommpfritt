@@ -33,7 +33,7 @@ public:
 
 protected:
   void on_property_value_changed(Property* property) override;
-  PathVectorGeometry compute_geometry() const override;
+  PathVector compute_geometry() const override;
 
 private:
   FontProperties m_font_properties;

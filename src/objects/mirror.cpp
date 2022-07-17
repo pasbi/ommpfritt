@@ -39,7 +39,7 @@ ObjectTransformation get_mirror_t(Mirror::Direction direction)
 
 omm::Path& make_reflection(PathVector& pv, const Path& original, const Mirror::Direction direction, const double eps)
 {
-  auto& path = pv.add_path(std::make_unique<Path>(original, &pv));
+//  auto& path = pv.add_path(std::make_unique<Path>(original, &pv));
 //  const auto s = Vec2f{direction == Mirror::Direction::Horizontal ? -1.0 : 1.0,
 //                       direction == Mirror::Direction::Vertical ? -1.0 : 1.0};
 //  const auto transform = ObjectTransformation{}.scaled(s);
@@ -65,7 +65,8 @@ omm::Path& make_reflection(PathVector& pv, const Path& original, const Mirror::D
 //    join_if_close(path.at(0), original.at(0));
 //    join_if_close(path.at(n - 1), original.at(n - 1));
 //  }
-  return path;
+//  return path;
+  return pv.add_path();
 }
 
 
@@ -161,7 +162,7 @@ std::unique_ptr<Object> Mirror::convert(bool& keep_children) const
   }
 }
 
-PathVectorGeometry Mirror::compute_geometry() const
+PathVector Mirror::compute_geometry() const
 {
   if (!is_active()) {
     return {};

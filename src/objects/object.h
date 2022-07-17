@@ -22,7 +22,7 @@ class Point;
 class Property;
 class Scene;
 struct PainterOptions;
-class PathVectorGeometry;
+class PathVector;
 struct OrientedPosition;
 
 class Object
@@ -87,7 +87,7 @@ private:
    * @return the paths.
    */
 public:
-  virtual PathVectorGeometry compute_geometry() const;
+  virtual PathVector compute_geometry() const;
   virtual std::vector<Face> compute_faces() const;
 
 public:
@@ -98,10 +98,10 @@ public:
   compute_path_vector_time(int path_index, double t, Interpolation = Interpolation::Natural) const;
 
 private:
-  std::unique_ptr<CachedGetter<PathVectorGeometry, Object>> m_cached_geometry_getter;
+  std::unique_ptr<CachedGetter<PathVector, Object>> m_cached_geometry_getter;
   std::unique_ptr<CachedGetter<std::vector<Face>, Object>> m_cached_faces_getter;
 public:
-  const PathVectorGeometry& geometry() const;
+  const PathVector& geometry() const;
   const std::vector<Face>& faces() const;
 
   TagList tags;
@@ -160,7 +160,7 @@ private:
   static const QBrush m_bounding_box_brush;
 
 protected:
-  static PathVectorGeometry join(const std::vector<Object*>& objects);
+  static PathVector join(const std::vector<Object*>& objects);
 };
 
 }  // namespace omm

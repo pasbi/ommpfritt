@@ -90,7 +90,6 @@ std::deque<std::unique_ptr<Edge>> OwnedLocatedPath::create_edges() const
   std::shared_ptr<PathPoint> front = edges.empty() ? m_points.front() : edges.front()->a();
   std::shared_ptr<PathPoint> back = edges.empty() ? m_points.back() : edges.back()->b();
 
-
   if (m_point_offset > 0) {
     // if there is something left of this, add the linking edge
     std::shared_ptr<PathPoint> right_fringe;

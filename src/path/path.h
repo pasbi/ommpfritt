@@ -5,6 +5,8 @@
 #include <deque>
 #include <memory>
 
+class QPainterPath;
+
 namespace omm
 {
 
@@ -44,6 +46,7 @@ public:
   Edge& add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b);
   std::shared_ptr<PathPoint> last_point() const;
   std::shared_ptr<PathPoint> first_point() const;
+  QPainterPath to_painter_path() const;
 
 
   /**

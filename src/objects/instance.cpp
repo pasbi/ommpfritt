@@ -6,6 +6,7 @@
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
 #include "renderers/painteroptions.h"
+#include "path/pathvector.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tags/scripttag.h"
@@ -158,7 +159,7 @@ void Instance::update()
   Object::update();
 }
 
-PathVectorGeometry Instance::compute_geometry() const
+PathVector Instance::compute_geometry() const
 {
   if (m_reference) {
     return m_reference->geometry();

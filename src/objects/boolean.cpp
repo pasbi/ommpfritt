@@ -2,6 +2,7 @@
 #include "path/pathvectorgeometry.h"
 #include "properties/optionproperty.h"
 #include "path/lib2geomadapter.h"
+#include "path/pathvector.h"
 #include <2geom/2geom.h>
 #include <2geom/intersection-graph.h>
 #include <2geom/pathvector.h>
@@ -94,7 +95,7 @@ void Boolean::polish()
   listen_to_children_changes();
 }
 
-PathVectorGeometry Boolean::compute_geometry() const
+PathVector Boolean::compute_geometry() const
 {
   return {};
 }

@@ -16,7 +16,7 @@ public:
   static constexpr auto ANGLE_PROPERTY_KEY = "angle";
   static constexpr auto CENTER_PROPERTY_KEY = "center";
 
-  PathVectorGeometry compute_geometry() const override;
+  PathVector compute_geometry() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

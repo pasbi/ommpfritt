@@ -1,5 +1,6 @@
 #include "objects/text.h"
 #include "mainwindow/viewport/viewport.h"
+#include "path/pathvector.h"
 #include "path/pathvectorgeometry.h"
 #include "properties/floatproperty.h"
 #include "properties/stringproperty.h"
@@ -117,7 +118,7 @@ QRectF Text::rect(Qt::Alignment alignment) const
   return {QPointF(left, top), QSizeF(width, height)};
 }
 
-PathVectorGeometry Text::compute_geometry() const
+PathVector Text::compute_geometry() const
 {
   return {};
 }

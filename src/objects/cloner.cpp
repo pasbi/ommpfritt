@@ -5,6 +5,7 @@
 #include "geometry/orientedposition.h"
 #include "objects/empty.h"
 #include "path/pathvectorgeometry.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -193,7 +194,7 @@ void Cloner::update()
   Object::update();
 }
 
-PathVectorGeometry Cloner::compute_geometry() const
+PathVector Cloner::compute_geometry() const
 {
   return join(util::transform(m_clones, [](const auto& up) { return up.get(); }));
 }

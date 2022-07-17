@@ -4,6 +4,7 @@
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/pathvectorgeometry.h"
+#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -49,7 +50,7 @@ void Ellipse::on_property_value_changed(Property* property)
   }
 }
 
-PathVectorGeometry Ellipse::compute_geometry() const
+PathVector Ellipse::compute_geometry() const
 {
   return {};
 
