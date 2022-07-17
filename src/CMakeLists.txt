@@ -5,7 +5,6 @@ target_sources(libommpfritt PRIVATE
   cache.h
   cachedgetter.h
   common.h
-  disjointset.h
   dnf.h
   enumnames.cpp
   enumnames.h
