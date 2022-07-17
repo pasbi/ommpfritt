@@ -48,7 +48,9 @@ PathVector::PathVector(const PathVector& other, PathObject* path_object)
     const auto other_edges = other_path->edges();
     auto& path = *paths_map.at(other_path);
     if (other_edges.empty()) {
-      path.set_single_point(points_map.at(other_path->last_point().get()));
+      if (other_path->last_point()) {
+        path.set_single_point(points_map.at(other_path->last_point().get()));
+      }
     } else {
       for (const auto* other_edge : other_edges) {
         const auto& a = points_map.at(other_edge->a().get());
