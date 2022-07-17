@@ -1,6 +1,7 @@
 #include "objects/ellipse.h"
 
 #include "objects/pathobject.h"
+#include "path/edge.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/pathvector.h"
@@ -51,14 +52,37 @@ void Ellipse::on_property_value_changed(Property* property)
 
 PathVector Ellipse::compute_geometry() const
 {
-  return {};
+  const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
+  const auto n = static_cast<std::size_t>(std::max(3, n_raw));
+  const auto r = property(RADIUS_PROPERTY_KEY)->value<Vec2f>();
+  const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
+  std::vector<std::shared_ptr<PathPoint>> points;
+  points.reserve(n + 1);
+  PathVector path_vector;
+  for (std::size_t i = 0; i <= n; ++i) {
+    const double theta = static_cast<double>(i) * 2.0 / static_cast<double>(n) * M_PI;
+    const double x = std::cos(theta) * r.x;
+    const double y = std::sin(theta) * r.y;
 
-//  PathVector path_vector;
-//  auto path = std::make_unique<Path>(std::move(points));
-//  const auto path_points = path->points();
-//  path_vector.add_path(std::move(path));
-//  path_vector.joined_points().insert({path_points.front(), path_points.back()});
-//  return path_vector;
+    PolarCoordinates bwd;
+    if (smooth) {
+      Vec2f d(std::sin(theta) * r.x, -std::cos(theta) * r.y);
+      bwd.argument = d.arg();
+      bwd.magnitude = 2.0 * d.euclidean_norm() / static_cast<double>(n);
+    };
+    points.emplace_back(std::make_shared<PathPoint>(Point(Vec2f{x, y}, bwd, -bwd), &path_vector));
+  }
+  if (points.empty()) {
+    return {};
+  }
+  points.push_back(points.front());
+
+  auto& path = path_vector.add_path();
+  for (std::size_t i = 1; i < points.size(); ++i) {
+    path.add_edge(std::make_unique<Edge>(points.at(i - 1), points.at(i), &path));
+  }
+
+  return path_vector;
 }
 
 }  // namespace omm
