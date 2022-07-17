@@ -76,12 +76,8 @@ void Tool::draw(Painter& renderer) const
   }
 }
 
-
 bool Tool::is_active() const
 {
-  for (const auto* handle : handles()) {
-    std::cout << "handle " << handle << ": " << int(handle->status()) << std::endl;
-  }
   return std::any_of(m_handles.begin(), m_handles.end(), [](const auto& handle) {
     return handle->status() == HandleStatus::Active;
   });
