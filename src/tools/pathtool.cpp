@@ -78,9 +78,30 @@ public:
     }
   }
 
+  Path* find_most_sensible_path(const PathPoint& p)
+  {
+    const auto paths = p.path_vector()->paths();
+    for (auto* const path : paths) {
+      if (path->last_point().get() == &p || path->first_point().get() == &p) {
+        return path;
+      }
+    }
+    for (auto* const path : paths) {
+      if (path->contains(p)) {
+        return path;
+      }
+    }
+    return nullptr;
+  }
+
   void add_point(std::shared_ptr<PathPoint>&& b)
   {
+    assert(b);
     m_current_point = b.get();
+    if (m_last_point != nullptr && m_current_path == nullptr) {
+      m_current_path = find_most_sensible_path(*m_last_point);
+    }
+    assert(m_current_path != nullptr);
     if (m_last_point == m_current_path->last_point().get()) {
       // append
       submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
@@ -135,7 +156,7 @@ public:
 
   PathObject* find_selected_path_object() const
   {
-    const auto selection = m_scene.selection();
+    const auto selection = m_scene.item_selection<Object>();
     static constexpr auto is_path_object = [](const auto* item) { return item->type() == PathObject::TYPE; };
     const auto it = std::find_if(selection.begin(), selection.end(), is_path_object);
     if (it == selection.end()) {
@@ -147,7 +168,7 @@ public:
 
   void ensure_active_path_object()
   {
-    if (m_scene.contains(m_current_path_object) && m_scene.selection().contains(m_current_path_object)) {
+    if (m_scene.contains(m_current_path_object) && m_scene.item_selection<Object>().contains(m_current_path_object)) {
       // everything can stay as it is, we have an existing and selected m_current_path_object.
       return;
     } else if (auto* const selected_path_object = find_selected_path_object(); selected_path_object != nullptr) {
