@@ -28,12 +28,22 @@ bool Edge::has_point(const PathPoint* p) noexcept
   return p == m_a.get() || p == m_b.get();
 }
 
-std::shared_ptr<PathPoint> Edge::a() const noexcept
+const std::shared_ptr<PathPoint>& Edge::a() const noexcept
 {
   return m_a;
 }
 
-std::shared_ptr<PathPoint> Edge::b() const noexcept
+const std::shared_ptr<PathPoint>& Edge::b() const noexcept
+{
+  return m_b;
+}
+
+std::shared_ptr<PathPoint>& Edge::a() noexcept
+{
+  return m_a;
+}
+
+std::shared_ptr<PathPoint>& Edge::b() noexcept
 {
   return m_b;
 }

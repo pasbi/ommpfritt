@@ -15,6 +15,8 @@ target_sources(libommpfritt PRIVATE
   pathgeometry.h
   pathvector.cpp
   pathvector.h
+  pathvectorisomorphism.cpp
+  pathvectorisomorphism.h
   pathview.cpp
   pathview.h
 )

@@ -393,7 +393,5 @@ template<typename T> auto python_like_mod(const T& dividend, const T& divisor)
 
 }  // namespace omm
 
-template<> struct omm::EnableBitMaskOperators<omm::Kind> : std::true_type {
-};
-template<> struct omm::EnableBitMaskOperators<omm::Flag> : std::true_type {
-};
+template<> struct omm::EnableBitMaskOperators<omm::Kind> : std::true_type { };
+template<> struct omm::EnableBitMaskOperators<omm::Flag> : std::true_type { };

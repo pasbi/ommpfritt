@@ -2,6 +2,7 @@
 
 #include "geometry/vec2.h"
 #include <deque>
+#include <map>
 #include <memory>
 #include <set>
 
@@ -51,11 +52,23 @@ public:
   Path& add_path();
   std::unique_ptr<Path> remove_path(const Path& path);
   [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& path_point) const;
-  [[nodiscard]] std::deque<PathPoint*> points() const;
-  [[nodiscard]] std::deque<PathPoint*> selected_points() const;
+  [[nodiscard]] std::set<PathPoint*> points() const;
+  [[nodiscard]] std::set<PathPoint*> selected_points() const;
   void deselect_all_points() const;
   [[nodiscard]] PathObject* path_object() const;
   void draw_point_ids(QPainter& painter) const;
+
+  static PathVector join(const std::deque<PathVector>& pvs, double eps);
+
+  /**
+   * @brief join joins the points @code ps
+   * All points of @code ps must be part of this @code PathVector.
+   * One point of @code ps is kept, a pointer to this one is returned.
+   * All other points of @code are merged into that one and their ownership is returned.
+   * It is unspecified which point is kept.
+   * If @code ps is empty, nothing happens.
+   */
+  PathPoint* join(std::set<PathPoint*> ps);
 
 
   /**
@@ -69,6 +82,19 @@ public:
 private:
   PathObject* m_path_object = nullptr;
   std::deque<std::unique_ptr<Path>> m_paths;
+
+  struct Mapping
+  {
+    std::map<const PathPoint*, PathPoint*> points;
+    std::map<const Path*, Path*> paths;
+  };
+
+  /**
+   * @brief adopt adopts all paths and points of @code pv by copying.
+   *  There will be no reference to @code pv when this function is done.
+   * @return a mapping from @code PathPoint in pv to @code PathPoint in `this`.
+   */
+  Mapping adopt(const PathVector& pv);
 };
 
 }  // namespace omm

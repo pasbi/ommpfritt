@@ -23,8 +23,10 @@ public:
   [[nodiscard]] QString label() const;
   void flip() noexcept;
   [[nodiscard]] bool has_point(const PathPoint* p) noexcept;
-  [[nodiscard]] std::shared_ptr<PathPoint> a() const noexcept;
-  [[nodiscard]] std::shared_ptr<PathPoint> b() const noexcept;
+  [[nodiscard]] const std::shared_ptr<PathPoint>& a() const noexcept;
+  [[nodiscard]] const std::shared_ptr<PathPoint>& b() const noexcept;
+  [[nodiscard]] std::shared_ptr<PathPoint>& a() noexcept;
+  [[nodiscard]] std::shared_ptr<PathPoint>& b() noexcept;
   [[nodiscard]] bool operator<(const Edge& other) const noexcept;
   Path* path() const;
 

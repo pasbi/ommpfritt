@@ -1,19 +1,14 @@
 #include "path/pathvector.h"
 
-#include "commands/modifypointscommand.h"
 #include "common.h"
 #include "geometry/point.h"
-#include "properties/boolproperty.h"
-#include "properties/optionproperty.h"
-#include "renderers/style.h"
-#include "scene/scene.h"
 #include "objects/pathobject.h"
 #include "path/edge.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/graph.h"
 #include "path/face.h"
-#include "scene/mailbox.h"
+#include "path/pathvectorisomorphism.h"
 #include "removeif.h"
 #include <QObject>
 #include <QPainter>
@@ -31,34 +26,7 @@ PathVector::PathVector(PathObject* path_object)
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
   : m_path_object(path_object)
 {
-  std::map<const Path*, Path*> paths_map;
-  for (const auto* other_path : other.paths()) {
-    auto& path = add_path();
-    paths_map.try_emplace(other_path, &path);
-  }
-
-  std::map<const omm::PathPoint*, std::shared_ptr<PathPoint>> points_map;
-  for (const auto* const point : other.points()) {
-    auto geometry = point->geometry();
-    geometry.replace_tangents_key(paths_map);
-    points_map.try_emplace(point, std::make_shared<PathPoint>(geometry, this));
-  }
-
-  for (const auto* other_path : other.paths()) {
-    const auto other_edges = other_path->edges();
-    auto& path = *paths_map.at(other_path);
-    if (other_edges.empty()) {
-      if (other_path->last_point()) {
-        path.set_single_point(points_map.at(other_path->last_point().get()));
-      }
-    } else {
-      for (const auto* other_edge : other_edges) {
-        const auto& a = points_map.at(other_edge->a().get());
-        const auto& b = points_map.at(other_edge->b().get());
-        path.add_edge(std::make_unique<Edge>(a, b, &path));
-      }
-    }
-  }
+  adopt(other);
 }
 
 PathVector::PathVector(PathVector&& other) noexcept
@@ -225,17 +193,17 @@ std::shared_ptr<PathPoint> PathVector::share(const PathPoint& path_point) const
   return {};
 }
 
-std::deque<PathPoint*> PathVector::points() const
+std::set<PathPoint*> PathVector::points() const
 {
-  std::deque<PathPoint*> points;
+  std::set<PathPoint*> points;
   for (const auto& path : m_paths) {
     const auto& ps = path->points();
-    points.insert(points.end(), ps.begin(), ps.end());
+    points.insert(ps.begin(), ps.end());
   }
   return points;
 }
 
-std::deque<PathPoint*> PathVector::selected_points() const
+std::set<PathPoint*> PathVector::selected_points() const
 {
   return util::remove_if(points(), [](const auto& p) { return !p->is_selected(); });
 }
@@ -258,6 +226,118 @@ void PathVector::draw_point_ids(QPainter& painter) const
 PathObject* PathVector::path_object() const
 {
   return m_path_object;
+}
+
+PathVector PathVector::join(const std::deque<PathVector>& pvs, double eps)
+{
+  PathVector joined;
+  std::map<const PathPoint*, PathPoint*> point_mapping;
+  for (const auto& pv : pvs) {
+    auto pv_mapping = joined.adopt(pv).points;
+    point_mapping.merge(pv_mapping);
+  }
+
+  for (const std::vector<PathPoint*>& correspondences : PathVectorIsomorphism(pvs).correspondences()) {
+    std::set<PathPoint*> close_points;
+    for (std::size_t i = 0; i < correspondences.size(); ++i) {
+      for (std::size_t j = 0; j < i; ++j) {
+
+      }
+    }
+  }
+
+  std::deque<std::pair<const PathPoint*, const PathPoint*>> close_points;
+  const auto eps2 = eps * eps;
+  for (std::size_t i1 = 0; i1 < pvs.size(); ++i1) {
+    for (std::size_t i2 = 0; i2 < i1; ++i2) {
+      for (const auto* const p1 : pvs.at(i1).points()) {
+        for (const auto* const p2 : pvs.at(i2).points()) {
+          if ((p1->geometry().position() - p2->geometry().position()).euclidean_norm2() < eps2) {
+            close_points.emplace_back(p1, p2);
+          }
+        }
+      }
+    }
+  }
+
+  for (std::size_t i = 0; i < close_points.size(); ++i) {
+    const auto& [p1, p2] = close_points.at(i);
+    PathPoint*& j1 = point_mapping.at(p1);
+    PathPoint*& j2 = point_mapping.at(p2);
+    auto* joined_point = joined.join({j1, j2});
+    j1 = joined_point;
+    j2 = joined_point;
+  }
+
+  return joined;
+}
+
+PathPoint* PathVector::join(std::set<PathPoint*> ps)
+{
+  if (ps.empty()) {
+    return {};
+  }
+
+  std::shared_ptr<PathPoint> special;
+  const auto replace_maybe = [&ps, &special](std::shared_ptr<PathPoint>& candidate) {
+    if (ps.contains(candidate.get())) {
+      if (!special) {
+        special = candidate;
+      } else {
+        for (const auto& [key, tangent] : candidate->geometry().tangents()) {
+          special->geometry().set_tangent(key, tangent);
+        }
+        candidate = special;
+      }
+    }
+  };
+  for (auto& path : m_paths) {
+    for (auto* edge : path->edges()) {
+      replace_maybe(edge->a());
+      replace_maybe(edge->b());
+    }
+  }
+
+  return special.get();
+}
+
+PathVector::Mapping PathVector::adopt(const PathVector& other)
+{
+  std::map<const Path*, Path*> paths_map;
+  for (const auto* other_path : other.paths()) {
+    auto& path = add_path();
+    paths_map.try_emplace(other_path, &path);
+  }
+
+  std::map<const omm::PathPoint*, std::shared_ptr<PathPoint>> points_map;
+  for (const auto* const point : other.points()) {
+    auto geometry = point->geometry();
+    geometry.replace_tangents_key(paths_map);
+    points_map.try_emplace(point, std::make_shared<PathPoint>(geometry, this));
+  }
+
+  for (const auto* other_path : other.paths()) {
+    const auto other_edges = other_path->edges();
+    auto& path = *paths_map.at(other_path);
+    if (other_edges.empty()) {
+      if (other_path->last_point()) {
+        path.set_single_point(points_map.at(other_path->last_point().get()));
+      }
+    } else {
+      for (const auto* other_edge : other_edges) {
+        const auto& a = points_map.at(other_edge->a().get());
+        const auto& b = points_map.at(other_edge->b().get());
+        path.add_edge(std::make_unique<Edge>(a, b, &path));
+      }
+    }
+  }
+
+  std::map<const PathPoint*, PathPoint*> points_map_raw;
+  for (const auto& [key, shared_ptr] : points_map) {
+    points_map_raw.try_emplace(key, shared_ptr.get());
+  }
+
+  return {points_map_raw, paths_map};
 }
 
 }  // namespace omm
