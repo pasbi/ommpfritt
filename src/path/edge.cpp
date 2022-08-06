@@ -61,4 +61,14 @@ Path* Edge::path() const
   return m_path;
 }
 
+bool Edge::is_valid() const noexcept
+{
+  return m_a && m_b && m_a->path_vector() == m_b->path_vector();
+}
+
+bool Edge::contains(const PathPoint* p) const noexcept
+{
+  return m_a.get() == p || m_b.get() == p;
+}
+
 }  // namespace omm

@@ -3,7 +3,6 @@
 #include "commands/modifypointscommand.h"
 #include "common.h"
 #include "path/path.h"
-#include "path/pathgeometry.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"

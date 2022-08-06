@@ -2,7 +2,6 @@
 
 #include "common.h"
 #include "geometry/point.h"
-#include "transparentset.h"
 #include <set>
 
 namespace omm

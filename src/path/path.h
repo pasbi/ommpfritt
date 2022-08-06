@@ -43,6 +43,8 @@ public:
   Edge& add_edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b);
   std::shared_ptr<PathPoint> last_point() const;
   std::shared_ptr<PathPoint> first_point() const;
+
+  static void draw_segment(QPainterPath& painter_path, const PathPoint& a, const PathPoint& b, const Path* path);
   QPainterPath to_painter_path() const;
 
 
@@ -77,7 +79,7 @@ public:
     if (edges.empty()) {
       return true;
     }
-    if (!std::all_of(edges.begin(), edges.end(), [](const auto& edge) { return edge->a() && edge->b(); })) {
+    if (!std::all_of(edges.begin(), edges.end(), [](const auto& edge) { return edge->is_valid(); })) {
       LERROR << "Is not valid because one or more edges contain invalid points.";
       return false;
     }

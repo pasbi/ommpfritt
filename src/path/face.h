@@ -3,7 +3,7 @@
 #include <QString>
 #include <list>
 #include <deque>
-#include "geometry/vec2.h"
+#include <memory>
 
 class QPainterPath;
 
@@ -19,41 +19,23 @@ class DeserializerWorker;
 class Point;
 class PathPoint;
 class Edge;
+class PathVectorView;
 
 class Face
 {
 public:
-  Face() = default;
-  Face(std::deque<Edge*> edges);
+  Face();
+  Face(PathVectorView view);
+  Face(const Face& other);
+  Face(Face&& other);
+  ~Face();
 
-  [[nodiscard]] QPainterPath to_painter_path() const;
-
-  /**
-   * @brief points returns the geometry of each point around the face with proper tangents.
-   * @note a face with `n` edges yields `n+1` points, because start and end point are listed
-   *  separately.
-   *  that's quite convenient for drawing paths.
-   * @see path_points
-   */
-  [[nodiscard]] std::vector<Point> points() const;
-
-  /**
-   * @brief path_points returns the points around the face.
-   * @note a face with `n` edges yields `n` points, because start and end point are not listed
-   *  separately.
-   *  That's quite convenient for checking face equality.
-   * @see points
-   */
-  [[nodiscard]] std::vector<PathPoint*> path_points() const;
-  [[nodiscard]] const std::deque<Edge*>& edges() const;
   [[nodiscard]] double compute_aabb_area() const;
   [[nodiscard]] QString to_string() const;
   [[nodiscard]] bool is_valid() const noexcept;
-  [[nodiscard]] bool empty() const noexcept;
-  [[nodiscard]] std::size_t size() const noexcept;
-
+  [[nodiscard]] PathVectorView& path_vector_view();
+  [[nodiscard]] const PathVectorView& path_vector_view() const;
   [[nodiscard]] bool contains(const Face& other) const;
-  [[nodiscard]] bool contains(const Vec2f& pos) const;
 
   [[nodiscard]] bool operator==(const Face& other) const;
   [[nodiscard]] bool operator!=(const Face& other) const;
@@ -65,7 +47,7 @@ public:
   void deserialize(serialization::DeserializerWorker& worker);
 
 private:
-  std::deque<Edge*> m_edges;
+  std::unique_ptr<PathVectorView> m_path_vector_view;
 };
 
 }  // namespace omm

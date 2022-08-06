@@ -1,6 +1,5 @@
 #include "properties/propertygroups/markerproperties.h"
 #include "objects/tip.h"
-#include "path/pathgeometry.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
@@ -59,8 +58,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
   }
   p.setPen(Qt::NoPen);
   p.setBrush(color.to_qcolor());
-  const auto path = PathGeometry{shape(width)}.to_painter_path();
-  p.drawPath(path);
+  p.drawPath(shape(width));
   p.restore();
 }
 
@@ -73,7 +71,7 @@ std::deque<QString> MarkerProperties::shapes()
           QObject::tr("Diamond")};
 }
 
-std::vector<Point> MarkerProperties::shape(const double width) const
+QPainterPath MarkerProperties::shape(const double width) const
 {
   const double base = width * property_value<double>(SIZE_PROPERTY_KEY);
   const auto shape = property_value<Shape>(SHAPE_PROPERTY_KEY);
@@ -95,42 +93,42 @@ std::vector<Point> MarkerProperties::shape(const double width) const
   Q_UNREACHABLE();
 }
 
-std::vector<Point> MarkerProperties::arrow(const Vec2f& size)
+QPainterPath MarkerProperties::arrow(const Vec2f& size)
 {
-  return {
-      Point(Vec2f(size.x, 0.0)),
-      Point(Vec2f(0.0, size.y)),
-      Point(Vec2f(0.0, -size.y)),
-      Point(Vec2f(size.x, 0.0)),
-  };
+  QPainterPath p;
+  p.moveTo(size.x, 0.0);
+  p.lineTo(0.0, size.y);
+  p.lineTo(0.0, -size.y);
+  p.lineTo(size.x, 0.0);
+  return p;
 }
 
-std::vector<Point> MarkerProperties::bar(const Vec2f& size)
+QPainterPath MarkerProperties::bar(const Vec2f& size)
 {
-  return {
-      Point(Vec2f(-size.x, size.y)),
-      Point(Vec2f(-size.x, -size.y)),
-      Point(Vec2f(size.x, -size.y)),
-      Point(Vec2f(size.x, size.y)),
-      Point(Vec2f(-size.x, size.y)),
-  };
+  QPainterPath p;
+  p.moveTo(-size.x, size.y);
+  p.lineTo(-size.x, -size.y);
+  p.lineTo(size.x, -size.y);
+  p.lineTo(size.x, size.y);
+  p.lineTo(-size.x, size.y);
+  return p;
 }
 
-std::vector<Point> MarkerProperties::circle(const Vec2f& size)
+QPainterPath MarkerProperties::circle(const Vec2f& size)
 {
   Q_UNUSED(size);
   return {};
 }
 
-std::vector<Point> MarkerProperties::diamond(const Vec2f& size)
+QPainterPath MarkerProperties::diamond(const Vec2f& size)
 {
-  return {
-      Point(Vec2f(-size.x, 0.0)),
-      Point(Vec2f(0.0, -size.y)),
-      Point(Vec2f(size.x, 0.0)),
-      Point(Vec2f(0.0, size.y)),
-      Point(Vec2f(-size.x, 0.0)),
-  };
+  QPainterPath p;
+  p.moveTo(-size.x, 0.0);
+  p.lineTo(0.0, -size.y);
+  p.lineTo(size.x, 0.0);
+  p.lineTo(0.0, size.y);
+  p.lineTo(-size.x, 0.0);
+  return p;
 }
 
 }  // namespace omm

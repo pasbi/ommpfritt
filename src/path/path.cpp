@@ -4,7 +4,6 @@
 #include "path/pathpoint.h"
 #include "path/pathview.h"
 #include "path/pathview.h"
-#include "path/pathgeometry.h"
 #include <2geom/pathvector.h>
 
 #include <QPainterPath>
@@ -286,22 +285,26 @@ std::vector<Edge*> Path::edges() const
   return util::transform<std::vector>(m_edges, &std::unique_ptr<Edge>::get);
 }
 
+void Path::draw_segment(QPainterPath& painter_path, const PathPoint& a, const PathPoint& b, const Path* const path)
+{
+  const auto g1 = a.geometry();
+  const auto g2 = b.geometry();
+  painter_path.cubicTo(g1.tangent_position({path, Point::Direction::Forward}).to_pointf(),
+                       g2.tangent_position({path, Point::Direction::Backward}).to_pointf(),
+                       g2.position().to_pointf());
+}
+
 QPainterPath Path::to_painter_path() const
 {
-  const auto points = this->points();
-  if (points.empty()) {
+  if (m_edges.empty()) {
     return {};
   }
-  QPainterPath path;
-  path.moveTo(points.front()->geometry().position().to_pointf());
-  for (std::size_t i = 1; i < points.size(); ++i) {
-    const auto g1 = points.at(i - 1)->geometry();
-    const auto g2 = points.at(i)->geometry();
-    path.cubicTo(g1.tangent_position({this, Point::Direction::Forward}).to_pointf(),
-                 g2.tangent_position({this, Point::Direction::Backward}).to_pointf(),
-                 g2.position().to_pointf());
+  QPainterPath painter_path;
+  painter_path.moveTo(m_edges.front()->a()->geometry().position().to_pointf());
+  for (const auto& edge : m_edges) {
+    draw_segment(painter_path, *edge->a(), *edge->b(), this);
   }
-  return path;
+  return painter_path;
 }
 
 

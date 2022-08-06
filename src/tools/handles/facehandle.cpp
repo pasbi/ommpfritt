@@ -1,7 +1,7 @@
 #include "tools/handles/facehandle.h"
-#include "path/edge.h"
 #include <QPainter>
 #include "objects/pathobject.h"
+#include "path/pathvectorview.h"
 #include "scene/faceselection.h"
 #include "scene/scene.h"
 
@@ -12,14 +12,13 @@ FaceHandle::FaceHandle(Tool& tool, PathObject& path_object, const Face& face)
     : AbstractSelectHandle(tool)
     , m_path_object(path_object)
     , m_face(face)
-    , m_path(face.to_painter_path())
 {
 }
 
 bool FaceHandle::contains_global(const Vec2f& point) const
 {
   const auto p = transformation().inverted().apply_to_position(point);
-  return m_face.contains(p);
+  return m_face.path_vector_view().contains(p);
 }
 
 void FaceHandle::draw(QPainter& painter) const

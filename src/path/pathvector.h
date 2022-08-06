@@ -1,6 +1,5 @@
 #pragma once
 
-#include "geometry/vec2.h"
 #include <deque>
 #include <map>
 #include <memory>

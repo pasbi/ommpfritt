@@ -28,7 +28,9 @@ public:
   [[nodiscard]] std::shared_ptr<PathPoint>& a() noexcept;
   [[nodiscard]] std::shared_ptr<PathPoint>& b() noexcept;
   [[nodiscard]] bool operator<(const Edge& other) const noexcept;
-  Path* path() const;
+  [[nodiscard]] Path* path() const;
+  [[nodiscard]] bool is_valid() const noexcept;
+  [[nodiscard]] bool contains(const PathPoint* p) const noexcept;
 
 private:
   Path* m_path;

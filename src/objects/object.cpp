@@ -8,6 +8,7 @@
 #include "path/path.h"
 #include "path/pathvector.h"
 #include "path/face.h"
+#include "path/pathvectorview.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
@@ -663,7 +664,7 @@ void Object::draw_object(Painter& renderer,
       renderer.set_style(style, *this, options);
       painter->save();
       painter->setPen(Qt::NoPen);
-      painter->drawPath(face.to_painter_path());
+      painter->drawPath(face.path_vector_view().to_painter_path());
       painter->restore();
       face_id += 1;
     }

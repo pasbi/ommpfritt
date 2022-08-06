@@ -27,11 +27,11 @@ public:
   static constexpr auto REVERSE_PROPERTY_KEY = "reverse";
 
   static std::deque<QString> shapes();
-  std::vector<Point> shape(double width) const;
-  static std::vector<Point> arrow(const Vec2f& size);
-  static std::vector<Point> bar(const Vec2f& size);
-  static std::vector<Point> circle(const Vec2f& size);
-  static std::vector<Point> diamond(const Vec2f& size);
+  QPainterPath shape(double width) const;
+  static QPainterPath arrow(const Vec2f& size);
+  static QPainterPath bar(const Vec2f& size);
+  static QPainterPath circle(const Vec2f& size);
+  static QPainterPath diamond(const Vec2f& size);
 
 private:
   const Shape m_default_shape;
