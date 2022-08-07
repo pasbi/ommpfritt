@@ -27,8 +27,11 @@ public:
   Face();
   Face(PathVectorView view);
   Face(const Face& other);
-  Face(Face&& other);
+  Face(Face&& other) noexcept;
+  Face& operator=(Face other);
+  Face& operator=(Face&& other) noexcept;
   ~Face();
+  friend void swap(Face& a, Face& b) noexcept;
 
   [[nodiscard]] double compute_aabb_area() const;
   [[nodiscard]] QString to_string() const;

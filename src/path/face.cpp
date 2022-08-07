@@ -21,11 +21,32 @@ Face::Face(PathVectorView pvv)
 Face::Face(const Face& other)
     : m_path_vector_view(std::make_unique<PathVectorView>(other.path_vector_view()))
 {
-
 }
 
-Face::Face(Face&& other) = default;
+Face::Face(Face&& other) noexcept
+    : Face()
+{
+  swap(*this, other);
+}
+
+Face& Face::operator=(Face other)
+{
+  swap(*this, other);
+  return *this;
+}
+
+Face& Face::operator=(Face&& other) noexcept
+{
+  swap(*this, other);
+  return *this;
+}
+
 Face::~Face() = default;
+
+void swap(Face& a, Face& b) noexcept
+{
+  swap(a.m_path_vector_view, b.m_path_vector_view);
+}
 
 double Face::compute_aabb_area() const
 {
