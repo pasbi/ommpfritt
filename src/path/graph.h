@@ -1,10 +1,10 @@
 #pragma once
 
-#include "geometry/point.h"
 #include <deque>
 #include <string>
 #include <set>
 #include <memory>
+#include <QString>
 
 namespace omm
 {
@@ -27,14 +27,6 @@ public:
 
   [[nodiscard]] std::set<Face> compute_faces() const;
   [[nodiscard]] QString to_dot() const;
-
-  /**
-   * @brief remove_articulation_edges an edge is articulated if it connects two articulated points,
-   *  two points of degree one or less or an articulated point with a point of degree one or less.
-   *  Removing articulated edges from a graph increase the number of components by one.
-   *  Articulated edges can never be part of a face.
-   */
-  void remove_articulation_edges() const;
 
 private:
   std::unique_ptr<Impl> m_impl;

@@ -17,7 +17,7 @@ class PathVectorView
 {
 public:
   PathVectorView() = default;
-  explicit PathVectorView(const std::deque<Edge*>& edges);
+  explicit PathVectorView(std::deque<Edge*> edges);
   [[nodiscard]] bool is_valid() const;
   /**
    * @brief is_simply_closed returns true if every two consecutive edge pairs (including last and

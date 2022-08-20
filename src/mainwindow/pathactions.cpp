@@ -21,10 +21,8 @@
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
-#include "scene/pointselection.h"
 #include "scene/scene.h"
 #include "scene/toplevelsplit.h"
-#include "tools/toolbox.h"
 #include "removeif.h"
 #include <QUndoStack>
 #include <functional>

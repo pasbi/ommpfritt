@@ -8,7 +8,7 @@
 namespace
 {
 
-std::size_t count_common_points(const omm::Edge& first, const omm::Edge& second)
+std::size_t count_distinct_points(const omm::Edge& first, const omm::Edge& second)
 {
   const auto* const a1 = first.a().get();
   const auto* const b1 = first.b().get();
@@ -21,6 +21,12 @@ std::size_t count_common_points(const omm::Edge& first, const omm::Edge& second)
 
 namespace omm
 {
+
+PathVectorView::PathVectorView(std::deque<Edge*> edges)
+    : m_edges(std::move(edges))
+{
+  assert(is_valid());
+}
 
 bool PathVectorView::is_valid() const
 {
@@ -35,10 +41,10 @@ bool PathVectorView::is_valid() const
   case 1:
     return true;
   case 2:
-    return count_common_points(*m_edges.front(), *m_edges.back()) >= 1;
+    return count_distinct_points(*m_edges.front(), *m_edges.back()) <= 3;
   default:
     for (std::size_t i = 1; i < m_edges.size(); ++i) {
-      if (count_common_points(*m_edges.at(i - 1), *m_edges.at(i)) != 1) {
+      if (count_distinct_points(*m_edges.at(i - 1), *m_edges.at(i)) != 3) {
         return false;
       }
     }
@@ -56,11 +62,11 @@ bool PathVectorView::is_simply_closed() const
   case 2:
     // Both edges have the same points.
     // They can be part of different paths, hence any direction is possible.
-    return count_common_points(*m_edges.front(), *m_edges.back()) == 2;
+    return count_distinct_points(*m_edges.front(), *m_edges.back()) == 2;
   default:
     // Assuming there are no intersections,
     // there must be only one common point between first and last edge to be closed.
-    return count_common_points(*m_edges.front(), *m_edges.back()) == 1;
+    return count_distinct_points(*m_edges.front(), *m_edges.back()) == 3;
   }
 
   return !m_edges.empty() && m_edges.front()->a().get() == m_edges.back()->b().get();
