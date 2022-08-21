@@ -26,7 +26,7 @@ PathVector::PathVector(PathObject* path_object)
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
   : m_path_object(path_object)
 {
-  adopt(other);
+  copy_from(other);
 }
 
 PathVector::~PathVector() = default;
@@ -106,7 +106,7 @@ QPainterPath PathVector::to_painter_path() const
 std::set<Face> PathVector::faces() const
 {
   Graph graph{*this};
-  graph.remove_articulation_edges();
+//  graph.remove_articulation_edges();
   return graph.compute_faces();
 }
 

@@ -93,11 +93,11 @@ private:
   };
 
   /**
-   * @brief adopt adopts all paths and points of @code pv by copying.
+   * @brief copy_from copies all paths and points of @code pv by copying.
    *  There will be no reference to @code pv when this function is done.
    * @return a mapping from @code PathPoint in pv to @code PathPoint in `this`.
    */
-  Mapping adopt(const PathVector& pv);
+  Mapping copy_from(const PathVector& pv);
 };
 
 }  // namespace omm
