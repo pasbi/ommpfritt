@@ -7,10 +7,10 @@
 namespace omm
 {
 
-PathVectorIsomorphism::PathVectorIsomorphism(const std::deque<PathVector>& path_vectors)
+PathVectorIsomorphism::PathVectorIsomorphism(const std::deque<PathVector*>& path_vectors)
 {
-  m_points = util::transform(path_vectors, [](const auto& pv) {
-    return util::transform(pv.paths(), [](const auto* path) { return path->points(); });
+  m_points = util::transform(path_vectors, [](const auto* const pv) {
+    return util::transform(pv->paths(), [](const auto* const path) { return path->points(); });
   });
 
   const auto set = util::transform<std::set>(m_points, [](const auto& pv) { return pv.size(); });

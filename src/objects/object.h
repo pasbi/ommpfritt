@@ -87,7 +87,7 @@ private:
    * @return the paths.
    */
 public:
-  virtual PathVector compute_geometry() const;
+  virtual std::unique_ptr<PathVector> compute_geometry() const;
   virtual std::vector<Face> compute_faces() const;
 
 public:
@@ -98,7 +98,7 @@ public:
   compute_path_vector_time(int path_index, double t, Interpolation = Interpolation::Natural) const;
 
 private:
-  std::unique_ptr<CachedGetter<PathVector, Object>> m_cached_geometry_getter;
+  std::unique_ptr<CachedGetter<std::unique_ptr<PathVector>, Object>> m_cached_geometry_getter;
   std::unique_ptr<CachedGetter<std::vector<Face>, Object>> m_cached_faces_getter;
 public:
   const PathVector& geometry() const;
@@ -160,7 +160,7 @@ private:
   static const QBrush m_bounding_box_brush;
 
 protected:
-  static PathVector join(const std::vector<Object*>& objects);
+  static std::unique_ptr<PathVector> join(const std::vector<Object*>& objects);
 };
 
 }  // namespace omm

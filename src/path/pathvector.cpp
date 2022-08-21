@@ -29,35 +29,6 @@ PathVector::PathVector(const PathVector& other, PathObject* path_object)
   adopt(other);
 }
 
-PathVector::PathVector(PathVector&& other) noexcept
-{
-  swap(*this, other);
-}
-
-PathVector& PathVector::operator=(const PathVector& other)
-{
-  *this = PathVector{other};
-  return *this;
-}
-
-PathVector& PathVector::operator=(PathVector&& other) noexcept
-{
-  swap(*this, other);
-  return *this;
-}
-
-void swap(PathVector& a, PathVector& b) noexcept
-{
-  std::swap(a.m_path_object, b.m_path_object);
-  swap(a.m_paths, b.m_paths);
-  for (auto& path : a.m_paths) {
-    path->set_path_vector(&a);
-  }
-  for (auto& path : b.m_paths) {
-    path->set_path_vector(&b);
-  }
-}
-
 PathVector::~PathVector() = default;
 
 void PathVector::serialize(serialization::SerializerWorker& worker) const
@@ -228,12 +199,12 @@ PathObject* PathVector::path_object() const
   return m_path_object;
 }
 
-PathVector PathVector::join(const std::deque<PathVector>& pvs, double eps)
+std::unique_ptr<PathVector> PathVector::join(const std::deque<PathVector*>& pvs, double eps)
 {
-  PathVector joined;
+  auto joined = std::make_unique<PathVector>();
   std::map<const PathPoint*, PathPoint*> point_mapping;
   for (const auto& pv : pvs) {
-    auto pv_mapping = joined.adopt(pv).points;
+    auto pv_mapping = joined->copy_from(*pv).points;
     point_mapping.merge(pv_mapping);
   }
 
@@ -250,8 +221,8 @@ PathVector PathVector::join(const std::deque<PathVector>& pvs, double eps)
   const auto eps2 = eps * eps;
   for (std::size_t i1 = 0; i1 < pvs.size(); ++i1) {
     for (std::size_t i2 = 0; i2 < i1; ++i2) {
-      for (const auto* const p1 : pvs.at(i1).points()) {
-        for (const auto* const p2 : pvs.at(i2).points()) {
+      for (const auto* const p1 : pvs.at(i1)->points()) {
+        for (const auto* const p2 : pvs.at(i2)->points()) {
           if ((p1->geometry().position() - p2->geometry().position()).euclidean_norm2() < eps2) {
             close_points.emplace_back(p1, p2);
           }
@@ -264,7 +235,7 @@ PathVector PathVector::join(const std::deque<PathVector>& pvs, double eps)
     const auto& [p1, p2] = close_points.at(i);
     PathPoint*& j1 = point_mapping.at(p1);
     PathPoint*& j2 = point_mapping.at(p2);
-    auto* joined_point = joined.join({j1, j2});
+    auto* joined_point = joined->join({j1, j2});
     j1 = joined_point;
     j2 = joined_point;
   }
@@ -301,7 +272,7 @@ PathPoint* PathVector::join(std::set<PathPoint*> ps)
   return special.get();
 }
 
-PathVector::Mapping PathVector::adopt(const PathVector& other)
+PathVector::Mapping PathVector::copy_from(const PathVector& other)
 {
   std::map<const Path*, Path*> paths_map;
   for (const auto* other_path : other.paths()) {

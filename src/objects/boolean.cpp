@@ -94,9 +94,9 @@ void Boolean::polish()
   listen_to_children_changes();
 }
 
-PathVector Boolean::compute_geometry() const
+std::unique_ptr<PathVector> Boolean::compute_geometry() const
 {
-  return {};
+  return std::make_unique<PathVector>();
 }
 
 }  // namespace omm

@@ -91,9 +91,9 @@ void ProceduralPath::update()
   Object::update();
 }
 
-PathVector ProceduralPath::compute_geometry() const
+std::unique_ptr<PathVector> ProceduralPath::compute_geometry() const
 {
-  return {};
+  return std::make_unique<PathVector>();
 //  PathVector pv;
 //  for (const auto& points : m_points) {
 //    pv.add_path(std::make_unique<Path>(std::deque(points)));

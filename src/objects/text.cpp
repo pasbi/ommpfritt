@@ -117,9 +117,9 @@ QRectF Text::rect(Qt::Alignment alignment) const
   return {QPointF(left, top), QSizeF(width, height)};
 }
 
-PathVector Text::compute_geometry() const
+std::unique_ptr<PathVector> Text::compute_geometry() const
 {
-  return {};
+  return std::make_unique<PathVector>();
 }
 
 void Text::on_property_value_changed(Property* property)

@@ -50,7 +50,7 @@ void Ellipse::on_property_value_changed(Property* property)
   }
 }
 
-PathVector Ellipse::compute_geometry() const
+std::unique_ptr<PathVector> Ellipse::compute_geometry() const
 {
   const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
   const auto n = static_cast<std::size_t>(std::max(3, n_raw));
@@ -58,7 +58,7 @@ PathVector Ellipse::compute_geometry() const
   const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
   std::vector<std::shared_ptr<PathPoint>> points;
   points.reserve(n + 1);
-  PathVector path_vector;
+  auto path_vector = std::make_unique<PathVector>();
   for (std::size_t i = 0; i <= n; ++i) {
     const double theta = static_cast<double>(i) * 2.0 / static_cast<double>(n) * M_PI;
     const double x = std::cos(theta) * r.x;
@@ -70,14 +70,14 @@ PathVector Ellipse::compute_geometry() const
       bwd.argument = d.arg();
       bwd.magnitude = 2.0 * d.euclidean_norm() / static_cast<double>(n);
     };
-    points.emplace_back(std::make_shared<PathPoint>(Point(Vec2f{x, y}, bwd, -bwd), &path_vector));
+    points.emplace_back(std::make_shared<PathPoint>(Point(Vec2f{x, y}, bwd, -bwd), path_vector.get()));
   }
   if (points.empty()) {
     return {};
   }
   points.push_back(points.front());
 
-  auto& path = path_vector.add_path();
+  auto& path = path_vector->add_path();
   for (std::size_t i = 1; i < points.size(); ++i) {
     path.add_edge(std::make_unique<Edge>(points.at(i - 1), points.at(i), &path));
   }

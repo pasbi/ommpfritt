@@ -258,10 +258,9 @@ QString Object::to_string() const
   return QString("%1[%2]").arg(type(), name());
 }
 
-PathVector Object::join(const std::vector<Object*>& objects)
+std::unique_ptr<PathVector> Object::join(const std::vector<Object*>& objects)
 {
-  (void) objects;
-  return {};
+  return std::make_unique<PathVector>();
 //  PathVector path_vector;
 //  for (const auto* object : objects) {
 //    for (const auto* path : object->path_vector().paths()) {
@@ -567,9 +566,9 @@ bool Object::contains(const Vec2f& point) const
   return std::abs(winding) % 2 == 1;
 }
 
-PathVector Object::compute_geometry() const
+std::unique_ptr<PathVector> Object::compute_geometry() const
 {
-  return {};
+  return std::make_unique<PathVector>();
 }
 
 std::vector<Face> Object::compute_faces() const
@@ -751,7 +750,7 @@ void Object::listen_to_children_changes()
 
 const PathVector& Object::geometry() const
 {
-  return m_cached_geometry_getter->operator()();
+  return *m_cached_geometry_getter->operator()();
 }
 
 const std::vector<Face>& Object::faces() const

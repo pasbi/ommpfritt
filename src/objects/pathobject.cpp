@@ -24,20 +24,13 @@ namespace omm
 class Style;
 
 PathObject::PathObject(Scene* scene, const PathVector& path_vector)
-  : Object(scene)
-  , m_path_vector(std::make_unique<PathVector>(path_vector, this))
+    : PathObject(scene, std::make_unique<PathVector>(path_vector, this))
 {
-  static const auto category = QObject::tr("path");
 
-  create_property<OptionProperty>(INTERPOLATION_PROPERTY_KEY)
-      .set_options({QObject::tr("linear"), QObject::tr("smooth"), QObject::tr("bezier")})
-      .set_label(QObject::tr("interpolation"))
-      .set_category(category);
-  PathObject::update();
 }
 
 PathObject::PathObject(Scene* scene)
-    : PathObject(scene, {})
+    : PathObject(scene, std::make_unique<PathVector>(this))
 {
 }
 
@@ -45,6 +38,20 @@ PathObject::PathObject(const PathObject& other)
   : Object(other)
   , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
 {
+}
+
+PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
+  : Object(scene)
+  , m_path_vector(std::move(path_vector))
+{
+  assert(path_vector->path_object() == this);
+  static const auto category = QObject::tr("path");
+
+  create_property<OptionProperty>(INTERPOLATION_PROPERTY_KEY)
+      .set_options({QObject::tr("linear"), QObject::tr("smooth"), QObject::tr("bezier")})
+      .set_label(QObject::tr("interpolation"))
+      .set_category(category);
+  PathObject::update();
 }
 
 PathObject::~PathObject() = default;
@@ -90,9 +97,9 @@ PathVector& PathObject::path_vector()
   return *m_path_vector;
 }
 
-PathVector PathObject::compute_geometry() const
+std::unique_ptr<PathVector> PathObject::compute_geometry() const
 {
-  return *m_path_vector;
+  return std::make_unique<PathVector>(*m_path_vector);
 }
 
 void PathObject::set_face_selected(const Face& face, bool s)

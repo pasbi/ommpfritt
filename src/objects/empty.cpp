@@ -23,12 +23,12 @@ QString Empty::type() const
   return TYPE;
 }
 
-PathVector Empty::compute_geometry() const
+std::unique_ptr<PathVector> Empty::compute_geometry() const
 {
   if (property(JOIN_PROPERTY_KEY)->value<bool>()) {
     return join(tree_children());
   } else {
-    return {};
+    return std::make_unique<PathVector>();
   }
 }
 

@@ -39,9 +39,9 @@ void Tip::on_property_value_changed(Property* property)
   }
 }
 
-PathVector Tip::compute_geometry() const
+std::unique_ptr<PathVector> Tip::compute_geometry() const
 {
-  return {};
+  return std::make_unique<PathVector>();
 //  auto points = m_marker_properties.shape(1.0);
 //  PathVector pv;
 //  auto path = std::make_unique<Path>(std::move(points));

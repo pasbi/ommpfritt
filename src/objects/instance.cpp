@@ -158,12 +158,12 @@ void Instance::update()
   Object::update();
 }
 
-PathVector Instance::compute_geometry() const
+std::unique_ptr<PathVector> Instance::compute_geometry() const
 {
   if (m_reference) {
-    return m_reference->geometry();
+    return std::make_unique<PathVector>(m_reference->geometry());
   } else {
-    return {};
+    return std::make_unique<PathVector>();
   }
 }
 

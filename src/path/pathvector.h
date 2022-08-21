@@ -32,11 +32,15 @@ class PathVector
 public:
   PathVector(PathObject* path_object = nullptr);
   PathVector(const PathVector& other, PathObject* path_object = nullptr);
-  PathVector(PathVector&& other) noexcept;
-  PathVector& operator=(const PathVector& other);
-  PathVector& operator=(PathVector&& other) noexcept;
+  PathVector& operator=(PathVector other) = delete;
+
+  // Moving the path vector is not trivially possible because the owned PathPoint hold a pointer
+  // to the owned Paths and this.
+  // If you need to move a PathVector, encapsulated it in a unique_ptr.
+  PathVector(PathVector&& other) = delete;
+  PathVector& operator=(PathVector&& other) = delete;
+
   ~PathVector();
-  friend void swap(PathVector& a, PathVector& b) noexcept;
 
   void serialize(serialization::SerializerWorker& worker) const;
   void deserialize(serialization::DeserializerWorker& worker);
@@ -57,7 +61,7 @@ public:
   [[nodiscard]] PathObject* path_object() const;
   void draw_point_ids(QPainter& painter) const;
 
-  static PathVector join(const std::deque<PathVector>& pvs, double eps);
+  static std::unique_ptr<PathVector> join(const std::deque<PathVector*>& pvs, double eps);
 
   /**
    * @brief join joins the points @code ps

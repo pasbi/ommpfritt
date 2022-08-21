@@ -13,7 +13,7 @@ public:
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Empty");
-  PathVector compute_geometry() const override;
+  std::unique_ptr<PathVector> compute_geometry() const override;
   Flag flags() const override;
 };
 

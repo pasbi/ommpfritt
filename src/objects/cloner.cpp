@@ -193,7 +193,7 @@ void Cloner::update()
   Object::update();
 }
 
-PathVector Cloner::compute_geometry() const
+std::unique_ptr<PathVector> Cloner::compute_geometry() const
 {
   return join(util::transform(m_clones, [](const auto& up) { return up.get(); }));
 }

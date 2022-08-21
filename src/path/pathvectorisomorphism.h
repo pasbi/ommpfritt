@@ -23,7 +23,7 @@ class PathPoint;
 class PathVectorIsomorphism
 {
 public:
-  explicit PathVectorIsomorphism(const std::deque<PathVector>& path_vectors);
+  explicit PathVectorIsomorphism(const std::deque<PathVector*>& path_vectors);
   using Points = std::deque<std::deque<std::vector<PathPoint*>>>;
   const Points& points() const;
   std::size_t n_paths() const;

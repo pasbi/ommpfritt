@@ -36,9 +36,9 @@ Flag LineObject::flags() const
   return Object::flags() | Flag::Convertible;
 }
 
-PathVector LineObject::compute_geometry() const
+std::unique_ptr<PathVector> LineObject::compute_geometry() const
 {
-  return {};
+  return std::make_unique<PathVector>();
 }
 
 void LineObject::on_property_value_changed(Property* property)

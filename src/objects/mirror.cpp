@@ -34,7 +34,7 @@ omm::ObjectTransformation get_mirror_t(omm::Mirror::Direction direction)
   }
 }
 
-omm::PathVector reflect(omm::PathVector pv, const omm::Mirror::Direction direction)
+std::unique_ptr<omm::PathVector> reflect(const omm::PathVector& pv, const omm::Mirror::Direction direction)
 {
   const auto reflect = [direction](omm::Vec2f p) {
     switch (direction) {
@@ -50,14 +50,15 @@ omm::PathVector reflect(omm::PathVector pv, const omm::Mirror::Direction directi
     }
     return p;
   };
-  for (auto* const point : pv.points()) {
+  auto copy = std::make_unique<omm::PathVector>(pv);
+  for (auto* const point : copy->points()) {
     auto& geom = point->geometry();
     geom.set_position(reflect(geom.position()));
     for (auto& [key, tangent] : geom.tangents()) {
       tangent = omm::PolarCoordinates(reflect(tangent.to_cartesian()));
     }
   }
-  return pv;
+  return copy;
 }
 
 }  // namespace
@@ -151,16 +152,16 @@ std::unique_ptr<Object> Mirror::convert(bool& keep_children) const
   }
 }
 
-PathVector Mirror::compute_geometry() const
+std::unique_ptr<PathVector> Mirror::compute_geometry() const
 {
   if (!is_active()) {
-    return {};
+    return std::make_unique<PathVector>();
   }
   switch (property(AS_PATH_PROPERTY_KEY)->value<Mode>()) {
   case Mode::Path:
-    return type_cast<PathObject&>(*m_reflection).geometry();
+    return std::make_unique<PathVector>(type_cast<PathObject&>(*m_reflection).geometry());
   case Mode::Object:
-    return m_reflection->geometry();
+    return std::make_unique<PathVector>(m_reflection->geometry());
   default:
     Q_UNREACHABLE();
   }
@@ -204,8 +205,8 @@ void Mirror::update_path_mode()
       return;
     }
     const auto& original = child->path_vector();
-    std::deque<PathVector> reflections;
-    reflections.emplace_back(original);
+    std::deque<std::unique_ptr<PathVector>> reflections;
+    reflections.emplace_back(std::make_unique<PathVector>(original));
     const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
     if (direction == Mirror::Direction::Both) {
       reflections.emplace_back(reflect(original, Mirror::Direction::Horizontal));
@@ -215,7 +216,8 @@ void Mirror::update_path_mode()
       reflections.emplace_back(reflect(original, direction));
     }
 
-    auto reflection = std::make_unique<PathObject>(scene(), PathVector::join(reflections, eps));
+    const auto reflection_ptrs = util::transform(reflections, &std::unique_ptr<PathVector>::get);
+    auto reflection = std::make_unique<PathObject>(scene(), PathVector::join(reflection_ptrs, eps));
     const auto interpolation = child->has_property(PathObject::INTERPOLATION_PROPERTY_KEY)
                                    ? child->property(PathObject::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
                                    : InterpolationMode::Bezier;

@@ -35,7 +35,7 @@ QString RectangleObject::type() const
   return TYPE;
 }
 
-PathVector RectangleObject::compute_geometry() const
+std::unique_ptr<PathVector> RectangleObject::compute_geometry() const
 {
   std::deque<std::shared_ptr<PathPoint>> points;
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>() / 2.0;
@@ -46,9 +46,9 @@ PathVector RectangleObject::compute_geometry() const
   const PolarCoordinates null(0.0, 0.0);
   const PolarCoordinates v(Vec2f(0.0, -ar.y * t.y));
   const PolarCoordinates h(Vec2f(ar.x * t.x, 0.0));
-  PathVector path_vector;
+  auto path_vector = std::make_unique<PathVector>();
   auto add = [&points, &path_vector](const auto& pos, const auto& fwd, const auto& bwd) {
-    points.emplace_back(std::make_shared<PathPoint>(Point(pos, fwd, bwd), &path_vector));
+    points.emplace_back(std::make_shared<PathPoint>(Point(pos, fwd, bwd), path_vector.get()));
   };
 
   static constexpr auto eps = 0.00001;
@@ -72,7 +72,7 @@ PathVector RectangleObject::compute_geometry() const
 
   points.emplace_back(points.front());
 
-  auto& path = path_vector.add_path();
+  auto& path = path_vector->add_path();
   for (std::size_t i = 1; i < points.size(); ++i) {
     path.add_edge(std::make_unique<Edge>(points.at(i - 1), points.at(i), &path));
   }
