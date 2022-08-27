@@ -72,8 +72,7 @@ double Face::compute_aabb_area() const
 
 QString Face::to_string() const
 {
-  const auto edges = util::transform<QList>(m_path_vector_view->edges(), std::mem_fn(&Edge::label));
-  return static_cast<QStringList>(edges).join(", ");
+  return m_path_vector_view->to_string();
 }
 
 bool Face::is_valid() const noexcept

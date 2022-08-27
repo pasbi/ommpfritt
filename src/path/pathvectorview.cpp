@@ -129,6 +129,12 @@ bool PathVectorView::contains(const Vec2f& pos) const
   return to_painter_path().contains(pos.to_pointf());
 }
 
+QString PathVectorView::to_string() const
+{
+  const auto edges = util::transform<QList>(this->edges(), std::mem_fn(&Edge::label));
+  return static_cast<QStringList>(edges).join(", ");
+}
+
 std::vector<PathPoint*> PathVectorView::path_points() const
 {
   if (m_edges.empty()) {
@@ -147,16 +153,19 @@ std::vector<PathPoint*> PathVectorView::path_points() const
 
 void PathVectorView::normalize()
 {
-  if (m_edges.empty()) {
-    return;
-  }
-
   if (is_simply_closed()) {
     const auto min_it = std::min_element(m_edges.begin(), m_edges.end());
     std::rotate(m_edges.begin(), min_it, m_edges.end());
-  }
-
-  if (m_edges.front() < m_edges.back()) {
+    // Thanks to rotate, the first edge is always the smallest.
+    // Thus we must compare second and third.
+    // Reversing only matters if there are more than two edges.
+    if (m_edges.size() >= 3 && m_edges.at(1) > m_edges.at(2)) {
+      std::reverse(m_edges.begin(), m_edges.end());
+      // Reversing has moved the smallest edge to the end, but it must be at front after
+      // normalization .
+      std::rotate(m_edges.begin(), std::prev(m_edges.end()), m_edges.end());
+    }
+  } else if (m_edges.size() >= 2 && m_edges.at(0) > m_edges.at(1)) {
     std::reverse(m_edges.begin(), m_edges.end());
   }
 }

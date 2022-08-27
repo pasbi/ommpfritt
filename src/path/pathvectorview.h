@@ -32,6 +32,7 @@ public:
   [[nodiscard]] QPainterPath to_painter_path() const;
   [[nodiscard]] std::vector<bool> edge_flipped() const;
   [[nodiscard]] bool contains(const Vec2f& pos) const;
+  [[nodiscard]] QString to_string() const;
   [[nodiscard]] std::vector<PathPoint*> path_points() const;
   friend bool operator==(PathVectorView a, PathVectorView b);
   friend bool operator<(PathVectorView a, PathVectorView b);

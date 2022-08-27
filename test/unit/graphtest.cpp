@@ -7,20 +7,21 @@
 #include "path/pathpoint.h"
 #include "path/pathvectorview.h"
 #include "transform.h"
-
 #include <path/pathvectorview.h>
 
-omm::Face make_face(std::deque<omm::Edge*> edges)
-{
-  return omm::Face(omm::PathVectorView(std::move(edges)));
-}
 
 class TestCase
 {
 public:
-  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<std::deque<omm::Edge*>>&& edgess)
+  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<omm::PathVectorView>&& pvvs)
       : m_path_vector(m_path_vectors.emplace_back(std::move(path_vector)).get())
-      , m_expected_faces(util::transform(edgess, make_face))
+      , m_expected_faces(util::transform<omm::Face>(std::move(pvvs)))
+  {
+  }
+
+  template<typename Edges>
+  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<Edges>&& edgess)
+      : TestCase(std::move(path_vector), util::transform<omm::PathVectorView>(std::move(edgess)))
   {
   }
 
@@ -82,52 +83,74 @@ TestCase ellipse(const std::size_t point_count, const bool closed, const bool no
   return {std::move(pv), {}};
 }
 
-TestCase rectangle()
+TestCase rectangles(const std::size_t count)
 {
   auto pv = std::make_unique<omm::PathVector>();
-  auto& path = pv->add_path();
-  const auto p = [pv=pv.get()](const double x, const double y) {
-    return std::make_shared<omm::PathPoint>(omm::Point({x, y}), pv);
-  };
+  std::set<std::deque<omm::Edge*>> expected_pvvs;
+  for (std::size_t i = 0; i < count; ++i) {
+    auto& path = pv->add_path();
+    const auto p = [pv=pv.get()](const double x, const double y) {
+      return std::make_shared<omm::PathPoint>(omm::Point({x, y}), pv);
+    };
 
-  std::deque<omm::Edge*> edges;
-  path.set_single_point(p(-1, -1));
-  edges.emplace_back(&path.add_edge(path.last_point(), p(1, -1)));
-  edges.emplace_back(&path.add_edge(path.last_point(), p(1, 1)));
-  edges.emplace_back(&path.add_edge(path.last_point(), p(-1, 1)));
-  edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()));
-  return {std::move(pv), std::set{std::move(edges)}};
+    const double x = i * 3.0;
+
+    std::deque<omm::Edge*> edges;
+    path.set_single_point(p(x - 1.0, -1.0));
+    edges.emplace_back(&path.add_edge(path.last_point(), p(x + 1.0, -1.0)));
+    edges.emplace_back(&path.add_edge(path.last_point(), p(x + 1.0, 1.0)));
+    edges.emplace_back(&path.add_edge(path.last_point(), p(x - 1.0, 1.0)));
+    edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()));
+    expected_pvvs.emplace(std::move(edges));
+  }
+  return {std::move(pv), std::move(expected_pvvs)};
 }
-
-
 
 class FaceTest : public ::testing::TestWithParam<TestCase>
 {
+public:
+  FaceTest()
+    : faces(GetParam().expected_faces())
+  {
+  }
+
+  const std::set<omm::Face> faces;
 };
 
-TEST_P(FaceTest, FaceEquality)
+TEST_P(FaceTest, FaceEqualityIsReflexive)
 {
-  const auto faces = GetParam().expected_faces();
+  for (const auto& face : faces) {
+    ASSERT_EQ(face, face);
+  }
+}
+
+TEST_P(FaceTest, FacesAreDistinct)
+{
   for (auto it1 = faces.begin(); it1 != faces.end(); ++it1) {
     for (auto it2 = faces.begin(); it2 != faces.end(); ++it2) {
-      if (it1 == it2) {
-        ASSERT_EQ(*it1, *it2);
-        ASSERT_EQ(*it2, *it1);
-      } else {
+      if (it1 != it2) {
         ASSERT_NE(*it1, *it2);
         ASSERT_NE(*it2, *it1);
       }
     }
   }
+}
 
-  for (const auto& face : faces) {
-    const auto edges = face.path_vector_view().edges();
-    for (std::size_t i = 0; i < edges.size(); ++i) {
-      auto rotated_edges = edges;
-      std::rotate(rotated_edges.begin(), std::next(rotated_edges.begin(), i), rotated_edges.end());
-      const omm::Face rotated_face{omm::PathVectorView(rotated_edges)};
-      ASSERT_EQ(face, rotated_face);
-      ASSERT_EQ(rotated_face, face);
+TEST_P(FaceTest, RotationReverseInvariance)
+{
+  for (bool reverse : {true, false}) {
+    for (const auto& face : faces) {
+      const auto edges = face.path_vector_view().edges();
+      for (std::size_t i = 0; i < edges.size(); ++i) {
+        auto rotated_edges = edges;
+        std::rotate(rotated_edges.begin(), std::next(rotated_edges.begin(), i), rotated_edges.end());
+        if (reverse) {
+          std::reverse(rotated_edges.begin(), rotated_edges.end());
+        }
+        const omm::Face rotated_face{omm::PathVectorView(rotated_edges)};
+        ASSERT_EQ(face, rotated_face);
+        ASSERT_EQ(rotated_face, face);
+      }
     }
   }
 }
@@ -150,16 +173,19 @@ TEST_P(GraphTest, ComputeFaces)
 }
 
 const auto test_cases = ::testing::Values(
-//        empty_paths(0),
-//        empty_paths(1),
-//        empty_paths(10),
-        rectangle()
-//        ellipse(3, true, true)
-//        ellipse(3, false, true),
-//        ellipse(4, false, true),
-//        ellipse(4, true, true),
-//        ellipse(100, false, true),
-//        ellipse(100, true, true)
+        empty_paths(0),
+        empty_paths(0),
+        empty_paths(1),
+        empty_paths(10),
+        rectangles(1),
+        rectangles(2),
+        rectangles(10),
+        ellipse(3, true, true),
+        ellipse(3, false, true),
+        ellipse(4, false, true),
+        ellipse(4, true, true),
+        ellipse(100, false, true),
+        ellipse(100, true, true)
     );
 
 INSTANTIATE_TEST_SUITE_P(P, GraphTest, test_cases);
