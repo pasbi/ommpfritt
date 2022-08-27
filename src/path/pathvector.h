@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <QString>
 
 class QPainterPath;
 class QPainter;
@@ -25,6 +26,7 @@ class PathPoint;
 class PathObject;
 class Scene;
 class Face;
+class Edge;
 
 // NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
 class PathVector
@@ -48,6 +50,7 @@ public:
 
   [[nodiscard]] QPainterPath to_painter_path() const;
   [[nodiscard]] std::set<Face> faces() const;
+  [[nodiscard]] std::set<Edge*> edges() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;
@@ -60,6 +63,7 @@ public:
   void deselect_all_points() const;
   [[nodiscard]] PathObject* path_object() const;
   void draw_point_ids(QPainter& painter) const;
+  QString to_dot() const;
 
   static std::unique_ptr<PathVector> join(const std::deque<PathVector*>& pvs, double eps);
 

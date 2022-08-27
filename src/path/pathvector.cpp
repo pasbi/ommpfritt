@@ -9,9 +9,11 @@
 #include "path/graph.h"
 #include "path/face.h"
 #include "path/pathvectorisomorphism.h"
+#include "path/pathvectorview.h"
 #include "removeif.h"
 #include <QObject>
 #include <QPainter>
+#include "path/facedetector.h"
 
 namespace omm
 {
@@ -105,9 +107,17 @@ QPainterPath PathVector::to_painter_path() const
 
 std::set<Face> PathVector::faces() const
 {
-  Graph graph{*this};
-//  graph.remove_articulation_edges();
-  return graph.compute_faces();
+  return detect_faces(*this);
+}
+
+std::set<Edge*> PathVector::edges() const
+{
+  std::set<Edge*> edges;
+  for (const auto& path : m_paths) {
+    const auto pedges = path->edges();
+    edges.insert(pedges.begin(), pedges.end());
+  }
+  return edges;
 }
 
 std::size_t PathVector::point_count() const
@@ -310,5 +320,22 @@ PathVector::Mapping PathVector::copy_from(const PathVector& other)
 
   return {points_map_raw, paths_map};
 }
+
+QString PathVector::to_dot() const
+{
+  QString s;
+  QTextStream ts(&s, QIODevice::WriteOnly);
+  ts << "graph " << this << "{\n";
+  for (const auto* const edge : edges()) {
+    ts << "\"";
+    ts << edge->a()->debug_id();
+    ts << "\" -- \"";
+    ts << edge->b()->debug_id();
+    ts << "\" [label=\"" << edge->label() << "\"];\n";
+  }
+  ts << "}";
+  return s;
+}
+
 
 }  // namespace omm

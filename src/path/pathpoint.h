@@ -7,11 +7,9 @@
 namespace omm
 {
 
-// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
-class Path;
-
-// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
-class PathVector;
+class Path;  // NOLINT(bugprone-forward-declaration-namespace)
+class PathVector;  // NOLINT(bugprone-forward-declaration-namespace)
+class Edge;
 
 class PathPoint
 {
@@ -51,6 +49,11 @@ public:
    *  The index may change when the path is modified.
    */
   [[nodiscard]] std::size_t index() const;
+
+  /**
+   * @brief edges enumerates all edges that touch this point.
+   */
+  std::set<Edge*> edges() const;
 
 private:
   PathVector* m_path_vector;

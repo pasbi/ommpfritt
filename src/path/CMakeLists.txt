@@ -3,6 +3,8 @@ target_sources(libommpfritt PRIVATE
   edge.h
   face.cpp
   face.h
+  facedetector.cpp
+  facedetector.h
   graph.cpp
   graph.h
   lib2geomadapter.cpp

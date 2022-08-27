@@ -14,7 +14,9 @@ std::size_t count_distinct_points(const omm::Edge& first, const omm::Edge& secon
   const auto* const b1 = first.b().get();
   const auto* const a2 = second.a().get();
   const auto* const b2 = second.b().get();
-  return std::set{a1, b1, a2, b2}.size();
+
+  const auto n = std::set{a1, b1, a2, b2}.size();
+  return n;
 }
 
 }  // namespace

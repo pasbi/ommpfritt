@@ -1,4 +1,5 @@
 #include "path/pathpoint.h"
+#include "path/edge.h"
 #include "path/path.h"
 #include "path/pathvector.h"
 #include "objects/pathobject.h"
@@ -92,6 +93,16 @@ std::size_t PathPoint::index() const
   assert(path_vector() != nullptr);
   const auto points = path_vector()->points();
   return std::distance(points.begin(), std::find(points.begin(), points.end(), this));
+}
+
+std::set<Edge*> PathPoint::edges() const
+{
+  if (m_path_vector == nullptr) {
+    return {};
+  }
+  std::set<Edge*> edges = m_path_vector->edges();
+  std::erase_if(edges, [this](const auto* edge) { return !edge->contains(this); });
+  return edges;
 }
 
 void PathPoint::set_geometry(const Point& point)
