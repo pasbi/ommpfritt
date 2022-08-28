@@ -73,8 +73,9 @@ TestCase ellipse(const std::size_t point_count, const bool closed, const bool no
   auto& path = pv->add_path();
   std::deque<omm::Edge*> edges;
   path.set_single_point(std::make_shared<omm::PathPoint>(geometry(0), pv.get()));
-  for (std::size_t i = 0; i < point_count; ++i) {
-    path.add_edge(path.last_point(), std::make_shared<omm::PathPoint>(geometry(i), pv.get()));
+  for (std::size_t i = 0; i < point_count - 1; ++i) {
+    auto new_point = std::make_shared<omm::PathPoint>(geometry(i), pv.get());
+    edges.emplace_back(&path.add_edge(path.last_point(), std::move(new_point)));
   }
   if (closed && point_count > 1) {
     edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()));
@@ -162,13 +163,14 @@ class GraphTest : public ::testing::TestWithParam<TestCase>
 TEST_P(GraphTest, ComputeFaces)
 {
   const auto& test_case = GetParam();
+//  std::cout << test_case.path_vector().to_dot().toStdString() << std::endl;
   const auto actual_faces = test_case.path_vector().faces();
-  for (auto& face : test_case.expected_faces()) {
-    std::cout << "E: " << face.to_string().toStdString() << std::endl;
-  }
-  for (auto& face : actual_faces) {
-    std::cout << "A: " << face.to_string().toStdString() << std::endl;
-  }
+//  for (auto& face : test_case.expected_faces()) {
+//    std::cout << "E: " << face.to_string().toStdString() << std::endl;
+//  }
+//  for (auto& face : actual_faces) {
+//    std::cout << "A: " << face.to_string().toStdString() << std::endl;
+//  }
   ASSERT_EQ(test_case.expected_faces(), actual_faces);
 }
 
@@ -182,10 +184,10 @@ const auto test_cases = ::testing::Values(
         rectangles(10),
         ellipse(3, true, true),
         ellipse(3, false, true),
-        ellipse(4, false, true),
         ellipse(4, true, true),
-        ellipse(100, false, true),
-        ellipse(100, true, true)
+        ellipse(4, false, true),
+        ellipse(100, true, true),
+        ellipse(20, false, true)
     );
 
 INSTANTIATE_TEST_SUITE_P(P, GraphTest, test_cases);

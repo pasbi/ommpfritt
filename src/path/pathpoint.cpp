@@ -85,7 +85,7 @@ PathVector* PathPoint::path_vector() const
 
 QString PathPoint::debug_id() const
 {
-  return QString{"%1 0x%2"}.arg(index()).arg((quintptr) this, QT_POINTER_SIZE * 2, 16, QChar{'0'});
+  return QString{"%1"}.arg(index());
 }
 
 std::size_t PathPoint::index() const

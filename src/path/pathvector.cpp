@@ -325,7 +325,7 @@ QString PathVector::to_dot() const
 {
   QString s;
   QTextStream ts(&s, QIODevice::WriteOnly);
-  ts << "graph " << this << "{\n";
+  ts << "graph {\n";
   for (const auto* const edge : edges()) {
     ts << "\"";
     ts << edge->a()->debug_id();

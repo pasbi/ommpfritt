@@ -35,7 +35,7 @@ omm::Edge* find_next_edge(const omm::PathPoint& hinge, const omm::Edge& arm)
   const auto is_not_arm = [&arm](const auto* const c) { return c != &arm; };
   std::copy_if(edges.begin(), edges.end(), std::back_inserter(edges_v), is_not_arm);
   assert(edges.size() == edges_v.size() + 1);
-  if (edges.empty()) {
+  if (edges_v.empty()) {
     return nullptr;
   }
 
@@ -67,21 +67,26 @@ std::set<Face> detect_faces(const PathVector& path_vector)
   const auto follow = [&todo_edges](Edge* const edge, bool flipped) -> PathVectorView {
     std::deque<Edge*> sequence{edge};
     while (true) {
-      LDEBUG << sequence.back()->label();
-      const auto& hinge = *(flipped ? sequence.back()->b() : sequence.back()->a());
-      if (auto* const current_edge = find_next_edge(hinge, *sequence.back()); current_edge == nullptr) {
+      [[maybe_unused]] const auto deleted_edges = todo_edges[flipped].erase(sequence.back());
+      if (deleted_edges == 0) {
+        // we've reached an already visited edge.
+        // This can only happen in parts of the graph that don't form a face.
         return PathVectorView();  // those edges don't form a face.
-      } else {
-        flipped = current_edge->b().get() == &hinge;
-        LDEBUG << "flipped: " << flipped;
-        [[maybe_unused]] const auto deleted_edges = todo_edges[flipped].erase(current_edge);
-        assert(deleted_edges == 1);
-        if (current_edge == edge) {
-          // The current face is complete.
-          return PathVectorView(sequence);
-        }
-        sequence.emplace_back(current_edge);
       }
+      assert(deleted_edges == 1);
+
+      const auto& hinge = *(flipped ? sequence.back()->a() : sequence.back()->b());
+      auto* const current_edge = find_next_edge(hinge, *sequence.back());
+      if (current_edge == nullptr) {
+        return PathVectorView();  // those edges don't form a face.
+      }
+
+      flipped = current_edge->b().get() == &hinge;
+      if (current_edge == edge) {
+        // The current face is complete.
+        return PathVectorView(sequence);
+      }
+      sequence.emplace_back(current_edge);
     }
   };
 
@@ -89,7 +94,10 @@ std::set<Face> detect_faces(const PathVector& path_vector)
   for (auto& [direction, edges] : todo_edges) {
     while (!edges.empty()) {
       Edge* const current_edge = *edges.begin();
-      faces.emplace(follow(current_edge, direction));
+      auto face = follow(current_edge, direction);
+      if (!face.edges().empty()) {
+        faces.emplace(std::move(face));
+      }
     }
   }
   return faces;
