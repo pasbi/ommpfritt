@@ -5,6 +5,7 @@
 #include <memory>
 #include <set>
 #include <QString>
+#include <vector>
 
 class QPainterPath;
 class QPainter;
@@ -50,7 +51,7 @@ public:
 
   [[nodiscard]] QPainterPath to_painter_path() const;
   [[nodiscard]] std::set<Face> faces() const;
-  [[nodiscard]] std::set<Edge*> edges() const;
+  [[nodiscard]] std::vector<Edge*> edges() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;

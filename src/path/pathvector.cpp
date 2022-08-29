@@ -110,14 +110,14 @@ std::set<Face> PathVector::faces() const
   return detect_faces(*this);
 }
 
-std::set<Edge*> PathVector::edges() const
+std::vector<Edge*> PathVector::edges() const
 {
-  std::set<Edge*> edges;
+  std::list<Edge*> edges;
   for (const auto& path : m_paths) {
     const auto pedges = path->edges();
-    edges.insert(pedges.begin(), pedges.end());
+    edges.insert(edges.end(), pedges.begin(), pedges.end());
   }
-  return edges;
+  return std::vector(edges.begin(), edges.end());
 }
 
 std::size_t PathVector::point_count() const

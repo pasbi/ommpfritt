@@ -105,7 +105,7 @@ std::set<Edge*> PathPoint::edges() const
   if (m_path_vector == nullptr) {
     return {};
   }
-  std::set<Edge*> edges = m_path_vector->edges();
+  auto edges = util::transform<std::set>(m_path_vector->edges());
   std::erase_if(edges, [this](const auto* edge) { return !edge->contains(this); });
   return edges;
 }

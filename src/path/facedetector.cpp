@@ -60,8 +60,8 @@ std::set<Face> detect_faces(const PathVector& path_vector)
   // implements this suggestion: https://mathoverflow.net/a/23958
   std::map<bool, std::set<Edge*>> todo_edges{
     // The graph is considered undirected, so each edge is both flipped and unflipped.
-    {false, path_vector.edges()},  // unflipped edges
-    {true, path_vector.edges()},   // flipped edges
+      {false, util::transform<std::set>(path_vector.edges())},  // unflipped edges
+      {true, util::transform<std::set>(path_vector.edges())},   // flipped edges
   };
 
   const auto follow = [&todo_edges](Edge* const edge, bool flipped) -> PathVectorView {
