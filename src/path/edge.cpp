@@ -12,7 +12,15 @@ Edge::Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* pat
 
 QString Edge::label() const
 {
-  return QString{"%1--%3"}.arg(m_a->debug_id(), m_b->debug_id());
+  static constexpr bool print_pointer = true;
+  if constexpr (print_pointer) {
+    return QString{"%1--%2 (this: %3, path: %4)"}.arg(m_a->debug_id(),
+                                                      m_b->debug_id(),
+                                                      QString::asprintf("%p", this),
+                                                      QString::asprintf("%p", m_path));
+  } else {
+    return QString{"%1--%2"}.arg(m_a->debug_id(), m_b->debug_id());
+  }
 }
 
 void Edge::flip() noexcept

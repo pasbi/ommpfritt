@@ -85,7 +85,12 @@ PathVector* PathPoint::path_vector() const
 
 QString PathPoint::debug_id() const
 {
-  return QString{"%1"}.arg(index());
+  static constexpr bool print_pointer = false;
+  if constexpr (print_pointer) {
+    return QString{"%1 (%2)"}.arg(index()).arg(QString::asprintf("%p", this));
+  } else {
+    return QString{"%1"}.arg(index());
+  }
 }
 
 std::size_t PathPoint::index() const
