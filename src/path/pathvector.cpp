@@ -107,7 +107,7 @@ QPainterPath PathVector::to_painter_path() const
 
 std::set<Face> PathVector::faces() const
 {
-  return detect_faces(*this);
+  return FaceDetector(*this).faces();
 }
 
 std::vector<Edge*> PathVector::edges() const

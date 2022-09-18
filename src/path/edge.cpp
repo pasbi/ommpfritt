@@ -68,4 +68,14 @@ bool Edge::contains(const PathPoint* p) const noexcept
   return m_a.get() == p || m_b.get() == p;
 }
 
+std::shared_ptr<PathPoint> Edge::start_point(const Direction& direction) const noexcept
+{
+  return direction == Direction::Backward ? b() : a();
+}
+
+std::shared_ptr<PathPoint> Edge::end_point(const Direction& direction) const noexcept
+{
+  return direction == Direction::Forward ? b() : a();
+}
+
 }  // namespace omm
