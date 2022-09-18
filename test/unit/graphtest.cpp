@@ -35,6 +35,20 @@ public:
     return m_expected_faces;
   }
 
+  TestCase add_arm(const std::size_t path_index, const std::size_t point_index, std::vector<omm::Point> geometries) &&
+  {
+    LINFO << "altering " << m_path_vector;
+    const auto* const hinge = m_path_vector->paths().at(path_index)->points().at(point_index);
+    auto& arm = m_path_vector->add_path();
+    auto last_point = m_path_vector->share(*hinge);
+    for (std::size_t i = 0; i < geometries.size(); ++i) {
+      auto next_point = std::make_shared<omm::PathPoint>(geometries.at(i), m_path_vector);
+      arm.add_edge(std::make_unique<omm::Edge>(last_point, next_point, &arm));
+      last_point = next_point;
+    }
+    return std::move(*this);
+  }
+
 private:
   omm::PathVector* m_path_vector;
   std::set<omm::Face> m_expected_faces;
@@ -187,21 +201,34 @@ TEST_P(GraphTest, ComputeFaces)
   ASSERT_EQ(test_case.expected_faces(), actual_faces);
 }
 
+std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm::Vec2f& start, const omm::Vec2f& direction)
+{
+  std::vector<omm::Point> ps;
+  ps.reserve(length);
+  for (std::size_t i = 0; i < length; ++i) {
+    ps.emplace_back(omm::Point(start + static_cast<double>(i) * direction));
+  }
+  return ps;
+}
+
 const auto test_cases = ::testing::Values(
-        empty_paths(0),
-        empty_paths(0),
-        empty_paths(1),
-        empty_paths(10),
-        rectangles(1),
-        rectangles(2),
-        rectangles(10),
-        ellipse(3, true, true),
-        ellipse(3, false, true),
-        ellipse(4, true, true),
-        ellipse(4, false, true),
-        ellipse(100, true, true),
-        ellipse(20, false, true)
-    );
+    empty_paths(0),
+    empty_paths(1),
+    empty_paths(10),
+    rectangles(1),
+    rectangles(3),
+    rectangles(10),
+    rectangles(10).add_arm(0, 0, linear_arm_geometry(0, {0.0, 0.0}, {-1.0, 0.0})),
+    rectangles(10).add_arm(0, 0, linear_arm_geometry(2, {0.0, 0.0}, {-1.0, 0.0})),
+    rectangles(10).add_arm(3, 1, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0})),
+    ellipse(3, true, true),
+    ellipse(3, false, true),
+    ellipse(4, true, true),
+    ellipse(4, true, true).add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0})),
+    ellipse(4, false, true),
+    ellipse(100, true, true),
+    ellipse(20, false, true)
+);
 
 INSTANTIATE_TEST_SUITE_P(P, GraphTest, test_cases);
 INSTANTIATE_TEST_SUITE_P(P, FaceTest, test_cases);
