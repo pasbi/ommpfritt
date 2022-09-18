@@ -53,14 +53,6 @@ std::shared_ptr<PathPoint>& Edge::b() noexcept
   return m_b;
 }
 
-bool Edge::operator<(const Edge& other) const noexcept
-{
-  static constexpr auto as_tuple = [](const Edge& e) {
-    return std::tuple{e.a().get(), e.b().get()};
-  };
-  return as_tuple(*this) < as_tuple(other);
-}
-
 Path* Edge::path() const
 {
   return m_path;
