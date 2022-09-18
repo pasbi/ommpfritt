@@ -121,26 +121,20 @@ TestCase rectangles(const std::size_t count)
   return {std::move(pv), std::move(expected_pvvs)};
 }
 
-class FaceTest : public ::testing::TestWithParam<TestCase>
+class GraphTest : public ::testing::TestWithParam<TestCase>
 {
-public:
-  FaceTest()
-    : faces(GetParam().expected_faces())
-  {
-  }
-
-  const std::set<omm::Face> faces;
 };
 
-TEST_P(FaceTest, FaceEqualityIsReflexive)
+TEST_P(GraphTest, FaceEqualityIsReflexive)
 {
-  for (const auto& face : faces) {
+  for (const auto& face : GetParam().expected_faces()) {
     ASSERT_EQ(face, face);
   }
 }
 
-TEST_P(FaceTest, FacesAreDistinct)
+TEST_P(GraphTest, FacesAreDistinct)
 {
+  const auto faces = GetParam().expected_faces();
   for (auto it1 = faces.begin(); it1 != faces.end(); ++it1) {
     for (auto it2 = faces.begin(); it2 != faces.end(); ++it2) {
       if (it1 != it2) {
@@ -151,10 +145,10 @@ TEST_P(FaceTest, FacesAreDistinct)
   }
 }
 
-TEST_P(FaceTest, RotationReverseInvariance)
+TEST_P(GraphTest, RotationReverseInvariance)
 {
   for (bool reverse : {true, false}) {
-    for (const auto& face : faces) {
+    for (const auto& face : GetParam().expected_faces()) {
       const auto edges = face.path_vector_view().edges();
       for (std::size_t i = 0; i < edges.size(); ++i) {
         auto rotated_edges = edges;
@@ -170,10 +164,11 @@ TEST_P(FaceTest, RotationReverseInvariance)
   }
 }
 
-TEST_P(FaceTest, Normalization)
+TEST_P(GraphTest, Normalization)
 {
   const auto test_case = GetParam();
-  for (auto face : faces) {
+  LINFO << test_case.path_vector().to_dot();
+  for (auto face : GetParam().expected_faces()) {
     face.normalize();
     const auto& edges = face.path_vector_view().edges();
     for (std::size_t i = 1; i < edges.size(); ++i) {
@@ -182,10 +177,6 @@ TEST_P(FaceTest, Normalization)
     ASSERT_LT(edges.at(1), edges.back());
   }
 }
-
-class GraphTest : public ::testing::TestWithParam<TestCase>
-{
-};
 
 TEST_P(GraphTest, ComputeFaces)
 {
@@ -235,4 +226,3 @@ const auto test_cases = ::testing::Values(
 );
 
 INSTANTIATE_TEST_SUITE_P(P, GraphTest, test_cases);
-INSTANTIATE_TEST_SUITE_P(P, FaceTest, test_cases);
