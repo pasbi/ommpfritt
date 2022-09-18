@@ -156,6 +156,19 @@ TEST_P(FaceTest, RotationReverseInvariance)
   }
 }
 
+TEST_P(FaceTest, Normalization)
+{
+  const auto test_case = GetParam();
+  for (auto face : faces) {
+    face.normalize();
+    const auto& edges = face.path_vector_view().edges();
+    for (std::size_t i = 1; i < edges.size(); ++i) {
+      ASSERT_LT(edges.front(), edges.at(i));
+    }
+    ASSERT_LT(edges.at(1), edges.back());
+  }
+}
+
 class GraphTest : public ::testing::TestWithParam<TestCase>
 {
 };
