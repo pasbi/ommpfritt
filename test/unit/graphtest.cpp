@@ -211,6 +211,12 @@ std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm:
   return ps;
 }
 
+#define EXPAND_ELLIPSE(N, ext) \
+ellipse(N, true, true)ext, \
+ellipse(N, false, true)ext, \
+ellipse(N, true, false)ext, \
+ellipse(N, false, false)ext
+
 const auto test_cases = ::testing::Values(
     empty_paths(0),
     empty_paths(1),
@@ -221,13 +227,11 @@ const auto test_cases = ::testing::Values(
     rectangles(10).add_arm(0, 0, linear_arm_geometry(0, {0.0, 0.0}, {-1.0, 0.0})),
     rectangles(10).add_arm(0, 0, linear_arm_geometry(2, {0.0, 0.0}, {-1.0, 0.0})),
     rectangles(10).add_arm(3, 1, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0})),
-    ellipse(3, true, true),
-    ellipse(3, false, true),
-    ellipse(4, true, true),
-    ellipse(4, true, true).add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0})),
-    ellipse(4, false, true),
-    ellipse(100, true, true),
-    ellipse(20, false, true)
+    EXPAND_ELLIPSE(3,),
+    EXPAND_ELLIPSE(4,),
+    EXPAND_ELLIPSE(4, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0}))),
+    EXPAND_ELLIPSE(100,),
+    EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0})))
 );
 
 INSTANTIATE_TEST_SUITE_P(P, GraphTest, test_cases);
