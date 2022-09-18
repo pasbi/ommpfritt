@@ -16,8 +16,8 @@ QString Edge::label() const
   if constexpr (print_pointer) {
     return QString{"%1--%2 (this: %3, path: %4)"}.arg(m_a->debug_id(),
                                                       m_b->debug_id(),
-                                                      QString::asprintf("%p", this),
-                                                      QString::asprintf("%p", m_path));
+                                                      QString::asprintf("%p", static_cast<const void*>(this)),
+                                                      QString::asprintf("%p", static_cast<const void*>(m_path)));
   } else {
     return QString{"%1--%2"}.arg(m_a->debug_id(), m_b->debug_id());
   }
