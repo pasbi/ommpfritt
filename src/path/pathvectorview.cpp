@@ -156,10 +156,8 @@ void PathVectorView::normalize()
   if (is_simply_closed()) {
     const auto min_it = std::min_element(m_edges.begin(), m_edges.end());
     std::rotate(m_edges.begin(), min_it, m_edges.end());
-    // Thanks to rotate, the first edge is always the smallest.
-    // Thus we must compare second and third.
-    // Reversing only matters if there are more than two edges.
-    if (m_edges.size() >= 3 && m_edges.at(1) > m_edges.at(2)) {
+
+    if (m_edges.size() >= 3 && m_edges.at(1) > m_edges.back()) {
       std::reverse(m_edges.begin(), m_edges.end());
       // Reversing has moved the smallest edge to the end, but it must be at front after
       // normalization .
