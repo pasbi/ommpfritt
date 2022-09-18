@@ -8,6 +8,7 @@
 #include "path/pathvectorview.h"
 #include "transform.h"
 #include <path/pathvectorview.h>
+#include <QSize>
 
 
 class TestCase
@@ -121,6 +122,52 @@ TestCase rectangles(const std::size_t count)
   return {std::move(pv), std::move(expected_pvvs)};
 }
 
+TestCase grid(const QSize& size, const QMargins& margins)
+{
+  auto pv = std::make_unique<omm::PathVector>();
+  std::vector<std::vector<std::shared_ptr<omm::PathPoint>>> points(size.height());
+  for (int y = 0; y < size.height(); ++y) {
+    auto& row = points.at(y);
+    row.reserve(size.width());
+    for (int x = 0; x < size.width(); ++x) {
+      const omm::Point geom({static_cast<double>(x), static_cast<double>(y)});
+      row.emplace_back(std::make_shared<omm::PathPoint>(geom, pv.get()));
+    }
+  }
+
+  std::deque<const omm::Path*> h_paths;
+  for (int y = margins.top(); y < size.height() - margins.bottom(); ++y) {
+    auto& path = pv->add_path();
+    for (int x = 1; x < size.width(); ++x) {
+      path.add_edge(points.at(y).at(x - 1), points.at(y).at(x));
+    }
+    h_paths.emplace_back(&path);
+  }
+
+  std::deque<const omm::Path*> v_paths;
+  for (int x = margins.left(); x < size.width() - margins.right(); ++x) {
+    auto& path = pv->add_path();
+    for (int y = 1; y < size.height(); ++y) {
+      path.add_edge(points.at(y - 1).at(x), points.at(y).at(x));
+    }
+    v_paths.emplace_back(&path);
+  }
+
+  std::set<std::deque<omm::Edge*>> expected_pvvs;
+  if (!h_paths.empty() && !v_paths.empty()) {
+    for (std::size_t x = 0; x < v_paths.size() - 1; ++x) {
+      for (std::size_t y = 0; y < h_paths.size() - 1; ++y) {
+        expected_pvvs.emplace(std::deque{h_paths.at(y + 0)->edges().at(x + margins.left()),
+                                         v_paths.at(x + 1)->edges().at(y + margins.top()),
+                                         h_paths.at(y + 1)->edges().at(x + margins.left()),
+                                         v_paths.at(x + 0)->edges().at(y + margins.top())});
+      }
+    }
+  }
+
+  return {std::move(pv), std::move(expected_pvvs)};
+}
+
 class GraphTest : public ::testing::TestWithParam<TestCase>
 {
 };
@@ -222,7 +269,10 @@ const auto test_cases = ::testing::Values(
     EXPAND_ELLIPSE(4,),
     EXPAND_ELLIPSE(4, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0}))),
     EXPAND_ELLIPSE(100,),
-    EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0})))
+    EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0}))),
+    grid({2, 3}, QMargins{}),
+    grid({4, 4}, QMargins{}),
+    grid({8, 7}, QMargins{1, 2, 2, 3})
 );
 
 INSTANTIATE_TEST_SUITE_P(P, GraphTest, test_cases);
