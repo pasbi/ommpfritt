@@ -164,6 +164,21 @@ QString Point::to_string() const
   }
 }
 
+QRectF Point::bounding_box() const
+{
+  const auto get_tangent_position = [this](const auto& t) { return tangent_position(t.first); };
+  const auto ps = util::transform<std::list>(m_tangents, get_tangent_position);
+
+  static constexpr auto cmp_x = [](const auto& a, const auto& b) { return a.x < b.x; };
+  static constexpr auto cmp_y = [](const auto& a, const auto& b) { return a.y < b.y; };
+
+  const QPointF min(std::min_element(ps.begin(), ps.end(), cmp_x)->x,
+                    std::min_element(ps.begin(), ps.end(), cmp_y)->y);
+  const QPointF max(std::max_element(ps.begin(), ps.end(), cmp_x)->x,
+                    std::max_element(ps.begin(), ps.end(), cmp_y)->y);
+  return {min, max};
+}
+
 bool Point::operator==(const Point& point) const
 {
   return m_position == point.m_position && m_tangents == point.m_tangents;

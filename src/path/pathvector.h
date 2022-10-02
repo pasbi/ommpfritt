@@ -1,14 +1,15 @@
 #pragma once
 
+#include <QString>
 #include <deque>
 #include <map>
 #include <memory>
 #include <set>
-#include <QString>
 #include <vector>
 
 class QPainterPath;
 class QPainter;
+class QRectF;
 
 namespace omm
 {
@@ -65,6 +66,7 @@ public:
   [[nodiscard]] PathObject* path_object() const;
   void draw_point_ids(QPainter& painter) const;
   QString to_dot() const;
+  [[nodiscard]] QRectF bounding_box() const;
 
   static std::unique_ptr<PathVector> join(const std::deque<PathVector*>& pvs, double eps);
 

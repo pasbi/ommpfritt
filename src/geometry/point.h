@@ -3,6 +3,7 @@
 #include "geometry/direction.h"
 #include "geometry/polarcoordinates.h"
 #include "geometry/vec2.h"
+#include <QRectF>
 #include <Qt>
 #include <deque>
 #include <map>
@@ -77,6 +78,7 @@ public:
   friend bool fuzzy_eq(const Point& a, const Point& b);
 
   [[nodiscard]] QString to_string() const;
+  QRectF bounding_box() const;
 
   /**
    * @brief When a tangent is at `old_pos` and it is mirror-coupled with its sibling which moves
