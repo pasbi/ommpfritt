@@ -65,7 +65,8 @@ public:
   void deselect_all_points() const;
   [[nodiscard]] PathObject* path_object() const;
   void draw_point_ids(QPainter& painter) const;
-  QString to_dot() const;
+  [[nodiscard]] QString to_dot() const;
+  void to_svg(const QString& filename) const;
   [[nodiscard]] QRectF bounding_box() const;
 
   static std::unique_ptr<PathVector> join(const std::deque<PathVector*>& pvs, double eps);

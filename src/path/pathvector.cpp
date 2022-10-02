@@ -4,16 +4,17 @@
 #include "geometry/point.h"
 #include "objects/pathobject.h"
 #include "path/edge.h"
-#include "path/pathpoint.h"
-#include "path/path.h"
-#include "path/graph.h"
 #include "path/face.h"
+#include "path/facedetector.h"
+#include "path/graph.h"
+#include "path/path.h"
+#include "path/pathpoint.h"
 #include "path/pathvectorisomorphism.h"
 #include "path/pathvectorview.h"
 #include "removeif.h"
 #include <QObject>
 #include <QPainter>
-#include "path/facedetector.h"
+#include <QSvgGenerator>
 
 namespace omm
 {
@@ -337,6 +338,75 @@ QString PathVector::to_dot() const
   return s;
 }
 
+void PathVector::to_svg(const QString& filename) const
+{
+  const auto bb = bounding_box();
+  QSvgGenerator svg;
+  svg.setFileName(filename);
+  const double size = std::max(bb.height(), bb.width());
+  const QPointF margin(size / 3.0, size / 3.0);
+  svg.setViewBox(QRectF(bb.topLeft() - margin, bb.bottomRight() + margin));
+  QPainter painter(&svg);
+
+  static constexpr auto colors = std::array{
+      Qt::red,
+      Qt::green,
+      Qt::blue,
+      Qt::cyan,
+      Qt::magenta,
+      Qt::yellow,
+      Qt::gray,
+      Qt::darkRed,
+      Qt::darkGreen,
+      Qt::darkBlue,
+      Qt::darkCyan,
+      Qt::darkMagenta,
+      Qt::darkYellow,
+      Qt::darkGray,
+      Qt::lightGray,
+  };
+
+  std::map<const Path*, Qt::GlobalColor> path_colors;
+  std::size_t path_index = 0;
+  auto pen = painter.pen();
+  auto font = painter.font();
+  font.setPointSizeF(size / 10.0);
+  painter.setFont(font);
+  pen.setCosmetic(true);
+  for (const auto* const path : paths()) {
+    const auto color = colors.at(path_index % colors.size());
+    pen.setColor(color);
+    painter.setPen(pen);
+    painter.drawPath(path->to_painter_path());
+    path_colors.emplace(path, color);
+    path_index += 1;
+  }
+
+  for (const auto* const p : points()) {
+    const auto p0 = p->geometry().position().to_pointf();
+    for (const auto& [key, pc] : p->geometry().tangents()) {
+      pen.setColor(path_colors.at(key.path));
+      painter.setPen(pen);
+      const auto pt = p->geometry().tangent_position(key).to_pointf();
+      const auto start = key.direction == Direction::Forward ? pt : p0;
+      const auto end = key.direction == Direction::Forward ? p0 : pt;
+      QPainterPath path;
+      path.moveTo(start);
+      path.lineTo(end);
+      if (!path.isEmpty()) {
+        painter.drawPath(path);
+      }
+    }
+    pen.setColor(Qt::black);
+    pen.setWidthF(size / 100.0);
+    painter.setPen(pen);
+    painter.drawPoint(p0);
+
+    pen.setWidthF(1.0);
+    painter.setPen(pen);
+    painter.drawText(p0, QString("%1").arg(p->debug_id()));
+  }
+}
 
 QRectF PathVector::bounding_box() const
 {
