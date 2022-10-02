@@ -14,36 +14,69 @@
 namespace
 {
 
-omm::PolarCoordinates get_direction_at(const omm::Edge& edge, const omm::PathPoint& vertex)
+omm::Direction get_direction(const omm::Edge& edge, const omm::PathPoint& start)
 {
-  const auto d = &vertex == edge.a().get() ? omm::Point::Direction::Forward : omm::Point::Direction::Backward;
-  const auto& tangent = vertex.geometry().tangent({edge.path(), d});
-  static constexpr auto eps = 1e-2;
-  if (tangent.magnitude < eps) {
-    return omm::PolarCoordinates(edge.b()->geometry().position() - edge.a()->geometry().position());
+  if (edge.a().get() == &start) {
+    return omm::Direction::Forward;
+  } else if (edge.b().get() == &start) {
+    return omm::Direction::Backward;
   } else {
-    return tangent;
+    throw std::runtime_error("Unexpected condition.");
   }
 }
+
+class CCWComparator
+{
+public:
+  explicit CCWComparator(const omm::FaceDetector::DEdge& base)
+      : m_base(base), m_base_arg(base.end_angle())
+  {
+  }
+
+  [[nodiscard]] bool operator()(const omm::FaceDetector::DEdge& a,
+                                const omm::FaceDetector::DEdge& b) const noexcept
+  {
+    auto a_arg = omm::python_like_mod(a.start_angle() - m_base_arg, 2 * M_PI);
+    auto b_arg = omm::python_like_mod(b.start_angle() - m_base_arg, 2 * M_PI);
+    return a_arg < b_arg;
+  }
+
+private:
+  omm::FaceDetector::DEdge m_base;
+  double m_base_arg;
+};
 
 }  // namespace
 
 namespace omm
 {
 
-FaceDetector::FaceDetector(const PathVector& path_vector)
-    : m_graph(path_vector)
+FaceDetector::FaceDetector(const PathVector& path_vector) : m_graph(path_vector)
 {
-  m_unvisited_edges = {
-    {Edge::Direction::Forward, m_graph.edges()},
-    {Edge::Direction::Backward, m_graph.edges()},
-  };
+  for (auto* e : m_graph.edges()) {
+    m_edges.emplace(e, Direction::Backward);
+    m_edges.emplace(e, Direction::Forward);
+  }
+
   LINFO << "Face detector";
-  for (auto& [direction, edges] : m_unvisited_edges) {
-    LINFO << "  direction " << (direction == Edge::Direction::Forward ? "fwd" : "bwd");
-    while (!edges.empty()) {
-      LINFO << "    new face";
-      follow(*edges.begin(), direction);
+  while (!m_edges.empty()) {
+    auto current = m_edges.extract(m_edges.begin()).value();
+    std::deque<Edge*> sequence{current.edge};
+
+    const PathPoint* const start_point = &current.start_point();
+    while (true) {
+      auto const next = find_next_edge(current);
+      // TODO what about single-edge loops?
+      if (const auto v = m_edges.extract(next); v.empty()) {
+        break;
+      } else {
+        sequence.emplace_back(next.edge);
+      }
+      if (&next.end_point() == start_point) {
+        m_faces.emplace(PathVectorView(sequence));
+        break;
+      }
+      current = next;
     }
   }
 }
@@ -53,58 +86,27 @@ const std::set<Face>& FaceDetector::faces() const
   return m_faces;
 }
 
-Edge* FaceDetector::find_next_edge(const omm::PathPoint& hinge, omm::Edge* arm) const
+FaceDetector::DEdge FaceDetector::find_next_edge(const DEdge& current) const
 {
-  auto edges = m_graph.adjacent_edges(hinge);
-  assert(!edges.empty());
-  [[maybe_unused]] const auto deleted_edge_count = edges.erase(arm);
-  assert(deleted_edge_count == 1);
-  auto edges_v = std::vector(edges.begin(), edges.end());
-  if (edges_v.empty()) {
-    return nullptr;
+  const auto& hinge = current.end_point();
+  const auto edges = m_graph.adjacent_edges(hinge);
+  std::set<DEdge> candidates;
+  for (Edge* e : edges) {
+    if (e == current.edge) {
+      continue;  // the next edge cannot be the current edge.
+    }
+    const auto direction = get_direction(*e, hinge);
+    if (const DEdge dedge{e, direction}; m_edges.contains(dedge)) {
+      candidates.emplace(dedge);
+    }
   }
 
-  static constexpr auto pi2 = 2.0 * M_PI;
-  const auto ref_arg = omm::python_like_mod(get_direction_at(*arm, hinge).argument, pi2);
-  const auto ccw_angle_to_arm = util::transform(edges_v, [&hinge, ref_arg](const auto* const edge) {
-    const auto target_arg = omm::python_like_mod(get_direction_at(*edge, hinge).argument, pi2);
-    return omm::python_like_mod(target_arg - ref_arg, pi2);
-  });
-  const auto min_it = std::min_element(ccw_angle_to_arm.begin(), ccw_angle_to_arm.end());
-  const auto i = std::distance(ccw_angle_to_arm.begin(), min_it);
-  return edges_v.at(i);
-}
-
-bool FaceDetector::follow(Edge* edge, Edge::Direction direction)
-{
-  LINFO << "      add " << edge->label();
-  std::deque<Edge*> sequence{edge};
-  while (true) {
-    auto& current_edge = *sequence.back();
-    const auto deleted_edges = m_unvisited_edges.at(direction).erase(&current_edge);
-    if (deleted_edges == 0) {
-      // we've reached an already visited edge.
-      // This can only happen in parts of the graph that don't form a face.
-      LINFO << "      visit edge " << sequence.back()->label() << " again. Hence no face.";
-      return false;
-    }
-
-    const auto& hinge = *current_edge.end_point(direction);
-    auto* const next_edge = find_next_edge(hinge, sequence.back());
-    if (next_edge == nullptr) {
-      LINFO << "      edge " << sequence.back()->label() << " doesn't have a follower. Hence no face.";
-      return false;
-    }
-
-    if (next_edge == edge) {
-      // The current face is complete.
-      LINFO << "      complete.";
-      m_faces.emplace(PathVectorView(sequence));
-      return true;
-    }
-    LINFO << "      add " << next_edge->label();
-    sequence.emplace_back(next_edge);
-    direction = next_edge->a().get() == &hinge ? Edge::Direction::Forward : Edge::Direction::Backward;
+  const CCWComparator compare(current);
+  const auto min_it = std::min_element(candidates.begin(), candidates.end(), compare);
+  if (min_it == candidates.end()) {
+    return {};
+  } else {
+    return *min_it;
   }
 }
 
@@ -138,6 +140,65 @@ const std::set<Edge*>& Graph::edges() const
 const std::set<Edge*>& Graph::adjacent_edges(const PathPoint& p) const
 {
   return m_adjacent_edges.at(&p);
+}
+
+FaceDetector::DEdge::DEdge(Edge* const edge, const Direction direction)
+    : edge(edge), direction(direction)
+{
+}
+
+bool FaceDetector::DEdge::operator<(const DEdge& other) const
+{
+  static constexpr auto to_tuple = [](const auto& d) { return std::tuple{d.edge, d.direction}; };
+  return to_tuple(*this) < to_tuple(other);
+}
+
+bool FaceDetector::DEdge::operator==(const DEdge& other) const
+{
+  return edge == other.edge && direction == other.direction;
+}
+
+const PathPoint& FaceDetector::DEdge::end_point() const
+{
+  return *edge->end_point(direction);
+}
+
+const PathPoint& FaceDetector::DEdge::start_point() const
+{
+  return *edge->start_point(direction);
+}
+
+double FaceDetector::DEdge::start_angle() const
+{
+  return angle(start_point(), end_point());
+}
+
+double FaceDetector::DEdge::end_angle() const
+{
+  return angle(end_point(), start_point());
+}
+
+double FaceDetector::DEdge::angle(const PathPoint& hinge, const PathPoint& other_point) const
+{
+  const auto key = Point::TangentKey{edge->path(), direction};
+  const auto tangent = hinge.geometry().tangent(key);
+  static constexpr double eps = 0.1;
+  if (tangent.magnitude > eps) {
+    return tangent.argument;
+  } else {
+    const auto other_key = Point::TangentKey{edge->path(), other(direction)};
+    const auto t_pos = other_point.geometry().tangent_position(other_key);
+    const auto o_pos = hinge.geometry().position();
+    return PolarCoordinates(t_pos - o_pos).argument;
+  }
+}
+
+QString FaceDetector::DEdge::to_string() const
+{
+  if (edge == nullptr) {
+    return "null";
+  }
+  return (direction == Direction::Forward ? "" : "r") + edge->label();
 }
 
 }  // namespace omm
