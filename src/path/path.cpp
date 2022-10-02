@@ -253,12 +253,13 @@ bool Path::is_valid() const
     return false;
   }
 
-  const auto all_points_have_tangents = std::all_of(m_edges.begin(), m_edges.end(), [this](const auto& edge) {
-    return edge->a()->geometry().tangents().contains({this, Point::Direction::Backward})
-        && edge->a()->geometry().tangents().contains({this, Point::Direction::Forward})
-        && edge->b()->geometry().tangents().contains({this, Point::Direction::Backward})
-        && edge->b()->geometry().tangents().contains({this, Point::Direction::Forward});
-  });
+  const auto all_points_have_tangents
+      = std::all_of(m_edges.begin(), m_edges.end(), [this](const auto& edge) {
+          return edge->a()->geometry().tangents().contains({this, Direction::Backward})
+                 && edge->a()->geometry().tangents().contains({this, Direction::Forward})
+                 && edge->b()->geometry().tangents().contains({this, Direction::Backward})
+                 && edge->b()->geometry().tangents().contains({this, Direction::Forward});
+        });
   return is_valid(m_edges) && all_points_have_tangents;
 }
 
@@ -289,8 +290,8 @@ void Path::draw_segment(QPainterPath& painter_path, const PathPoint& a, const Pa
 {
   const auto g1 = a.geometry();
   const auto g2 = b.geometry();
-  painter_path.cubicTo(g1.tangent_position({path, Point::Direction::Forward}).to_pointf(),
-                       g2.tangent_position({path, Point::Direction::Backward}).to_pointf(),
+  painter_path.cubicTo(g1.tangent_position({path, Direction::Forward}).to_pointf(),
+                       g2.tangent_position({path, Direction::Backward}).to_pointf(),
                        g2.position().to_pointf());
 }
 

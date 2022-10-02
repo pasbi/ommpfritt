@@ -201,7 +201,7 @@ bool PointSelectHandle::is_active(const Point::TangentKey& tangent_key) const
     return true;
   }
 
-  if (tangent_key.direction == Point::Direction::Backward) {
+  if (tangent_key.direction == Direction::Backward) {
     // backward tangent is active if the point is not the first point in the path.
     return tangent_key.path->first_point().get() != &m_point;
   } else {

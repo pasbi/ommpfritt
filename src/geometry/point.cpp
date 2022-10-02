@@ -84,7 +84,7 @@ const Point::TangentsMap& Point::tangents() const
 void Point::replace_tangents_key(const std::map<const Path*, Path*>& paths_map)
 {
   for (const auto& [old_path, new_path] : paths_map) {
-    for (const auto& direction : {omm::Point::Direction::Backward, omm::Point::Direction::Forward}) {
+    for (const auto& direction : {omm::Direction::Backward, omm::Direction::Forward}) {
       const auto node = m_tangents.extract({old_path, direction});
       m_tangents.try_emplace({new_path, direction}, node.empty() ? omm::PolarCoordinates() : node.mapped());
     }

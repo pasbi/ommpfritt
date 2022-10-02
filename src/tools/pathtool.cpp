@@ -210,8 +210,8 @@ public:
       return false;
     }
 
-    const auto bwd_key = Point::TangentKey(m_current_path, Point::Direction::Backward);
-    const auto fwd_key = Point::TangentKey(m_current_path, Point::Direction::Forward);
+    const auto bwd_key = Point::TangentKey(m_current_path, Direction::Backward);
+    const auto fwd_key = Point::TangentKey(m_current_path, Direction::Forward);
     const auto lt = PolarCoordinates(m_current_point->geometry().tangent(bwd_key).to_cartesian() - delta);
     auto& geometry = m_current_point->geometry();
     geometry.set_tangent(bwd_key, lt);

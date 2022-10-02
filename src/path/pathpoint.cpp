@@ -67,10 +67,10 @@ Point PathPoint::set_interpolation(InterpolationMode mode) const
     case InterpolationMode::Bezier:
       break;
     case InterpolationMode::Smooth:
-      if (key.direction == Point::Direction::Forward) {
+      if (key.direction == Direction::Forward) {
         const auto [bwd, fwd] = compute_smooth_tangents(*this, *key.path);
-        tangents[{key.path, Point::Direction::Forward}] = fwd;
-        tangents[{key.path, Point::Direction::Backward}] = bwd;
+        tangents[{key.path, Direction::Forward}] = fwd;
+        tangents[{key.path, Direction::Backward}] = bwd;
       }
       break;
     }

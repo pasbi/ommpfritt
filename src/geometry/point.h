@@ -1,5 +1,6 @@
 #pragma once
 
+#include "geometry/direction.h"
 #include "geometry/polarcoordinates.h"
 #include "geometry/vec2.h"
 #include <Qt>
@@ -21,7 +22,6 @@ class Path;
 class Point
 {
 public:
-  enum class Direction { Forward, Backward };
   struct TangentKey
   {
     TangentKey(const Path* const path, Direction direction);
