@@ -74,21 +74,22 @@ TestCase empty_paths(const std::size_t path_count)
 TestCase ellipse(const std::size_t point_count, const bool closed, const bool no_tangents)
 {
   const auto geometry = [point_count, no_tangents](const std::size_t i) {
-      const double theta = M_PI * 2.0 * static_cast<double>(i) / static_cast<double>(point_count);
-      const omm::Vec2f pos(std::cos(theta), std::sin(theta));
-      if (no_tangents) {
-        return omm::Point(pos);
-      } else {
-        const omm::Vec2f t(-std::sin(theta), std::cos(theta));
-        return omm::Point(pos, omm::PolarCoordinates(t), omm::PolarCoordinates(-t));
-      }
+    const double theta = M_PI * 2.0 * static_cast<double>(i) / static_cast<double>(point_count);
+    const omm::Vec2f pos(std::cos(theta), std::sin(theta));
+    if (no_tangents) {
+      return omm::Point(pos);
+    } else {
+      const auto t_scale = 4.0 / 3.0 * std::tan(M_PI / (2.0 * static_cast<double>(point_count)));
+      const auto t = omm::Vec2f(-std::sin(theta), std::cos(theta)) * static_cast<double>(t_scale);
+      return omm::Point(pos, omm::PolarCoordinates(-t), omm::PolarCoordinates(t));
+    }
   };
 
   auto pv = std::make_unique<omm::PathVector>();
   auto& path = pv->add_path();
   std::deque<omm::Edge*> edges;
   path.set_single_point(std::make_shared<omm::PathPoint>(geometry(0), pv.get()));
-  for (std::size_t i = 0; i < point_count - 1; ++i) {
+  for (std::size_t i = 1; i < point_count; ++i) {
     auto new_point = std::make_shared<omm::PathPoint>(geometry(i), pv.get());
     edges.emplace_back(&path.add_edge(path.last_point(), std::move(new_point)));
   }

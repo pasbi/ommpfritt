@@ -382,6 +382,7 @@ void PathVector::to_svg(const QString& filename) const
     path_index += 1;
   }
 
+  pen.setStyle(Qt::DotLine);
   for (const auto* const p : points()) {
     const auto p0 = p->geometry().position().to_pointf();
     for (const auto& [key, pc] : p->geometry().tangents()) {
