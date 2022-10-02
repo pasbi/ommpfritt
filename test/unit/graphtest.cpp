@@ -1,15 +1,15 @@
-#include "gtest/gtest.h"
-#include "path/face.h"
-#include "path/edge.h"
-#include "path/path.h"
-#include "path/pathvector.h"
 #include "geometry/point.h"
+#include "path/edge.h"
+#include "path/face.h"
+#include "path/path.h"
 #include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include "path/pathvectorview.h"
+#include "testutil.h"
 #include "transform.h"
-#include <path/pathvectorview.h>
+#include "gtest/gtest.h"
 #include <QSize>
-
+#include <path/pathvectorview.h>
 
 class TestCase
 {
@@ -245,15 +245,19 @@ TEST_P(GraphTest, Normalization)
 
 TEST_P(GraphTest, ComputeFaces)
 {
+  static int i = 0;
+  ommtest::Application app;
   const auto& test_case = GetParam();
-//  std::cout << test_case.path_vector().to_dot().toStdString() << std::endl;
+  //  std::cout << test_case.path_vector().to_dot().toStdString() << std::endl;
+  test_case.path_vector().to_svg(QString("/tmp/foo_%1.svg").arg(i++, 2, 10, QChar('0')));
+
   const auto actual_faces = test_case.path_vector().faces();
-//  for (auto& face : test_case.expected_faces()) {
-//    std::cout << "E: " << face.to_string().toStdString() << std::endl;
-//  }
-//  for (auto& face : actual_faces) {
-//    std::cout << "A: " << face.to_string().toStdString() << std::endl;
-//  }
+  for (auto& face : test_case.expected_faces()) {
+    std::cout << "E: " << face.to_string().toStdString() << std::endl;
+  }
+  for (auto& face : actual_faces) {
+    std::cout << "A: " << face.to_string().toStdString() << std::endl;
+  }
   ASSERT_EQ(test_case.expected_faces(), actual_faces);
 }
 
@@ -268,29 +272,27 @@ std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm:
 }
 
 #define EXPAND_ELLIPSE(N, ext) \
-ellipse(N, true, true)ext, \
-ellipse(N, false, true)ext, \
-ellipse(N, true, false)ext, \
-ellipse(N, false, false)ext
+  ellipse(N, true, true) ext, ellipse(N, false, true) ext, ellipse(N, true, false) ext, \
+      ellipse(N, false, false) ext
 
-const auto test_cases = ::testing::Values(
-    empty_paths(0),
-    empty_paths(1),
-    empty_paths(10),
-    rectangles(1),
-    rectangles(3),
-    rectangles(10),
-    rectangles(10).add_arm(0, 0, linear_arm_geometry(0, {0.0, 0.0}, {-1.0, 0.0})),
-    rectangles(10).add_arm(0, 0, linear_arm_geometry(2, {0.0, 0.0}, {-1.0, 0.0})),
-    rectangles(10).add_arm(3, 1, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0})),
-    EXPAND_ELLIPSE(3,),
-    EXPAND_ELLIPSE(4,),
-    EXPAND_ELLIPSE(4, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0}))),
-    EXPAND_ELLIPSE(100,),
-    EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 0.0}, {0.0, 1.0}))),
-    grid({2, 3}, QMargins{}),
-    grid({4, 4}, QMargins{}),
-    grid({8, 7}, QMargins{1, 2, 2, 3})
-);
+const auto test_cases
+    = ::testing::Values(empty_paths(0),
+                        empty_paths(1),
+                        empty_paths(10),
+                        rectangles(1),
+                        rectangles(3),
+                        rectangles(10),
+                        rectangles(2).add_arm(0, 0, linear_arm_geometry(3, {-1.0, 0.0})),
+                        rectangles(2).add_arm(1, 1, linear_arm_geometry(3, {-1.0, -1.0})),
+                        EXPAND_ELLIPSE(3, ),
+                        EXPAND_ELLIPSE(4, ),
+                        EXPAND_ELLIPSE(2, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
+                        EXPAND_ELLIPSE(4, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
+                        EXPAND_ELLIPSE(4, .add_loop(0, 2, M_PI - 1.0, M_PI + 1.0)),
+                        EXPAND_ELLIPSE(8, ),
+                        EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 1.0}))),
+                        grid({2, 3}, QMargins{}),
+                        grid({4, 4}, QMargins{}),
+                        grid({8, 7}, QMargins{1, 2, 2, 3}));
 
 INSTANTIATE_TEST_SUITE_P(P, GraphTest, test_cases);
