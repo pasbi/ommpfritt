@@ -50,6 +50,23 @@ public:
     return std::move(*this);
   }
 
+  TestCase add_loop(const std::size_t path_index,
+                    const std::size_t point_index,
+                    const double arg0,
+                    const double arg1) &&
+  {
+    const auto& src_path = *m_path_vector->paths().at(path_index);
+    auto& loop = m_path_vector->add_path();
+    auto* const hinge = src_path.points().at(point_index);
+    hinge->geometry().set_tangent({&loop, omm::Direction::Forward},
+                                  omm::PolarCoordinates(arg0, 1.0));
+    hinge->geometry().set_tangent({&loop, omm::Direction::Backward},
+                                  omm::PolarCoordinates(arg1, 1.0));
+    auto shared_hinge = src_path.share(*hinge);
+    loop.add_edge(shared_hinge, shared_hinge);
+    return std::move(*this);
+  }
+
 private:
   omm::PathVector* m_path_vector;
   std::set<omm::Face> m_expected_faces;
