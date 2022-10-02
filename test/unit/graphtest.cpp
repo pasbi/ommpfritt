@@ -38,13 +38,13 @@ public:
 
   TestCase add_arm(const std::size_t path_index, const std::size_t point_index, std::vector<omm::Point> geometries) &&
   {
-    LINFO << "altering " << m_path_vector;
     const auto* const hinge = m_path_vector->paths().at(path_index)->points().at(point_index);
     auto& arm = m_path_vector->add_path();
     auto last_point = m_path_vector->share(*hinge);
-    for (std::size_t i = 0; i < geometries.size(); ++i) {
-      auto next_point = std::make_shared<omm::PathPoint>(geometries.at(i), m_path_vector);
-      arm.add_edge(std::make_unique<omm::Edge>(last_point, next_point, &arm));
+    for (auto g : geometries) {
+      g.set_position(g.position() + hinge->geometry().position());
+      auto next_point = std::make_shared<omm::PathPoint>(g, m_path_vector);
+      arm.add_edge(last_point, next_point);
       last_point = next_point;
     }
     return std::move(*this);
@@ -240,12 +240,12 @@ TEST_P(GraphTest, ComputeFaces)
   ASSERT_EQ(test_case.expected_faces(), actual_faces);
 }
 
-std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm::Vec2f& start, const omm::Vec2f& direction)
+std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm::Vec2f& direction)
 {
   std::vector<omm::Point> ps;
   ps.reserve(length);
   for (std::size_t i = 0; i < length; ++i) {
-    ps.emplace_back(omm::Point(start + static_cast<double>(i) * direction));
+    ps.emplace_back(omm::Point(static_cast<double>(i + 1) * direction));
   }
   return ps;
 }
