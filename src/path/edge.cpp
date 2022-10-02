@@ -12,7 +12,7 @@ Edge::Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* pat
 
 QString Edge::label() const
 {
-  static constexpr bool print_pointer = true;
+  static constexpr bool print_pointer = false;
   if constexpr (print_pointer) {
     return QString{"%1--%2 (this: %3, path: %4)"}.arg(m_a->debug_id(),
                                                       m_b->debug_id(),
@@ -76,6 +76,11 @@ std::shared_ptr<PathPoint> Edge::start_point(const Direction& direction) const n
 std::shared_ptr<PathPoint> Edge::end_point(const Direction& direction) const noexcept
 {
   return direction == Direction::Forward ? b() : a();
+}
+
+bool Edge::is_loop() const noexcept
+{
+  return m_a.get() == m_b.get();
 }
 
 }  // namespace omm

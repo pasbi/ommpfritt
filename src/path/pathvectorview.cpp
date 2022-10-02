@@ -46,7 +46,11 @@ bool PathVectorView::is_valid() const
     return count_distinct_points(*m_edges.front(), *m_edges.back()) <= 3;
   default:
     for (std::size_t i = 1; i < m_edges.size(); ++i) {
-      if (count_distinct_points(*m_edges.at(i - 1), *m_edges.at(i)) != 3) {
+      const auto& current_edge = *m_edges.at(i);
+      const auto& previous_edge = *m_edges.at(i - 1);
+      const auto loop_count = static_cast<std::size_t>((current_edge.is_loop() ? 1 : 0)
+                                                       + (previous_edge.is_loop() ? 1 : 0));
+      if (count_distinct_points(current_edge, previous_edge) != 3 - loop_count) {
         return false;
       }
     }
