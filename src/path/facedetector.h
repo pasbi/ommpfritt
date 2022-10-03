@@ -1,9 +1,9 @@
 #pragma once
 
+#include "path/dedge.h"
 #include "path/edge.h"
-#include <set>
 #include <map>
-
+#include <set>
 
 namespace omm
 {
@@ -31,21 +31,6 @@ class FaceDetector
 public:
   explicit FaceDetector(const PathVector& path_vector);
   const std::set<Face>& faces() const;
-
-  struct DEdge {
-    explicit DEdge(Edge* edge, Direction direction);
-    DEdge() = default;
-    Edge* edge = nullptr;
-    Direction direction = Direction::Forward;
-    [[nodiscard]] bool operator<(const DEdge& other) const;
-    [[nodiscard]] bool operator==(const DEdge& other) const;
-    [[nodiscard]] const PathPoint& end_point() const;
-    [[nodiscard]] const PathPoint& start_point() const;
-    [[nodiscard]] double start_angle() const;
-    [[nodiscard]] double end_angle() const;
-    [[nodiscard]] double angle(const PathPoint& hinge, const PathPoint& other) const;
-    QString to_string() const;
-  };
   DEdge find_next_edge(const DEdge& dedge) const;
 
 private:

@@ -1,4 +1,5 @@
 #include "geometry/point.h"
+#include "path/dedge.h"
 #include "path/edge.h"
 #include "path/face.h"
 #include "path/path.h"
@@ -104,14 +105,14 @@ TestCase ellipse(const std::size_t point_count, const bool closed, const bool no
 
   auto pv = std::make_unique<omm::PathVector>();
   auto& path = pv->add_path();
-  std::deque<omm::Edge*> edges;
+  std::deque<omm::DEdge> edges;
   path.set_single_point(std::make_shared<omm::PathPoint>(geometry(0), pv.get()));
   for (std::size_t i = 1; i < point_count; ++i) {
     auto new_point = std::make_shared<omm::PathPoint>(geometry(i), pv.get());
-    edges.emplace_back(&path.add_edge(path.last_point(), std::move(new_point)));
+    edges.emplace_back(&path.add_edge(path.last_point(), std::move(new_point)), omm::Direction::Forward);
   }
   if (closed && point_count > 1) {
-    edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()));
+    edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()), omm::Direction::Forward);
     return {std::move(pv), std::set{std::move(edges)}};
   }
   return {std::move(pv), {}};
@@ -120,7 +121,7 @@ TestCase ellipse(const std::size_t point_count, const bool closed, const bool no
 TestCase rectangles(const std::size_t count)
 {
   auto pv = std::make_unique<omm::PathVector>();
-  std::set<std::deque<omm::Edge*>> expected_pvvs;
+  std::set<std::deque<omm::DEdge>> expected_pvvs;
   for (std::size_t i = 0; i < count; ++i) {
     auto& path = pv->add_path();
     const auto p = [pv=pv.get()](const double x, const double y) {
@@ -129,12 +130,12 @@ TestCase rectangles(const std::size_t count)
 
     const double x = i * 3.0;
 
-    std::deque<omm::Edge*> edges;
+    std::deque<omm::DEdge> edges;
     path.set_single_point(p(x - 1.0, -1.0));
-    edges.emplace_back(&path.add_edge(path.last_point(), p(x + 1.0, -1.0)));
-    edges.emplace_back(&path.add_edge(path.last_point(), p(x + 1.0, 1.0)));
-    edges.emplace_back(&path.add_edge(path.last_point(), p(x - 1.0, 1.0)));
-    edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()));
+    edges.emplace_back(&path.add_edge(path.last_point(), p(x + 1.0, -1.0)), omm::Direction::Forward);
+    edges.emplace_back(&path.add_edge(path.last_point(), p(x + 1.0, 1.0)), omm::Direction::Forward);
+    edges.emplace_back(&path.add_edge(path.last_point(), p(x - 1.0, 1.0)), omm::Direction::Forward);
+    edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()), omm::Direction::Forward);
     expected_pvvs.emplace(std::move(edges));
   }
   return {std::move(pv), std::move(expected_pvvs)};
@@ -171,14 +172,14 @@ TestCase grid(const QSize& size, const QMargins& margins)
     v_paths.emplace_back(&path);
   }
 
-  std::set<std::deque<omm::Edge*>> expected_pvvs;
+  std::set<std::deque<omm::DEdge>> expected_pvvs;
   if (!h_paths.empty() && !v_paths.empty()) {
     for (std::size_t x = 0; x < v_paths.size() - 1; ++x) {
       for (std::size_t y = 0; y < h_paths.size() - 1; ++y) {
-        expected_pvvs.emplace(std::deque{h_paths.at(y + 0)->edges().at(x + margins.left()),
-                                         v_paths.at(x + 1)->edges().at(y + margins.top()),
-                                         h_paths.at(y + 1)->edges().at(x + margins.left()),
-                                         v_paths.at(x + 0)->edges().at(y + margins.top())});
+        expected_pvvs.emplace(std::deque{omm::DEdge::fwd(h_paths.at(y + 0)->edges().at(x + margins.left())),
+                                         omm::DEdge::fwd(v_paths.at(x + 1)->edges().at(y + margins.top())),
+                                         omm::DEdge::fwd(h_paths.at(y + 1)->edges().at(x + margins.left())),
+                                         omm::DEdge::fwd(v_paths.at(x + 0)->edges().at(y + margins.top()))});
       }
     }
   }

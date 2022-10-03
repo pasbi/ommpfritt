@@ -10,14 +10,14 @@ class QRectF;
 namespace omm
 {
 
-class Edge;
+struct DEdge;
 class PathPoint;
 
 class PathVectorView
 {
 public:
   PathVectorView() = default;
-  explicit PathVectorView(std::deque<Edge*> edges);
+  explicit PathVectorView(std::deque<DEdge> edges);
   [[nodiscard]] bool is_valid() const;
   /**
    * @brief is_simply_closed returns true if every two consecutive edge pairs (including last and
@@ -28,9 +28,8 @@ public:
    *   - two edges: return true iff the two edges have two points in common.
    */
   [[nodiscard]] bool is_simply_closed() const;
-  [[nodiscard]] const std::deque<Edge*>& edges() const;
+  [[nodiscard]] const std::deque<DEdge>& edges() const;
   [[nodiscard]] QPainterPath to_painter_path() const;
-  [[nodiscard]] std::vector<bool> edge_flipped() const;
   [[nodiscard]] bool contains(const Vec2f& pos) const;
   [[nodiscard]] QString to_string() const;
   [[nodiscard]] std::vector<PathPoint*> path_points() const;
@@ -49,7 +48,7 @@ public:
   void normalize();
 
 private:
-  std::deque<Edge*> m_edges;
+  std::deque<DEdge> m_edges;
 };
 
 }  // namespace omm

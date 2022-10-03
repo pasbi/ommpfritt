@@ -1,6 +1,8 @@
 target_sources(libommpfritt PRIVATE
   edge.cpp
   edge.h
+  dedge.cpp
+  dedge.h
   face.cpp
   face.h
   facedetector.cpp

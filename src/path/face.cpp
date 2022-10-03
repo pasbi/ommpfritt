@@ -1,5 +1,5 @@
 #include "path/face.h"
-#include "path/edge.h"
+#include "path/dedge.h"
 #include "path/pathpoint.h"
 #include "path/pathvectorview.h"
 #include <QPainterPath>

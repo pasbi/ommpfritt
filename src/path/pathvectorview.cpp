@@ -1,4 +1,5 @@
 #include "path/pathvectorview.h"
+#include "path/dedge.h"
 #include "path/edge.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
@@ -24,15 +25,14 @@ std::size_t count_distinct_points(const omm::Edge& first, const omm::Edge& secon
 namespace omm
 {
 
-PathVectorView::PathVectorView(std::deque<Edge*> edges)
-    : m_edges(std::move(edges))
+PathVectorView::PathVectorView(std::deque<DEdge> edges) : m_edges(std::move(edges))
 {
   assert(is_valid());
 }
 
 bool PathVectorView::is_valid() const
 {
-  static constexpr auto is_valid = [](const Edge* const edge) { return edge == nullptr || !edge->is_valid(); };
+  static constexpr auto is_valid = [](const DEdge& de) { return de.edge == nullptr || !de.edge->is_valid(); };
   if (std::any_of(m_edges.begin(), m_edges.end(), is_valid)) {
     return false;
   }
@@ -43,11 +43,11 @@ bool PathVectorView::is_valid() const
   case 1:
     return true;
   case 2:
-    return count_distinct_points(*m_edges.front(), *m_edges.back()) <= 3;
+    return count_distinct_points(*m_edges.front().edge, *m_edges.back().edge) <= 3;
   default:
     for (std::size_t i = 1; i < m_edges.size(); ++i) {
-      const auto& current_edge = *m_edges.at(i);
-      const auto& previous_edge = *m_edges.at(i - 1);
+      const auto& current_edge = *m_edges.at(i).edge;
+      const auto& previous_edge = *m_edges.at(i - 1).edge;
       const auto loop_count = static_cast<std::size_t>((current_edge.is_loop() ? 1 : 0)
                                                        + (previous_edge.is_loop() ? 1 : 0));
       if (count_distinct_points(current_edge, previous_edge) != 3 - loop_count) {
@@ -64,21 +64,21 @@ bool PathVectorView::is_simply_closed() const
   case 0:
     return false;
   case 1:
-    return m_edges.front()->a() == m_edges.front()->b();  // edge loops from point to itself
+    return m_edges.front().edge->a() == m_edges.front().edge->b();  // edge loops from point to itself
   case 2:
     // Both edges have the same points.
     // They can be part of different paths, hence any direction is possible.
-    return count_distinct_points(*m_edges.front(), *m_edges.back()) == 2;
+    return count_distinct_points(*m_edges.front().edge, *m_edges.back().edge) == 2;
   default:
     // Assuming there are no intersections,
     // there must be only one common point between first and last edge to be closed.
-    return count_distinct_points(*m_edges.front(), *m_edges.back()) == 3;
+    return count_distinct_points(*m_edges.front().edge, *m_edges.back().edge) == 3;
   }
 
-  return !m_edges.empty() && m_edges.front()->a().get() == m_edges.back()->b().get();
+  return !m_edges.empty() && m_edges.front().edge->a().get() == m_edges.back().edge->b().get();
 }
 
-const std::deque<Edge*>& PathVectorView::edges() const
+const std::deque<DEdge>& PathVectorView::edges() const
 {
   return m_edges;
 }
@@ -89,43 +89,13 @@ QPainterPath PathVectorView::to_painter_path() const
   if (m_edges.empty()) {
     return {};
   }
-  const auto ef = edge_flipped();
   QPainterPath p;
-  p.moveTo([this, &ef]() {
-    const auto& edge = *m_edges.front();
-    const auto* const p = (ef.front() ? edge.b() : edge.a()).get();
-    return p->geometry().position().to_pointf();
-  }());
+  p.moveTo(m_edges.front().start_point().geometry().position().to_pointf());
   for (std::size_t i = 0; i < m_edges.size(); ++i) {
-    PathPoint* a = m_edges[i]->a().get();
-    PathPoint* b = m_edges[i]->b().get();
-    if (ef.at(i)) {
-      std::swap(a, b);
-    }
-    Path::draw_segment(p, *a, *b, m_edges[i]->path());
+    Path::draw_segment(p, m_edges[i].start_point(), m_edges[i].end_point(), m_edges[i].edge->path());
   }
 
   return p;
-}
-
-std::vector<bool> PathVectorView::edge_flipped() const
-{
-  switch (m_edges.size()) {
-  case 0:
-    return {};
-  case 1:
-    return {false};
-  default:
-  {
-    std::vector<bool> edge_flipped;
-    edge_flipped.reserve(m_edges.size());
-    edge_flipped.emplace_back(m_edges.at(1)->contains(m_edges.at(0)->b().get()));
-    for (std::size_t i = 1; i < m_edges.size(); ++i) {
-      edge_flipped.emplace_back(m_edges.at(i - 1)->contains(m_edges.at(i)->b().get()));
-    }
-    return edge_flipped;
-  }
-  }
 }
 
 bool PathVectorView::contains(const Vec2f& pos) const
@@ -135,8 +105,8 @@ bool PathVectorView::contains(const Vec2f& pos) const
 
 QString PathVectorView::to_string() const
 {
-  const auto edges = util::transform<QList>(this->edges(), std::mem_fn(&Edge::label));
-  return static_cast<QStringList>(edges).join(", ");
+  static constexpr auto label = [](const auto& dedge) { return dedge.edge->label(); };
+  return static_cast<QStringList>(util::transform<QList>(this->edges(), label)).join(", ");
 }
 
 std::vector<PathPoint*> PathVectorView::path_points() const
@@ -146,11 +116,10 @@ std::vector<PathPoint*> PathVectorView::path_points() const
   }
 
   std::vector<PathPoint*> ps;
-  const auto flipped = edge_flipped();
-  ps.push_back((flipped.front() ? m_edges.front()->b() : m_edges.front()->a()).get());
+  ps.reserve(m_edges.size() + 1);
+  ps.emplace_back(&m_edges.front().start_point());
   for (std::size_t i = 0; i < m_edges.size(); ++i) {
-    const auto& edge = *m_edges.at(i);
-    ps.push_back((flipped.at(i) ? edge.a() : edge.b()).get());
+    ps.emplace_back(&m_edges.at(i).end_point());
   }
   return ps;
 }
