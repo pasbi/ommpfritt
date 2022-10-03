@@ -6,6 +6,7 @@
 #include <QRectF>
 #include <Qt>
 #include <deque>
+#include <list>
 #include <map>
 #include <set>
 
@@ -79,6 +80,7 @@ public:
 
   [[nodiscard]] QString to_string() const;
   QRectF bounding_box() const;
+  static QRectF bounding_box(const std::list<Point>& points);
 
   /**
    * @brief When a tangent is at `old_pos` and it is mirror-coupled with its sibling which moves

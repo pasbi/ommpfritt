@@ -411,18 +411,8 @@ void PathVector::to_svg(const QString& filename) const
 
 QRectF PathVector::bounding_box() const
 {
-  static constexpr auto get_bb = [](const auto* const p) { return p->geometry().bounding_box(); };
-  const auto bbs = util::transform<std::list>(points(), get_bb);
-  const auto tls = util::transform(bbs, &QRectF::topLeft);
-  const auto brs = util::transform(bbs, &QRectF::bottomRight);
-  static constexpr auto cmp_x = [](const auto& a, const auto& b) { return a.x() < b.x(); };
-  static constexpr auto cmp_y = [](const auto& a, const auto& b) { return a.y() < b.y(); };
-
-  const QPointF tl(std::min_element(tls.begin(), tls.end(), cmp_x)->x(),
-                   std::min_element(tls.begin(), tls.end(), cmp_y)->y());
-  const QPointF br(std::max_element(brs.begin(), brs.end(), cmp_x)->x(),
-                   std::max_element(brs.begin(), brs.end(), cmp_y)->y());
-  return {tl, br};
+  static constexpr auto get_geometry = [](const auto* const pp) { return pp->geometry(); };
+  return Point::bounding_box(util::transform<std::list>(points(), get_geometry));
 }
 
 }  // namespace omm

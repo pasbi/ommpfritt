@@ -179,6 +179,22 @@ QRectF Point::bounding_box() const
   return {min, max};
 }
 
+QRectF Point::bounding_box(const std::list<Point>& points)
+{
+  static constexpr auto get_bb = [](const auto& p) { return p.bounding_box(); };
+  const auto bbs = util::transform(points, get_bb);
+  const auto tls = util::transform(bbs, &QRectF::topLeft);
+  const auto brs = util::transform(bbs, &QRectF::bottomRight);
+  static constexpr auto cmp_x = [](const auto& a, const auto& b) { return a.x() < b.x(); };
+  static constexpr auto cmp_y = [](const auto& a, const auto& b) { return a.y() < b.y(); };
+
+  const QPointF tl(std::min_element(tls.begin(), tls.end(), cmp_x)->x(),
+                   std::min_element(tls.begin(), tls.end(), cmp_y)->y());
+  const QPointF br(std::max_element(brs.begin(), brs.end(), cmp_x)->x(),
+                   std::max_element(brs.begin(), brs.end(), cmp_y)->y());
+  return {tl, br};
+}
+
 bool Point::operator==(const Point& point) const
 {
   return m_position == point.m_position && m_tangents == point.m_tangents;

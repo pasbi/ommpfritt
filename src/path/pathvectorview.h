@@ -5,7 +5,7 @@
 #include <vector>
 
 class QPainterPath;
-
+class QRectF;
 
 namespace omm
 {
@@ -34,6 +34,7 @@ public:
   [[nodiscard]] bool contains(const Vec2f& pos) const;
   [[nodiscard]] QString to_string() const;
   [[nodiscard]] std::vector<PathPoint*> path_points() const;
+  [[nodiscard]] QRectF bounding_box() const;
   friend bool operator==(PathVectorView a, PathVectorView b);
   friend bool operator<(PathVectorView a, PathVectorView b);
 

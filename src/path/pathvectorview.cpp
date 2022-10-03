@@ -155,6 +155,12 @@ std::vector<PathPoint*> PathVectorView::path_points() const
   return ps;
 }
 
+QRectF PathVectorView::bounding_box() const
+{
+  static constexpr auto get_geometry = [](const auto* const pp) { return pp->geometry(); };
+  return Point::bounding_box(util::transform<std::list>(path_points(), get_geometry));
+}
+
 void PathVectorView::normalize()
 {
   if (is_simply_closed()) {
