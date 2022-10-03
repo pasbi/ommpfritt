@@ -188,6 +188,47 @@ TestCase grid(const QSize& size, const QMargins& margins)
   return {std::move(pv), std::move(expected_pvvs)};
 }
 
+TestCase leaf(std::vector<int> counts)
+{
+  assert(counts.size() >= 2);
+  auto pv = std::make_unique<omm::PathVector>();
+  auto start = std::make_shared<omm::PathPoint>(omm::Point({1.0, 0.0}), pv.get());
+  auto end = std::make_shared<omm::PathPoint>(omm::Point({0.0, 1.0}), pv.get());
+  for (std::size_t i = 0; i < counts.size(); ++i) {
+    const double s = static_cast<double>(i) / (static_cast<double>(counts.size() - 1));
+    auto& path = pv->add_path();
+    auto last_point = start;
+    for (int j = 0; j < counts.at(i); ++j) {
+      const double arg = static_cast<double>(j + 1) / static_cast<double>(counts.at(i) + 1) * M_PI / 2.0;
+      const omm::Vec2f p(std::cos(arg), std::sin(arg));
+      const omm::Vec2f q(1.0 - std::sin(arg), 1.0 - std::cos(arg));
+      const auto x = std::lerp(p.x, q.x, s);
+      const auto y = std::lerp(p.y, q.y, s);
+      auto current = std::make_shared<omm::PathPoint>(omm::Point({x, y}), pv.get());
+      path.add_edge(last_point, current);
+      last_point = current;
+    }
+    path.add_edge(last_point, end);
+  }
+
+  std::set<omm::PathVectorView> expected_pvvs;
+  for (std::size_t i = 1; i < counts.size(); ++i) {
+    const auto* const current = pv->paths()[i];
+    const auto* const previous = pv->paths()[i - 1];
+    std::deque<omm::DEdge> edges;
+    for (auto* const e : current->edges()) {
+      edges.emplace_back(omm::DEdge::fwd(e));
+    }
+    const auto previous_edges = previous->edges();
+    for (auto it = previous_edges.rbegin(); it != previous_edges.rend(); ++it) {
+      edges.emplace_back(omm::DEdge::bwd(*it));
+    }
+    expected_pvvs.emplace(edges);
+  }
+
+  return {std::move(pv), std::move(expected_pvvs)};
+}
+
 class GraphTest : public ::testing::TestWithParam<TestCase>
 {
 };
@@ -272,28 +313,36 @@ std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm:
   return ps;
 }
 
+// clang-format off
 #define EXPAND_ELLIPSE(N, ext) \
-  ellipse(N, true, true) ext, ellipse(N, false, true) ext, ellipse(N, true, false) ext, \
-      ellipse(N, false, false) ext
+  ellipse(N, true, true) ext, \
+  ellipse(N, false, true) ext, \
+  ellipse(N, true, false) ext, \
+  ellipse(N, false, false) ext
 
-const auto test_cases
-    = ::testing::Values(empty_paths(0),
-                        empty_paths(1),
-                        empty_paths(10),
-                        rectangles(1),
-                        rectangles(3),
-                        rectangles(10),
-                        rectangles(2).add_arm(0, 0, linear_arm_geometry(3, {-1.0, 0.0})),
-                        rectangles(2).add_arm(1, 1, linear_arm_geometry(3, {-1.0, -1.0})),
-                        EXPAND_ELLIPSE(3, ),
-                        EXPAND_ELLIPSE(4, ),
-                        EXPAND_ELLIPSE(2, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
-                        EXPAND_ELLIPSE(4, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
-                        EXPAND_ELLIPSE(4, .add_loop(0, 2, M_PI - 1.0, M_PI + 1.0)),
-                        EXPAND_ELLIPSE(8, ),
-                        EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 1.0}))),
-                        grid({2, 3}, QMargins{}),
-                        grid({4, 4}, QMargins{}),
-                        grid({8, 7}, QMargins{1, 2, 2, 3}));
+const auto test_cases = ::testing::Values(
+    empty_paths(0),
+    empty_paths(1),
+    empty_paths(10),
+    rectangles(1),
+    rectangles(3),
+    rectangles(10),
+    rectangles(1).add_arm(0, 0, linear_arm_geometry(3, {-1.0, 0.0})),
+    rectangles(2).add_arm(1, 1, linear_arm_geometry(3, {-1.0, -1.0})),
+    EXPAND_ELLIPSE(3, ),
+    EXPAND_ELLIPSE(4, ),
+    EXPAND_ELLIPSE(2, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
+    EXPAND_ELLIPSE(4, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
+    EXPAND_ELLIPSE(4, .add_loop(0, 2, M_PI - 1.0, M_PI + 1.0)),
+    EXPAND_ELLIPSE(8, ),
+    EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 1.0}))),
+    grid({2, 3}, QMargins{}),
+    grid({4, 4}, QMargins{}),
+    grid({8, 7}, QMargins{1, 2, 2, 3}),
+    leaf({2, 5}),
+    leaf({1, 2, 3}),
+    leaf({2, 0, 2})
+);
+// clang-format on
 
 INSTANTIATE_TEST_SUITE_P(P, GraphTest, test_cases);
