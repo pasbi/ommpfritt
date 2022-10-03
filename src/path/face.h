@@ -43,7 +43,6 @@ public:
   [[nodiscard]] bool operator==(const Face& other) const;
   [[nodiscard]] bool operator!=(const Face& other) const;
   [[nodiscard]] bool operator<(const Face& other) const;
-  void normalize();
 
   class ReferencePolisher;
   void serialize(serialization::SerializerWorker& worker) const;

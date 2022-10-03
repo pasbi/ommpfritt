@@ -130,35 +130,34 @@ QRectF PathVectorView::bounding_box() const
   return Point::bounding_box(util::transform<std::list>(path_points(), get_geometry));
 }
 
-void PathVectorView::normalize()
 {
-  if (is_simply_closed()) {
-    const auto min_it = std::min_element(m_edges.begin(), m_edges.end());
-    std::rotate(m_edges.begin(), min_it, m_edges.end());
 
-    if (m_edges.size() >= 3 && m_edges.at(1) > m_edges.back()) {
-      std::reverse(m_edges.begin(), m_edges.end());
+std::vector<Edge*> PathVectorView::normalized() const
+{
+  auto edges = util::transform<std::vector>(m_edges, [](const auto& dedge) { return dedge.edge; });
+  if (is_simply_closed()) {
+    const auto min_it = std::min_element(edges.begin(), edges.end());
+    std::rotate(edges.begin(), min_it, edges.end());
+    if (edges.size() >= 3 && edges.at(1) > edges.back()) {
+      std::reverse(edges.begin(), edges.end());
       // Reversing has moved the smallest edge to the end, but it must be at front after
       // normalization .
-      std::rotate(m_edges.begin(), std::prev(m_edges.end()), m_edges.end());
+      std::rotate(edges.begin(), std::prev(edges.end()), edges.end());
     }
-  } else if (m_edges.size() >= 2 && m_edges.at(0) > m_edges.at(1)) {
-    std::reverse(m_edges.begin(), m_edges.end());
+  } else if (edges.size() >= 2 && edges.at(0) > edges.at(1)) {
+    std::reverse(edges.begin(), edges.end());
   }
+  return edges;
 }
 
-bool operator==(PathVectorView a, PathVectorView b)
+bool operator==(const PathVectorView& a, const PathVectorView& b)
 {
-  a.normalize();
-  b.normalize();
-  return a.edges() == b.edges();
+  return a.normalized() == b.normalized();
 }
 
-bool operator<(PathVectorView a, PathVectorView b)
+bool operator<(const PathVectorView& a, const PathVectorView& b)
 {
-  a.normalize();
-  b.normalize();
-  return a.edges() < b.edges();
+  return a.normalized() < b.normalized();
 }
 
 }  // namespace omm

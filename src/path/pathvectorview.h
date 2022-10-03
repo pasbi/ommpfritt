@@ -11,6 +11,7 @@ namespace omm
 {
 
 struct DEdge;
+class Edge;
 class PathPoint;
 
 class PathVectorView
@@ -34,18 +35,18 @@ public:
   [[nodiscard]] QString to_string() const;
   [[nodiscard]] std::vector<PathPoint*> path_points() const;
   [[nodiscard]] QRectF bounding_box() const;
-  friend bool operator==(PathVectorView a, PathVectorView b);
-  friend bool operator<(PathVectorView a, PathVectorView b);
 
+  friend bool operator==(const PathVectorView& a, const PathVectorView& b);
+  friend bool operator<(const PathVectorView& a, const PathVectorView& b);
 
   /**
    * @brief normalize PathVectorViews are defined up to
    *  - the direction (m_edges can be reveresed and it still describes the same view
    *      because the actual direction is given by the paths the edges belong to).
    *  - the first edge if it is closed (m_edges can be rotated without chaning the view)
-   *  This function normalized the PathVectorView in this sense.
+   *  This function returns the edges of the PathVectorView in normalized order.
    */
-  void normalize();
+  std::vector<Edge*> normalized() const;
 
 private:
   std::deque<DEdge> m_edges;

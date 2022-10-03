@@ -236,8 +236,7 @@ TEST_P(GraphTest, Normalization)
   const auto test_case = GetParam();
   LINFO << test_case.path_vector().to_dot();
   for (auto face : GetParam().expected_faces()) {
-    face.normalize();
-    const auto& edges = face.path_vector_view().edges();
+    const auto edges = face.path_vector_view().normalized();
     for (std::size_t i = 1; i < edges.size(); ++i) {
       ASSERT_LT(edges.front(), edges.at(i));
     }

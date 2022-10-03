@@ -95,15 +95,6 @@ bool Face::contains(const Face& other) const
   // this and other must be `simply_closed`, i.e. not intersect themselves respectively.
   assert(is_valid());
   assert(other.is_valid());
-  auto pvv_a = path_vector_view();
-  auto pvv_b = other.path_vector_view();
-  pvv_a.normalize();
-  pvv_b.normalize();
-
-  std::size_t edge_index_a = 0;
-  std::size_t edge_index_b = 0;
-  while (true) {
-  }
 }
 
 bool Face::operator==(const Face& other) const
@@ -119,11 +110,6 @@ bool Face::operator!=(const Face& other) const
 bool Face::operator<(const Face& other) const
 {
   return *m_path_vector_view < other.path_vector_view();
-}
-
-void Face::normalize()
-{
-  m_path_vector_view->normalize();
 }
 
 }  // namespace omm
