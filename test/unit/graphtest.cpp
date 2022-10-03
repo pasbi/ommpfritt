@@ -64,7 +64,8 @@ public:
     hinge->geometry().set_tangent({&loop, omm::Direction::Backward},
                                   omm::PolarCoordinates(arg1, 1.0));
     auto shared_hinge = src_path.share(*hinge);
-    loop.add_edge(shared_hinge, shared_hinge);
+    auto& loop_edge = loop.add_edge(shared_hinge, shared_hinge);
+    m_expected_faces.emplace(omm::PathVectorView({omm::DEdge::fwd(&loop_edge)}));
     return std::move(*this);
   }
 
