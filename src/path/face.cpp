@@ -95,6 +95,11 @@ bool Face::contains(const Face& other) const
   // this and other must be `simply_closed`, i.e. not intersect themselves respectively.
   assert(is_valid());
   assert(other.is_valid());
+
+  const auto pps_a = m_path_vector_view->bounding_polygon();
+  const auto pps_b = other.m_path_vector_view->bounding_polygon();
+
+  return std::all_of(pps_b.begin(), pps_b.end(), [&pps_a](const auto& p) { return polygon_contains(pps_a, p); });
 }
 
 bool Face::operator==(const Face& other) const
@@ -110,6 +115,23 @@ bool Face::operator!=(const Face& other) const
 bool Face::operator<(const Face& other) const
 {
   return *m_path_vector_view < other.path_vector_view();
+}
+
+bool Face::polygon_contains(const std::vector<Vec2f>& polygon, const Vec2f& p)
+{
+  // https://stackoverflow.com/a/16391873/
+  bool inside = false;
+  for (std::size_t i = 0; i < polygon.size(); ++i) {
+    const auto j = (i + polygon.size() - 1) % polygon.size();
+    const auto a = polygon[i].y > p.y;
+    const auto b = polygon[j].y > p.y;
+    const auto t = (p.y - polygon[i].y) / (polygon[j].y - polygon[i].y);
+    const auto c = (polygon[j].x - polygon[i].x) * t + polygon[i].x;
+    if (a != b && p.x < c) {
+      inside = !inside;
+    }
+  }
+  return inside;
 }
 
 }  // namespace omm
