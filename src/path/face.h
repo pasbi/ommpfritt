@@ -54,4 +54,7 @@ private:
   std::unique_ptr<PathVectorView> m_path_vector_view;
 };
 
+enum class PolygonLocation { Inside, Outside, Edge };
+[[nodiscard]] PolygonLocation polygon_contains(const std::vector<Vec2f>& polygon, const Vec2f& p);
+
 }  // namespace omm

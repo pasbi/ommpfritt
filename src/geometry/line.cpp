@@ -16,6 +16,11 @@ Vec2f Line::lerp(const double t) const noexcept
   return a + t * (b - a);
 }
 
+QString Line::to_string() const
+{
+  return QString("Line({%1, %2}, {%3, %4})").arg(a.x).arg(a.y).arg(b.x).arg(b.y);
+}
+
 double Line::distance(const Vec2f& p) const noexcept
 {
   // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment

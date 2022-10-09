@@ -118,4 +118,28 @@ bool Face::operator<(const Face& other) const
   return *m_path_vector_view < other.path_vector_view();
 }
 
+PolygonLocation polygon_contains(const std::vector<Vec2f>& polygon, const Vec2f& p)
+{
+  // Ray casting
+  bool inside = false;
+  const Line ray{p, p + Vec2(1.0, 0.0)};  // Ray with arbitary direction from p
+  for (std::size_t i = 0; i < polygon.size(); ++i) {
+    const Line line{i == 0 ? polygon.back() : polygon.at(i - 1), polygon.at(i)};
+    static constexpr auto eps = 0.0001;
+    static constexpr auto in01 = [](const double d) { return d >= 0.0 && d < 1.0; };
+    if (std::abs(line.distance(p)) < eps && in01(line.project(p))) {
+      return PolygonLocation::Edge;
+    }
+    const auto t = line.intersect(ray);
+    const auto u = ray.intersect(line);
+    if (!std::isfinite(t) || !std::isfinite(u)) {
+      // line is parallel to ray and p is not on line: no intersection.
+    } else if (u >= 0.0 && in01(t)) {
+      // intersection
+      inside = !inside;
+    }
+  }
+  return inside ? PolygonLocation::Inside : PolygonLocation::Outside;
+}
+
 }  // namespace omm

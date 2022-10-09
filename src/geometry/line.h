@@ -39,6 +39,8 @@ struct Line
    * @return The start point if t=0 or the end point if t=1.0.
    */
   [[nodiscard]] Vec2f lerp(double t) const noexcept;
+
+  [[nodiscard]] QString to_string() const;
 };
 
 }  // namespace omm
