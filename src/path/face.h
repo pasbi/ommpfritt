@@ -46,8 +46,6 @@ public:
   [[nodiscard]] bool operator!=(const Face& other) const;
   [[nodiscard]] bool operator<(const Face& other) const;
 
-  static bool polygon_contains(const std::vector<Vec2f>& polygon, const Vec2f& p);
-
   class ReferencePolisher;
   void serialize(serialization::SerializerWorker& worker) const;
   void deserialize(serialization::DeserializerWorker& worker);

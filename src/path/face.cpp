@@ -1,4 +1,5 @@
 #include "path/face.h"
+#include "geometry/line.h"
 #include "path/dedge.h"
 #include "path/pathpoint.h"
 #include "path/pathvectorview.h"
@@ -115,23 +116,6 @@ bool Face::operator!=(const Face& other) const
 bool Face::operator<(const Face& other) const
 {
   return *m_path_vector_view < other.path_vector_view();
-}
-
-bool Face::polygon_contains(const std::vector<Vec2f>& polygon, const Vec2f& p)
-{
-  // https://stackoverflow.com/a/16391873/
-  bool inside = false;
-  for (std::size_t i = 0; i < polygon.size(); ++i) {
-    const auto j = (i + polygon.size() - 1) % polygon.size();
-    const auto a = polygon[i].y > p.y;
-    const auto b = polygon[j].y > p.y;
-    const auto t = (p.y - polygon[i].y) / (polygon[j].y - polygon[i].y);
-    const auto c = (polygon[j].x - polygon[i].x) * t + polygon[i].x;
-    if (a != b && p.x < c) {
-      inside = !inside;
-    }
-  }
-  return inside;
 }
 
 }  // namespace omm

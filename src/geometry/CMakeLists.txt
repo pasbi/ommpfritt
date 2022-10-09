@@ -3,6 +3,8 @@ target_sources(libommpfritt PRIVATE
   boundingbox.h
   direction.h
   direction.cpp
+  line.h
+  line.cpp
   matrix.cpp
   matrix.h
   objecttransformation.cpp
