@@ -106,7 +106,8 @@ bool PathVectorView::contains(const Vec2f& pos) const
 QString PathVectorView::to_string() const
 {
   static constexpr auto label = [](const auto& dedge) { return dedge.edge->label(); };
-  return static_cast<QStringList>(util::transform<QList>(this->edges(), label)).join(", ");
+  const auto es = static_cast<QStringList>(util::transform<QList>(edges(), label)).join(", ");
+  return QString("[%1] %2").arg(edges().size()).arg(es);
 }
 
 std::vector<PathPoint*> PathVectorView::path_points() const
@@ -130,7 +131,29 @@ QRectF PathVectorView::bounding_box() const
   return Point::bounding_box(util::transform<std::list>(path_points(), get_geometry));
 }
 
+std::vector<Vec2f> PathVectorView::bounding_polygon() const
 {
+  std::vector<Vec2f> poly;
+
+  // each edge can add at most three points since the end point of one edge is
+  // the start point of the next one and the sequence of edges is closed.
+  poly.reserve(m_edges.size() * 3);
+
+  for (const auto& edge : m_edges) {
+    poly.emplace_back(edge.start_point().geometry().position());
+    const auto add_tangent_maybe = [&poly, path = edge.edge->path()](const Point& p, const auto& direction) {
+      static constexpr auto eps = 0.001;
+      const Point::TangentKey key{path, direction};
+      if (p.tangent(key).magnitude > eps) {
+        poly.emplace_back(p.tangent_position(key));
+      }
+    };
+    add_tangent_maybe(edge.start_point().geometry(), Direction::Forward);
+    add_tangent_maybe(edge.end_point().geometry(), Direction::Backward);
+  }
+  poly.shrink_to_fit();
+  return poly;
+}
 
 std::vector<Edge*> PathVectorView::normalized() const
 {

@@ -100,7 +100,9 @@ bool Face::contains(const Face& other) const
   const auto pps_a = m_path_vector_view->bounding_polygon();
   const auto pps_b = other.m_path_vector_view->bounding_polygon();
 
-  return std::all_of(pps_b.begin(), pps_b.end(), [&pps_a](const auto& p) { return polygon_contains(pps_a, p); });
+
+  const auto not_outside = [&pps_a](const auto& p) { return polygon_contains(pps_a, p) != PolygonLocation::Outside; };
+  return std::all_of(pps_b.begin(), pps_b.end(), not_outside);
 }
 
 bool Face::operator==(const Face& other) const

@@ -17,7 +17,6 @@ class Graph
 public:
   explicit Graph(const PathVector& path_vector);
   void remove_edge(Edge* edge);
-//  void remove_bridges();
   [[nodiscard]] const std::set<Edge*>& edges() const;
   [[nodiscard]] const std::set<Edge*>& adjacent_edges(const PathPoint& p) const;
 
