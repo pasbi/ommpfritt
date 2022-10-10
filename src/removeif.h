@@ -1,7 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <algorithm>
 #include <set>
+#include <vector>
 
 template<typename T> class QList;
 

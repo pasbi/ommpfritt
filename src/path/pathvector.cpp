@@ -160,11 +160,16 @@ QPainterPath PathVector::to_painter_path() const
 
 std::set<Face> PathVector::faces() const
 {
-  // TODO works currently only for connected graphs where all edges belong to a face and each face
-  // with more than one edge.
-  auto faces = FaceDetector(*this).faces();
-  if (faces.size() > 1) {
-    faces.erase(outer_face(faces));
+  Graph graph(*this);
+  graph.remove_dead_ends();
+
+  std::set<Face> faces;
+  for (const auto& connected_component : graph.connected_components()) {
+    auto connected_faces = FaceDetector(connected_component).faces();
+    if (connected_faces.size() > 1) {
+      connected_faces.erase(outer_face(connected_faces));
+    }
+    faces.insert(connected_faces.begin(), connected_faces.end());
   }
   return faces;
 }

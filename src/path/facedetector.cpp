@@ -1,15 +1,15 @@
 #include "path/facedetector.h"
-#include "geometry/polarcoordinates.h"
-#include "path/pathpoint.h"
-#include "path/face.h"
 #include "common.h"
-#include "transform.h"
+#include "geometry/polarcoordinates.h"
+#include "logging.h"
+#include "path/face.h"
+#include "path/pathpoint.h"
 #include "path/pathvector.h"
 #include "path/pathvectorview.h"
-#include "logging.h"
-#include <vector>
+#include "removeif.h"
+#include "transform.h"
 #include <set>
-
+#include <vector>
 
 namespace
 {
@@ -49,14 +49,13 @@ private:
 namespace omm
 {
 
-FaceDetector::FaceDetector(const PathVector& path_vector) : m_graph(path_vector)
+FaceDetector::FaceDetector(Graph graph) : m_graph(std::move(graph))
 {
   for (auto* e : m_graph.edges()) {
     m_edges.emplace(e, Direction::Backward);
     m_edges.emplace(e, Direction::Forward);
   }
 
-  LINFO << "Face detector";
   while (!m_edges.empty()) {
     auto current = m_edges.extract(m_edges.begin()).value();
     std::deque<DEdge> sequence{current};
@@ -108,8 +107,7 @@ DEdge FaceDetector::find_next_edge(const DEdge& current) const
   }
 }
 
-Graph::Graph(const PathVector& path_vector)
-    : m_edges(util::transform<std::set>(path_vector.edges()))
+Graph::Graph(const PathVector& path_vector) : m_edges(util::transform<std::set>(path_vector.edges()))
 {
   for (auto* edge : m_edges) {
     m_adjacent_edges[edge->a().get()].insert(edge);
@@ -138,6 +136,61 @@ const std::set<Edge*>& Graph::edges() const
 const std::set<Edge*>& Graph::adjacent_edges(const PathPoint& p) const
 {
   return m_adjacent_edges.at(&p);
+}
+
+void Graph::remove_dead_ends()
+{
+  const auto is_not_on_fringe = [this](const auto& edge) { return degree(*edge->a()) != 1 && degree(*edge->b()) != 1; };
+  std::set<Edge*> fringe = util::remove_if(m_edges, is_not_on_fringe);
+
+  const auto add_to_fringe = [this, &fringe, &is_not_on_fringe](const PathPoint& p) {
+    const auto edges = util::remove_if(m_adjacent_edges.at(&p), is_not_on_fringe);
+    fringe.insert(edges.begin(), edges.end());
+  };
+
+  while (!fringe.empty()) {
+    Edge* const current = *fringe.begin();
+    fringe.erase(fringe.begin());
+    remove_edge(*current);
+    const auto i1 = m_adjacent_edges.find(current->a().get());
+    const auto i2 = m_adjacent_edges.find(current->b().get());
+    if (i1 != m_adjacent_edges.end() && i2 != m_adjacent_edges.end()) {
+      // current was not on fringe, impossible.
+    } else if (i1 != m_adjacent_edges.end()) {
+      add_to_fringe(*current->a());
+    } else if (i2 != m_adjacent_edges.end()) {
+      add_to_fringe(*current->b());
+    } else {
+      // may happen if current edge is lonely
+    }
+  }
+}
+
+std::list<Graph> Graph::connected_components() const
+{
+  return {*this};  // TODO
+}
+
+std::size_t Graph::degree(const PathPoint& p) const
+{
+  const auto it = m_adjacent_edges.find(&p);
+  if (it == m_adjacent_edges.end()) {
+    return 0;
+  } else {
+    return it->second.size();
+  }
+}
+
+void Graph::remove_edge(Edge& edge)
+{
+  m_edges.erase(&edge);
+  for (const auto& p : {edge.a(), edge.b()}) {
+    const auto it = m_adjacent_edges.find(p.get());
+    it->second.erase(&edge);
+    if (it->second.empty()) {
+      m_adjacent_edges.erase(it);
+    }
+  }
 }
 
 }  // namespace omm
