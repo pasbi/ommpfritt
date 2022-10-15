@@ -304,13 +304,14 @@ TEST_P(GraphTest, RotationReverseInvariance)
 TEST_P(GraphTest, Normalization)
 {
   const auto test_case = GetParam();
-  LINFO << test_case.path_vector().to_dot();
   for (auto face : GetParam().expected_faces()) {
     const auto edges = face.path_vector_view().normalized();
     for (std::size_t i = 1; i < edges.size(); ++i) {
       ASSERT_LT(edges.front(), edges.at(i));
     }
-    ASSERT_LT(edges.at(1), edges.back());
+    if (edges.size() > 2) {
+      ASSERT_LT(edges.at(1), edges.back());
+    }
   }
 }
 
