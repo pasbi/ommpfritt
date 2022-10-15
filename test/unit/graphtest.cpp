@@ -57,18 +57,14 @@ public:
     return std::move(*this);
   }
 
-  TestCase add_loop(const std::size_t path_index,
-                    const std::size_t point_index,
-                    const double arg0,
+  TestCase add_loop(const std::size_t path_index, const std::size_t point_index, const double arg0,
                     const double arg1) &&
   {
     const auto& src_path = *m_path_vector->paths().at(path_index);
     auto& loop = m_path_vector->add_path();
     auto* const hinge = src_path.points().at(point_index);
-    hinge->geometry().set_tangent({&loop, omm::Direction::Forward},
-                                  omm::PolarCoordinates(arg0, 1.0));
-    hinge->geometry().set_tangent({&loop, omm::Direction::Backward},
-                                  omm::PolarCoordinates(arg1, 1.0));
+    hinge->geometry().set_tangent({&loop, omm::Direction::Forward}, omm::PolarCoordinates(arg0, 1.0));
+    hinge->geometry().set_tangent({&loop, omm::Direction::Backward}, omm::PolarCoordinates(arg1, 1.0));
     auto shared_hinge = src_path.share(*hinge);
     auto& loop_edge = loop.add_edge(shared_hinge, shared_hinge);
     m_expected_faces.emplace(omm::PathVectorView({omm::DEdge::fwd(&loop_edge)}));
@@ -76,6 +72,19 @@ public:
     static constexpr auto deg = M_1_PI * 180.0;
     m_name += fmt::format("-loop[{}.{}-{}]", path_index, point_index, arg0 * deg, arg1 * deg);
     return std::move(*this);
+  }
+
+  TestCase add_loops(const std::size_t path_index, const std::size_t point_index, const double arg0, const double arg1,
+                     const std::size_t count) &&
+  {
+    auto tc = std::move(*this);
+    const double advance = (arg1 - arg0) / static_cast<double>(2 * count);
+    for (std::size_t i = 0; i < count; ++i) {
+      const double start = arg0 + 2 * i * advance;
+      const double end = arg0 + 2 * (i + 1) * advance;
+      tc = std::move(tc).add_loop(path_index, point_index, start, end);
+    }
+    return tc;
   }
 
   [[nodiscard]] auto n_expected_components() const
@@ -385,6 +394,8 @@ const auto test_cases = ::testing::Values(
     EXPAND_ELLIPSE(2, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
     EXPAND_ELLIPSE(4, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
     EXPAND_ELLIPSE(4, .add_loop(0, 2, M_PI - 1.0, M_PI + 1.0)),
+    EXPAND_ELLIPSE(4, .add_loops(0, 2, M_PI - 1.0, M_PI + 1.0, 2)),
+    EXPAND_ELLIPSE(4, .add_loops(0, 2, M_PI - 1.0, M_PI + 1.0, 6)),
     EXPAND_ELLIPSE(8, ),
     EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 1.0}))),
     grid({2, 3}, QMargins{}),

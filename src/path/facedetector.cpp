@@ -122,7 +122,7 @@ DEdge find_next_edge(const DEdge& current, const Graph& graph, const std::set<DE
   }
 }
 
-Face find_outer_face(const std::set<Face>& faces)
+std::optional<Face> find_outer_face(const std::set<Face>& faces)
 {
   assert(!faces.empty());
   static constexpr auto bb_area = [](const auto& face) {
@@ -139,7 +139,7 @@ Face find_outer_face(const std::set<Face>& faces)
       return face;
     }
   }
-  throw std::runtime_error("No face contains all other faces.");
+  return {};
 }
 
 std::set<Face> compute_faces_without_outer(Graph graph)
@@ -150,7 +150,9 @@ std::set<Face> compute_faces_without_outer(Graph graph)
   for (const auto& connected_component : graph.connected_components()) {
     auto c_faces = compute_faces_on_connected_graph_without_dead_ends(connected_component);
     if (c_faces.size() > 1) {
-      c_faces.erase(find_outer_face(c_faces));
+      if (const auto o_face = find_outer_face(c_faces); o_face.has_value()) {
+        c_faces.erase(o_face.value());
+      }
     }
     faces.insert(c_faces.begin(), c_faces.end());
   }
