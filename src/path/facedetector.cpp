@@ -119,7 +119,7 @@ void Graph::remove_edge(Edge* edge)
 {
   m_edges.erase(edge);
 
-  for (auto* const p : {edge->a().get(), edge->b().get()}) {
+  for (auto* const p : edge->points()) {
     const auto it = m_adjacent_edges.find(p);
     it->second.erase(edge);
     if (it->second.empty()) {
@@ -149,8 +149,7 @@ void Graph::remove_dead_ends()
   };
 
   while (!fringe.empty()) {
-    Edge* const current = *fringe.begin();
-    fringe.erase(fringe.begin());
+    auto* const current = fringe.extract(fringe.begin()).value();
     remove_edge(*current);
     const auto i1 = m_adjacent_edges.find(current->a().get());
     const auto i2 = m_adjacent_edges.find(current->b().get());

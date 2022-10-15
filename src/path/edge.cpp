@@ -83,4 +83,9 @@ bool Edge::is_loop() const noexcept
   return m_a.get() == m_b.get();
 }
 
+std::array<PathPoint*, 2> Edge::points() const
+{
+  return {m_a.get(), m_b.get()};
+}
+
 }  // namespace omm
