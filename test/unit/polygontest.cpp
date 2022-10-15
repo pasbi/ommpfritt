@@ -1,3 +1,4 @@
+#include "fmt/format.h"
 #include "geometry/line.h"
 #include "geometry/vec2.h"
 #include "logging.h"
@@ -9,6 +10,12 @@ struct TestCase
   std::vector<omm::Vec2f> polygon;
   std::vector<omm::Vec2f> expected_points_inside;
   std::vector<omm::Vec2f> expected_points_outside;
+
+  friend std::ostream& operator<<(std::ostream& os, const TestCase& tc)
+  {
+    const auto ps = util::transform(tc.polygon, [](const auto& v) { return fmt::format("({}, {})", v.x, v.y); });
+    return os << fmt::format("{}", fmt::join(ps.begin(), ps.end(), "-"));
+  }
 };
 
 class PolygonContainsTest : public ::testing::TestWithParam<TestCase>

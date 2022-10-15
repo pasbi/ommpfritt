@@ -1,4 +1,5 @@
 #include "geometry/line.h"
+#include "fmt/format.h"
 #include "geometry/vec2.h"
 #include "gtest/gtest.h"
 
@@ -9,6 +10,10 @@ public:
   omm::Line b;
   double expected_t;
   double expected_u;
+  friend std::ostream& operator<<(std::ostream& os, const LineIntersectionTestCase& tc)
+  {
+    return os << tc.a << "-" << tc.b;
+  }
 };
 
 class LineIntersectionTest : public ::testing::TestWithParam<LineIntersectionTestCase>
@@ -50,6 +55,10 @@ public:
   omm::Line line;
   omm::Vec2f point;
   double expected_distance;
+  friend std::ostream& operator<<(std::ostream& os, const LineDistanceTestCase& tc)
+  {
+    return os << tc.line << "-" << fmt::format("Point[{}, {}]", tc.point.x, tc.point.y);
+  }
 };
 
 class LineDistanceTest : public ::testing::TestWithParam<LineDistanceTestCase>
@@ -86,6 +95,10 @@ public:
   omm::Line line;
   omm::Vec2f point;
   double expected_t;
+  friend std::ostream& operator<<(std::ostream& os, const LineProjectionTestCase& tc)
+  {
+    return os << tc.line << "-" << fmt::format("Point[{}, {}]", tc.point.x, tc.point.y);
+  }
 };
 
 class LineProjectionTest : public ::testing::TestWithParam<LineProjectionTestCase>

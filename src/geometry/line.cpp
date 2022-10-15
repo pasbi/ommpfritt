@@ -1,4 +1,5 @@
 #include "geometry/line.h"
+#include "fmt/format.h"
 
 namespace omm
 {
@@ -34,6 +35,11 @@ double Line::project(const Vec2f& p) const noexcept
   const auto ab = b - a;
   const auto ap = p - a;
   return Vec2f::dot(ap, ab) / ab.euclidean_norm2();
+}
+
+std::ostream& operator<<(std::ostream& os, const Line& line)
+{
+  return os << fmt::format("Line[({}, {}), ({}, {})]", line.a.x, line.a.y, line.b.x, line.b.y);
 }
 
 }  // namespace omm

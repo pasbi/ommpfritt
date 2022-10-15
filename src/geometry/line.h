@@ -41,6 +41,7 @@ struct Line
   [[nodiscard]] Vec2f lerp(double t) const noexcept;
 
   [[nodiscard]] QString to_string() const;
+  friend std::ostream& operator<<(std::ostream& os, const Line& line);
 };
 
 }  // namespace omm

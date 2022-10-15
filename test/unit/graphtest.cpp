@@ -1,3 +1,4 @@
+#include "fmt/format.h"
 #include "geometry/point.h"
 #include "path/dedge.h"
 #include "path/edge.h"
@@ -15,15 +16,16 @@
 class TestCase
 {
 public:
-  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<omm::PathVectorView>&& pvvs)
-      : m_path_vector(m_path_vectors.emplace_back(std::move(path_vector)).get())
-      , m_expected_faces(util::transform<omm::Face>(std::move(pvvs)))
+  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<omm::PathVectorView>&& pvvs, std::string name)
+    : m_path_vector(m_path_vectors.emplace_back(std::move(path_vector)).get())
+    , m_expected_faces(util::transform<omm::Face>(std::move(pvvs)))
+    , m_name(std::move(name))
   {
   }
 
   template<typename Edges>
-  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<Edges>&& edgess)
-      : TestCase(std::move(path_vector), util::transform<omm::PathVectorView>(std::move(edgess)))
+  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<Edges>&& edgess, std::string name)
+    : TestCase(std::move(path_vector), util::transform<omm::PathVectorView>(std::move(edgess)), std::move(name))
   {
   }
 
@@ -48,6 +50,7 @@ public:
       arm.add_edge(last_point, next_point);
       last_point = next_point;
     }
+    m_name += fmt::format("-arm[{}.{}-{}]", path_index, point_index, geometries.size());
     return std::move(*this);
   }
 
@@ -66,12 +69,21 @@ public:
     auto shared_hinge = src_path.share(*hinge);
     auto& loop_edge = loop.add_edge(shared_hinge, shared_hinge);
     m_expected_faces.emplace(omm::PathVectorView({omm::DEdge::fwd(&loop_edge)}));
+
+    static constexpr auto deg = M_1_PI * 180.0;
+    m_name += fmt::format("-loop[{}.{}-{}]", path_index, point_index, arg0 * deg, arg1 * deg);
     return std::move(*this);
+  }
+
+  friend std::ostream& operator<<(std::ostream& os, const TestCase& tc)
+  {
+    return os << tc.m_name;
   }
 
 private:
   omm::PathVector* m_path_vector;
   std::set<omm::Face> m_expected_faces;
+  std::string m_name;
 
 private:
   // The TestCase objects are not persistent, hence the path vectors need to be stored beyond the
@@ -87,7 +99,7 @@ TestCase empty_paths(const std::size_t path_count)
   for (std::size_t i = 0; i < path_count; ++i) {
     pv->add_path();
   }
-  return {std::move(pv), {}};
+  return {std::move(pv), {}, fmt::format("{}-empty paths", path_count)};
 }
 
 TestCase ellipse(const std::size_t point_count, const bool closed, const bool no_tangents)
@@ -104,6 +116,12 @@ TestCase ellipse(const std::size_t point_count, const bool closed, const bool no
     }
   };
 
+  const auto name = [point_count, closed, no_tangents]() {
+    const auto s_open_closed = closed ? "closed" : "open";
+    const auto s_interp = no_tangents ? "linear" : "smooth";
+    return fmt::format("{}-Ellipse-{}-{}", point_count, s_open_closed, s_interp);
+  };
+
   auto pv = std::make_unique<omm::PathVector>();
   auto& path = pv->add_path();
   std::deque<omm::DEdge> edges;
@@ -114,15 +132,16 @@ TestCase ellipse(const std::size_t point_count, const bool closed, const bool no
   }
   if (closed && point_count > 1) {
     edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()), omm::Direction::Forward);
-    return {std::move(pv), std::set{std::move(edges)}};
+    return {std::move(pv), std::set{std::move(edges)}, name()};
   }
-  return {std::move(pv), {}};
+  return {std::move(pv), {}, name()};
 }
 
 TestCase rectangles(const std::size_t count)
 {
   auto pv = std::make_unique<omm::PathVector>();
   std::set<std::deque<omm::DEdge>> expected_pvvs;
+
   for (std::size_t i = 0; i < count; ++i) {
     auto& path = pv->add_path();
     const auto p = [pv=pv.get()](const double x, const double y) {
@@ -139,7 +158,7 @@ TestCase rectangles(const std::size_t count)
     edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()), omm::Direction::Forward);
     expected_pvvs.emplace(std::move(edges));
   }
-  return {std::move(pv), std::move(expected_pvvs)};
+  return {std::move(pv), std::move(expected_pvvs), fmt::format("{} Rectangles", count)};
 }
 
 TestCase grid(const QSize& size, const QMargins& margins)
@@ -185,7 +204,15 @@ TestCase grid(const QSize& size, const QMargins& margins)
     }
   }
 
-  return {std::move(pv), std::move(expected_pvvs)};
+  const auto name = [m = margins, size]() {
+    static constexpr auto fmt_m = [](const int value, const auto& name) {
+      return value == 0 ? "" : fmt::format("-{}={}", name, value);
+    };
+    const auto s_ms = fmt_m(m.left(), "l") + fmt_m(m.right(), "r") + fmt_m(m.top(), "t") + fmt_m(m.bottom(), "b");
+    return fmt::format("{}x{}-Grid{}", size.width(), size.height(), s_ms);
+  };
+
+  return {std::move(pv), std::move(expected_pvvs), name()};
 }
 
 TestCase leaf(std::vector<int> counts)
@@ -226,7 +253,10 @@ TestCase leaf(std::vector<int> counts)
     expected_pvvs.emplace(edges);
   }
 
-  return {std::move(pv), std::move(expected_pvvs)};
+  static constexpr auto format_count = [](const auto accu, const auto c) { return accu + fmt::format("-{}", c); };
+  const auto s_counts = std::accumulate(counts.begin(), counts.end(), std::string{}, format_count);
+
+  return {std::move(pv), std::move(expected_pvvs), "leaf" + s_counts};
 }
 
 class GraphTest : public ::testing::TestWithParam<TestCase>
