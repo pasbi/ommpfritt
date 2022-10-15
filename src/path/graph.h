@@ -23,6 +23,10 @@ public:
   void remove_dead_ends();
   [[nodiscard]] std::list<Graph> connected_components() const;
   void remove_edge(Edge& edge);
+  [[nodiscard]] std::set<PathPoint*> vertices() const;
+  [[nodiscard]] std::set<PathPoint*> connected_component(PathPoint& seed) const;
+  [[nodiscard]] Graph subgraph(const std::set<PathPoint*>& vertices) const;
+  [[nodiscard]] std::size_t degree(const PathPoint& p) const;
 
 private:
   std::set<Edge*> m_edges;

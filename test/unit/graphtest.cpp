@@ -1,3 +1,4 @@
+#include "path/graph.h"
 #include "fmt/format.h"
 #include "geometry/point.h"
 #include "path/dedge.h"
@@ -15,16 +16,19 @@
 class TestCase
 {
 public:
-  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<omm::PathVectorView>&& pvvs, std::string name)
+  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<omm::PathVectorView>&& pvvs,
+           const std::size_t n_expected_components, std::string name)
     : m_path_vector(m_path_vectors.emplace_back(std::move(path_vector)).get())
     , m_expected_faces(util::transform<omm::Face>(std::move(pvvs)))
+    , m_n_expected_components(n_expected_components)
     , m_name(std::move(name))
   {
   }
 
-  template<typename Edges>
-  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<Edges>&& edgess, std::string name)
-    : TestCase(std::move(path_vector), util::transform<omm::PathVectorView>(std::move(edgess)), std::move(name))
+  template<typename Edges> TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<Edges>&& edgess,
+                                    const std::size_t n_expected_components, std::string name)
+    : TestCase(std::move(path_vector), util::transform<omm::PathVectorView>(std::move(edgess)), n_expected_components,
+               std::move(name))
   {
   }
 
@@ -74,6 +78,11 @@ public:
     return std::move(*this);
   }
 
+  [[nodiscard]] auto n_expected_components() const
+  {
+    return m_n_expected_components;
+  }
+
   friend std::ostream& operator<<(std::ostream& os, const TestCase& tc)
   {
     return os << tc.m_name;
@@ -82,6 +91,7 @@ public:
 private:
   omm::PathVector* m_path_vector;
   std::set<omm::Face> m_expected_faces;
+  std::size_t m_n_expected_components;
   std::string m_name;
 
 private:
@@ -98,7 +108,7 @@ TestCase empty_paths(const std::size_t path_count)
   for (std::size_t i = 0; i < path_count; ++i) {
     pv->add_path();
   }
-  return {std::move(pv), {}, fmt::format("{}-empty paths", path_count)};
+  return {std::move(pv), {}, 0, fmt::format("{}-empty paths", path_count)};
 }
 
 TestCase ellipse(const std::size_t point_count, const bool closed, const bool no_tangents)
@@ -131,9 +141,9 @@ TestCase ellipse(const std::size_t point_count, const bool closed, const bool no
   }
   if (closed && point_count > 1) {
     edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()), omm::Direction::Forward);
-    return {std::move(pv), std::set{std::move(edges)}, name()};
+    return {std::move(pv), std::set{std::move(edges)}, 1, name()};
   }
-  return {std::move(pv), {}, name()};
+  return {std::move(pv), {}, 1, name()};
 }
 
 TestCase rectangles(const std::size_t count)
@@ -157,7 +167,7 @@ TestCase rectangles(const std::size_t count)
     edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()), omm::Direction::Forward);
     expected_pvvs.emplace(std::move(edges));
   }
-  return {std::move(pv), std::move(expected_pvvs), fmt::format("{} Rectangles", count)};
+  return {std::move(pv), std::move(expected_pvvs), count, fmt::format("{} Rectangles", count)};
 }
 
 TestCase grid(const QSize& size, const QMargins& margins)
@@ -211,7 +221,7 @@ TestCase grid(const QSize& size, const QMargins& margins)
     return fmt::format("{}x{}-Grid{}", size.width(), size.height(), s_ms);
   };
 
-  return {std::move(pv), std::move(expected_pvvs), name()};
+  return {std::move(pv), std::move(expected_pvvs), 1, name()};
 }
 
 TestCase leaf(std::vector<int> counts)
@@ -255,7 +265,7 @@ TestCase leaf(std::vector<int> counts)
   static constexpr auto format_count = [](const auto accu, const auto c) { return accu + fmt::format("-{}", c); };
   const auto s_counts = std::accumulate(counts.begin(), counts.end(), std::string{}, format_count);
 
-  return {std::move(pv), std::move(expected_pvvs), "leaf" + s_counts};
+  return {std::move(pv), std::move(expected_pvvs), 1, "leaf" + s_counts};
 }
 
 class GraphTest : public ::testing::TestWithParam<TestCase>
@@ -338,6 +348,12 @@ TEST_P(GraphTest, ComputeFaces)
   ASSERT_EQ(test_case.expected_faces(), actual_faces);
 }
 
+TEST_P(GraphTest, ConnectedComponents)
+{
+  const auto& test_case = GetParam();
+  EXPECT_EQ(omm::Graph(test_case.path_vector()).connected_components().size(), test_case.n_expected_components());
+}
+
 std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm::Vec2f& direction)
 {
   std::vector<omm::Point> ps;
@@ -360,10 +376,10 @@ const auto test_cases = ::testing::Values(
     empty_paths(1),
     empty_paths(10),
     rectangles(1),
-//    rectangles(3),
-//    rectangles(10),
+    rectangles(3),
+    rectangles(10),
     rectangles(1).add_arm(0, 0, linear_arm_geometry(3, {-1.0, 0.0})),
-//    rectangles(2).add_arm(1, 1, linear_arm_geometry(3, {-1.0, -1.0})),
+    rectangles(2).add_arm(1, 1, linear_arm_geometry(3, {-1.0, -1.0})),
     EXPAND_ELLIPSE(3, ),
     EXPAND_ELLIPSE(4, ),
     EXPAND_ELLIPSE(2, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),

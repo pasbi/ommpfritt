@@ -67,7 +67,55 @@ void Graph::remove_dead_ends()
 
 std::list<Graph> Graph::connected_components() const
 {
-  return {*this};  // TODO
+  auto unvisited_vs = vertices();
+  std::list<std::set<PathPoint*>> components;
+  while (!unvisited_vs.empty()) {
+    const auto& current_component = components.emplace_back(connected_component(**unvisited_vs.begin()));
+    for (auto* const v : current_component) {
+      unvisited_vs.erase(v);
+    }
+  }
+
+  return util::transform(components, [this](const auto& component) { return subgraph(component); });
+}
+
+Graph Graph::subgraph(const std::set<PathPoint*>& vertices) const
+{
+  Graph g;
+  for (auto* const v : vertices) {
+    const auto edges = m_adjacent_edges.at(v);
+    g.m_adjacent_edges.emplace(v, edges);
+    g.m_edges.insert(edges.begin(), edges.end());
+  }
+  return g;
+}
+
+std::set<PathPoint*> Graph::connected_component(PathPoint& seed) const
+{
+  std::set dfs{&seed};
+  std::set<PathPoint*> component;
+  while (!dfs.empty()) {
+    auto* const v = dfs.extract(dfs.begin()).value();
+    component.insert(v);
+    for (auto* const e : m_adjacent_edges.at(v)) {
+      for (auto* const p : e->points()) {
+        if (!component.contains(p)) {
+          dfs.insert(p);
+        }
+      }
+    }
+  }
+  return component;
+}
+
+std::set<PathPoint*> Graph::vertices() const
+{
+  std::set<PathPoint*> vs;
+  for (const auto* const edge : m_edges) {
+    vs.insert(edge->a().get());
+    vs.insert(edge->b().get());
+  }
+  return vs;
 }
 
 std::size_t Graph::degree(const PathPoint& p) const
