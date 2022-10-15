@@ -384,7 +384,7 @@ const auto test_cases = ::testing::Values(
     EXPAND_ELLIPSE(4, ),
     EXPAND_ELLIPSE(2, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
     EXPAND_ELLIPSE(4, .add_arm(0, 1, linear_arm_geometry(3, {-1.0, -1.0}))),
-//    EXPAND_ELLIPSE(4, .add_loop(0, 2, M_PI - 1.0, M_PI + 1.0)),
+    EXPAND_ELLIPSE(4, .add_loop(0, 2, M_PI - 1.0, M_PI + 1.0)),
     EXPAND_ELLIPSE(8, ),
     EXPAND_ELLIPSE(100, .add_arm(0, 2, linear_arm_geometry(2, {0.0, 1.0}))),
     grid({2, 3}, QMargins{}),

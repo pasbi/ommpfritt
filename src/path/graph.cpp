@@ -3,6 +3,7 @@
 #include "path/pathvector.h"
 #include "removeif.h"
 #include "transform.h"
+#include <numeric>
 
 namespace omm
 {
@@ -124,7 +125,11 @@ std::size_t Graph::degree(const PathPoint& p) const
   if (it == m_adjacent_edges.end()) {
     return 0;
   } else {
-    return it->second.size();
+    const auto& edges = it->second;
+    const auto accumulate_degrees = [p = &p](const auto accu, const Edge* const edge) {
+      return accu + (edge->a().get() == p ? 1 : 0) + (edge->b().get() == p ? 1 : 0);
+    };
+    return std::accumulate(edges.begin(), edges.end(), 0, accumulate_degrees);
   }
 }
 
@@ -132,10 +137,11 @@ void Graph::remove_edge(Edge& edge)
 {
   m_edges.erase(&edge);
   for (const auto& p : {edge.a(), edge.b()}) {
-    const auto it = m_adjacent_edges.find(p.get());
-    it->second.erase(&edge);
-    if (it->second.empty()) {
-      m_adjacent_edges.erase(it);
+    if (const auto it = m_adjacent_edges.find(p.get()); it != m_adjacent_edges.end()) {
+      it->second.erase(&edge);
+      if (it->second.empty()) {
+        m_adjacent_edges.erase(it);
+      }
     }
   }
 }
