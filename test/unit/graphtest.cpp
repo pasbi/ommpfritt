@@ -11,7 +11,6 @@
 #include "transform.h"
 #include "gtest/gtest.h"
 #include <QSize>
-#include <path/pathvectorview.h>
 
 class TestCase
 {
@@ -317,11 +316,16 @@ TEST_P(GraphTest, Normalization)
 
 TEST_P(GraphTest, ComputeFaces)
 {
-  static int i = 0;
-  ommtest::Application app;
+  static constexpr auto print_graph_into_svg = false;
+
   const auto& test_case = GetParam();
-  //  std::cout << test_case.path_vector().to_dot().toStdString() << std::endl;
-  test_case.path_vector().to_svg(QString("/tmp/foo_%1.svg").arg(i++, 2, 10, QChar('0')));
+
+  if constexpr (print_graph_into_svg) {
+    static int i = 0;
+    ommtest::Application app;
+    //  std::cout << test_case.path_vector().to_dot().toStdString() << std::endl;
+    test_case.path_vector().to_svg(QString("/tmp/foo_%1.svg").arg(i++, 2, 10, QChar('0')));
+  }
 
   const auto actual_faces = test_case.path_vector().faces();
   for (auto& face : test_case.expected_faces()) {
