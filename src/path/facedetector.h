@@ -11,17 +11,14 @@ namespace omm
 
 class Face;
 
-class FaceDetector
+namespace face_detector
 {
-public:
-  explicit FaceDetector(Graph graph);
-  const std::set<Face>& faces() const;
-  DEdge find_next_edge(const DEdge& dedge) const;
 
-private:
-  Graph m_graph;
-  std::set<DEdge> m_edges;
-  std::set<Face> m_faces;
-};
+[[nodiscard]] std::set<Face> compute_faces_without_outer(Graph graph);
+[[nodiscard]] std::set<Face> compute_faces_on_connected_graph_without_dead_ends(const Graph& graph);
+[[nodiscard]] Face find_outer_face(const std::set<Face>& faces);
+[[nodiscard]] DEdge find_next_edge(const DEdge& current, const Graph& graph, const std::set<DEdge>& white_list);
+
+}  // namespace face_detector
 
 }  // namespace omm

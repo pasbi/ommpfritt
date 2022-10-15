@@ -16,58 +16,6 @@
 #include <QPainter>
 #include <QSvgGenerator>
 
-namespace
-{
-
-template<typename Key, typename T> std::set<T> max_elements(const std::set<T>& vs, const Key& key)
-{
-  if (vs.empty()) {
-    return {};
-  }
-  std::set<T> out{*vs.begin()};
-  auto max_value = key(*vs.begin());
-  for (auto it = std::next(vs.begin()); it != vs.end(); ++it) {
-    const auto& v = *it;
-    if (const auto value = key(v); value == max_value) {
-      out.insert(v);
-    } else if (value > max_value) {
-      out = {v};
-      max_value = value;
-    }
-  }
-  return out;
-}
-
-/**
- * @brief outer_face returns the face that contains all other faces.
- */
-omm::Face outer_face(const std::set<omm::Face>& faces)
-{
-  std::cout << "compute outer face\n";
-  assert(!faces.empty());
-  static constexpr auto bb_area = [](const auto& face) {
-    const auto bb = face.path_vector_view().bounding_box();
-    return bb.width() * bb.height();
-  };
-
-  // the outer face must have maximal bounding box area ...
-  auto outers = max_elements(faces, bb_area);
-
-  for (const auto& o : outers) {
-    std::cout << "  o: " << o.to_string().toStdString() << "\n";
-  }
-
-  // ... however, multiple faces might have maximal bounding box area ...
-  for (const auto& face : outers) {
-    if (std::all_of(outers.begin(), outers.end(), [&face](const auto& f) { return face.contains(f); })) {
-      return face;
-    }
-  }
-  throw std::runtime_error("No face contains all other faces.");
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -160,18 +108,7 @@ QPainterPath PathVector::to_painter_path() const
 
 std::set<Face> PathVector::faces() const
 {
-  Graph graph(*this);
-  graph.remove_dead_ends();
-
-  std::set<Face> faces;
-  for (const auto& connected_component : graph.connected_components()) {
-    auto connected_faces = FaceDetector(connected_component).faces();
-    if (connected_faces.size() > 1) {
-      connected_faces.erase(outer_face(connected_faces));
-    }
-    faces.insert(connected_faces.begin(), connected_faces.end());
-  }
-  return faces;
+  return face_detector::compute_faces_without_outer(Graph(*this));
 }
 
 std::vector<Edge*> PathVector::edges() const
