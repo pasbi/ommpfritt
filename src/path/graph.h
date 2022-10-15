@@ -1,35 +1,32 @@
-//#pragma once
+#pragma once
 
-//#include <deque>
-//#include <string>
-//#include <set>
-//#include <memory>
-//#include <QString>
+#include <list>
+#include <map>
+#include <set>
 
-//namespace omm
-//{
+namespace omm
+{
 
-//class PathPoint;
-//class Edge;
-//class Face;
-//class PathVector;  // NOLINT(bugprone-forward-declaration-namespace)
+class Edge;
+class PathPoint;
+class PathVector;
 
-//class Graph
-//{
-//public:
-//  class Impl;
-//  Graph(const PathVector& path_vector);
-//  Graph(const Graph& other) = delete;
-//  Graph(Graph&& other) = default;
-//  Graph& operator=(const Graph& other) = delete;
-//  Graph& operator=(Graph&& other) = default;
-//  ~Graph();
+class Graph
+{
+public:
+  explicit Graph(const PathVector& path_vector);
+  explicit Graph() = default;
+  void remove_edge(Edge* edge);
+  [[nodiscard]] const std::set<Edge*>& edges() const;
+  [[nodiscard]] const std::set<Edge*>& adjacent_edges(const PathPoint& p) const;
 
-//  [[nodiscard]] std::set<Face> compute_faces() const;
-//  [[nodiscard]] QString to_dot() const;
+  void remove_dead_ends();
+  [[nodiscard]] std::list<Graph> connected_components() const;
+  void remove_edge(Edge& edge);
 
-//private:
-//  std::unique_ptr<Impl> m_impl;
-//};
+private:
+  std::set<Edge*> m_edges;
+  std::map<const PathPoint*, std::set<Edge*>> m_adjacent_edges;
+};
 
-//}  // namespace omm
+}  // namespace omm
