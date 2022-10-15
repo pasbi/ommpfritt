@@ -27,11 +27,14 @@ public:
   {
   }
 
+  [[nodiscard]] double angle_to(const omm::DEdge& edge) const noexcept
+  {
+    return omm::python_like_mod(edge.start_angle() - m_base_arg, 2 * M_PI);
+  }
+
   [[nodiscard]] bool operator()(const omm::DEdge& a, const omm::DEdge& b) const noexcept
   {
-    auto a_arg = omm::python_like_mod(a.start_angle() - m_base_arg, 2 * M_PI);
-    auto b_arg = omm::python_like_mod(b.start_angle() - m_base_arg, 2 * M_PI);
-    return a_arg < b_arg;
+    return angle_to(a) < angle_to(b);
   }
 
 private:
@@ -55,20 +58,20 @@ FaceDetector::FaceDetector(Graph graph) : m_graph(std::move(graph))
     auto current = m_edges.extract(m_edges.begin()).value();
     std::deque<DEdge> sequence{current};
 
-    const PathPoint* const start_point = &current.start_point();
-    while (true) {
+    const auto is_face_done = [&sequence, this,
+                               start_point = &current.start_point()](const PathPoint& current_end_point) {
+      if (&current_end_point != start_point) {
+        return false;
+      }
+      m_faces.emplace(PathVectorView(sequence));
+      return true;
+    };
+
+    while (!is_face_done(current.end_point())) {
       auto const next = find_next_edge(current);
-      // TODO what about single-edge loops?
-      if (const auto v = m_edges.extract(next); v.empty()) {
-        break;
-      } else {
-        sequence.emplace_back(next);
-      }
-      if (&next.end_point() == start_point) {
-        m_faces.emplace(PathVectorView(sequence));
-        break;
-      }
-      current = next;
+      [[maybe_unused]] const auto v = m_edges.extract(next);
+      assert(!v.empty());  // The graph must not have dead ends! Every edge must be in exactly two faces.
+      current = sequence.emplace_back(next);
     }
   }
 }
@@ -93,8 +96,9 @@ DEdge FaceDetector::find_next_edge(const DEdge& current) const
     }
   }
 
-  const CCWComparator compare(current);
-  const auto min_it = std::min_element(candidates.begin(), candidates.end(), compare);
+  const CCWComparator compare_with_current(current);
+
+  const auto min_it = std::min_element(candidates.begin(), candidates.end(), compare_with_current);
   if (min_it == candidates.end()) {
     return {};
   } else {

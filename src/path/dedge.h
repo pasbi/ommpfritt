@@ -21,8 +21,10 @@ struct DEdge
   [[nodiscard]] PathPoint& start_point() const;
   [[nodiscard]] double start_angle() const;
   [[nodiscard]] double end_angle() const;
-  [[nodiscard]] double angle(const PathPoint& hinge, const PathPoint& other) const;
   QString to_string() const;
+
+private:
+  [[nodiscard]] double angle(const PathPoint& hinge, const PathPoint& other) const;
 };
 
 }  // namespace omm

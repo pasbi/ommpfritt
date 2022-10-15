@@ -57,13 +57,14 @@ double DEdge::end_angle() const
 
 double DEdge::angle(const PathPoint& hinge, const PathPoint& other_point) const
 {
-  const auto key = Point::TangentKey{edge->path(), direction};
+  const auto key_direction = &hinge == edge->a().get() ? Direction::Backward : Direction::Forward;
+  const auto key = Point::TangentKey{edge->path(), key_direction};
   const auto tangent = hinge.geometry().tangent(key);
   static constexpr double eps = 0.1;
   if (tangent.magnitude > eps) {
     return tangent.argument;
   } else {
-    const auto other_key = Point::TangentKey{edge->path(), other(direction)};
+    const auto other_key = Point::TangentKey{edge->path(), other(key_direction)};
     const auto t_pos = other_point.geometry().tangent_position(other_key);
     const auto o_pos = hinge.geometry().position();
     return PolarCoordinates(t_pos - o_pos).argument;
