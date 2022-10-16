@@ -91,7 +91,10 @@ std::set<Face> compute_faces_on_connected_graph_without_dead_ends(const Graph& g
     while (!is_face_done(current.end_point())) {
       auto const next = find_next_edge(current, graph, edges);
       [[maybe_unused]] const auto v = edges.extract(next);
-      assert(!v.empty());  // The graph must not have dead ends! Every edge must be in exactly two faces.
+      if (v.empty()) {
+        // Graph is not planar or has dead ends
+        return {};
+      }
       current = sequence.emplace_back(next);
     }
   }

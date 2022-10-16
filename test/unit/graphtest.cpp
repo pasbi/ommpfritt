@@ -379,7 +379,7 @@ std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm:
   return ps;
 }
 
-TestCase special_test()
+TestCase special_test(const std::size_t variant)
 {
   using PC = omm::PolarCoordinates;
   auto pv = std::make_unique<omm::PathVector>();
@@ -403,10 +403,8 @@ TestCase special_test()
 
   auto& inner = pv->add_path();
   inner.add_edge(points.at(1), points.at(4));
-
   points.at(1)->geometry().set_tangent({&inner, omm::Direction::Backward}, PC{});
   points.at(1)->geometry().set_tangent({&inner, omm::Direction::Forward}, PC{});
-  points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward}, PC{});
   points.at(4)->geometry().set_tangent({&inner, omm::Direction::Forward}, PC{});
   points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
   points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
@@ -423,7 +421,25 @@ TestCase special_test()
       omm::DEdge::fwd(outer.edges().at(4)),
   };
 
-  return {std::move(pv), std::set{face_1, face_2}, 1, "special test"};
+  std::set expected_faces{face_1, face_2};
+  switch (variant) {
+  case 0:
+    points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward}, PC{});
+    break;
+  case 1:
+    points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward},
+                                         PC{-0.6675554919511357, 250.7695451381673});
+    break;
+  case 2:
+    points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward},
+                                         PC{-0.6675554919511357, 350.7695451381673});
+    expected_faces.clear();  // the graph is not planar
+    break;
+  default:
+    assert(false);
+  }
+
+  return {std::move(pv), std::move(expected_faces), 1, "special-test-" + std::to_string(variant)};
 }
 
 // clang-format off
@@ -457,7 +473,9 @@ const auto test_cases = ::testing::Values(
     leaf({2, 1, 5}),
     leaf({1, 3}),
     leaf({2, 1, 1, 2}),
-    special_test()
+    special_test(0),
+    special_test(1),
+    special_test(2)
 );
 // clang-format on
 
