@@ -352,11 +352,13 @@ TEST_P(GraphTest, ComputeFaces)
   }
 
   const auto actual_faces = test_case.path_vector().faces();
+  LDEBUG << "Expected:";
   for (auto& face : test_case.expected_faces()) {
-    std::cout << "E: " << face.to_string().toStdString() << std::endl;
+    LDEBUG << "  " << face.to_string();
   }
+  LDEBUG << "Actual:";
   for (auto& face : actual_faces) {
-    std::cout << "A: " << face.to_string().toStdString() << std::endl;
+    LDEBUG << " " << face.to_string();
   }
   ASSERT_EQ(test_case.expected_faces(), actual_faces);
 }
