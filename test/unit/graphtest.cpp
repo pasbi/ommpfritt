@@ -377,6 +377,53 @@ std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm:
   return ps;
 }
 
+TestCase special_test()
+{
+  using PC = omm::PolarCoordinates;
+  auto pv = std::make_unique<omm::PathVector>();
+  auto& outer = pv->add_path();
+  const auto make_point = [&outer, &pv = *pv](const omm::Vec2f& pos) {
+    omm::Point geometry{pos};
+    geometry.set_tangent({&outer, omm::Direction::Backward}, PC{});
+    geometry.set_tangent({&outer, omm::Direction::Forward}, PC{});
+    return std::make_unique<omm::PathPoint>(geometry, &pv);
+  };
+  std::deque<std::shared_ptr<omm::PathPoint>> points;
+  points.emplace_back(make_point({-75.5, -155.0}));
+  points.emplace_back(make_point({198.5, -183.0}));
+  points.emplace_back(make_point({281.5, -10.0}));
+  points.emplace_back(make_point({237.5, 129.0}));
+  points.emplace_back(make_point({-39.5, 83.0}));
+
+  for (std::size_t i = 0; i < points.size(); ++i) {
+    outer.add_edge(points.at(i), points.at((i + 1) % points.size()));
+  }
+
+  auto& inner = pv->add_path();
+  inner.add_edge(points.at(1), points.at(4));
+
+  points.at(1)->geometry().set_tangent({&inner, omm::Direction::Backward}, PC{});
+  points.at(1)->geometry().set_tangent({&inner, omm::Direction::Forward}, PC{});
+  points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward}, PC{});
+  points.at(4)->geometry().set_tangent({&inner, omm::Direction::Forward}, PC{});
+  points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
+  points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+
+  std::deque face_1{
+      omm::DEdge::fwd(outer.edges().at(1)),
+      omm::DEdge::fwd(outer.edges().at(2)),
+      omm::DEdge::fwd(outer.edges().at(3)),
+      omm::DEdge::bwd(inner.edges().at(0)),
+  };
+  std::deque face_2{
+      omm::DEdge::fwd(outer.edges().at(0)),
+      omm::DEdge::fwd(inner.edges().at(0)),
+      omm::DEdge::fwd(outer.edges().at(4)),
+  };
+
+  return {std::move(pv), std::set{face_1, face_2}, 1, "special test"};
+}
+
 // clang-format off
 #define EXPAND_ELLIPSE(N, ext) \
   ellipse(N, true, true) ext, \
@@ -407,7 +454,8 @@ const auto test_cases = ::testing::Values(
     grid({8, 7}, QMargins{1, 2, 2, 3}),
     leaf({2, 1, 5}),
     leaf({1, 3}),
-    leaf({2, 1, 1, 2})
+    leaf({2, 1, 1, 2}),
+    special_test()
 );
 // clang-format on
 

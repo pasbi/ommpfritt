@@ -57,7 +57,7 @@ double DEdge::end_angle() const
 
 double DEdge::angle(const PathPoint& hinge, const PathPoint& other_point) const
 {
-  const auto key_direction = &hinge == edge->a().get() ? Direction::Backward : Direction::Forward;
+  const auto key_direction = &hinge == edge->a().get() ? Direction::Forward : Direction::Backward;
   const auto key = Point::TangentKey{edge->path(), key_direction};
   const auto tangent = hinge.geometry().tangent(key);
   static constexpr double eps = 0.1;
