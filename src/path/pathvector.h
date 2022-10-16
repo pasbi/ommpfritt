@@ -68,6 +68,7 @@ public:
   [[nodiscard]] QString to_dot() const;
   void to_svg(const QString& filename) const;
   [[nodiscard]] QRectF bounding_box() const;
+  void set_path_object(PathObject* path_object);
 
   static std::unique_ptr<PathVector> join(const std::deque<PathVector*>& pvs, double eps);
 

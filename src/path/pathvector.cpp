@@ -10,7 +10,6 @@
 #include "path/path.h"
 #include "path/pathpoint.h"
 #include "path/pathvectorisomorphism.h"
-#include "path/pathvectorview.h"
 #include "removeif.h"
 #include <QObject>
 #include <QPainter>
@@ -413,6 +412,11 @@ QRectF PathVector::bounding_box() const
 {
   static constexpr auto get_geometry = [](const auto* const pp) { return pp->geometry(); };
   return Point::bounding_box(util::transform<std::list>(points(), get_geometry));
+}
+
+void PathVector::set_path_object(PathObject* path_object)
+{
+  m_path_object = path_object;
 }
 
 }  // namespace omm

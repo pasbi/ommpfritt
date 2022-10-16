@@ -35,8 +35,7 @@ PathObject::PathObject(Scene* scene)
 }
 
 PathObject::PathObject(const PathObject& other)
-  : Object(other)
-  , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
+  : Object(other), m_path_vector(std::make_unique<PathVector>(*other.m_path_vector, this))
 {
 }
 
@@ -44,7 +43,7 @@ PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
   : Object(scene)
   , m_path_vector(std::move(path_vector))
 {
-  assert(path_vector->path_object() == this);
+  m_path_vector->set_path_object(this);
   static const auto category = QObject::tr("path");
 
   create_property<OptionProperty>(INTERPOLATION_PROPERTY_KEY)
