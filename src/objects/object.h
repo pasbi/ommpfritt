@@ -88,7 +88,7 @@ private:
    */
 public:
   virtual std::unique_ptr<PathVector> compute_geometry() const;
-  virtual std::vector<Face> compute_faces() const;
+  virtual std::set<Face> compute_faces() const;
 
 public:
   enum class Interpolation { Natural, Distance };
@@ -99,10 +99,11 @@ public:
 
 private:
   std::unique_ptr<CachedGetter<std::unique_ptr<PathVector>, Object>> m_cached_geometry_getter;
-  std::unique_ptr<CachedGetter<std::vector<Face>, Object>> m_cached_faces_getter;
+  std::unique_ptr<CachedGetter<std::set<Face>, Object>> m_cached_faces_getter;
+
 public:
   const PathVector& geometry() const;
-  const std::vector<Face>& faces() const;
+  const std::set<Face>& faces() const;
 
   TagList tags;
 

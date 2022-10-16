@@ -566,9 +566,9 @@ std::unique_ptr<PathVector> Object::compute_geometry() const
   return std::make_unique<PathVector>();
 }
 
-std::vector<Face> Object::compute_faces() const
+std::set<Face> Object::compute_faces() const
 {
-  return {};
+  return geometry().faces();
 }
 
 Geom::PathVectorTime Object::compute_path_vector_time(double t, Interpolation interpolation) const
@@ -748,7 +748,7 @@ const PathVector& Object::geometry() const
   return *m_cached_geometry_getter->operator()();
 }
 
-const std::vector<Face>& Object::faces() const
+const std::set<Face>& Object::faces() const
 {
   return m_cached_faces_getter->operator()();
 }
