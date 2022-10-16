@@ -341,10 +341,14 @@ TEST_P(GraphTest, ComputeFaces)
   const auto& test_case = GetParam();
 
   if constexpr (print_graph_into_svg) {
-    static int i = 0;
     ommtest::Application app;
-    //  std::cout << test_case.path_vector().to_dot().toStdString() << std::endl;
-    test_case.path_vector().to_svg(QString("/tmp/foo_%1.svg").arg(i++, 2, 10, QChar('0')));
+    QString name(::testing::UnitTest::GetInstance()->current_test_case()->name());
+    name.replace("/", "_");
+    std::ostringstream oss;
+    oss << "/tmp/foo_" << name.toStdString() << "_" << test_case << ".svg";
+    const auto fname = QString::fromStdString(oss.str());
+    test_case.path_vector().to_svg(fname);
+    LDEBUG << "save svg file " << fname;
   }
 
   const auto actual_faces = test_case.path_vector().faces();
