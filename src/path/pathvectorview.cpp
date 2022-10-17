@@ -91,8 +91,18 @@ QPainterPath PathVectorView::to_painter_path() const
   }
   QPainterPath p;
   p.moveTo(m_edges.front().start_point().geometry().position().to_pointf());
-  for (std::size_t i = 0; i < m_edges.size(); ++i) {
-    Path::draw_segment(p, m_edges[i].start_point(), m_edges[i].end_point(), m_edges[i].edge->path());
+  for (const auto& edge : m_edges) {
+    // TODO why can't we just use Path::draw_segment ?
+    auto* const path = edge.edge->path();
+    const auto g1 = edge.start_point().geometry();
+    const auto g2 = edge.end_point().geometry();
+    auto bwd = Direction::Backward;
+    auto fwd = Direction::Forward;
+    if (edge.direction == Direction::Forward) {
+      std::swap(bwd, fwd);
+    }
+    p.cubicTo(g1.tangent_position({path, bwd}).to_pointf(), g2.tangent_position({path, fwd}).to_pointf(),
+              g2.position().to_pointf());
   }
 
   return p;
