@@ -403,11 +403,6 @@ TestCase special_test(const std::size_t variant)
 
   auto& inner = pv->add_path();
   inner.add_edge(points.at(1), points.at(4));
-  points.at(1)->geometry().set_tangent({&inner, omm::Direction::Backward}, PC{});
-  points.at(1)->geometry().set_tangent({&inner, omm::Direction::Forward}, PC{});
-  points.at(4)->geometry().set_tangent({&inner, omm::Direction::Forward}, PC{});
-  points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
-  points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
 
   std::deque face_1{
       omm::DEdge::fwd(outer.edges().at(1)),
@@ -415,6 +410,7 @@ TestCase special_test(const std::size_t variant)
       omm::DEdge::fwd(outer.edges().at(3)),
       omm::DEdge::bwd(inner.edges().at(0)),
   };
+
   std::deque face_2{
       omm::DEdge::fwd(outer.edges().at(0)),
       omm::DEdge::fwd(inner.edges().at(0)),
@@ -425,14 +421,20 @@ TestCase special_test(const std::size_t variant)
   switch (variant) {
   case 0:
     points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward}, PC{});
+    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
     break;
   case 1:
     points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward},
                                          PC{-0.6675554919511357, 250.7695451381673});
+    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
     break;
   case 2:
     points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward},
                                          PC{-0.6675554919511357, 350.7695451381673});
+    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
     expected_faces.clear();  // the graph is not planar
     break;
   default:
