@@ -7,9 +7,11 @@
 
 namespace omm
 {
+
 class Application;
 class PythonEngine;
 class Options;
+class PathVector;
 }  // namespace omm
 
 namespace ommtest
@@ -43,6 +45,23 @@ private:
 
 bool have_opengl();
 
-#define SKIP_IF_NO_OPENGL do { if (!ommtest::have_opengl()) { GTEST_SKIP(); } } while (false)
+#define SKIP_IF_NO_OPENGL \
+  do { \
+    if (!ommtest::have_opengl()) { \
+      GTEST_SKIP(); \
+    } \
+  } while (false)
+
+class PathVectorHeap
+{
+protected:
+  omm::PathVector* annex(std::unique_ptr<omm::PathVector> pv);
+
+private:
+  // The TestCase objects are not persistent, hence the path vectors need to be stored beyond the
+  // lifetime of the test case.
+  static std::list<std::unique_ptr<omm::PathVector>> m_path_vectors;
+};
+
 
 }  // namespace ommtest

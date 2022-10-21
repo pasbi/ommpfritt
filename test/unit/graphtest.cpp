@@ -13,12 +13,12 @@
 #include "gtest/gtest.h"
 #include <QSize>
 
-class TestCase
+class TestCase : private ommtest::PathVectorHeap
 {
 public:
   TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<omm::PathVectorView>&& pvvs,
            const std::size_t n_expected_components, std::string name)
-    : m_path_vector(m_path_vectors.emplace_back(std::move(path_vector)).get())
+    : m_path_vector(annex(std::move(path_vector)))
     , m_expected_faces(util::transform<omm::Face>(std::move(pvvs)))
     , m_n_expected_components(n_expected_components)
     , m_name(std::move(name))
@@ -102,14 +102,7 @@ private:
   std::set<omm::Face> m_expected_faces;
   std::size_t m_n_expected_components;
   std::string m_name;
-
-private:
-  // The TestCase objects are not persistent, hence the path vectors need to be stored beyond the
-  // lifetime of the test case.
-  static std::list<std::unique_ptr<omm::PathVector>> m_path_vectors;
 };
-
-std::list<std::unique_ptr<omm::PathVector>> TestCase::m_path_vectors;
 
 TestCase empty_paths(const std::size_t path_count)
 {
