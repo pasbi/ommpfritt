@@ -2,6 +2,8 @@
 #include "geometry/point.h"
 #include "path/pathpoint.h"
 
+#include <2geom/bezier-curve.h>
+
 namespace omm
 {
 
@@ -53,6 +55,14 @@ double DEdge::start_angle() const
 double DEdge::end_angle() const
 {
   return angle(end_point(), start_point());
+}
+
+std::unique_ptr<Geom::Curve> DEdge::to_geom_curve() const
+{
+  const std::vector<Vec2f> pts{
+      start_point().geometry().position(), start_point().geometry().tangent_position({edge->path(), direction}),
+      end_point().geometry().tangent_position({edge->path(), other(direction)}), end_point().geometry().position()};
+  return std::make_unique<Geom::BezierCurveN<3>>(util::transform(std::move(pts), &Vec2f::to_geom_point));
 }
 
 double DEdge::angle(const PathPoint& hinge, const PathPoint& other_point) const

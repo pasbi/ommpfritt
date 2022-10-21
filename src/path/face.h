@@ -41,7 +41,7 @@ public:
   [[nodiscard]] bool is_valid() const noexcept;
   [[nodiscard]] PathVectorView& path_vector_view();
   [[nodiscard]] const PathVectorView& path_vector_view() const;
-  [[nodiscard]] bool contains(const Face& other) const;
+  [[nodiscard]] double area() const;
 
   [[nodiscard]] bool operator==(const Face& other) const;
   [[nodiscard]] bool operator!=(const Face& other) const;

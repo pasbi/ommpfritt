@@ -91,18 +91,22 @@ const PathVectorView& Face::path_vector_view() const
   return *m_path_vector_view;
 }
 
-bool Face::contains(const Face& other) const
+double Face::area() const
 {
-  // this and other must be `simply_closed`, i.e. not intersect themselves respectively.
-  assert(is_valid());
-  assert(other.is_valid());
-
-  const auto pps_a = m_path_vector_view->bounding_polygon();
-  const auto pps_b = other.m_path_vector_view->bounding_polygon();
-
-
-  const auto not_outside = [&pps_a](const auto& p) { return polygon_contains(pps_a, p) != PolygonLocation::Outside; };
-  return std::all_of(pps_b.begin(), pps_b.end(), not_outside);
+  // See Green's Theorem and Leibniz' Sektorformel
+  const auto g_path = m_path_vector_view->to_geom();
+  double sum = 0.0;
+  for (std::size_t i = 0; i < g_path.size(); ++i) {
+    const auto& curve = static_cast<const Geom::BezierCurveN<3>&>(g_path.at(i));
+    const auto& derivative = static_cast<const Geom::BezierCurveN<2>&>(*curve.derivative());
+    const auto x = curve.fragment()[0];
+    const auto y = curve.fragment()[1];
+    const auto dx = derivative.fragment()[0];
+    const auto dy = derivative.fragment()[1];
+    const auto integral = Geom::integral(y * dx + x * dy);
+    sum += integral.valueAt(1.0) - integral.valueAt(0.0);
+  }
+  return sum / 2.0;
 }
 
 bool Face::operator==(const Face& other) const

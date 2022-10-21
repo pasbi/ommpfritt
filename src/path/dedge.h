@@ -3,6 +3,8 @@
 #include "geometry/direction.h"
 
 #include "edge.h"
+
+#include <2geom/curve.h>
 namespace omm
 {
 
@@ -21,6 +23,7 @@ struct DEdge
   [[nodiscard]] PathPoint& start_point() const;
   [[nodiscard]] double start_angle() const;
   [[nodiscard]] double end_angle() const;
+  [[nodiscard]] std::unique_ptr<Geom::Curve> to_geom_curve() const;
   QString to_string() const;
 
 private:

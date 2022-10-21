@@ -92,7 +92,6 @@ QPainterPath PathVectorView::to_painter_path() const
   QPainterPath p;
   p.moveTo(m_edges.front().start_point().geometry().position().to_pointf());
   for (const auto& edge : m_edges) {
-    // TODO why can't we just use Path::draw_segment ?
     auto* const path = edge.edge->path();
     const auto g1 = edge.start_point().geometry();
     const auto g2 = edge.end_point().geometry();
@@ -106,6 +105,15 @@ QPainterPath PathVectorView::to_painter_path() const
   }
 
   return p;
+}
+
+Geom::Path PathVectorView::to_geom() const
+{
+  Geom::Path path;
+  for (const auto& dedge : m_edges) {
+    path.append(dedge.to_geom_curve().release());
+  }
+  return path;
 }
 
 bool PathVectorView::contains(const Vec2f& pos) const

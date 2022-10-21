@@ -1,6 +1,7 @@
 #pragma once
 
 #include "geometry/vec2.h"
+#include <2geom/path.h>
 #include <deque>
 #include <vector>
 
@@ -31,6 +32,7 @@ public:
   [[nodiscard]] bool is_simply_closed() const;
   [[nodiscard]] const std::deque<DEdge>& edges() const;
   [[nodiscard]] QPainterPath to_painter_path() const;
+  [[nodiscard]] Geom::Path to_geom() const;
   [[nodiscard]] bool contains(const Vec2f& pos) const;
   [[nodiscard]] QString to_string() const;
   [[nodiscard]] std::vector<PathPoint*> path_points() const;

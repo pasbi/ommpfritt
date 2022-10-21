@@ -125,24 +125,25 @@ DEdge find_next_edge(const DEdge& current, const Graph& graph, const std::set<DE
   }
 }
 
-std::optional<Face> find_outer_face(const std::set<Face>& faces)
+auto argmax(const auto& values, const auto& key)
 {
-  assert(!faces.empty());
-  static constexpr auto bb_area = [](const auto& face) {
-    const auto bb = face.path_vector_view().bounding_box();
-    return bb.width() * bb.height();
-  };
-
-  // the outer face must have maximal bounding box area ...
-  auto outers = max_elements(faces, bb_area);
-
-  // ... however, multiple faces might have maximal bounding box area ...
-  for (const auto& face : outers) {
-    if (std::all_of(outers.begin(), outers.end(), [&face](const auto& f) { return face.contains(f); })) {
-      return face;
+  using value_type = decltype(key(*values.begin()));
+  auto max = -std::numeric_limits<value_type>::infinity();
+  auto max_it = values.end();
+  for (auto it = values.begin(); it != values.end(); ++it) {
+    if (const auto v = key(*it); v >= max) {
+      max_it = it;
+      max = v;
     }
   }
-  return {};
+  return max_it;
+}
+
+Face find_outer_face(const std::set<Face>& faces)
+{
+  assert(!faces.empty());
+  const std::vector faces_v(faces.begin(), faces.end());
+  return *argmax(faces, std::mem_fn(&Face::area));
 }
 
 std::set<Face> compute_faces_without_outer(Graph graph)
@@ -153,9 +154,7 @@ std::set<Face> compute_faces_without_outer(Graph graph)
   for (const auto& connected_component : graph.connected_components()) {
     auto c_faces = compute_faces_on_connected_graph_without_dead_ends(connected_component);
     if (c_faces.size() > 1) {
-      if (const auto o_face = find_outer_face(c_faces); o_face.has_value()) {
-        c_faces.erase(o_face.value());
-      }
+      c_faces.erase(find_outer_face(c_faces));
     }
     faces.insert(c_faces.begin(), c_faces.end());
   }
