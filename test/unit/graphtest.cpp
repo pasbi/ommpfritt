@@ -113,39 +113,11 @@ TestCase empty_paths(const std::size_t path_count)
   return {std::move(pv), {}, 0, fmt::format("{}-empty paths", path_count)};
 }
 
-TestCase ellipse(const std::size_t point_count, const bool closed, const bool no_tangents)
+TestCase ellipse(ommtest::EllipseMaker ellipse_maker)
 {
-  const auto geometry = [point_count, no_tangents](const std::size_t i) {
-    const double theta = M_PI * 2.0 * static_cast<double>(i) / static_cast<double>(point_count);
-    const omm::Vec2f pos(std::cos(theta), std::sin(theta));
-    if (no_tangents) {
-      return omm::Point(pos);
-    } else {
-      const auto t_scale = 4.0 / 3.0 * std::tan(M_PI / (2.0 * static_cast<double>(point_count)));
-      const auto t = omm::Vec2f(-std::sin(theta), std::cos(theta)) * static_cast<double>(t_scale);
-      return omm::Point(pos, omm::PolarCoordinates(-t), omm::PolarCoordinates(t));
-    }
-  };
-
-  const auto name = [point_count, closed, no_tangents]() {
-    const auto s_open_closed = closed ? "closed" : "open";
-    const auto s_interp = no_tangents ? "linear" : "smooth";
-    return fmt::format("{}-Ellipse-{}-{}", point_count, s_open_closed, s_interp);
-  };
-
   auto pv = std::make_unique<omm::PathVector>();
-  auto& path = pv->add_path();
-  std::deque<omm::DEdge> edges;
-  path.set_single_point(std::make_shared<omm::PathPoint>(geometry(0), pv.get()));
-  for (std::size_t i = 1; i < point_count; ++i) {
-    auto new_point = std::make_shared<omm::PathPoint>(geometry(i), pv.get());
-    edges.emplace_back(&path.add_edge(path.last_point(), std::move(new_point)), omm::Direction::Forward);
-  }
-  if (closed && point_count > 1) {
-    edges.emplace_back(&path.add_edge(path.last_point(), path.first_point()), omm::Direction::Forward);
-    return {std::move(pv), std::set{std::move(edges)}, 1, name()};
-  }
-  return {std::move(pv), {}, 1, name()};
+  ellipse_maker.make_path(*pv);
+  return {std::move(pv), ellipse_maker.faces(), 1, ellipse_maker.to_string()};
 }
 
 TestCase rectangles(const std::size_t count)
@@ -437,10 +409,10 @@ TestCase special_test(const std::size_t variant)
 
 // clang-format off
 #define EXPAND_ELLIPSE(N, ext) \
-  ellipse(N, true, true) ext, \
-  ellipse(N, false, true) ext, \
-  ellipse(N, true, false) ext, \
-  ellipse(N, false, false) ext
+  ellipse(ommtest::EllipseMaker{{0.0, 0.0}, {1.0, 1.0}, N, true, true}) ext, \
+  ellipse(ommtest::EllipseMaker{{0.0, 0.0}, {1.0, 1.0}, N, false, true}) ext, \
+  ellipse(ommtest::EllipseMaker{{0.0, 0.0}, {1.0, 1.0}, N, true, false}) ext, \
+  ellipse(ommtest::EllipseMaker{{0.0, 0.0}, {1.0, 1.0}, N, false, false}) ext
 
 const auto test_cases = ::testing::Values(
     empty_paths(0),

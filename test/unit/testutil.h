@@ -1,9 +1,13 @@
 #pragma once
 
+#include "geometry/point.h"
+#include "geometry/vec2.h"
+#include "path/dedge.h"
 #include <QApplication>
-#include <vector>
 #include <array>
+#include <deque>
 #include <memory>
+#include <vector>
 
 namespace omm
 {
@@ -63,5 +67,21 @@ private:
   static std::list<std::unique_ptr<omm::PathVector>> m_path_vectors;
 };
 
+struct EllipseMaker
+{
+public:
+  omm::Vec2f origin;
+  omm::Vec2f radii;
+  std::size_t point_count;
+  bool closed;
+  bool no_tangents;
+
+  std::deque<omm::DEdge> edges = {};
+  [[nodiscard]] omm::Point ith_point(const std::size_t i) const;
+  omm::Path& make_path(omm::PathVector& pv);
+  [[nodiscard]] std::string to_string() const;
+  [[nodiscard]] std::set<std::deque<omm::DEdge>> faces() const;
+  [[nodiscard]] double area() const;
+};
 
 }  // namespace ommtest
