@@ -123,7 +123,7 @@ bool PathVectorView::contains(const Vec2f& pos) const
 
 QString PathVectorView::to_string() const
 {
-  static constexpr auto label = [](const auto& dedge) { return dedge.edge->label(); };
+  static constexpr auto label = [](const auto& dedge) { return dedge.to_string(); };
   const auto es = static_cast<QStringList>(util::transform<QList>(edges(), label)).join(", ");
   return QString("[%1] %2").arg(edges().size()).arg(es);
 }
