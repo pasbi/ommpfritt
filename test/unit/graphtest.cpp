@@ -374,6 +374,7 @@ std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm:
 TestCase special_test(const std::size_t variant)
 {
   using PC = omm::PolarCoordinates;
+  using D = omm::Direction;
   auto pv = std::make_unique<omm::PathVector>();
   auto& outer = pv->add_path();
   const auto make_point = [&outer, &pv = *pv](const omm::Vec2f& pos) {
@@ -412,22 +413,27 @@ TestCase special_test(const std::size_t variant)
   std::set expected_faces{face_1, face_2};
   switch (variant) {
   case 0:
-    points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward}, PC{});
-    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
-    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&inner, D::Backward}, PC{});
+    points.at(4)->geometry().set_tangent({&outer, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&outer, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
     break;
   case 1:
-    points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward},
-                                         PC{-0.6675554919511357, 250.7695451381673});
-    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
-    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&inner, D::Backward}, PC{-0.6675554919511357, 250.7695451381673});
+    points.at(4)->geometry().set_tangent({&outer, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&outer, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
     break;
   case 2:
-    points.at(4)->geometry().set_tangent({&inner, omm::Direction::Backward},
-                                         PC{-0.6675554919511357, 350.7695451381673});
-    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Backward}, PC{1.0303768265243127, 99.12618221237013});
-    points.at(4)->geometry().set_tangent({&outer, omm::Direction::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&inner, D::Backward}, PC{-0.6675554919511357, 350.7695451381673});
+    points.at(4)->geometry().set_tangent({&outer, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&outer, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
     expected_faces.clear();  // the graph is not planar
+    break;
+  case 3:
+    points.at(1)->geometry().set_position({120.5, -143.0});
+    points.at(1)->geometry().set_tangent({&inner, D::Backward}, PC{1.2350632478379595, 274.2411547737723});
+    points.at(1)->geometry().set_tangent({&inner, D::Forward}, PC{0.09056247365766779, 0.0});
+    points.at(1)->geometry().set_tangent({&inner, D::Backward}, PC{0.015592141134032511, 355.6724823321008});
+    points.at(1)->geometry().set_tangent({&inner, D::Forward}, PC{-2.921946505938993, 570.3718878667855});
     break;
   default:
     assert(false);
@@ -469,7 +475,8 @@ const auto test_cases = ::testing::Values(
     leaf({2, 1, 1, 2}),
     special_test(0),
     special_test(1),
-    special_test(2)
+    special_test(2),
+    special_test(3)
 );
 // clang-format on
 
