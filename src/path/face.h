@@ -37,6 +37,7 @@ public:
 
   [[nodiscard]] double compute_aabb_area() const;
   [[nodiscard]] QString to_string() const;
+  friend std::ostream& operator<<(std::ostream& os, const Face& face);
   [[nodiscard]] bool is_valid() const noexcept;
   [[nodiscard]] PathVectorView& path_vector_view();
   [[nodiscard]] const PathVectorView& path_vector_view() const;

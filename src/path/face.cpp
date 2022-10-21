@@ -144,4 +144,9 @@ PolygonLocation polygon_contains(const std::vector<Vec2f>& polygon, const Vec2f&
   return inside ? PolygonLocation::Inside : PolygonLocation::Outside;
 }
 
+std::ostream& operator<<(std::ostream& os, const Face& face)
+{
+  return os << face.to_string().toStdString();
+}
+
 }  // namespace omm
