@@ -60,8 +60,8 @@ omm::Point EllipseMaker::ith_point(const std::size_t i) const
 
 omm::Path& EllipseMaker::make_path(omm::PathVector& pv)
 {
+  assert(edges.empty());
   auto& path = pv.add_path();
-  std::deque<omm::DEdge> edges;
   path.set_single_point(std::make_shared<omm::PathPoint>(ith_point(0), &pv));
   for (std::size_t i = 1; i < point_count; ++i) {
     auto new_point = std::make_shared<omm::PathPoint>(ith_point(i), &pv);
