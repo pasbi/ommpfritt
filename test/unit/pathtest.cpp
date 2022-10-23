@@ -421,14 +421,14 @@ public:
 
   omm::PathVector& make_copy()
   {
-    pv_copy = pv_original;
-    return pv_copy;
+    pv_copy = std::make_unique<omm::PathVector>(*pv_original);
+    return *pv_copy;
   }
 
   void assert_valid() const
   {
-    ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(pv_copy));
-    ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(pv_original));
+    ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(*pv_copy));
+    ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(*pv_original));
     ASSERT_NO_FATAL_FAILURE(assert_equiv_but_distinct());
   }
 
@@ -462,8 +462,8 @@ private:
 
   void assert_equiv_but_distinct() const
   {
-    const auto a_paths = pv_original.paths();
-    const auto b_paths = pv_copy.paths();
+    const auto a_paths = pv_original->paths();
+    const auto b_paths = pv_copy->paths();
     ASSERT_EQ(a_paths.size(), b_paths.size());
     for (std::size_t i = 0; i < a_paths.size(); ++i) {
       ASSERT_NO_FATAL_FAILURE(assert_equiv_but_distinct(*a_paths.at(i), *b_paths.at(i)));
@@ -471,18 +471,18 @@ private:
   }
 
 protected:
-  omm::PathVector pv_original;
-  omm::PathVector pv_copy;
+  std::unique_ptr<omm::PathVector> pv_original;
+  std::unique_ptr<omm::PathVector> pv_copy;
 };
 
 TEST_F(PathVectorCopy, OE)
 {
-  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), &pv_original);
-  auto pv1_p1 = std::make_shared<omm::PathPoint>(omm::Point({0, 1}), &pv_original);
-  auto& pv1_path = pv_original.add_path();
+  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), pv_original.get());
+  auto pv1_p1 = std::make_shared<omm::PathPoint>(omm::Point({0, 1}), pv_original.get());
+  auto& pv1_path = pv_original->add_path();
   pv1_path.add_edge(std::make_unique<omm::Edge>(pv1_p0, pv1_p1, &pv1_path));
-  pv1_p0->geometry().set_tangent({&pv1_path, omm::Point::Direction::Backward}, omm::PolarCoordinates());
-  pv1_p1->geometry().set_tangent({&pv1_path, omm::Point::Direction::Forward}, omm::PolarCoordinates());
+  pv1_p0->geometry().set_tangent({&pv1_path, omm::Direction::Backward}, omm::PolarCoordinates());
+  pv1_p1->geometry().set_tangent({&pv1_path, omm::Direction::Forward}, omm::PolarCoordinates());
 
   ASSERT_NO_THROW(make_copy());
 
@@ -491,10 +491,10 @@ TEST_F(PathVectorCopy, OE)
 
 TEST_F(PathVectorCopy, OP)
 {
-  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), &pv_original);
-  auto& pv1_path = pv_original.add_path();
+  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), pv_original.get());
+  auto& pv1_path = pv_original->add_path();
   pv1_path.set_single_point(pv1_p0);
-  pv1_p0->geometry().set_tangent({&pv1_path, omm::Point::Direction::Backward}, omm::PolarCoordinates());
+  pv1_p0->geometry().set_tangent({&pv1_path, omm::Direction::Backward}, omm::PolarCoordinates());
 
   ASSERT_NO_THROW(make_copy());
 
