@@ -103,7 +103,8 @@ double Face::area() const
     const auto y = curve.fragment()[1];
     const auto dx = derivative.fragment()[0];
     const auto dy = derivative.fragment()[1];
-    const auto integral = Geom::integral(y * dx + x * dy);
+    const auto f = y * dx - x * dy;
+    const auto integral = Geom::integral(f);
     sum += integral.valueAt(1.0) - integral.valueAt(0.0);
   }
   return sum / 2.0;
