@@ -123,9 +123,13 @@ bool PathVectorView::contains(const Vec2f& pos) const
 
 QString PathVectorView::to_string() const
 {
-  static constexpr auto label = [](const auto& dedge) { return dedge.to_string(); };
-  const auto es = static_cast<QStringList>(util::transform<QList>(edges(), label)).join(", ");
-  return QString("[%1] %2").arg(edges().size()).arg(es);
+  static constexpr auto max_edges = static_cast<std::size_t>(10);
+  const auto edges = this->edges();
+  QStringList es;
+  for (std::size_t i = 0; i < std::min(max_edges, edges.size()); ++i) {
+    es.append(edges.at(i).to_string());
+  }
+  return QString("[%1] %2").arg(edges.size()).arg(es.join(", "));
 }
 
 std::vector<PathPoint*> PathVectorView::path_points() const
