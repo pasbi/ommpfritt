@@ -167,7 +167,8 @@ QString Point::to_string() const
 QRectF Point::bounding_box() const
 {
   const auto get_tangent_position = [this](const auto& t) { return tangent_position(t.first); };
-  const auto ps = util::transform<std::list>(m_tangents, get_tangent_position);
+  auto ps = util::transform<std::list>(m_tangents, get_tangent_position);
+  ps.emplace_back(position());
 
   static constexpr auto cmp_x = [](const auto& a, const auto& b) { return a.x < b.x; };
   static constexpr auto cmp_y = [](const auto& a, const auto& b) { return a.y < b.y; };
@@ -247,7 +248,6 @@ QString omm::Point::TangentKey::to_string() const
 {
   return QString::asprintf("0x%p-%s", static_cast<const void*>(path), direction == Direction::Forward ? "fwd" : "bwd");
 }
-
 
 Point::TangentKey::TangentKey(const Path* const path, const Direction direction) : path(path), direction(direction)
 {
