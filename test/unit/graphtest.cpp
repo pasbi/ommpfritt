@@ -242,6 +242,57 @@ TestCase leaf(std::vector<int> counts)
   return {std::move(pv), std::move(expected_pvvs), 1, "leaf" + s_counts};
 }
 
+TestCase blossom(const std::vector<int>& segments, const double spacing)
+{
+  auto pv = std::make_unique<omm::PathVector>();
+  auto center = std::make_shared<omm::PathPoint>(omm::Point(), pv.get());
+  std::set<std::deque<omm::DEdge>> expected_pvvs;
+
+  const auto add_petal =
+      [&center, &pv = *pv](const double start_angle, const double end_angle, const int subdivisions) -> auto&
+  {
+    auto& path = pv.add_path();
+    const auto tangent_length = 2.0;
+    std::vector<std::shared_ptr<omm::PathPoint>> points;
+    center->geometry().set_tangent({&path, omm::Direction::Forward},
+                                   omm::PolarCoordinates(start_angle, tangent_length));
+    center->geometry().set_tangent({&path, omm::Direction::Backward}, omm::PolarCoordinates(end_angle, tangent_length));
+    if (subdivisions == 0) {
+      path.add_edge(center, center);
+    } else if (subdivisions == 1) {
+      const auto phi = (start_angle + end_angle) / 2.0;
+      const omm::PolarCoordinates intermediate_position(phi, tangent_length * 2.0);
+      omm::Point intermediate_geometry(intermediate_position.to_cartesian());
+      const omm::PolarCoordinates tangent(phi + M_PI_2, tangent_length * 0.7);
+      intermediate_geometry.set_tangent({&path, omm::Direction::Forward}, tangent);
+      intermediate_geometry.set_tangent({&path, omm::Direction::Backward}, -tangent);
+      auto intermediate = std::make_shared<omm::PathPoint>(intermediate_geometry, &pv);
+      path.add_edge(center, intermediate);
+      path.add_edge(intermediate, center);
+    } else {
+      // More than one subdivision is not yet implemented.
+      exit(1);
+    }
+    return path;
+  };
+
+  for (std::size_t i = 0; i < segments.size(); ++i) {
+    const auto n = static_cast<double>(segments.size());
+    const auto start_angle = static_cast<double>(i + spacing / 2.0) / n * 2.0 * M_PI;
+    const auto end_angle = static_cast<double>(i + 1 - spacing / 2.0) / n * 2.0 * M_PI;
+    auto& path = add_petal(start_angle, end_angle, segments.at(i));
+    expected_pvvs.insert(
+        util::transform<std::deque>(path.edges(), [](auto* const edge) { return omm::DEdge::fwd(edge); }));
+  }
+
+  const auto name =
+      "blossom-"
+      + static_cast<QStringList>(util::transform<QList>(segments, [](const int n) { return QString("%1").arg(n); }))
+            .join("-")
+      + QString("_%1").arg(spacing);
+  return {std::move(pv), std::move(expected_pvvs), segments.size(), name.toStdString()};
+}
+
 class GraphTest : public ::testing::TestWithParam<TestCase>
 {
 };
@@ -438,6 +489,16 @@ const auto test_cases = ::testing::Values(
     leaf({2, 1, 5}),
     leaf({1, 3}),
     leaf({2, 1, 1, 2}),
+    blossom({0, 0}, 0.5),
+    blossom({0, 1}, 0.5),
+    blossom({1, 1}, 0.5),
+    blossom({0, 0, 0}, 0.0),
+    blossom({0, 1, 0}, 0.0),
+    blossom({1, 1, 1}, 0.0),
+    blossom({0, 0, 0}, 0.1),
+    blossom({0, 0, 0}, 0.9),
+    blossom({0, 0, 0, 0, 0, 0, 0}, 0.0),
+    blossom({0, 1, 1, 0, 1, 0, 0}, 0.0),
     special_test(0),
     special_test(1),
     special_test(2),
