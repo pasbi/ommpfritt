@@ -42,6 +42,16 @@ struct PolarCoordinates
   [[nodiscard]] QString to_string() const;
   void serialize(serialization::SerializerWorker& worker) const;
   void deserialize(serialization::DeserializerWorker& worker);
+
+  friend PolarCoordinates operator*(const PolarCoordinates& pc, double d);
+  friend PolarCoordinates operator*(double d, const PolarCoordinates& pc);
+  friend PolarCoordinates operator/(const PolarCoordinates& pc, double d);
+  friend PolarCoordinates operator+(const PolarCoordinates& pc, double d);
+  friend PolarCoordinates operator-(const PolarCoordinates& pc, double d);
+  friend PolarCoordinates& operator+=(PolarCoordinates& pc, double d);
+  friend PolarCoordinates& operator-=(PolarCoordinates& pc, double d);
+  friend PolarCoordinates& operator*=(PolarCoordinates& pc, double d);
+  friend PolarCoordinates& operator/=(PolarCoordinates& pc, double d);
 };
 
 }  // namespace omm
