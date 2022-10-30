@@ -17,18 +17,24 @@ class TestCase : private ommtest::PathVectorHeap
 {
 public:
   TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<omm::PathVectorView>&& pvvs,
-           const std::size_t n_expected_components, std::string name)
+           const std::size_t n_expected_components, std::string name, const bool is_planar = true)
     : m_path_vector(annex(std::move(path_vector)))
     , m_expected_faces(util::transform<omm::Face>(std::move(pvvs)))
     , m_n_expected_components(n_expected_components)
     , m_name(std::move(name))
+    , m_is_planar(is_planar)
   {
   }
 
   template<typename Edges> TestCase(std::unique_ptr<omm::PathVector>&& path_vector, std::set<Edges>&& edgess,
                                     const std::size_t n_expected_components, std::string name)
     : TestCase(std::move(path_vector), util::transform<omm::PathVectorView>(std::move(edgess)), n_expected_components,
-               std::move(name))
+               std::move(name), true)
+  {
+  }
+
+  TestCase(std::unique_ptr<omm::PathVector>&& path_vector, const std::size_t n_expected_components, std::string name)
+    : TestCase(std::move(path_vector), {}, n_expected_components, std::move(name), false)
   {
   }
 
@@ -40,6 +46,11 @@ public:
   const std::set<omm::Face>& expected_faces() const
   {
     return m_expected_faces;
+  }
+
+  [[nodiscard]] bool is_planar() const
+  {
+    return m_is_planar;
   }
 
   TestCase add_arm(const std::size_t path_index, const std::size_t point_index, std::vector<omm::Point> geometries) &&
@@ -102,6 +113,7 @@ private:
   std::set<omm::Face> m_expected_faces;
   std::size_t m_n_expected_components;
   std::string m_name;
+  bool m_is_planar;
 };
 
 TestCase empty_paths(const std::size_t path_count)
@@ -367,8 +379,12 @@ TEST_P(GraphTest, ComputeFaces)
     LDEBUG << "save svg file " << fname;
   }
 
-  const auto actual_faces = test_case.path_vector().faces();
-  ASSERT_EQ(test_case.expected_faces(), actual_faces);
+  std::set<omm::Face> actual_faces;
+  ASSERT_NO_THROW(actual_faces = test_case.path_vector().faces());
+  if (test_case.is_planar()) {
+    // computing faces only makes sense if the graph is planar.
+    ASSERT_EQ(test_case.expected_faces(), actual_faces);
+  }
 }
 
 TEST_P(GraphTest, ConnectedComponents)
@@ -455,7 +471,11 @@ TestCase special_test(const std::size_t variant)
     assert(false);
   }
 
-  return {std::move(pv), std::move(expected_faces), 1, "special-test-" + std::to_string(variant)};
+  const bool is_planar = variant != 2;
+  if (is_planar) {
+    return {std::move(pv), std::move(expected_faces), 1, "special-test-" + std::to_string(variant)};
+  }
+  return {std::move(pv), 1, "special-test-" + std::to_string(variant)};
 }
 
 // clang-format off
