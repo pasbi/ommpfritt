@@ -44,7 +44,7 @@ public:
   std::shared_ptr<PathPoint> last_point() const;
   std::shared_ptr<PathPoint> first_point() const;
 
-  static void draw_segment(QPainterPath& painter_path, const PathPoint& a, const PathPoint& b, const Path* path);
+  static void draw_segment(QPainterPath& painter_path, const Edge& edge, const Path* path);
   QPainterPath to_painter_path() const;
 
 

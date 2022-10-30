@@ -1,8 +1,8 @@
 #include "path/path.h"
 #include "geometry/point.h"
+#include "path/dedge.h"
 #include "path/edge.h"
 #include "path/pathpoint.h"
-#include "path/pathview.h"
 #include "path/pathview.h"
 #include <2geom/pathvector.h>
 
@@ -19,6 +19,20 @@ void replace_tangents_key(const auto& edges, const std::map<const omm::Path*, om
       p->geometry().replace_tangents_key(map);
     }
   }
+}
+
+void draw_arrow(QPainterPath& painter_path, const omm::PolarCoordinates& v, const double offset)
+{
+  const auto pos_before = painter_path.currentPosition();
+  const auto origin = omm::Vec2f(pos_before) + offset * v.to_cartesian();
+  const auto move_to = [v, &painter_path, origin](const double angle_offset) {
+    const auto end_pos = (v + angle_offset).to_cartesian() + origin;
+    painter_path.moveTo(origin.to_pointf());
+    painter_path.lineTo(end_pos.to_pointf());
+  };
+  move_to(M_PI / 6.0);
+  move_to(-M_PI / 6.0);
+  painter_path.moveTo(pos_before);
 }
 
 }  // namespace
@@ -286,13 +300,31 @@ std::vector<Edge*> Path::edges() const
   return util::transform<std::vector>(m_edges, &std::unique_ptr<Edge>::get);
 }
 
-void Path::draw_segment(QPainterPath& painter_path, const PathPoint& a, const PathPoint& b, const Path* const path)
+void Path::draw_segment(QPainterPath& painter_path, const Edge& edge, const Path* const path)
 {
-  const auto g1 = a.geometry();
-  const auto g2 = b.geometry();
-  painter_path.cubicTo(g1.tangent_position({path, Direction::Forward}).to_pointf(),
-                       g2.tangent_position({path, Direction::Backward}).to_pointf(),
-                       g2.position().to_pointf());
+
+  const auto g1 = edge.a()->geometry();
+  const auto t1 = g1.tangent_position({path, Direction::Forward});
+  const auto g2 = edge.b()->geometry();
+  const auto t2 = g2.tangent_position({path, Direction::Backward});
+
+  static constexpr auto draw_direction = true;
+  static constexpr auto len = [](const auto& p1, const auto& p2) { return (p1 - p2).euclidean_norm(); };
+  const auto arrow_size = (len(g1.position(), t1) + len(t1, t2) + len(t2, g2.position())) / 5.0;
+  const DEdgeConst dedge(&edge, Direction::Forward);
+
+  LINFO << dedge.to_string() << ": " << dedge.start_angle() * M_1_PI * 180.0 << "°, "
+        << dedge.end_angle() * M_1_PI * 180.0 << "°";
+
+  if constexpr (draw_direction) {
+    const PolarCoordinates v(dedge.start_angle() + M_PI, arrow_size);
+    draw_arrow(painter_path, 0.5 * v, -0.1);
+  }
+  painter_path.cubicTo(t1.to_pointf(), t2.to_pointf(), g2.position().to_pointf());
+  if constexpr (draw_direction) {
+    const PolarCoordinates v(dedge.end_angle(), arrow_size);
+    draw_arrow(painter_path, v, 0.1);
+  }
 }
 
 QPainterPath Path::to_painter_path() const
@@ -303,7 +335,7 @@ QPainterPath Path::to_painter_path() const
   QPainterPath painter_path;
   painter_path.moveTo(m_edges.front()->a()->geometry().position().to_pointf());
   for (const auto& edge : m_edges) {
-    draw_segment(painter_path, *edge->a(), *edge->b(), this);
+    draw_segment(painter_path, *edge, this);
   }
   return painter_path;
 }

@@ -35,12 +35,12 @@ template<typename EdgePtr> PathPoint& DEdgeBase<EdgePtr>::start_point() const
 
 template<typename EdgePtr> double DEdgeBase<EdgePtr>::start_angle() const
 {
-  return angle(start_point(), end_point());
+  return angle(Direction::Forward, start_point(), end_point());
 }
 
 template<typename EdgePtr> double DEdgeBase<EdgePtr>::end_angle() const
 {
-  return angle(end_point(), start_point());
+  return angle(Direction::Backward, end_point(), start_point());
 }
 
 template<typename EdgePtr> std::unique_ptr<Geom::Curve> DEdgeBase<EdgePtr>::to_geom_curve() const
@@ -51,12 +51,12 @@ template<typename EdgePtr> std::unique_ptr<Geom::Curve> DEdgeBase<EdgePtr>::to_g
   return std::make_unique<Geom::BezierCurveN<3>>(util::transform(std::move(pts), &Vec2f::to_geom_point));
 }
 
-template<typename EdgePtr> double DEdgeBase<EdgePtr>::angle(const PathPoint& hinge, const PathPoint& other_point) const
+template<typename EdgePtr> double DEdgeBase<EdgePtr>::angle(const Direction key_direction, const PathPoint& hinge,
+                                                            const PathPoint& other_point) const
 {
-  const auto key_direction = &hinge == edge->a().get() ? Direction::Forward : Direction::Backward;
   const auto key = Point::TangentKey{edge->path(), key_direction};
   const auto tangent = hinge.geometry().tangent(key);
-  static constexpr double eps = 0.1;
+  static constexpr double eps = 0.001;
   if (tangent.magnitude > eps) {
     return tangent.argument;
   } else {

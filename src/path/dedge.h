@@ -43,7 +43,7 @@ template<typename EdgePtr> struct DEdgeBase
   QString to_string() const;
 
 private:
-  [[nodiscard]] double angle(const PathPoint& hinge, const PathPoint& other) const;
+  [[nodiscard]] double angle(const Direction key_direction, const PathPoint& hinge, const PathPoint& other) const;
 };
 
 using DEdge = DEdgeBase<Edge*>;
