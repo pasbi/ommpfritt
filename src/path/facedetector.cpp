@@ -11,17 +11,6 @@
 namespace
 {
 
-omm::Direction get_direction(const omm::Edge& edge, const omm::PathPoint& start)
-{
-  if (edge.a().get() == &start) {
-    return omm::Direction::Forward;
-  } else if (edge.b().get() == &start) {
-    return omm::Direction::Backward;
-  } else {
-    throw std::runtime_error("Unexpected condition.");
-  }
-}
-
 class CCWComparator
 {
 public:
@@ -63,6 +52,49 @@ template<typename Key, typename T> std::set<T> max_elements(const std::set<T>& v
   return out;
 }
 
+omm::DEdge find_next_edge(const omm::DEdge& current, const omm::Graph& graph, std::set<omm::DEdge>& allowed_edges)
+{
+  const auto& hinge = current.end_point();
+  const auto edges = graph.out_edges(hinge);
+
+  const CCWComparator compare_with_current(current);
+  std::set<omm::DEdge> candidates;
+  for (const auto& de : edges) {
+    const auto is_current_reversed = current.edge == de.edge && current.direction != de.direction;
+    if (!is_current_reversed && allowed_edges.contains(de)) {
+      candidates.emplace(de);
+    }
+  }
+
+  const auto min_it = std::min_element(candidates.begin(), candidates.end(), compare_with_current);
+  if (min_it == candidates.end()) {
+    return {};
+  } else {
+    auto next_edge = *min_it;
+    allowed_edges.erase(next_edge);
+    return next_edge;
+  }
+}
+
+std::deque<omm::DEdge> follow_edge(const omm::DEdge& seed, const omm::Graph& graph, std::set<omm::DEdge>& allowed_edges)
+{
+  std::deque<omm::DEdge> sequence;
+  auto next = seed;
+
+  do {
+    next = find_next_edge(next, graph, allowed_edges);
+    if (next.edge == nullptr) {
+      if (sequence.empty() && seed.edge->a() == seed.edge->b()) {
+        allowed_edges.erase(seed);
+        return {seed};
+      }
+      return {};
+    }
+    sequence.emplace_back(next);
+  } while (next != seed);
+  return sequence;
+}
+
 }  // namespace
 
 namespace omm::face_detector
@@ -70,61 +102,23 @@ namespace omm::face_detector
 
 std::set<Face> compute_faces_on_connected_graph_without_dead_ends(const Graph& graph)
 {
-  std::set<DEdge> edges;
+  std::set<DEdge> allowed_edges;
   std::set<Face> faces;
   for (auto* e : graph.edges()) {
-    edges.emplace(e, Direction::Backward);
-    edges.emplace(e, Direction::Forward);
+    allowed_edges.emplace(e, Direction::Backward);
+    allowed_edges.emplace(e, Direction::Forward);
   }
 
-  while (!edges.empty()) {
-    auto current = edges.extract(edges.begin()).value();
-    std::deque<DEdge> sequence{current};
+  while (!allowed_edges.empty()) {
 
-    const auto is_face_done = [&sequence, &faces,
-                               start_point = &current.start_point()](const PathPoint& current_end_point) {
-      if (&current_end_point != start_point) {
-        return false;
-      }
-      faces.emplace(PathVectorView(sequence));
-      return true;
-    };
+    const auto current = *allowed_edges.begin();
+    const auto sequence = follow_edge(current, graph, allowed_edges);
 
-    while (!is_face_done(current.end_point())) {
-      auto const next = find_next_edge(current, graph, edges);
-      [[maybe_unused]] const auto v = edges.extract(next);
-      if (v.empty()) {
-        // Graph is not planar or has dead ends
-        return {};
-      }
-      current = sequence.emplace_back(next);
+    if (!sequence.empty()) {
+      faces.emplace(omm::PathVectorView(sequence));
     }
   }
   return faces;
-}
-
-DEdge find_next_edge(const DEdge& current, const Graph& graph, const std::set<DEdge>& white_list)
-{
-  const auto& hinge = current.end_point();
-  const auto edges = graph.adjacent_edges(hinge);
-  std::set<DEdge> candidates;
-  for (Edge* e : edges) {
-    if (e == current.edge) {
-      continue;  // the next edge cannot be the current edge.
-    }
-    const auto direction = get_direction(*e, hinge);
-    if (const DEdge dedge{e, direction}; white_list.contains(dedge)) {
-      candidates.emplace(dedge);
-    }
-  }
-
-  const CCWComparator compare_with_current(current);
-  const auto min_it = std::min_element(candidates.begin(), candidates.end(), compare_with_current);
-  if (min_it == candidates.end()) {
-    return {};
-  } else {
-    return *min_it;
-  }
 }
 
 auto argmax(const auto& values, const auto& key)
@@ -145,7 +139,7 @@ Face find_outer_face(const std::set<Face>& faces)
 {
   assert(!faces.empty());
   const std::vector faces_v(faces.begin(), faces.end());
-  return *argmax(faces, std::mem_fn(&Face::area));
+  return *argmax(faces, [](const auto& face) { return std::abs(face.area()); });
 }
 
 std::set<Face> compute_faces_without_outer(Graph graph)

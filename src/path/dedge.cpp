@@ -40,12 +40,12 @@ template<typename EdgePtr> PathPoint& DEdgeBase<EdgePtr>::start_point() const
 
 template<typename EdgePtr> double DEdgeBase<EdgePtr>::start_angle() const
 {
-  return angle(Direction::Forward, start_point(), end_point());
+  return angle(direction, start_point(), end_point());
 }
 
 template<typename EdgePtr> double DEdgeBase<EdgePtr>::end_angle() const
 {
-  return angle(Direction::Backward, end_point(), start_point());
+  return angle(other(direction), end_point(), start_point());
 }
 
 template<typename EdgePtr> std::unique_ptr<Geom::Curve> DEdgeBase<EdgePtr>::to_geom_curve() const
