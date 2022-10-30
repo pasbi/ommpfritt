@@ -38,12 +38,12 @@ public:
   {
   }
 
-  const omm::PathVector& path_vector() const
+  [[nodiscard]] const omm::PathVector& path_vector() const
   {
     return *m_path_vector;
   }
 
-  const std::set<omm::Face>& expected_faces() const
+  [[nodiscard]] const std::set<omm::Face>& expected_faces() const
   {
     return m_expected_faces;
   }
@@ -53,7 +53,8 @@ public:
     return m_is_planar;
   }
 
-  TestCase add_arm(const std::size_t path_index, const std::size_t point_index, std::vector<omm::Point> geometries) &&
+  [[nodiscard]] TestCase add_arm(const std::size_t path_index, const std::size_t point_index,
+                                 std::vector<omm::Point> geometries) &&
   {
     const auto* const hinge = m_path_vector->paths().at(path_index)->points().at(point_index);
     auto& arm = m_path_vector->add_path();
@@ -68,8 +69,8 @@ public:
     return std::move(*this);
   }
 
-  TestCase add_loop(const std::size_t path_index, const std::size_t point_index, const double arg0,
-                    const double arg1) &&
+  [[nodiscard]] TestCase add_loop(const std::size_t path_index, const std::size_t point_index, const double arg0,
+                                  const double arg1) &&
   {
     const auto& src_path = *m_path_vector->paths().at(path_index);
     auto& loop = m_path_vector->add_path();
@@ -85,8 +86,8 @@ public:
     return std::move(*this);
   }
 
-  TestCase add_loops(const std::size_t path_index, const std::size_t point_index, const double arg0, const double arg1,
-                     const std::size_t count) &&
+  [[nodiscard]] TestCase add_loops(const std::size_t path_index, const std::size_t point_index, const double arg0,
+                                   const double arg1, const std::size_t count) &&
   {
     auto tc = std::move(*this);
     const double advance = (arg1 - arg0) / static_cast<double>(2 * count);
@@ -116,7 +117,7 @@ private:
   bool m_is_planar;
 };
 
-TestCase empty_paths(const std::size_t path_count)
+[[nodiscard]] TestCase empty_paths(const std::size_t path_count)
 {
   auto pv = std::make_unique<omm::PathVector>();
   for (std::size_t i = 0; i < path_count; ++i) {
@@ -125,14 +126,14 @@ TestCase empty_paths(const std::size_t path_count)
   return {std::move(pv), {}, 0, fmt::format("{}-empty paths", path_count)};
 }
 
-TestCase ellipse(ommtest::EllipseMaker ellipse_maker)
+[[nodiscard]] TestCase ellipse(ommtest::EllipseMaker ellipse_maker)
 {
   auto pv = std::make_unique<omm::PathVector>();
   ellipse_maker.make_path(*pv);
   return {std::move(pv), ellipse_maker.faces(), 1, ellipse_maker.to_string()};
 }
 
-TestCase rectangles(const std::size_t count)
+[[nodiscard]] TestCase rectangles(const std::size_t count)
 {
   auto pv = std::make_unique<omm::PathVector>();
   std::set<std::deque<omm::DEdge>> expected_pvvs;
@@ -156,7 +157,7 @@ TestCase rectangles(const std::size_t count)
   return {std::move(pv), std::move(expected_pvvs), count, fmt::format("{} Rectangles", count)};
 }
 
-TestCase grid(const QSize& size, const QMargins& margins)
+[[nodiscard]] TestCase grid(const QSize& size, const QMargins& margins)
 {
   auto pv = std::make_unique<omm::PathVector>();
   std::vector<std::vector<std::shared_ptr<omm::PathPoint>>> points(size.height());
@@ -210,7 +211,7 @@ TestCase grid(const QSize& size, const QMargins& margins)
   return {std::move(pv), std::move(expected_pvvs), 1, name()};
 }
 
-TestCase leaf(std::vector<int> counts)
+[[nodiscard]] TestCase leaf(std::vector<int> counts)
 {
   assert(counts.size() >= 2);
   auto pv = std::make_unique<omm::PathVector>();
@@ -254,7 +255,7 @@ TestCase leaf(std::vector<int> counts)
   return {std::move(pv), std::move(expected_pvvs), 1, "leaf" + s_counts};
 }
 
-TestCase blossom(const std::vector<int>& segments, const double spacing)
+[[nodiscard]] TestCase blossom(const std::vector<int>& segments, const double spacing)
 {
   auto pv = std::make_unique<omm::PathVector>();
   auto center = std::make_shared<omm::PathPoint>(omm::Point(), pv.get());
@@ -393,7 +394,7 @@ TEST_P(GraphTest, ConnectedComponents)
   EXPECT_EQ(omm::Graph(test_case.path_vector()).connected_components().size(), test_case.n_expected_components());
 }
 
-std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm::Vec2f& direction)
+[[nodiscard]] std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm::Vec2f& direction)
 {
   std::vector<omm::Point> ps;
   ps.reserve(length);
@@ -403,7 +404,7 @@ std::vector<omm::Point> linear_arm_geometry(const std::size_t length, const omm:
   return ps;
 }
 
-TestCase special_test(const std::size_t variant)
+[[nodiscard]] TestCase special_test(const std::size_t variant)
 {
   using PC = omm::PolarCoordinates;
   using D = omm::Direction;
