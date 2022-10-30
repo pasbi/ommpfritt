@@ -8,57 +8,42 @@
 namespace omm
 {
 
-DEdge::DEdge(Edge* const edge, const Direction direction) : edge(edge), direction(direction)
+template<typename EdgePtr> DEdgeBase<EdgePtr>::DEdgeBase(EdgePtr const edge, const Direction direction)
+  : edge(edge), direction(direction)
 {
 }
 
-DEdge DEdge::fwd(Edge* edge)
+template<typename EdgePtr> DEdgeBase<EdgePtr> DEdgeBase<EdgePtr>::fwd(EdgePtr edge)
 {
-  return DEdge{edge, Direction::Forward};
+  return DEdgeBase{edge, Direction::Forward};
 }
 
-DEdge DEdge::bwd(Edge* edge)
+template<typename EdgePtr> DEdgeBase<EdgePtr> DEdgeBase<EdgePtr>::bwd(EdgePtr edge)
 {
-  return DEdge{edge, Direction::Backward};
+  return DEdgeBase{edge, Direction::Backward};
 }
 
-bool DEdge::operator<(const DEdge& other) const
-{
-  static constexpr auto to_tuple = [](const auto& d) { return std::tuple{d.edge, d.direction}; };
-  return to_tuple(*this) < to_tuple(other);
-}
-
-bool DEdge::operator>(const DEdge& other) const
-{
-  return other < *this;
-}
-
-bool DEdge::operator==(const DEdge& other) const
-{
-  return edge == other.edge && direction == other.direction;
-}
-
-PathPoint& DEdge::end_point() const
+template<typename EdgePtr> PathPoint& DEdgeBase<EdgePtr>::end_point() const
 {
   return *edge->end_point(direction);
 }
 
-PathPoint& DEdge::start_point() const
+template<typename EdgePtr> PathPoint& DEdgeBase<EdgePtr>::start_point() const
 {
   return *edge->start_point(direction);
 }
 
-double DEdge::start_angle() const
+template<typename EdgePtr> double DEdgeBase<EdgePtr>::start_angle() const
 {
   return angle(start_point(), end_point());
 }
 
-double DEdge::end_angle() const
+template<typename EdgePtr> double DEdgeBase<EdgePtr>::end_angle() const
 {
   return angle(end_point(), start_point());
 }
 
-std::unique_ptr<Geom::Curve> DEdge::to_geom_curve() const
+template<typename EdgePtr> std::unique_ptr<Geom::Curve> DEdgeBase<EdgePtr>::to_geom_curve() const
 {
   const std::vector<Vec2f> pts{
       start_point().geometry().position(), start_point().geometry().tangent_position({edge->path(), direction}),
@@ -66,7 +51,7 @@ std::unique_ptr<Geom::Curve> DEdge::to_geom_curve() const
   return std::make_unique<Geom::BezierCurveN<3>>(util::transform(std::move(pts), &Vec2f::to_geom_point));
 }
 
-double DEdge::angle(const PathPoint& hinge, const PathPoint& other_point) const
+template<typename EdgePtr> double DEdgeBase<EdgePtr>::angle(const PathPoint& hinge, const PathPoint& other_point) const
 {
   const auto key_direction = &hinge == edge->a().get() ? Direction::Forward : Direction::Backward;
   const auto key = Point::TangentKey{edge->path(), key_direction};
@@ -82,12 +67,15 @@ double DEdge::angle(const PathPoint& hinge, const PathPoint& other_point) const
   }
 }
 
-QString DEdge::to_string() const
+template<typename EdgePtr> QString DEdgeBase<EdgePtr>::to_string() const
 {
   if (edge == nullptr) {
     return "null";
   }
   return (direction == Direction::Forward ? "" : "r") + edge->label();
 }
+
+template struct DEdgeBase<Edge*>;
+template struct DEdgeBase<const Edge*>;
 
 }  // namespace omm

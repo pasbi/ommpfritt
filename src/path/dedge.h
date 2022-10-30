@@ -11,17 +11,30 @@ namespace omm
 class Edge;
 class PathPoint;
 
-struct DEdge
+template<typename EdgePtr> struct DEdgeBase
 {
-  explicit DEdge(Edge* edge, Direction direction);
-  static DEdge fwd(Edge* edge);
-  static DEdge bwd(Edge* edge);
-  DEdge() = default;
-  Edge* edge = nullptr;
+  explicit DEdgeBase(EdgePtr edge, Direction direction);
+  static DEdgeBase fwd(EdgePtr edge);
+  static DEdgeBase bwd(EdgePtr edge);
+  DEdgeBase() = default;
+  EdgePtr edge = nullptr;
   Direction direction = Direction::Forward;
-  [[nodiscard]] bool operator<(const DEdge& other) const;
-  [[nodiscard]] bool operator>(const DEdge& other) const;
-  [[nodiscard]] bool operator==(const DEdge& other) const;
+  template<typename OtherEdgePtr> [[nodiscard]] bool operator<(const DEdgeBase<OtherEdgePtr>& other) const
+  {
+    static constexpr auto to_tuple = [](const auto& d) { return std::tuple{d.edge, d.direction}; };
+    return to_tuple(*this) < to_tuple(other);
+  }
+
+  template<typename OtherEdgePtr> [[nodiscard]] bool operator>(const DEdgeBase<OtherEdgePtr>& other) const
+  {
+    return other < *this;
+  }
+
+  template<typename OtherEdgePtr> [[nodiscard]] bool operator==(const DEdgeBase<OtherEdgePtr>& other) const
+  {
+    return edge == other.edge && direction == other.direction;
+  }
+
   [[nodiscard]] PathPoint& end_point() const;
   [[nodiscard]] PathPoint& start_point() const;
   [[nodiscard]] double start_angle() const;
@@ -32,5 +45,8 @@ struct DEdge
 private:
   [[nodiscard]] double angle(const PathPoint& hinge, const PathPoint& other) const;
 };
+
+using DEdge = DEdgeBase<Edge*>;
+using DEdgeConst = DEdgeBase<const Edge*>;
 
 }  // namespace omm

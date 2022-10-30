@@ -1,6 +1,7 @@
 #pragma once
 
 #include "geometry/vec2.h"
+#include "path/dedge.h"
 #include <2geom/path.h>
 #include <deque>
 #include <vector>
@@ -11,7 +12,6 @@ class QRectF;
 namespace omm
 {
 
-struct DEdge;
 class Edge;
 class PathPoint;
 
