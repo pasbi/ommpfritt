@@ -1,5 +1,6 @@
 #pragma once
 
+#include "path/dedge.h"
 #include <list>
 #include <map>
 #include <set>
@@ -7,7 +8,6 @@
 namespace omm
 {
 
-class Edge;
 class PathPoint;
 class PathVector;
 
@@ -18,7 +18,7 @@ public:
   explicit Graph() = default;
   void remove_edge(Edge* edge);
   [[nodiscard]] const std::set<Edge*>& edges() const;
-  [[nodiscard]] const std::set<Edge*>& adjacent_edges(const PathPoint& p) const;
+  [[nodiscard]] const std::set<DEdge>& out_edges(const PathPoint& from) const;
 
   void remove_dead_ends();
   [[nodiscard]] std::list<Graph> connected_components() const;
@@ -30,6 +30,7 @@ public:
 
 private:
   std::set<Edge*> m_edges;
+  std::map<const PathPoint*, std::set<DEdge>> m_out_edges;
   std::map<const PathPoint*, std::set<Edge*>> m_adjacent_edges;
 };
 

@@ -13,6 +13,8 @@ Graph::Graph(const PathVector& path_vector) : m_edges(util::transform<std::set>(
   for (auto* edge : m_edges) {
     m_adjacent_edges[edge->a().get()].insert(edge);
     m_adjacent_edges[edge->b().get()].insert(edge);
+    m_out_edges[edge->a().get()].insert(DEdge::fwd(edge));
+    m_out_edges[edge->b().get()].insert(DEdge::bwd(edge));
   }
 }
 
@@ -21,10 +23,18 @@ void Graph::remove_edge(Edge* edge)
   m_edges.erase(edge);
 
   for (auto* const p : edge->points()) {
-    const auto it = m_adjacent_edges.find(p);
-    it->second.erase(edge);
-    if (it->second.empty()) {
-      m_adjacent_edges.erase(it);
+    if (const auto it = m_out_edges.find(p); it != m_out_edges.end()) {
+      it->second.erase(DEdge::fwd(edge));
+      it->second.erase(DEdge::bwd(edge));
+      if (it->second.empty()) {
+        m_out_edges.erase(it);
+      }
+    }
+    if (const auto it = m_adjacent_edges.find(p); it != m_adjacent_edges.end()) {
+      it->second.erase(edge);
+      if (it->second.empty()) {
+        m_adjacent_edges.erase(it);
+      }
     }
   }
 }
@@ -34,9 +44,14 @@ const std::set<Edge*>& Graph::edges() const
   return m_edges;
 }
 
-const std::set<Edge*>& Graph::adjacent_edges(const PathPoint& p) const
+const std::set<DEdge>& Graph::out_edges(const PathPoint& from) const
 {
-  return m_adjacent_edges.at(&p);
+  static std::set<DEdge> empty;
+  if (const auto it = m_out_edges.find(&from); it == m_out_edges.end()) {
+    return empty;
+  } else {
+    return it->second;
+  }
 }
 
 void Graph::remove_dead_ends()
@@ -87,6 +102,7 @@ Graph Graph::subgraph(const std::set<PathPoint*>& vertices) const
     const auto edges = m_adjacent_edges.at(v);
     g.m_adjacent_edges.emplace(v, edges);
     g.m_edges.insert(edges.begin(), edges.end());
+    g.m_out_edges.emplace(v, m_out_edges.at(v));
   }
   return g;
 }
