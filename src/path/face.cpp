@@ -78,7 +78,7 @@ QString Face::to_string() const
 
 bool Face::is_valid() const noexcept
 {
-  return m_path_vector_view->is_valid() && m_path_vector_view->is_simply_closed();
+  return m_path_vector_view->is_simply_closed();
 }
 
 PathVectorView& Face::path_vector_view()

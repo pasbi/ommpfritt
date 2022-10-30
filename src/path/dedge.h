@@ -18,6 +18,7 @@ template<typename EdgePtr> struct DEdgeBase
   static DEdgeBase bwd(EdgePtr edge);
   DEdgeBase() = default;
   EdgePtr edge = nullptr;
+  [[nodiscard]] bool is_valid() const noexcept;
   Direction direction = Direction::Forward;
   template<typename OtherEdgePtr> [[nodiscard]] bool operator<(const DEdgeBase<OtherEdgePtr>& other) const
   {

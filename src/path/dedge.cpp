@@ -13,6 +13,11 @@ template<typename EdgePtr> DEdgeBase<EdgePtr>::DEdgeBase(EdgePtr const edge, con
 {
 }
 
+template<typename EdgePtr> bool DEdgeBase<EdgePtr>::is_valid() const noexcept
+{
+  return edge != nullptr && edge->is_valid();
+}
+
 template<typename EdgePtr> DEdgeBase<EdgePtr> DEdgeBase<EdgePtr>::fwd(EdgePtr edge)
 {
   return DEdgeBase{edge, Direction::Forward};

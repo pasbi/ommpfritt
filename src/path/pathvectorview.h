@@ -20,7 +20,7 @@ class PathVectorView
 public:
   PathVectorView() = default;
   explicit PathVectorView(std::deque<DEdge> edges);
-  [[nodiscard]] bool is_valid() const;
+
   /**
    * @brief is_simply_closed returns true if every two consecutive edge pairs (including last and
    *   first) have exactly one point in common.

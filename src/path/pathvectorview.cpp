@@ -27,35 +27,6 @@ namespace omm
 
 PathVectorView::PathVectorView(std::deque<DEdge> edges) : m_edges(std::move(edges))
 {
-  assert(is_valid());
-}
-
-bool PathVectorView::is_valid() const
-{
-  static constexpr auto is_valid = [](const DEdge& de) { return de.edge == nullptr || !de.edge->is_valid(); };
-  if (std::any_of(m_edges.begin(), m_edges.end(), is_valid)) {
-    return false;
-  }
-
-  switch (m_edges.size()) {
-  case 0:
-    [[fallthrough]];
-  case 1:
-    return true;
-  case 2:
-    return count_distinct_points(*m_edges.front().edge, *m_edges.back().edge) <= 3;
-  default:
-    for (std::size_t i = 1; i < m_edges.size(); ++i) {
-      const auto& current_edge = *m_edges.at(i).edge;
-      const auto& previous_edge = *m_edges.at(i - 1).edge;
-      const auto loop_count = static_cast<std::size_t>((current_edge.is_loop() ? 1 : 0)
-                                                       + (previous_edge.is_loop() ? 1 : 0));
-      if (count_distinct_points(current_edge, previous_edge) != 3 - loop_count) {
-        return false;
-      }
-    }
-    return true;
-  }
 }
 
 bool PathVectorView::is_simply_closed() const
@@ -85,7 +56,6 @@ const std::deque<DEdge>& PathVectorView::edges() const
 
 QPainterPath PathVectorView::to_painter_path() const
 {
-  assert(is_valid());
   if (m_edges.empty()) {
     return {};
   }
