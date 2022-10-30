@@ -1,5 +1,7 @@
 #include "path/facedetector.h"
 #include "common.h"
+#include "path/dedge.h"
+#include "path/edge.h"
 #include "path/face.h"
 #include "path/pathpoint.h"
 #include "path/pathvectorview.h"

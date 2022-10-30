@@ -1,5 +1,6 @@
 #include "path/dedge.h"
 #include "geometry/point.h"
+#include "path/edge.h"
 #include "path/pathpoint.h"
 
 #include <2geom/bezier-curve.h>

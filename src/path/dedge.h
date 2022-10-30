@@ -1,12 +1,15 @@
 #pragma once
 
 #include "geometry/direction.h"
-
-#include "edge.h"
-
 #include <2geom/curve.h>
+#include <QString>
+#include <memory>
+
 namespace omm
 {
+
+class Edge;
+class PathPoint;
 
 struct DEdge
 {
