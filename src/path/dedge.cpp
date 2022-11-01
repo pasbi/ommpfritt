@@ -77,7 +77,7 @@ template<typename EdgePtr> QString DEdgeBase<EdgePtr>::to_string() const
   if (edge == nullptr) {
     return "null";
   }
-  return (direction == Direction::Forward ? "" : "r") + edge->label();
+  return (direction == Direction::Forward ? "" : "r") + edge->to_string();
 }
 
 template struct DEdgeBase<Edge*>;

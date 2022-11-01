@@ -21,7 +21,7 @@ public:
   Edge& operator=(const Edge&) = delete;
   Edge& operator=(Edge&&) = default;
   ~Edge() = default;
-  [[nodiscard]] QString label() const;
+  [[nodiscard]] QString to_string() const;
   void flip() noexcept;
   [[nodiscard]] bool has_point(const PathPoint* p) noexcept;
   [[nodiscard]] const std::shared_ptr<PathPoint>& a() const noexcept;

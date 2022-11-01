@@ -331,7 +331,7 @@ QString PathVector::to_dot() const
     ts << edge->a()->debug_id();
     ts << "\" -- \"";
     ts << edge->b()->debug_id();
-    ts << "\" [label=\"" << edge->label() << "\"];\n";
+    ts << "\" [label=\"" << edge->to_string() << "\"];\n";
   }
   ts << "}";
   return s;

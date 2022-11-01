@@ -105,7 +105,7 @@ std::shared_ptr<PathPoint> Path::extract_single_point()
 
 QString Path::print_edge_info() const
 {
-  auto lines = util::transform<QList>(this->edges(), &Edge::label);
+  auto lines = util::transform<QList>(this->edges(), &Edge::to_string);
   lines.push_front(QString::asprintf("== Path 0x%p, Edges %zu", static_cast<const void*>(this), edges().size()));
   if (edges().empty()) {
     lines.append(QString::asprintf("Single point: 0x%p", static_cast<const void*>(m_last_point.get())));

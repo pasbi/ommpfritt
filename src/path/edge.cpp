@@ -10,14 +10,12 @@ Edge::Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* pat
 {
 }
 
-QString Edge::label() const
+QString Edge::to_string() const
 {
-  static constexpr bool print_pointer = false;
+  static constexpr bool print_pointer = true;
   if constexpr (print_pointer) {
-    return QString{"%1--%2 (this: %3, path: %4)"}.arg(m_a->debug_id(),
-                                                      m_b->debug_id(),
-                                                      QString::asprintf("%p", static_cast<const void*>(this)),
-                                                      QString::asprintf("%p", static_cast<const void*>(m_path)));
+    return QString{"%1--%2 (%3)"}.arg(m_a->debug_id(), m_b->debug_id(),
+                                      QString::asprintf("%p", static_cast<const void*>(this)));
   } else {
     return QString{"%1--%2"}.arg(m_a->debug_id(), m_b->debug_id());
   }
