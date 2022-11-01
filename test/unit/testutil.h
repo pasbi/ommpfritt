@@ -38,6 +38,7 @@ public:
   explicit Application();
   ~Application();
   omm::Application& omm_app() const;
+  [[nodiscard]] static QString test_id_for_filename();
 
 private:
   std::array<std::string, 3> argv_{"test", "-platform", "offscreen"};

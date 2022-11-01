@@ -348,21 +348,9 @@ void PathVector::to_svg(const QString& filename) const
   QPainter painter(&svg);
 
   static constexpr auto colors = std::array{
-      Qt::red,
-      Qt::green,
-      Qt::blue,
-      Qt::cyan,
-      Qt::magenta,
-      Qt::yellow,
-      Qt::gray,
-      Qt::darkRed,
-      Qt::darkGreen,
-      Qt::darkBlue,
-      Qt::darkCyan,
-      Qt::darkMagenta,
-      Qt::darkYellow,
-      Qt::darkGray,
-      Qt::lightGray,
+      Qt::red,      Qt::green,       Qt::blue,       Qt::cyan,      Qt::magenta,
+      Qt::yellow,   Qt::gray,        Qt::darkRed,    Qt::darkGreen, Qt::darkBlue,
+      Qt::darkCyan, Qt::darkMagenta, Qt::darkYellow, Qt::darkGray,  Qt::lightGray,
   };
 
   std::map<const Path*, Qt::GlobalColor> path_colors;

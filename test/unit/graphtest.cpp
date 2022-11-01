@@ -365,16 +365,14 @@ TEST_P(GraphTest, Normalization)
 
 TEST_P(GraphTest, ComputeFaces)
 {
-  static constexpr auto print_graph_into_svg = false;
+  static constexpr auto print_graph_into_svg = true;
 
   const auto& test_case = GetParam();
 
   if constexpr (print_graph_into_svg) {
     ommtest::Application app;
-    QString name(::testing::UnitTest::GetInstance()->current_test_case()->name());
-    name.replace("/", "_");
     std::ostringstream oss;
-    oss << "/tmp/foo_" << name.toStdString() << "_" << test_case << ".svg";
+    oss << "/tmp/foo_" << ommtest::Application::test_id_for_filename().toStdString() << "_" << test_case << ".svg";
     const auto fname = QString::fromStdString(oss.str());
     test_case.path_vector().to_svg(fname);
     LDEBUG << "save svg file " << fname;

@@ -6,6 +6,7 @@
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
 #include "registers.h"
+#include "gtest/gtest.h"
 #include <QApplication>
 #include <QProcessEnvironment>
 #include <QTimer>
@@ -37,6 +38,12 @@ Application::~Application() = default;
 omm::Application& Application::omm_app() const
 {
   return *m_omm_application;
+}
+
+QString Application::test_id_for_filename()
+{
+  QString name(::testing::UnitTest::GetInstance()->current_test_case()->name());
+  return name.replace("/", "_");
 }
 
 bool have_opengl()

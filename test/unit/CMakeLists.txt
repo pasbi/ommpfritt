@@ -32,6 +32,7 @@ macro(package_add_test SOURCE_FILE)
     set_target_properties(${TESTNAME} PROPERTIES FOLDER tests)
 endmacro()
 
+package_add_test(ccwcomparatortest.cpp)
 package_add_test(color.cpp)
 package_add_test(converttest.cpp)
 package_add_test(dnftest.cpp)
