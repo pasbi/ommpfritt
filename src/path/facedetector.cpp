@@ -1,5 +1,6 @@
 #include "path/facedetector.h"
 #include "common.h"
+#include "path/ccwcomparator.h"
 #include "path/dedge.h"
 #include "path/edge.h"
 #include "path/face.h"
@@ -10,28 +11,6 @@
 
 namespace
 {
-
-class CCWComparator
-{
-public:
-  explicit CCWComparator(const omm::DEdge& base) : m_base(base), m_base_arg(base.end_angle())
-  {
-  }
-
-  [[nodiscard]] double angle_to(const omm::DEdge& edge) const noexcept
-  {
-    return omm::python_like_mod(edge.start_angle() - m_base_arg, 2 * M_PI);
-  }
-
-  [[nodiscard]] bool operator()(const omm::DEdge& a, const omm::DEdge& b) const noexcept
-  {
-    return angle_to(a) < angle_to(b);
-  }
-
-private:
-  omm::DEdge m_base;
-  double m_base_arg;
-};
 
 template<typename Key, typename T> std::set<T> max_elements(const std::set<T>& vs, const Key& key)
 {
@@ -57,7 +36,7 @@ omm::DEdge find_next_edge(const omm::DEdge& current, const omm::Graph& graph, st
   const auto& hinge = current.end_point();
   const auto edges = graph.out_edges(hinge);
 
-  const CCWComparator compare_with_current(current);
+  const omm::CCWComparator compare_with_current(current);
   std::set<omm::DEdge> candidates;
   for (const auto& de : edges) {
     const auto is_current_reversed = current.edge == de.edge && current.direction != de.direction;

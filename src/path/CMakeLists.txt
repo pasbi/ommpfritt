@@ -1,4 +1,6 @@
 target_sources(libommpfritt PRIVATE
+  ccwcomparator.cpp
+  ccwcomparator.h
   edge.cpp
   edge.h
   dedge.cpp
