@@ -407,11 +407,11 @@ TEST_P(GraphTest, ConnectedComponents)
   using PC = omm::PolarCoordinates;
   using D = omm::Direction;
   auto pv = std::make_unique<omm::PathVector>();
-  auto& outer = pv->add_path();
-  const auto make_point = [&outer, &pv = *pv](const omm::Vec2f& pos) {
+  auto& path_0 = pv->add_path();
+  const auto make_point = [&path_0, &pv = *pv](const omm::Vec2f& pos) {
     omm::Point geometry{pos};
-    geometry.set_tangent({&outer, omm::Direction::Backward}, PC{});
-    geometry.set_tangent({&outer, omm::Direction::Forward}, PC{});
+    geometry.set_tangent({&path_0, omm::Direction::Backward}, PC{});
+    geometry.set_tangent({&path_0, omm::Direction::Forward}, PC{});
     return std::make_unique<omm::PathPoint>(geometry, &pv);
   };
   std::deque<std::shared_ptr<omm::PathPoint>> points;
@@ -422,49 +422,61 @@ TEST_P(GraphTest, ConnectedComponents)
   points.emplace_back(make_point({-39.5, 83.0}));
 
   for (std::size_t i = 0; i < points.size(); ++i) {
-    outer.add_edge(points.at(i), points.at((i + 1) % points.size()));
+    path_0.add_edge(points.at(i), points.at((i + 1) % points.size()));
   }
 
-  auto& inner = pv->add_path();
-  inner.add_edge(points.at(1), points.at(4));
+  auto& path_1 = pv->add_path();
+  path_1.add_edge(points.at(1), points.at(4));
 
-  std::deque face_1{
-      omm::DEdge::fwd(outer.edges().at(1)),
-      omm::DEdge::fwd(outer.edges().at(2)),
-      omm::DEdge::fwd(outer.edges().at(3)),
-      omm::DEdge::bwd(inner.edges().at(0)),
+  const std::deque face_0 = {
+      omm::DEdge::fwd(path_0.edges().at(1)),
+      omm::DEdge::fwd(path_0.edges().at(2)),
+      omm::DEdge::fwd(path_0.edges().at(3)),
+      omm::DEdge::bwd(path_1.edges().at(0)),
+  };
+  const std::deque face_1 = {
+      omm::DEdge::fwd(path_0.edges().at(0)),
+      omm::DEdge::fwd(path_1.edges().at(0)),
+      omm::DEdge::fwd(path_0.edges().at(4)),
+  };
+  const std::deque face_2 = {
+      omm::DEdge::bwd(path_0.edges().at(0)), omm::DEdge::bwd(path_0.edges().at(1)),
+      omm::DEdge::bwd(path_0.edges().at(2)), omm::DEdge::bwd(path_0.edges().at(3)),
+      omm::DEdge::bwd(path_0.edges().at(4)),
+  };
+  const std::deque face_3 = {
+      omm::DEdge::fwd(path_0.edges().at(0)),
+      omm::DEdge::fwd(path_1.edges().at(0)),
+      omm::DEdge::fwd(path_0.edges().at(4)),
   };
 
-  std::deque face_2{
-      omm::DEdge::fwd(outer.edges().at(0)),
-      omm::DEdge::fwd(inner.edges().at(0)),
-      omm::DEdge::fwd(outer.edges().at(4)),
-  };
-
-  std::set expected_faces{face_1, face_2};
+  std::set<std::deque<omm::DEdge>> expected_faces;
   switch (variant) {
   case 0:
-    points.at(4)->geometry().set_tangent({&inner, D::Backward}, PC{});
-    points.at(4)->geometry().set_tangent({&outer, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
-    points.at(4)->geometry().set_tangent({&outer, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&path_1, D::Backward}, PC{});
+    points.at(4)->geometry().set_tangent({&path_0, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&path_0, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+    expected_faces = {face_0, face_1};
     break;
   case 1:
-    points.at(4)->geometry().set_tangent({&inner, D::Backward}, PC{-0.6675554919511357, 250.7695451381673});
-    points.at(4)->geometry().set_tangent({&outer, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
-    points.at(4)->geometry().set_tangent({&outer, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&path_1, D::Backward}, PC{-0.6675554919511357, 250.7695451381673});
+    points.at(4)->geometry().set_tangent({&path_0, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&path_0, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+    expected_faces = {face_0, face_1};
     break;
   case 2:
-    points.at(4)->geometry().set_tangent({&inner, D::Backward}, PC{-0.6675554919511357, 350.7695451381673});
-    points.at(4)->geometry().set_tangent({&outer, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
-    points.at(4)->geometry().set_tangent({&outer, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&path_1, D::Backward}, PC{-0.6675554919511357, 350.7695451381673});
+    points.at(4)->geometry().set_tangent({&path_0, D::Backward}, PC{1.0303768265243127, 99.12618221237013});
+    points.at(4)->geometry().set_tangent({&path_0, D::Forward}, PC{-2.1112158270654806, 99.12618221237013});
     expected_faces.clear();  // the graph is not planar
     break;
   case 3:
     points.at(1)->geometry().set_position({120.5, -143.0});
-    points.at(1)->geometry().set_tangent({&inner, D::Backward}, PC{1.2350632478379595, 274.2411547737723});
-    points.at(1)->geometry().set_tangent({&inner, D::Forward}, PC{0.09056247365766779, 0.0});
-    points.at(1)->geometry().set_tangent({&inner, D::Backward}, PC{0.015592141134032511, 355.6724823321008});
-    points.at(1)->geometry().set_tangent({&inner, D::Forward}, PC{-2.921946505938993, 570.3718878667855});
+    points.at(1)->geometry().set_tangent({&path_1, D::Backward}, PC{1.2350632478379595, 274.2411547737723});
+    points.at(1)->geometry().set_tangent({&path_1, D::Forward}, PC{0.09056247365766779, 0.0});
+    points.at(1)->geometry().set_tangent({&path_1, D::Backward}, PC{0.015592141134032511, 355.6724823321008});
+    points.at(1)->geometry().set_tangent({&path_1, D::Forward}, PC{-2.921946505938993, 570.3718878667855});
+    expected_faces = {face_1, face_2};
     break;
   default:
     assert(false);
