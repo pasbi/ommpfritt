@@ -68,15 +68,13 @@ TEST(CCWComparatorTest, A)
   std::deque<omm::Edge*> edges;
 
   PathFactory path_factory(pv);
+
   edges.emplace_back(path_factory.make_trunk());
-
-  edges.emplace_front(path_factory.straight(-45 * M_PI / 180.0));
-
-  edges.emplace_back(path_factory.straight(45 * M_PI / 180.0));
-  edges.emplace_back(path_factory.straight_out(0.2, {0.3, 0.0}, {1.0, 1.0}));
   edges.emplace_back(path_factory.straight_out(0.2, {0.5, 0.0}, {1.0, 1.0}));
-  edges.emplace_back(path_factory.straight_out(0.2, {0.3, 0.0}, {1.0, 2.0}));
+  edges.emplace_back(path_factory.straight_out(0.2, {0.3, 0.0}, {1.0, 1.0}));
   edges.emplace_back(path_factory.straight_out(0.2, {0.5, 0.0}, {1.0, 2.0}));
+  edges.emplace_back(path_factory.straight_out(0.2, {0.3, 0.0}, {1.0, 2.0}));
+  edges.emplace_back(path_factory.straight(45 * M_PI / 180.0));
 
   ommtest::Application app;
   pv.to_svg("/tmp/" + ommtest::Application::test_id_for_filename() + ".svg");
@@ -91,7 +89,7 @@ TEST(CCWComparatorTest, A)
       const auto b = omm::DEdge::fwd(edges.at(j));
       const auto comp_result = ccw_comparator(a, b);
       static constexpr auto to_string = [](const auto& edge) { return edge.to_string().toStdString(); };
-      ASSERT_EQ(comp_result, i < j) << to_string(a) << " < " << to_string(b);
+      EXPECT_EQ(comp_result, i < j) << to_string(a) << " < " << to_string(b);
     }
   }
 }
