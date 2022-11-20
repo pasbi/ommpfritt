@@ -345,6 +345,8 @@ void PathVector::to_svg(const QString& filename) const
   const double size = std::max(bb.height(), bb.width());
   const QPointF margin(size / 3.0, size / 3.0);
   svg.setViewBox(QRectF(bb.topLeft() - margin, bb.bottomRight() + margin));
+  static constexpr auto width = 100;
+  svg.setSize({width, static_cast<int>(width / bb.width() * bb.height())});
   QPainter painter(&svg);
 
   static constexpr auto colors = std::array{
