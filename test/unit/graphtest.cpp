@@ -303,7 +303,7 @@ private:
       + static_cast<QStringList>(util::transform<QList>(segments, [](const int n) { return QString("%1").arg(n); }))
             .join("-")
       + QString("_%1").arg(spacing);
-  return {std::move(pv), std::move(expected_pvvs), segments.size(), name.toStdString()};
+  return {std::move(pv), std::move(expected_pvvs), 1, name.toStdString()};
 }
 
 class GraphTest : public ::testing::TestWithParam<TestCase>
