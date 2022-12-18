@@ -14,7 +14,7 @@ class Edge;
 class PathPoint
 {
 public:
-  explicit PathPoint(const Point& geometry, PathVector* path_vector);
+  explicit PathPoint(const Point& geometry, const PathVector* path_vector);
   void set_geometry(const Point& point);
   [[nodiscard]] const Point& geometry() const;
   [[nodiscard]] Point& geometry();
@@ -34,7 +34,7 @@ public:
   ~PathPoint() = default;
   Point set_interpolation(InterpolationMode mode) const;
 
-  [[nodiscard]] PathVector* path_vector() const;
+  [[nodiscard]] const PathVector* path_vector() const;
 
   /**
    * @brief debug_id returns an string to identify the point uniquely at this point in time
@@ -56,7 +56,7 @@ public:
   std::set<Edge*> edges() const;
 
 private:
-  PathVector* m_path_vector;
+  const PathVector* m_path_vector;
   Point m_geometry;
   bool m_is_selected = false;
 };

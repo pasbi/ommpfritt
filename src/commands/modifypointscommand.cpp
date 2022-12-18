@@ -34,14 +34,14 @@ int ModifyPointsCommand::id() const
 
 void ModifyPointsCommand::exchange()
 {
-  std::set<PathVector*> path_vectors;
+  std::set<const PathVector*> path_vectors;
   for (auto& [ptr, point] : m_data) {
     const auto geometry = ptr->geometry();
     ptr->set_geometry(point);
     point = geometry;
     path_vectors.insert(ptr->path_vector());
   }
-  for (auto* path_vector : path_vectors) {
+  for (const auto* const path_vector : path_vectors) {
     path_vector->path_object()->update();
   }
 }

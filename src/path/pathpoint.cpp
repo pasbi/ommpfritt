@@ -48,9 +48,8 @@ compute_smooth_tangents(const omm::PathPoint& point, const omm::Path& path)
 namespace omm
 {
 
-PathPoint::PathPoint(const Point& geometry, PathVector* path_vector)
-  : m_path_vector(path_vector)
-  , m_geometry(geometry)
+PathPoint::PathPoint(const Point& geometry, const PathVector* path_vector)
+  : m_path_vector(path_vector), m_geometry(geometry)
 {
 }
 
@@ -78,7 +77,7 @@ Point PathPoint::set_interpolation(InterpolationMode mode) const
   return copy;
 }
 
-PathVector* PathPoint::path_vector() const
+const PathVector* PathPoint::path_vector() const
 {
   return m_path_vector;
 }
