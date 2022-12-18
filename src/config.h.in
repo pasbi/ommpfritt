@@ -9,4 +9,4 @@ static constexpr auto source_directory = "@CMAKE_SOURCE_DIR@";
 static constexpr auto qt_qm_path = "@qt_qm_path@";
 std::string_view git_describe();
 
-#cmakedefine DRAW_POINT_IDS
+#cmakedefine01 DRAW_POINT_IDS

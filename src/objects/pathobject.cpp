@@ -11,10 +11,10 @@
 #include "scene/scene.h"
 #include <QObject>
 
-#ifdef DRAW_POINT_IDS
-#include "path/pathpoint.h"
-#include "renderers/painter.h"
-#include <QPainter>
+#if DRAW_POINT_IDS
+#  include "path/pathpoint.h"
+#  include "renderers/painter.h"
+#  include <QPainter>
 #endif  // DRAW_POINT_IDS
 
 
@@ -113,7 +113,7 @@ bool PathObject::is_face_selected(const Face& face) const
   return false;
 }
 
-#ifdef DRAW_POINT_IDS
+#if DRAW_POINT_IDS
 void PathObject::draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const
 {
   Object::draw_object(renderer, style, options);
