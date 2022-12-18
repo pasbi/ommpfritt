@@ -10,3 +10,4 @@ static constexpr auto qt_qm_path = "@qt_qm_path@";
 std::string_view git_describe();
 
 #cmakedefine01 DRAW_POINT_IDS
+#cmakedefine01 PATH_DRAW_DIRECTION

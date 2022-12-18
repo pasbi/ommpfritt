@@ -1,4 +1,5 @@
 #include "path/path.h"
+#include "config.h"
 #include "geometry/point.h"
 #include "path/dedge.h"
 #include "path/edge.h"
@@ -20,7 +21,7 @@ void replace_tangents_key(const auto& edges, const std::map<const omm::Path*, om
   }
 }
 
-void draw_arrow(QPainterPath& painter_path, const omm::PolarCoordinates& v, const double offset)
+[[maybe_unused]] void draw_arrow(QPainterPath& painter_path, const omm::PolarCoordinates& v, const double offset)
 {
   const auto pos_before = painter_path.currentPosition();
   const auto origin = omm::Vec2f(pos_before) + offset * v.to_cartesian();
@@ -284,17 +285,18 @@ void Path::draw_segment(QPainterPath& painter_path, const Edge& edge, const Path
   const auto g2 = edge.b()->geometry();
   const auto t2 = g2.tangent_position({path, Direction::Backward});
 
-  static constexpr auto draw_direction = true;
-  static constexpr auto len = [](const auto& p1, const auto& p2) { return (p1 - p2).euclidean_norm(); };
-  const auto arrow_size = (len(g1.position(), t1) + len(t1, t2) + len(t2, g2.position())) / 5.0;
   const DEdgeConst dedge(&edge, Direction::Forward);
 
-  if constexpr (draw_direction) {
+  static constexpr auto len = [](const auto& p1, const auto& p2) { return (p1 - p2).euclidean_norm(); };
+  const auto arrow_size = (len(g1.position(), t1) + len(t1, t2) + len(t2, g2.position())) / 5.0;
+  if constexpr (PATH_DRAW_DIRECTION) {
     const PolarCoordinates v(dedge.start_angle() + M_PI, arrow_size);
     draw_arrow(painter_path, 0.5 * v, -0.1);
   }
+
   painter_path.cubicTo(t1.to_pointf(), t2.to_pointf(), g2.position().to_pointf());
-  if constexpr (draw_direction) {
+
+  if constexpr (PATH_DRAW_DIRECTION) {
     const PolarCoordinates v(dedge.end_angle(), arrow_size);
     draw_arrow(painter_path, v, 0.1);
   }
