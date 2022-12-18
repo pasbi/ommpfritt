@@ -1,14 +1,17 @@
-#include "commands/addremovepointscommand.h"
-#include "geometry/point.h"
-#include "gtest/gtest.h"
-#include "path/edge.h"
 #include "path/path.h"
+#include "commands/addpointscommand.h"
+#include "commands/ownedlocatedpath.h"
+#include "commands/removepointscommand.h"
+#include "geometry/point.h"
+#include "path/edge.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
 #include "path/pathview.h"
+#include "gtest/gtest.h"
 
 #include <fmt/format.h>
 
+#include <optional>
 
 namespace
 {
