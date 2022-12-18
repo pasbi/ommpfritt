@@ -1,11 +1,8 @@
 #include "commands/modifypointscommand.h"
 #include "common.h"
-#include "scene/scene.h"
 #include "objects/pathobject.h"
-#include "path/path.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
-#include "path/pathview.h"
 
 
 namespace omm

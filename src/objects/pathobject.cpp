@@ -1,13 +1,8 @@
 #include "objects/pathobject.h"
 
-#include "commands/modifypointscommand.h"
 #include "common.h"
-#include "path/path.h"
 #include "path/pathvector.h"
-#include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
-#include "renderers/style.h"
-#include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <QObject>
 

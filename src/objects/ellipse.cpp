@@ -1,12 +1,10 @@
 #include "objects/ellipse.h"
 
-#include "objects/pathobject.h"
 #include "path/edge.h"
 #include "path/pathpoint.h"
 #include "path/path.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
-#include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
 #include "properties/integerproperty.h"
 #include "scene/scene.h"
