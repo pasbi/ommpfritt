@@ -1,30 +1,56 @@
 #include "path/lib2geomadapter.h"
+#include "path/edge.h"
 #include "path/path.h"
-#include "path/pathvector.h"
 #include "path/pathpoint.h"
+#include "path/pathvector.h"
 #include <2geom/pathvector.h>
 
 namespace omm
 {
 
-Geom::PathVector omm_to_geom(const PathVector& path_vector, InterpolationMode interpolation)
+Geom::PathVector omm_to_geom(const PathVector& path_vector, const InterpolationMode interpolation)
 {
   Geom::PathVector paths;
   for (auto&& path : path_vector.paths()) {
     paths.push_back(omm_to_geom(*path, interpolation));
   }
+  assert(path_vector.paths().size() == paths.size());
   return paths;
 }
 
-Geom::Path omm_to_geom(const Path& path, InterpolationMode interpolation)
+template<InterpolationMode interpolation> auto omm_to_geom(const Edge& edge)
 {
-  (void) path;
-  (void) interpolation;
-  return Geom::Path{};
+  const auto& a = edge.a()->geometry();
+  const auto& b = edge.b()->geometry();
+  const auto a_pos = a.position().to_geom_point();
+  const auto b_pos = b.position().to_geom_point();
 
+  if constexpr (interpolation == InterpolationMode::Linear) {
+    return Geom::LineSegment(std::vector{a_pos, b_pos});
+  } else {
+    if (interpolation != InterpolationMode::Bezier) {
+      LWARNING << "Smooth mode is not yet implemented.";
+    }
+    const auto a_t = a.tangent_position({edge.path(), Direction::Forward}).to_geom_point();
+    const auto b_t = b.tangent_position({edge.path(), Direction::Backward}).to_geom_point();
+    return Geom::BezierCurveN<3>(std::vector{a_pos, a_t, b_t, b_pos});
+  }
+}
 
-
-
+Geom::Path omm_to_geom(const Path& path, const InterpolationMode interpolation)
+{
+  const auto make_path = [&path](const auto& edge_to_curve) {
+    const auto curves = util::transform(path.edges(), edge_to_curve);
+    return Geom::Path(curves.begin(), curves.end());
+  };
+  switch (interpolation) {
+  case InterpolationMode::Bezier:
+    return make_path([](const Edge* const edge) { return omm_to_geom<InterpolationMode::Bezier>(*edge); });
+  case InterpolationMode::Linear:
+    return make_path([](const Edge* const edge) { return omm_to_geom<InterpolationMode::Linear>(*edge); });
+  case InterpolationMode::Smooth:
+    return make_path([](const Edge* const edge) { return omm_to_geom<InterpolationMode::Smooth>(*edge); });
+  }
 }
 
 std::unique_ptr<PathVector> geom_to_omm(const Geom::PathVector& geom_path_vector)
