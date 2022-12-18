@@ -15,7 +15,7 @@ class Edge
 {
 public:
   Edge() = default;
-  explicit Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* path);
+  explicit Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, const Path* path);
   Edge(const Edge&) = delete;
   Edge(Edge&&) = default;
   Edge& operator=(const Edge&) = delete;
@@ -28,7 +28,7 @@ public:
   [[nodiscard]] const std::shared_ptr<PathPoint>& b() const noexcept;
   [[nodiscard]] std::shared_ptr<PathPoint>& a() noexcept;
   [[nodiscard]] std::shared_ptr<PathPoint>& b() noexcept;
-  [[nodiscard]] Path* path() const;
+  [[nodiscard]] const Path* path() const;
   [[nodiscard]] bool is_valid() const noexcept;
   [[nodiscard]] bool contains(const PathPoint* p) const noexcept;
   [[nodiscard]] std::shared_ptr<PathPoint> start_point(const Direction& direction) const noexcept;
@@ -37,7 +37,7 @@ public:
   [[nodiscard]] std::array<PathPoint*, 2> points() const;
 
 private:
-  Path* m_path;
+  const Path* m_path;
   std::shared_ptr<PathPoint> m_a = nullptr;
   std::shared_ptr<PathPoint> m_b = nullptr;
 };

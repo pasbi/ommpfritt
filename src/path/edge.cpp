@@ -5,8 +5,8 @@
 namespace omm
 {
 
-Edge::Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, Path* path)
-    : m_path(path), m_a(a), m_b(b)
+Edge::Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, const Path const* path)
+  : m_path(path), m_a(a), m_b(b)
 {
 }
 
@@ -51,7 +51,7 @@ std::shared_ptr<PathPoint>& Edge::b() noexcept
   return m_b;
 }
 
-Path* Edge::path() const
+const Path* Edge::path() const
 {
   return m_path;
 }
