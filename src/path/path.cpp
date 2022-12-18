@@ -4,7 +4,6 @@
 #include "path/edge.h"
 #include "path/pathpoint.h"
 #include "path/pathview.h"
-#include <2geom/pathvector.h>
 
 #include <QPainterPath>
 
@@ -227,29 +226,6 @@ std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::
   assert(is_valid(removed_edges));
   return removed_edges;
 }
-
-//std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> Path::cut(Edge& edge, std::shared_ptr<PathPoint> p)
-//{
-//  const auto it = std::find_if(m_edges.begin(), m_edges.end(), [&edge](const auto& u) {
-//    return u.get() == &edge;
-//  });
-//  if (it == m_edges.end()) {
-//    throw PathException("Edge not found.");
-//  }
-
-//  const auto insert = [this](const auto pos, auto edge) -> Edge& {
-//    auto& r = *edge;
-//    m_edges.insert(pos, std::move(edge));
-//    return r;
-//  };
-//  auto& r1 = insert(std::next(it, 1), std::make_unique<Edge>(edge.a(), p, this));
-//  auto& r2 = insert(std::next(it, 2), std::make_unique<Edge>(p, edge.b(), this));
-
-//  auto removed_edge = std::move(*it);
-//  m_edges.erase(it);
-//  assert(is_valid());
-//  return {std::move(removed_edge), &r1, &r2};
-//}
 
 bool Path::is_valid() const
 {

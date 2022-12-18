@@ -60,7 +60,6 @@ public:
    */
   std::deque<std::unique_ptr<Edge>> replace(const PathView& path_view, std::deque<std::unique_ptr<Edge>> edges);
 
-//  std::tuple<std::unique_ptr<Edge>, Edge*, Edge*> cut(Edge& edge, std::shared_ptr<PathPoint> p);
   [[nodiscard]] bool is_valid() const;
   [[nodiscard]] std::vector<PathPoint*> points() const;
   [[nodiscard]] std::vector<Edge*> edges() const;
