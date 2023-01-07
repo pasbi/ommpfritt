@@ -17,6 +17,7 @@ else()
 endif()
 
 macro(package_add_test SOURCE_FILE)
+    # TODO compile all tests into a single executable?
     string(REGEX REPLACE "\.[^.]*$" "" TESTNAME "${SOURCE_FILE}")
     add_executable(${TESTNAME} main.cpp testutil.cpp testutil.h ${SOURCE_FILE} ${compiled_resource_file})
     add_dependencies(${TESTNAME} libommpfritt)

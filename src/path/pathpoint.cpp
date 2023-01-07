@@ -2,8 +2,6 @@
 #include "path/edge.h"
 #include "path/path.h"
 #include "path/pathvector.h"
-#include "objects/pathobject.h"
-#include "scene/scene.h"
 
 
 namespace
@@ -86,7 +84,7 @@ QString PathPoint::debug_id() const
 {
   static constexpr bool print_pointer = false;
   if constexpr (print_pointer) {
-    return QString{"%1 (%2)"}.arg(index()).arg(QString::asprintf("%p", this));
+    return QString{"%1 (%2)"}.arg(index()).arg(QString::asprintf("%p", static_cast<const void*>(this)));
   } else {
     return QString{"%1"}.arg(index());
   }

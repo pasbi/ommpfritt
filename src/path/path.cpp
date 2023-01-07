@@ -288,7 +288,7 @@ void Path::draw_segment(QPainterPath& painter_path, const Edge& edge, const Path
   const DEdgeConst dedge(&edge, Direction::Forward);
 
   static constexpr auto len = [](const auto& p1, const auto& p2) { return (p1 - p2).euclidean_norm(); };
-  const auto arrow_size = (len(g1.position(), t1) + len(t1, t2) + len(t2, g2.position())) / 5.0;
+  [[maybe_unused]] const auto arrow_size = (len(g1.position(), t1) + len(t1, t2) + len(t2, g2.position())) / 5.0;
   if constexpr (PATH_DRAW_DIRECTION) {
     const PolarCoordinates v(dedge.start_angle() + M_PI, arrow_size);
     draw_arrow(painter_path, 0.5 * v, -0.1);
