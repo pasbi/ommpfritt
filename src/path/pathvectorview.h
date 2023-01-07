@@ -38,8 +38,6 @@ public:
   [[nodiscard]] std::vector<PathPoint*> path_points() const;
   [[nodiscard]] QRectF bounding_box() const;
   [[nodiscard]] std::vector<Vec2f> bounding_polygon() const;
-  friend bool operator==(const PathVectorView& a, const PathVectorView& b);
-  friend bool operator<(const PathVectorView& a, const PathVectorView& b);
 
   /**
    * @brief normalize PathVectorViews are defined up to
@@ -53,5 +51,8 @@ public:
 private:
   std::deque<DEdge> m_edges;
 };
+
+[[nodiscard]] bool operator==(const PathVectorView& a, const PathVectorView& b);
+[[nodiscard]] bool operator<(const PathVectorView& a, const PathVectorView& b);
 
 }  // namespace omm

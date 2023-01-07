@@ -503,3 +503,172 @@ TEST_F(PathVectorCopy, OP)
 
   ASSERT_NO_FATAL_FAILURE(assert_valid());
 }
+auto default_point(omm::PathVector& pv)
+{
+  return std::make_shared<omm::PathPoint>(omm::Point(), &pv);
+}
+
+void add_empty_path(omm::PathVector& path_vector)
+{
+  path_vector.add_path();
+}
+
+void add_path_with_single_point(omm::PathVector& path_vector)
+{
+  auto& path = path_vector.add_path();
+  path.set_single_point(default_point(path_vector));
+}
+
+void add_path_with_single_edge(omm::PathVector& path_vector)
+{
+  auto& path = path_vector.add_path();
+  path.add_edge(default_point(path_vector), default_point(path_vector));
+}
+
+void modify_position_of_first_point(omm::PathVector& path_vector)
+{
+  // assuming path_vector with at least one point
+  auto& geometry = (*path_vector.points().begin())->geometry();
+  geometry.set_position(geometry.position() + omm::Vec2f{1.0, 2.0});
+}
+
+void modify_tangent_of_first_point(omm::PathVector& path_vector)
+{
+  // assuming path_vector with at least one point
+  auto& geometry = (*path_vector.points().begin())->geometry();
+  auto& [key, value] = *geometry.tangents().begin();
+  value.magnitude += 1.0;
+  geometry.set_tangent(key, value);
+}
+
+void modify_topology(omm::PathVector& path_vector)
+{
+  // assuming path vector with horizontal and vertical path with three points each, common center point.
+  const auto& vertical_path = *path_vector.paths().at(1);
+  auto& independent_vertical_path = path_vector.add_path();
+
+  auto top = vertical_path.edges().at(0)->a();
+  auto bottom = vertical_path.edges().at(1)->b();
+  auto center = std::make_shared<omm::PathPoint>(vertical_path.edges().at(0)->b()->geometry(), &path_vector);
+  path_vector.remove_path(vertical_path);
+  independent_vertical_path.add_edge(top, center);
+  independent_vertical_path.add_edge(center, bottom);
+  // Now the path vector is geometrically the same as before but the center point is independent
+}
+
+class PathVectorEqualityTestCase
+{
+public:
+  using PathVectorModifier = std::function<void(omm::PathVector&)>;
+
+  PathVectorEqualityTestCase(std::string label, std::list<PathVectorModifier> modifiers)
+    : m_label(std::move(label)), m_modifiers(std::move(modifiers))
+  {
+  }
+
+  static auto empty_path_vector()
+  {
+    return PathVectorEqualityTestCase(
+        "Empty Path Vector",
+        std::list<PathVectorModifier>{add_empty_path, add_path_with_single_point, add_path_with_single_edge});
+  }
+
+  static auto small_path_vector()
+  {
+    auto test_case = PathVectorEqualityTestCase(
+        "Small Path Vector",
+        std::list<PathVectorModifier>{add_empty_path, add_path_with_single_point, add_path_with_single_edge,
+                                      modify_position_of_first_point, modify_tangent_of_first_point});
+
+    using PC = omm::PolarCoordinates;
+    auto& path = test_case.path_vector().add_path();
+    const auto tk = [&path](PC fwd, PC bwd) {
+      return std::map<omm::Point::TangentKey, PC>{
+          {{&path, omm::Direction::Forward}, std::move(fwd)},
+          {{&path, omm::Direction::Backward}, std::move(bwd)},
+      };
+    };
+    const std::vector geometries{
+        omm::Point{{0.0, 0.2}, tk(PC{0.0, 1.0}, PC{M_PI, 1.0})},
+        omm::Point{{1.0, 0.3}, tk(PC{-M_PI / 2.0, 1.2}, PC{M_PI / 2.0, 1.4})},
+        omm::Point{{2.0, 0.1}, tk(PC{0.0, 0.1}, PC{M_PI / 4, 1.3})},
+    };
+
+    const auto points = util::transform(geometries, [&test_case](const omm::Point& geometry) {
+      return std::make_shared<omm::PathPoint>(geometry, &test_case.path_vector());
+    });
+
+    path.add_edge(points.at(0), points.at(1));
+    path.add_edge(points.at(1), points.at(2));
+    return test_case;
+  }
+
+  static auto cross_path_vector()
+  {
+    auto test_case = PathVectorEqualityTestCase(
+        "Crossing Path Vector",
+        std::list<PathVectorModifier>{add_empty_path, add_path_with_single_point, add_path_with_single_edge,
+                                      modify_position_of_first_point, modify_tangent_of_first_point, modify_topology});
+
+    auto& horizontal_path = test_case.path_vector().add_path();
+    auto& vertical_path = test_case.path_vector().add_path();
+
+    auto center = std::make_shared<omm::PathPoint>(omm::Point{{0.0, 0.0}}, &test_case.path_vector());
+    auto right = std::make_shared<omm::PathPoint>(omm::Point{{1.0, 0.0}}, &test_case.path_vector());
+    auto left = std::make_shared<omm::PathPoint>(omm::Point{{-1.0, 0.0}}, &test_case.path_vector());
+    auto top = std::make_shared<omm::PathPoint>(omm::Point{{0.0, -1.0}}, &test_case.path_vector());
+    auto bottom = std::make_shared<omm::PathPoint>(omm::Point{{0.0, 1.0}}, &test_case.path_vector());
+
+    horizontal_path.add_edge(left, center);
+    horizontal_path.add_edge(center, right);
+    vertical_path.add_edge(top, center);
+    vertical_path.add_edge(center, bottom);
+
+    return test_case;
+  }
+
+  [[nodiscard]] const auto& modifiers() const noexcept
+  {
+    return m_modifiers;
+  }
+
+  friend std::ostream& operator<<(std::ostream& os, const PathVectorEqualityTestCase& test_case)
+  {
+    return os << test_case.m_label;
+  }
+
+  [[nodiscard]] omm::PathVector& path_vector() const noexcept
+  {
+    return *m_path_vector;
+  }
+
+private:
+  std::string m_label;
+  std::list<PathVectorModifier> m_modifiers;
+  std::shared_ptr<omm::PathVector> m_path_vector = std::make_shared<omm::PathVector>();
+};
+
+class PathVectorEquality : public ::testing::TestWithParam<PathVectorEqualityTestCase>
+{
+};
+
+TEST_P(PathVectorEquality, PathVectorEquality)
+{
+  const auto& test_case = GetParam();
+
+  const auto copy = test_case.path_vector();
+  EXPECT_EQ(test_case.path_vector(), copy) << "Expected copy of PathVector to equal original.";
+
+  for (const auto& modifier : test_case.modifiers()) {
+    auto copy = test_case.path_vector();
+    modifier(copy);
+    EXPECT_NE(test_case.path_vector(), copy) << "Expected PathVector not to equal the original after modifying it.";
+  }
+}
+
+const auto values = ::testing::ValuesIn(std::vector<PathVectorEqualityTestCase>{
+    PathVectorEqualityTestCase::empty_path_vector(),
+    PathVectorEqualityTestCase::small_path_vector(),
+    PathVectorEqualityTestCase::cross_path_vector(),
+});
+INSTANTIATE_TEST_SUITE_P(P, PathVectorEquality, values);

@@ -73,7 +73,17 @@ public:
   void serialize(serialization::SerializerWorker& worker, const std::map<const Path*, std::size_t>& path_indices) const;
   void deserialize(serialization::DeserializerWorker& worker, const std::vector<const Path*> paths);
 
+  /**
+   * @brief operator == returns true iff this equals `point`. Makes sense only if
+   *   - both points are part of the same PathVector
+   *   - or have no tangents assigned to a Path.
+   */
   bool operator==(const Point& point) const;
+
+  /**
+   * @brief operator != returns true iff this doesn't equal `point`.
+   * Same constrains apply as for @see operator==.
+   */
   bool operator!=(const Point& point) const;
   bool operator<(const Point& point) const;
   friend bool fuzzy_eq(const Point& a, const Point& b);

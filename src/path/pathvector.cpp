@@ -409,4 +409,67 @@ void PathVector::set_path_object(PathObject* path_object)
   m_path_object = path_object;
 }
 
+QString PathVector::to_string() const
+{
+  return QString("PathVector[%1 with %2 Points in %3 Paths]")
+      .arg(QString::asprintf("%p", static_cast<const void*>(this)))
+      .arg(point_count())
+      .arg(paths().size());
+}
+
+std::ostream& operator<<(std::ostream& os, const PathVector& path_vector)
+{
+  // TODO maybe we can implement some global mechanism that turns `T::to_string` into
+  // `std::ostream& operator<<(std::ostream&, const T&)` for any T.
+  return os << path_vector.to_string().toStdString();
+}
+
+bool operator==(const PathVector& a, const PathVector& b)
+{
+  const auto paths_a = a.paths();
+  const auto paths_b = b.paths();
+
+  if (paths_a.size() != paths_b.size()) {
+    return false;
+  }
+
+  std::map<const omm::Path*, omm::Path*> path_map_a_to_b;
+  for (std::size_t i = 0; i < paths_a.size(); ++i) {
+    [[maybe_unused]] const auto [it, success] = path_map_a_to_b.try_emplace(paths_a.at(i), paths_b.at(i));
+    assert(success);
+  }
+
+  // check if paths of a match paths of b topologically
+  std::map<const PathPoint*, const PathPoint*> map_a_to_b;
+  std::map<const PathPoint*, const PathPoint*> map_b_to_a;
+  const auto point_eq = [&map_a_to_b, &map_b_to_a, &path_map_a_to_b](const PathPoint* const a,
+                                                                     const PathPoint* const b) {
+    if (map_a_to_b.try_emplace(a, b).first->second != b || map_b_to_a.try_emplace(b, a).first->second != a) {
+      return false;  // `a` maps to something other than `b` already or vice versa.
+    }
+    auto a_geometry = a->geometry();
+    a_geometry.replace_tangents_key(path_map_a_to_b);
+    if (a_geometry != b->geometry()) {
+      return false;
+    }
+    return true;
+  };
+
+  const auto path_eq = [&point_eq](const Path* path_a, const Path* path_b) {
+    const auto points_a_i = path_a->points();
+    const auto points_b_i = path_b->points();
+    if (points_a_i.size() != points_b_i.size()) {
+      return false;
+    }
+    return std::equal(points_a_i.begin(), points_a_i.end(), points_b_i.begin(), point_eq);
+  };
+
+  return std::equal(paths_a.begin(), paths_a.end(), paths_b.begin(), path_eq);
+}
+
+bool operator!=(const PathVector& a, const PathVector& b)
+{
+  return !(a == b);
+}
+
 }  // namespace omm

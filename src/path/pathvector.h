@@ -91,6 +91,9 @@ public:
    */
   [[nodiscard, maybe_unused]] bool is_valid() const;
 
+  [[nodiscard]] QString to_string() const;
+  friend std::ostream& operator<<(std::ostream& os, const PathVector& path_vector);
+
 private:
   PathObject* m_path_object = nullptr;
   std::deque<std::unique_ptr<Path>> m_paths;
@@ -108,5 +111,13 @@ private:
    */
   Mapping copy_from(const PathVector& pv);
 };
+
+/**
+ * @brief operator == returns true if a and b are equal.
+ *  It is not necessary for a and b to own identical Paths or PathPoints, equalty may hold if a was
+ *  an independent copy of b.
+ */
+[[nodiscard]] bool operator==(const PathVector& a, const PathVector& b);
+[[nodiscard]] bool operator!=(const PathVector& a, const PathVector& b);
 
 }  // namespace omm
