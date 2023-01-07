@@ -396,24 +396,25 @@ TEST_P(AddPointsCommandTest, AddPoints)
 
 INSTANTIATE_TEST_SUITE_P(X, AddPointsCommandTest,
                          ::testing::ValuesIn(std::vector<RemoveAddPointsCommandTestParameter>{
-                                              {.initial_point_count = 0, .offset = 0, .count = 1},
-                                              {.initial_point_count = 0, .offset = 0, .count = 2},
-                                              {.initial_point_count = 0, .offset = 0, .count = 3},
-                                              {.initial_point_count = 2, .offset = 0, .count = 1},
-                                              {.initial_point_count = 2, .offset = 1, .count = 1},
-                                              {.initial_point_count = 2, .offset = 2, .count = 1},
-                                              {.initial_point_count = 2, .offset = 0, .count = 2},
-                                              {.initial_point_count = 2, .offset = 1, .count = 2},
-                                              {.initial_point_count = 2, .offset = 2, .count = 2},
-                                              {.initial_point_count = 2, .offset = 0, .count = 3},
-                                              {.initial_point_count = 2, .offset = 1, .count = 3},
-                                              {.initial_point_count = 2, .offset = 2, .count = 3},
-                                              {.initial_point_count = 3, .offset = 0, .count = 2},
-                                              {.initial_point_count = 3, .offset = 1, .count = 2},
-                                              {.initial_point_count = 3, .offset = 2, .count = 2},
-                                              {.initial_point_count = 3, .offset = 3, .count = 2},
-                                            }),
-                          &AddPointsCommandTestParameter::name_generator);
+                             {.initial_point_count = 0, .offset = 0, .count = 1},
+                             {.initial_point_count = 0, .offset = 0, .count = 2},
+                             {.initial_point_count = 0, .offset = 0, .count = 3},
+                             // TODO one initial point?
+                             {.initial_point_count = 2, .offset = 0, .count = 1},
+                             {.initial_point_count = 2, .offset = 1, .count = 1},
+                             {.initial_point_count = 2, .offset = 2, .count = 1},
+                             {.initial_point_count = 2, .offset = 0, .count = 2},
+                             {.initial_point_count = 2, .offset = 1, .count = 2},
+                             {.initial_point_count = 2, .offset = 2, .count = 2},
+                             {.initial_point_count = 2, .offset = 0, .count = 3},
+                             {.initial_point_count = 2, .offset = 1, .count = 3},
+                             {.initial_point_count = 2, .offset = 2, .count = 3},
+                             {.initial_point_count = 3, .offset = 0, .count = 2},
+                             {.initial_point_count = 3, .offset = 1, .count = 2},
+                             {.initial_point_count = 3, .offset = 2, .count = 2},
+                             {.initial_point_count = 3, .offset = 3, .count = 2},
+                         }),
+                         &AddPointsCommandTestParameter::name_generator);
 
 class PathVectorCopy : public ::testing::Test
 {
@@ -424,14 +425,14 @@ public:
 
   omm::PathVector& make_copy()
   {
-    pv_copy = std::make_unique<omm::PathVector>(*pv_original);
+    pv_copy = std::make_unique<omm::PathVector>(pv_original);
     return *pv_copy;
   }
 
   void assert_valid() const
   {
     ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(*pv_copy));
-    ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(*pv_original));
+    ASSERT_NO_FATAL_FAILURE(assert_valid_tangents(pv_original));
     ASSERT_NO_FATAL_FAILURE(assert_equiv_but_distinct());
   }
 
@@ -441,7 +442,7 @@ private:
     for (const auto* path : path_vector.paths()) {
       for (const auto* const p : path->points()) {
         for (const auto& [key, tangent] : p->geometry().tangents()) {
-//          ASSERT_TRUE(key.path == path || key.path == nullptr) << "key.path: " << key.path << ", path: " << path;
+          ASSERT_TRUE(key.path == path || key.path == nullptr) << "key.path: " << key.path << ", path: " << path;
         }
       }
     }
@@ -465,7 +466,7 @@ private:
 
   void assert_equiv_but_distinct() const
   {
-    const auto a_paths = pv_original->paths();
+    const auto a_paths = pv_original.paths();
     const auto b_paths = pv_copy->paths();
     ASSERT_EQ(a_paths.size(), b_paths.size());
     for (std::size_t i = 0; i < a_paths.size(); ++i) {
@@ -474,15 +475,15 @@ private:
   }
 
 protected:
-  std::unique_ptr<omm::PathVector> pv_original;
+  omm::PathVector pv_original;
   std::unique_ptr<omm::PathVector> pv_copy;
 };
 
-TEST_F(PathVectorCopy, OE)
+TEST_F(PathVectorCopy, one_edge)
 {
-  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), pv_original.get());
-  auto pv1_p1 = std::make_shared<omm::PathPoint>(omm::Point({0, 1}), pv_original.get());
-  auto& pv1_path = pv_original->add_path();
+  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), &pv_original);
+  auto pv1_p1 = std::make_shared<omm::PathPoint>(omm::Point({0, 1}), &pv_original);
+  auto& pv1_path = pv_original.add_path();
   pv1_path.add_edge(std::make_unique<omm::Edge>(pv1_p0, pv1_p1, &pv1_path));
   pv1_p0->geometry().set_tangent({&pv1_path, omm::Direction::Backward}, omm::PolarCoordinates());
   pv1_p1->geometry().set_tangent({&pv1_path, omm::Direction::Forward}, omm::PolarCoordinates());
@@ -492,10 +493,10 @@ TEST_F(PathVectorCopy, OE)
   ASSERT_NO_FATAL_FAILURE(assert_valid());
 }
 
-TEST_F(PathVectorCopy, OP)
+TEST_F(PathVectorCopy, one_point)
 {
-  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), pv_original.get());
-  auto& pv1_path = pv_original->add_path();
+  auto pv1_p0 = std::make_shared<omm::PathPoint>(omm::Point({0, 0}), &pv_original);
+  auto& pv1_path = pv_original.add_path();
   pv1_path.set_single_point(pv1_p0);
   pv1_p0->geometry().set_tangent({&pv1_path, omm::Direction::Backward}, omm::PolarCoordinates());
 
@@ -503,6 +504,7 @@ TEST_F(PathVectorCopy, OP)
 
   ASSERT_NO_FATAL_FAILURE(assert_valid());
 }
+
 auto default_point(omm::PathVector& pv)
 {
   return std::make_shared<omm::PathPoint>(omm::Point(), &pv);
