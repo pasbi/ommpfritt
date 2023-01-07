@@ -18,8 +18,8 @@ namespace omm
 
 class Style;
 
-PathObject::PathObject(Scene* scene, const PathVector& path_vector)
-    : PathObject(scene, std::make_unique<PathVector>(path_vector, this))
+PathObject::PathObject(Scene* scene, PathVector path_vector)
+  : PathObject(scene, std::make_unique<PathVector>(std::move(path_vector), this))
 {
 
 }
