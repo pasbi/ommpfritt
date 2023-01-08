@@ -65,6 +65,7 @@ public:
   void deselect_all_points() const;
   [[nodiscard]] PathObject* path_object() const;
   void draw_point_ids(QPainter& painter) const;
+  void draw_path_ids(QPainter& painter) const;
   [[nodiscard]] QString to_dot() const;
   void to_svg(const QString& filename) const;
   [[nodiscard]] QRectF bounding_box() const;

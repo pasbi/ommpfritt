@@ -7,6 +7,7 @@
 #include "path/face.h"
 #include "path/facedetector.h"
 #include "path/graph.h"
+#include "path/lib2geomadapter.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
 #include "path/pathvectorisomorphism.h"
@@ -201,6 +202,22 @@ void PathVector::draw_point_ids(QPainter& painter) const
   for (const auto* point : points()) {
     static constexpr QPointF offset{10.0, 10.0};
     painter.drawText(point->geometry().position().to_pointf() + offset, point->debug_id());
+  }
+}
+
+void PathVector::draw_path_ids(QPainter& painter) const
+{
+  std::size_t path_index = 0;
+  for (const auto* const path : paths()) {
+    std::size_t edge_index = 0;
+    for (const auto* edge : path->edges()) {
+      const auto geom_edge = omm_to_geom<InterpolationMode::Bezier>(*edge);
+      const auto label = QString("%1.%2").arg(path_index).arg(edge_index);
+      const auto pos = Vec2f(geom_edge.pointAt(0.5)).to_pointf();
+      painter.drawText(pos, label);
+      edge_index += 1;
+    }
+    path_index += 1;
   }
 }
 

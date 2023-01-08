@@ -3,7 +3,6 @@
 #include "path/path.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
-#include <2geom/pathvector.h>
 
 namespace omm
 {
@@ -18,17 +17,17 @@ Geom::PathVector omm_to_geom(const PathVector& path_vector, const InterpolationM
   return paths;
 }
 
-template<InterpolationMode interpolation> auto omm_to_geom(const Edge& edge)
+template<InterpolationMode interp> GeomEdgeType<interp> omm_to_geom(const Edge& edge)
 {
   const auto& a = edge.a()->geometry();
   const auto& b = edge.b()->geometry();
   const auto a_pos = a.position().to_geom_point();
   const auto b_pos = b.position().to_geom_point();
 
-  if constexpr (interpolation == InterpolationMode::Linear) {
+  if constexpr (interp == InterpolationMode::Linear) {
     return Geom::LineSegment(std::vector{a_pos, b_pos});
   } else {
-    if (interpolation != InterpolationMode::Bezier) {
+    if (interp != InterpolationMode::Bezier) {
       LWARNING << "Smooth mode is not yet implemented.";
     }
     const auto a_t = a.tangent_position({edge.path(), Direction::Forward}).to_geom_point();
@@ -37,13 +36,13 @@ template<InterpolationMode interpolation> auto omm_to_geom(const Edge& edge)
   }
 }
 
-Geom::Path omm_to_geom(const Path& path, const InterpolationMode interpolation)
+Geom::Path omm_to_geom(const Path& path, const InterpolationMode interp)
 {
   const auto make_path = [&path](const auto& edge_to_curve) {
     const auto curves = util::transform(path.edges(), edge_to_curve);
     return Geom::Path(curves.begin(), curves.end());
   };
-  switch (interpolation) {
+  switch (interp) {
   case InterpolationMode::Bezier:
     return make_path([](const Edge* const edge) { return omm_to_geom<InterpolationMode::Bezier>(*edge); });
   case InterpolationMode::Linear:
@@ -81,5 +80,9 @@ std::unique_ptr<Path> geom_to_omm(const Geom::Path& geom_path, PathVector* paren
 
   return omm_path;
 }
+
+template GeomEdgeType<InterpolationMode::Bezier> omm_to_geom<InterpolationMode::Bezier>(const Edge&);
+template GeomEdgeType<InterpolationMode::Linear> omm_to_geom<InterpolationMode::Linear>(const Edge&);
+template GeomEdgeType<InterpolationMode::Smooth> omm_to_geom<InterpolationMode::Smooth>(const Edge&);
 
 }  // namespace omm

@@ -219,7 +219,6 @@ std::deque<std::unique_ptr<Edge>> Path::replace(const PathView& path_view, std::
                                std::move(edges));
   }
 
-
   if (set_last_point_from_edges) {
     this->set_last_point_from_edges();
   }

@@ -115,6 +115,7 @@ void PathObject::draw_object(Painter& renderer, const Style& style, const Painte
   renderer.painter->save();
   renderer.painter->setPen(Qt::white);
   path_vector().draw_point_ids(*renderer.painter);
+  path_vector().draw_path_ids(*renderer.painter);
   renderer.painter->restore();
 }
 #endif  // DRAW_POINT_IDS
