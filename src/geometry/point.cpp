@@ -158,7 +158,7 @@ QString Point::to_string() const
       const auto& [key, tangent] = pair;
       return QString("%1: %2").arg(key.to_string(), tangent.to_string());
     });
-    return QString{"Point[%1, %2, %3]"}.arg(m_position.to_string(), QStringList(tangents).join(", "));
+    return QString{"Point[%1;\n  %2]"}.arg(m_position.to_string(), QStringList(tangents).join("\n  "));
   } else {
     return QString{"[%1]"}.arg(m_position.to_string());
   }
@@ -246,7 +246,7 @@ bool Point::TangentKey::operator==(const TangentKey& other) const noexcept
 
 QString omm::Point::TangentKey::to_string() const
 {
-  return QString::asprintf("0x%p-%s", static_cast<const void*>(path), direction == Direction::Forward ? "fwd" : "bwd");
+  return QString::asprintf("%p-%s", static_cast<const void*>(path), direction == Direction::Forward ? "fwd" : "bwd");
 }
 
 Point::TangentKey::TangentKey(const Path* const path, const Direction direction) : path(path), direction(direction)
