@@ -255,14 +255,11 @@ QString Object::to_string() const
 
 std::unique_ptr<PathVector> Object::join(const std::vector<Object*>& objects)
 {
-  return std::make_unique<PathVector>();
-//  PathVector path_vector;
-//  for (const auto* object : objects) {
-//    for (const auto* path : object->path_vector().paths()) {
-//      path_vector.add_path(std::make_unique<Path>(*path));
-//    }
-//  }
-//  return path_vector;
+  auto path_vector = std::make_unique<PathVector>();
+  for (const auto* const object : objects) {
+    path_vector->copy_from(object->geometry());
+  }
+  return path_vector;
 }
 
 void Object::serialize(serialization::SerializerWorker& worker) const

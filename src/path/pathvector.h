@@ -96,10 +96,6 @@ public:
   [[nodiscard]] QString to_string() const;
   friend std::ostream& operator<<(std::ostream& os, const PathVector& path_vector);
 
-private:
-  PathObject* m_path_object = nullptr;
-  std::deque<std::unique_ptr<Path>> m_paths;
-
   struct Mapping
   {
     std::map<const PathPoint*, PathPoint*> points;
@@ -112,6 +108,10 @@ private:
    * @return a mapping from @code PathPoint in pv to @code PathPoint in `this`.
    */
   Mapping copy_from(const PathVector& pv);
+
+private:
+  PathObject* m_path_object = nullptr;
+  std::deque<std::unique_ptr<Path>> m_paths;
 };
 
 /**
