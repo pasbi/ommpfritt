@@ -80,4 +80,9 @@ Path* OwnedLocatedPath::path() const
   return m_path;
 }
 
+std::set<PathPoint*> OwnedLocatedPath::points() const
+{
+  return util::transform<std::set>(m_points, [](const auto& ptr) { return ptr.get(); });
+}
+
 }  // namespace omm

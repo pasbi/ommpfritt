@@ -1,7 +1,8 @@
 #pragma once
 
-#include <memory>
 #include <deque>
+#include <memory>
+#include <set>
 
 namespace omm
 {
@@ -24,6 +25,7 @@ public:
   std::shared_ptr<PathPoint> single_point() const;
   std::size_t point_offset() const;
   Path* path() const;
+  std::set<PathPoint*> points() const;
 
 private:
   Path* m_path = nullptr;

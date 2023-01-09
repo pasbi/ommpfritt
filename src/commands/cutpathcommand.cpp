@@ -139,6 +139,11 @@ CutPathCommand::CutPathCommand(PathObject& path_object, const std::vector<Geom::
 {
 }
 
+const std::set<PathPoint*>& CutPathCommand::new_points() const noexcept
+{
+  return m_new_points;
+}
+
 CutPathCommand::CutPathCommand(const QString& label, PathObject& path_object,
                                const std::vector<Geom::PathVectorTime>& cuts)
   : ComposeCommand(label)
@@ -160,6 +165,8 @@ CutPathCommand::CutPathCommand(const QString& label, PathObject& path_object,
     commands.emplace_back(std::make_unique<ModifyPointsCommand>(modified_points));
   }
   for (auto& np : new_path_segments) {
+    const auto points = np.points();
+    m_new_points.insert(points.begin(), points.end());
     commands.emplace_back(std::make_unique<AddPointsCommand>(std::move(np), &path_object));
   }
   set_commands(std::move(commands));
