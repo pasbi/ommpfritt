@@ -8,10 +8,10 @@
 namespace omm
 {
 
-ModifyPointsCommand ::ModifyPointsCommand(const std::map<PathPoint*, Point>& points)
-    : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
+ModifyPointsCommand ::ModifyPointsCommand(ModifiedPointsMap points)
+  : Command(QObject::tr("ModifyPointsCommand")), m_data(std::move(points))
 {
-  assert(!points.empty());
+  assert(!m_data.empty());
 }
 
 void ModifyPointsCommand::undo()

@@ -55,6 +55,7 @@ public:
   [[nodiscard]] std::vector<Edge*> edges() const;
   [[nodiscard]] std::size_t point_count() const;
   [[nodiscard]] std::deque<Path*> paths() const;
+  [[nodiscard]] Path& path(std::size_t i) const;
   [[nodiscard]] Path* find_path(const PathPoint& point) const;
   Path& add_path(std::unique_ptr<Path> path);
   Path& add_path();

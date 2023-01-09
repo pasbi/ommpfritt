@@ -133,6 +133,11 @@ std::deque<Path*> PathVector::paths() const
   return util::transform(m_paths, std::mem_fn(&std::unique_ptr<Path>::get));
 }
 
+Path& PathVector::path(std::size_t i) const
+{
+  return *m_paths.at(i);
+}
+
 Path* PathVector::find_path(const PathPoint& point) const
 {
   for (auto&& path : m_paths) {

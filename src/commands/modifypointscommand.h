@@ -3,7 +3,6 @@
 #include "commands/command.h"
 #include <deque>
 #include <memory>
-#include "path/pathview.h"
 
 namespace omm
 {
@@ -14,7 +13,8 @@ class Point;
 class ModifyPointsCommand : public Command
 {
 public:
-  ModifyPointsCommand(const std::map<PathPoint*, Point>& points);
+  using ModifiedPointsMap = std::map<PathPoint*, Point>;
+  ModifyPointsCommand(ModifiedPointsMap points);
   void redo() override;
   void undo() override;
   [[nodiscard]] int id() const override;
@@ -22,7 +22,7 @@ public:
   [[nodiscard]] bool is_noop() const override;
 
 private:
-  std::map<PathPoint*, Point> m_data;
+  ModifiedPointsMap m_data;
   void exchange();
 };
 

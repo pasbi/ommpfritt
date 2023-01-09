@@ -16,6 +16,7 @@
 #include "path/path.h"
 #include "path/pathpoint.h"
 #include "path/pathvector.h"
+#include "path/pathview.h"
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
 #include "removeif.h"

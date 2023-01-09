@@ -276,6 +276,11 @@ std::vector<Edge*> Path::edges() const
   return util::transform<std::vector>(m_edges, &std::unique_ptr<Edge>::get);
 }
 
+Edge& Path::edge(std::size_t i) const
+{
+  return *m_edges.at(i);
+}
+
 void Path::draw_segment(QPainterPath& painter_path, const Edge& edge, const Path* const path)
 {
 

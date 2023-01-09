@@ -63,6 +63,7 @@ public:
   [[nodiscard]] bool is_valid() const;
   [[nodiscard]] std::vector<PathPoint*> points() const;
   [[nodiscard]] std::vector<Edge*> edges() const;
+  [[nodiscard]] Edge& edge(std::size_t i) const;
 
   [[nodiscard]] bool contains(const PathPoint& point) const;
   [[nodiscard]] std::shared_ptr<PathPoint> share(const PathPoint& point) const;
