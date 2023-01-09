@@ -148,7 +148,7 @@ CutPathCommand::CutPathCommand(const QString& label, PathObject& path_object,
                                const std::vector<Geom::PathVectorTime>& cuts)
   : ComposeCommand(label)
 {
-  //  const auto interpolation = path_object.property(PathObject::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
+  // TODO respect path interpolation mode (linear, smooth, bezier)
   const auto m_cuts = ::convert_cuts(cuts);
 
   omm::ModifyPointsCommand::ModifiedPointsMap modified_points;

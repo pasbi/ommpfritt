@@ -21,7 +21,7 @@ class Style;
 PathObject::PathObject(Scene* scene, PathVector path_vector)
   : PathObject(scene, std::make_unique<PathVector>(std::move(path_vector), this))
 {
-
+  // TODO handle INTERPOLATION_PROPERTY_KEY
 }
 
 PathObject::PathObject(Scene* scene)

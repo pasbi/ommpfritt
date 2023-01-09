@@ -44,7 +44,8 @@ public:
   using TangentsMap = std::map<TangentKey, PolarCoordinates>;
 
   explicit Point(const Vec2f& position);
-  explicit Point(const Vec2f& position, const PolarCoordinates& backward_tangent, const PolarCoordinates& forward_tangent);
+  explicit Point(const Vec2f& position, const PolarCoordinates& backward_tangent,
+                 const PolarCoordinates& forward_tangent);
   explicit Point(const Vec2f& position, const std::map<TangentKey, PolarCoordinates>& tangents);
   Point();
   [[nodiscard]] Vec2f position() const;
