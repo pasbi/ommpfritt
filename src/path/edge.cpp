@@ -5,34 +5,85 @@
 namespace omm
 {
 
-QString Edge::label() const
+Edge::Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, const Path* const path)
+  : m_path(path), m_a(a), m_b(b)
 {
-  const auto* separator = flipped ? "++" : "--";
-  return QString{"%1%2%3"}.arg(start_point()->index()).arg(separator).arg(end_point()->index());
 }
 
-Point Edge::start_geometry() const
+QString Edge::to_string() const
 {
-  const auto g = start_point()->geometry();
-//  return flipped ? g.flipped() : g;
-  return flipped ?  g : g.flipped();
+  static constexpr bool print_pointer = true;
+  if constexpr (print_pointer) {
+    return QString{"%1--%2 (%3)"}.arg(m_a->debug_id(), m_b->debug_id(),
+                                      QString::asprintf("%p", static_cast<const void*>(this)));
+  } else {
+    return QString{"%1--%2"}.arg(m_a->debug_id(), m_b->debug_id());
+  }
 }
 
-Point Edge::end_geometry() const
+void Edge::flip() noexcept
 {
-  const auto g = end_point()->geometry();
-//  return flipped ? g.flipped() : g;
-  return flipped ?  g : g.flipped();
+  std::swap(m_a, m_b);
 }
 
-PathPoint* Edge::start_point() const
+bool Edge::has_point(const PathPoint* p) noexcept
 {
-  return flipped ? b : a;
+  return p == m_a.get() || p == m_b.get();
 }
 
-PathPoint* Edge::end_point() const
+const std::shared_ptr<PathPoint>& Edge::a() const noexcept
 {
-  return flipped ? a : b;
+  return m_a;
+}
+
+const std::shared_ptr<PathPoint>& Edge::b() const noexcept
+{
+  return m_b;
+}
+
+std::shared_ptr<PathPoint>& Edge::a() noexcept
+{
+  return m_a;
+}
+
+std::shared_ptr<PathPoint>& Edge::b() noexcept
+{
+  return m_b;
+}
+
+const Path* Edge::path() const
+{
+  return m_path;
+}
+
+bool Edge::is_valid() const noexcept
+{
+  return m_a && m_b && m_a->path_vector() == m_b->path_vector();
+}
+
+bool Edge::contains(const PathPoint* p) const noexcept
+{
+  return m_a.get() == p || m_b.get() == p;
+}
+
+std::shared_ptr<PathPoint> Edge::start_point(const Direction& direction) const noexcept
+{
+  return direction == Direction::Backward ? b() : a();
+}
+
+std::shared_ptr<PathPoint> Edge::end_point(const Direction& direction) const noexcept
+{
+  return direction == Direction::Forward ? b() : a();
+}
+
+bool Edge::is_loop() const noexcept
+{
+  return m_a.get() == m_b.get();
+}
+
+std::array<PathPoint*, 2> Edge::points() const
+{
+  return {m_a.get(), m_b.get()};
 }
 
 }  // namespace omm

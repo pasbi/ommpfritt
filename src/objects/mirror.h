@@ -32,7 +32,7 @@ public:
   static constexpr auto AS_PATH_PROPERTY_KEY = "as_path";
   static constexpr auto TOLERANCE_PROPERTY_KEY = "eps";
 
-  PathVector compute_path_vector() const override;
+  std::unique_ptr<PathVector> compute_geometry() const override;
   std::unique_ptr<Object> convert(bool& keep_children) const override;
   void update() override;
 

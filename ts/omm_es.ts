@@ -1784,10 +1784,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Elipsis</translation>
     </message>
     <message>
-        <source>show point dialog</source>
-        <translation>Mostrar diálogo para editar puntos</translation>
-    </message>
-    <message>
         <source>Instance</source>
         <translation>Instancia</translation>
     </message>

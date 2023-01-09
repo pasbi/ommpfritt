@@ -35,8 +35,8 @@ AbstractPropertyOwner::AbstractPropertyOwner(Kind kind, Scene* scene) : kind(kin
 
 AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner& other)
     : QObject()  // NOLINT(readability-redundant-member-init)
-      ,
-      kind(other.kind), m_scene(other.m_scene)
+    , kind(other.kind)
+    , m_scene(other.m_scene)
 {
   for (auto&& key : other.m_properties.keys()) {
     AbstractPropertyOwner::add_property(key, other.m_properties.at(key)->clone());
@@ -80,6 +80,7 @@ void AbstractPropertyOwner::serialize(serialization::SerializerWorker& worker) c
 
 void AbstractPropertyOwner::deserialize(serialization::DeserializerWorker& worker)
 {
+  using DeserializeError = serialization::AbstractDeserializer::DeserializeError;
   m_id = worker.sub(ID_POINTER)->get_size_t();
   worker.deserializer().register_reference(m_id, *this);
 
@@ -88,7 +89,9 @@ void AbstractPropertyOwner::deserialize(serialization::DeserializerWorker& worke
     const auto property_type = worker_i.sub(PROPERTY_TYPE_POINTER)->get_string();
 
     if (properties().contains(property_key)) {
-      assert(property_type == property(property_key)->type());
+      if (property_type != property(property_key)->type()) {
+        throw DeserializeError("Built-in property does not have expected type.");
+      }
       property(property_key)->deserialize(worker_i);
     } else {
       std::unique_ptr<Property> property;
@@ -96,9 +99,9 @@ void AbstractPropertyOwner::deserialize(serialization::DeserializerWorker& worke
         property = Property::make(property_type);
       } catch (const std::out_of_range&) {
         const auto msg = "Failed to retrieve property type '" + property_type + "'.";
-        throw serialization::AbstractDeserializer::DeserializeError(msg.toStdString());
+        throw DeserializeError(msg.toStdString());
       } catch (const Property::InvalidKeyError& e) {
-        throw serialization::AbstractDeserializer::DeserializeError(e.what());
+        throw DeserializeError(e.what());
       }
       property->deserialize(worker_i);
       [[maybe_unused]] Property& ref = add_property(property_key, std::move(property));

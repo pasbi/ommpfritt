@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+#include "geometry/orientedposition.h"
 #include "objects/empty.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
@@ -192,7 +193,7 @@ void Cloner::update()
   Object::update();
 }
 
-PathVector Cloner::compute_path_vector() const
+std::unique_ptr<PathVector> Cloner::compute_geometry() const
 {
   return join(util::transform(m_clones, [](const auto& up) { return up.get(); }));
 }
@@ -417,8 +418,9 @@ void Cloner::set_radial(Object& object, std::size_t i)
 {
   const double angle = 2 * M_PI * get_t(i);
   const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
-  const Point op({std::cos(angle) * r, std::sin(angle) * r}, angle + M_PI / 2.0);
-  object.set_oriented_position(op, property(PathProperties::ALIGN_PROPERTY_KEY)->value<bool>());
+  const Vec2f pos{std::cos(angle) * r, std::sin(angle) * r};
+  const auto rotation = angle + M_PI / 2.0;
+  object.set_oriented_position({pos, rotation}, property(PathProperties::ALIGN_PROPERTY_KEY)->value<bool>());
 }
 
 void Cloner::set_path(Object& object, std::size_t i)
@@ -465,7 +467,7 @@ void Cloner::set_fillrandom(Object& object, std::mt19937& rng)
       LINFO << "Return a random point on edge instead.";
 
       const auto t = dist(rng);
-      return o->pos(o->compute_path_vector_time(t)).position();
+      return o->pos(o->compute_path_vector_time(t)).position;
     }();
 
     if (property(ANCHOR_PROPERTY_KEY)->value<Anchor>() == Anchor::Path) {

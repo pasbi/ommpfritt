@@ -1,11 +1,13 @@
 #pragma once
 
+#include "geometry/direction.h"
 #include <QString>
-#include <vector>
+#include <memory>
 
 namespace omm
 {
 
+class Path;
 class PathPoint;
 class Point;
 
@@ -13,29 +15,31 @@ class Edge
 {
 public:
   Edge() = default;
-  [[nodiscard]] QString label() const;
+  explicit Edge(std::shared_ptr<PathPoint> a, std::shared_ptr<PathPoint> b, const Path* path);
+  Edge(const Edge&) = delete;
+  Edge(Edge&&) = default;
+  Edge& operator=(const Edge&) = delete;
+  Edge& operator=(Edge&&) = default;
+  ~Edge() = default;
+  [[nodiscard]] QString to_string() const;
+  void flip() noexcept;
+  [[nodiscard]] bool has_point(const PathPoint* p) noexcept;
+  [[nodiscard]] const std::shared_ptr<PathPoint>& a() const noexcept;
+  [[nodiscard]] const std::shared_ptr<PathPoint>& b() const noexcept;
+  [[nodiscard]] std::shared_ptr<PathPoint>& a() noexcept;
+  [[nodiscard]] std::shared_ptr<PathPoint>& b() noexcept;
+  [[nodiscard]] const Path* path() const;
+  [[nodiscard]] bool is_valid() const noexcept;
+  [[nodiscard]] bool contains(const PathPoint* p) const noexcept;
+  [[nodiscard]] std::shared_ptr<PathPoint> start_point(const Direction& direction) const noexcept;
+  [[nodiscard]] std::shared_ptr<PathPoint> end_point(const Direction& direction) const noexcept;
+  [[nodiscard]] bool is_loop() const noexcept;
+  [[nodiscard]] std::array<PathPoint*, 2> points() const;
 
-  [[nodiscard]] Point start_geometry() const;
-  [[nodiscard]] Point end_geometry() const;
-  [[nodiscard]] PathPoint* start_point() const;
-  [[nodiscard]] PathPoint* end_point() const;
-
-  bool flipped = false;
-  PathPoint* a = nullptr;
-  PathPoint* b = nullptr;
-
-  // Edge equality is not unabiguously implementable.
-  // It's clear that numerical coincidence should not matter (1).
-  // Also, direction should not matter, because we're dealing with undirected graphs (2).
-  // It'd be also a good idea to distinguish joined points (two edges between A and B are not equal)
-  // because tangents can make these edges appear very different (3).
-  // Usually, multiple edges only occur between joined points and can be distinguished well.
-  // However, consider the loop (A) --e1-- (B) --e2-- (A):
-  // e1 and e2 are not distinguishable when ignoring direction, no joined points are involved to
-  // distinguish.
-  // That is, requirement (2) and (3) conflict.
-  // In practice that is no problem because the equality operator is not required.
-  friend bool operator==(const Edge&, const Edge&) = delete;
+private:
+  const Path* m_path;
+  std::shared_ptr<PathPoint> m_a = nullptr;
+  std::shared_ptr<PathPoint> m_b = nullptr;
 };
 
 }  // namespace omm

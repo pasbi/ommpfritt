@@ -5,6 +5,8 @@
 
 namespace omm
 {
+
+class PathVector;
 class Scene;
 
 class Boolean : public Object
@@ -26,7 +28,7 @@ private:
   static constexpr auto MODE_PROPERTY_KEY = "mode";
   void on_property_value_changed(Property* property) override;
   void polish();
-  PathVector compute_path_vector() const override;
+  std::unique_ptr<PathVector> compute_geometry() const override;
 };
 
 }  // namespace omm

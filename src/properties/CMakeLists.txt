@@ -3,6 +3,8 @@ target_sources(libommpfritt PRIVATE
   boolproperty.h
   colorproperty.cpp
   colorproperty.h
+  facelistproperty.cpp
+  facelistproperty.h
   floatproperty.cpp
   floatproperty.h
   integerproperty.cpp

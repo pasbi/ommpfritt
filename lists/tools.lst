@@ -6,6 +6,7 @@
     "BrushSelectTool",
     "KnifeTool",
     "PathTool",
+    "SelectFacesTool",
     "SelectObjectsTool",
     "SelectPointsTool",
     "SelectSimilarTool",

@@ -3,6 +3,7 @@
 #include "geometry/vec2.h"
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
+#include <QPainter>
 
 namespace omm
 {

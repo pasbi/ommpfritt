@@ -33,7 +33,7 @@ public:
 
 protected:
   void on_property_value_changed(Property* property) override;
-  PathVector compute_path_vector() const override;
+  std::unique_ptr<PathVector> compute_geometry() const override;
 
 private:
   FontProperties m_font_properties;

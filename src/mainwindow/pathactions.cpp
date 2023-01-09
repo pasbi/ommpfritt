@@ -6,24 +6,25 @@
 #include "commands/objectselectioncommand.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
+#include "commands/removepointscommand.h"
 #include "commands/subdividepathcommand.h"
 #include "common.h"
 #include "main/application.h"
 #include "mainwindow/mainwindow.h"
+#include "objects/pathobject.h"
+#include "path/face.h"
+#include "path/path.h"
+#include "path/pathpoint.h"
+#include "path/pathvector.h"
+#include "path/pathview.h"
 #include "properties/optionproperty.h"
 #include "properties/referenceproperty.h"
-#include "objects/pathobject.h"
-#include "path/pathpoint.h"
-#include "path/path.h"
-#include "path/pathvector.h"
+#include "removeif.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
-#include "scene/pointselection.h"
 #include "scene/scene.h"
 #include "scene/toplevelsplit.h"
-#include "tools/toolbox.h"
-#include "removeif.h"
 #include <QUndoStack>
 #include <functional>
 #include <map>
@@ -37,7 +38,7 @@ using namespace omm;
 template<typename F> void foreach_subpath(Application& app, F&& f)
 {
   for (auto* path_object : app.scene->item_selection<PathObject>()) {
-    for (auto* path : path_object->geometry().paths()) {
+    for (auto* path : path_object->path_vector().paths()) {
       f(path);
     }
   }
@@ -48,21 +49,9 @@ void modify_tangents(InterpolationMode mode, Application& app)
   std::map<PathPoint*, Point> map;
   const auto paths = app.scene->item_selection<PathObject>();
   for (PathObject* path_object : paths) {
-    for (const Path* path : path_object->geometry().paths()) {
-      const auto points = path->points();
-      for (std::size_t i = 0; i < points.size(); ++i) {
-        PathPoint* point = points[i];
-        if (point->is_selected()) {
-          switch (mode) {
-          case InterpolationMode::Bezier:
-            break;  // do nothing.
-          case InterpolationMode::Smooth:
-            map[point] = path->smoothen_point(i);
-            break;
-          case InterpolationMode::Linear:
-            map[point] = point->geometry().nibbed();
-          }
-        }
+    for (auto* point : path_object->path_vector().points()) {
+      if (point->is_selected()) {
+        map[point] = point->set_interpolation(mode);
       }
     }
   }
@@ -107,12 +96,13 @@ void convert_object(Application& app,
   }
   context.subject.capture(std::move(converted_object));
   app.scene->submit<AddCommand<ObjectTree>>(app.scene->object_tree(), std::move(context));
-  if (auto* const po = type_cast<PathObject*>(&ref); po != nullptr) {
-    app.scene->submit<ShareJoinedPointsCommand>(*app.scene, po->geometry());
-  }
   assert(ref.scene() == app.scene.get());
   ref.set_transformation(object_to_convert.transformation());
   converted_objects.insert(&ref);
+
+  if (auto* const po = type_cast<PathObject*>(&ref); po != nullptr) {
+    assert(po->path_vector().path_object() == po);
+  }
 
   if (keep_children) {
     const auto old_children = object_to_convert.tree_children();
@@ -147,24 +137,24 @@ void remove_selected_points(Application& app)
 {
   std::unique_ptr<Macro> macro;
   for (auto* path_object : app.scene->item_selection<PathObject>()) {
-    std::deque<PathView> removed_points;
-    for (Path* path : path_object->geometry().paths()) {
-      const auto selected_ranges = find_coherent_ranges(path->points(),
-                                                        std::mem_fn(&PathPoint::is_selected));
+    for (Path* path : path_object->path_vector().paths()) {
+      auto selected_ranges = find_coherent_ranges(path->points(), std::mem_fn(&PathPoint::is_selected));
+      std::sort(selected_ranges.rbegin(), selected_ranges.rend());
       for (const auto& range : selected_ranges) {
-        removed_points.emplace_back(*path, range.start, range.size);
+        auto command = std::make_unique<RemovePointsCommand>(PathView(*path, range.start, range.size), path_object);
+        if (!macro) {
+          macro = app.scene->history().start_macro(command->actionText());
+        }
+        app.scene->submit(std::move(command));
+        app.scene->update_tool();
       }
-    }
-
-    if (!removed_points.empty()) {
-      auto command = std::make_unique<RemovePointsCommand>(*path_object, std::move(removed_points));
-      if (!macro) {
-        macro = app.scene->history().start_macro(command->actionText());
-      }
-      app.scene->submit(std::move(command));
-      app.scene->update_tool();
     }
   }
+}
+
+void remove_selected_faces(Application& app)
+{
+  Q_UNUSED(app)
 }
 
 void remove_selected_items(Application& app)
@@ -175,6 +165,9 @@ void remove_selected_items(Application& app)
     break;
   case SceneMode::Object:
     app.scene->remove(app.main_window(), app.scene->selection());
+    break;
+  case SceneMode::Face:
+    remove_selected_faces(app);
     break;
   }
 }
@@ -203,7 +196,7 @@ void select_all(Application& app)
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (auto* point : path_object->geometry().points()) {
+      for (auto* point : path_object->path_vector().points()) {
         point->set_selected(true);
       }
     }
@@ -211,6 +204,14 @@ void select_all(Application& app)
     break;
   case SceneMode::Object:
     app.scene->set_selection(down_cast(app.scene->object_tree().items()));
+    break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->path_vector().faces()) {
+        path_object->set_face_selected(face, true);
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
     break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();
@@ -221,7 +222,7 @@ void deselect_all(Application& app)
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (auto* point : path_object->geometry().points()) {
+      for (auto* point : path_object->path_vector().points()) {
         point->set_selected(false);
       }
     }
@@ -229,6 +230,14 @@ void deselect_all(Application& app)
     break;
   case SceneMode::Object:
     app.scene->set_selection({});
+    break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->path_vector().faces()) {
+        path_object->set_face_selected(face, false);
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
     break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();
@@ -248,7 +257,7 @@ void invert_selection(Application& app)
   switch (app.scene_mode()) {
   case SceneMode::Vertex:
     for (auto* path_object : app.scene->item_selection<PathObject>()) {
-      for (auto* point : path_object->geometry().points()) {
+      for (auto* point : path_object->path_vector().points()) {
         point->set_selected(!point->is_selected());
       }
     }
@@ -258,47 +267,27 @@ void invert_selection(Application& app)
     app.scene->set_selection(down_cast(set_difference(app.scene->object_tree().items(),
                                                       app.scene->item_selection<Object>())));
     break;
+  case SceneMode::Face:
+    for (auto* path_object : app.scene->item_selection<PathObject>()) {
+      for (const auto& face : path_object->path_vector().faces()) {
+        path_object->set_face_selected(face, path_object->is_face_selected(face));
+      }
+    }
+    Q_EMIT app.scene->mail_box().face_selection_changed();
+    break;
   }
   Q_EMIT app.mail_box().scene_appearance_changed();
 }
 
 void select_connected_points(Application& app)
 {
-  std::set<const Path*> selected_paths;
-  foreach_subpath(app, [&selected_paths](const auto* path) {
-    const auto points = path->points();
-    if (std::any_of(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected))) {
-      selected_paths.insert(path);
-    }
-  });
-
-  for (bool selected_paths_changed = true; selected_paths_changed;) {
-    selected_paths_changed = false;
-    for (const auto* path : selected_paths) {
-      for (auto* point : path->points()) {
-        for (auto* joined_point : point->joined_points()) {
-          const auto& other_path = joined_point->path();
-          if (const auto [_, was_inserted] = selected_paths.insert(&other_path); was_inserted) {
-            selected_paths_changed = true;
-          }
-        }
-      }
-    }
-  }
-
-  for (const auto* path : selected_paths) {
-    for (auto* point : path->points()) {
-      point->set_selected(true);
-    }
-  }
-
-  Q_EMIT app.mail_box().scene_appearance_changed();
+  (void) app;
 }
 
 void fill_selection(Application& app)
 {
-  foreach_subpath(app, [](const auto* segment) {
-    const auto points = segment->points();
+  foreach_subpath(app, [](const auto* path) {
+    const auto points = path->points();
     auto first_it = std::find_if(points.begin(), points.end(), std::mem_fn(&PathPoint::is_selected));
     auto last_it = std::find_if(points.rbegin(), points.rend(), std::mem_fn(&PathPoint::is_selected));
     if (first_it != points.end() && last_it != points.rend()) {
@@ -310,9 +299,9 @@ void fill_selection(Application& app)
 
 void extend_selection(Application& app)
 {
-  foreach_subpath(app, [](const auto* segment) {
+  foreach_subpath(app, [](const auto* path) {
     std::set<std::size_t> selection;
-    const auto points = segment->points();
+    const auto points = path->points();
     for (std::size_t i = 1; i < points.size() - 1; ++i) {
       if (points[i]->is_selected()) {
         selection.insert(i - 1);
@@ -345,12 +334,12 @@ void shrink_selection(Application& app)
 
 void join_points(Application& app)
 {
-  app.scene->submit<JoinPointsCommand>(*app.scene, std::deque{app.scene->point_selection->points()});
+  (void) app;
 }
 
 void disjoin_points(Application& app)
 {
-  app.scene->submit<DisjoinPointsCommand>(*app.scene, std::deque{app.scene->point_selection->points()});
+  (void) app;
 }
 
 const std::map<QString, std::function<void(Application& app)>> actions{

@@ -46,7 +46,7 @@ enum class Flag {
 
 enum class InterpolationMode { Linear, Smooth, Bezier };
 enum class HandleStatus { Hovered, Active, Inactive };
-enum class SceneMode { Object, Vertex };
+enum class SceneMode { Object, Vertex, Face };
 
 }  // namespace omm
 
@@ -100,14 +100,10 @@ SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
 }
 
 template<typename Container, typename S>
-bool contains(const Container& set, S&& key)
+bool contains(const Container& set, const S& key)
+    requires requires { { *begin(set) == key } -> std::same_as<bool>; }
 {
-  if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    return std::find(set.begin(), set.end(), const_cast<std::remove_const_t<S>>(key)) != set.end();
-  } else {
-    return std::find(set.begin(), set.end(), key) != set.end();
-  }
+  return std::find_if(begin(set), end(set), [&key](const auto& v) { return v == key; }) != end(set);
 }
 
 template<typename S, typename... Ts> bool contains(const std::map<Ts...>& map, S&& key)
@@ -370,6 +366,7 @@ template<typename Vs, typename F> auto find_coherent_ranges(const Vs& vs, F&& f)
   {
     std::size_t start;
     std::size_t size;
+    bool operator<(const Range& other) const noexcept { return start < other.start; }
   };
 
   std::deque<Range> ranges;
@@ -396,7 +393,5 @@ template<typename T> auto python_like_mod(const T& dividend, const T& divisor)
 
 }  // namespace omm
 
-template<> struct omm::EnableBitMaskOperators<omm::Kind> : std::true_type {
-};
-template<> struct omm::EnableBitMaskOperators<omm::Flag> : std::true_type {
-};
+template<> struct omm::EnableBitMaskOperators<omm::Kind> : std::true_type { };
+template<> struct omm::EnableBitMaskOperators<omm::Flag> : std::true_type { };

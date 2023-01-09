@@ -34,7 +34,6 @@
 #include "tags/tag.h"
 #include "tools/tool.h"
 #include "tools/toolbox.h"
-#include "widgets/pointdialog.h"
 #include "objects/pathobject.h"
 
 namespace
@@ -89,7 +88,7 @@ auto init_mode_selectors()
                                                activation_actions)});
   };
 
-  insert("scene_mode", "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex"});
+  insert("scene_mode", "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex", "scene_mode.face"});
   return map;
 }
 
@@ -117,11 +116,6 @@ bool dispatch_named_action(Application& app, const QString& action_name)
       app.scene->submit<command_type>(app.scene->styles(), std::move(style));
     }},
     {"reset viewport", [&app]() { app.main_window()->viewport().reset(); }},
-    {"show point dialog", [&app](){
-      if (const auto paths = app.scene->item_selection<PathObject>(); !paths.empty()) {
-        PointDialog(paths, app.main_window()).exec();
-      }
-    }},
     {"preferences", []() { PreferenceDialog().exec(); }}
   };
 

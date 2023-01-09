@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include "config.h"
 #include <memory>
 
 namespace omm
@@ -15,7 +16,7 @@ class PathObject : public Object
 {
 public:
   explicit PathObject(Scene* scene);
-  explicit PathObject(Scene* scene, const PathVector& path_vector);
+  explicit PathObject(Scene* scene, PathVector path_vector);
   explicit PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector);
   PathObject(const PathObject& other);
   PathObject(PathObject&&) = delete;
@@ -34,12 +35,14 @@ public:
   void on_property_value_changed(Property* property) override;
   Flag flags() const override;
 
-  const PathVector& geometry() const;
-  PathVector& geometry();
+  const PathVector& path_vector() const;
+  PathVector& path_vector();
 
-  PathVector compute_path_vector() const override;
+  std::unique_ptr<PathVector> compute_geometry() const override;
+  void set_face_selected(const Face& face, bool s);
+  [[nodiscard]] bool is_face_selected(const Face& face) const;
 
-#ifdef DRAW_POINT_IDS
+#if DRAW_POINT_IDS
   void draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const override;
 #endif  // DRAW_POINT_IDS
 

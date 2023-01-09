@@ -4,7 +4,7 @@
 namespace omm
 {
 IntegerPropertyWidget::IntegerPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-    : NumericPropertyWidget<IntegerProperty>(scene, properties)
+    : NumericPropertyWidget(scene, properties)
 {
   const auto get_special_value = [](const IntegerProperty& ip) { return ip.special_value_label; };
   const auto special_value_label

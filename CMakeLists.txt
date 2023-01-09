@@ -16,6 +16,8 @@ option(USE_QT_5_12 "Allow to use Qt 5.12. Set this option to true for static ana
                     Builds with this configuration are not supposed to be run."
                     OFF
 )
+option(DRAW_POINT_IDS "Draw the id of path points next to the point." OFF)
+option(PATH_DRAW_DIRECTION "Draws little arrows to indicate begin, end and direction of path segments." OFF)
 option(WERROR "Error on compiler warnings. Not available for MSVC." ON)
 
 if (USE_QT_5_12)
@@ -28,7 +30,6 @@ find_package(PkgConfig)
 find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
 find_package(2Geom REQUIRED)
 find_package(fmt 8.0.0 REQUIRED)
-find_package(Boost 1.65 REQUIRED COMPONENTS graph)
 
 set(python_major_minor "python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
 set(python_major "python${Python3_VERSION_MAJOR}")
@@ -98,7 +99,6 @@ target_link_libraries(libommpfritt poppler-qt5)
 target_link_libraries(libommpfritt -lpthread -lm)
 target_link_libraries(libommpfritt 2Geom::2geom)
 target_link_libraries(libommpfritt fmt::fmt)
-target_link_libraries(libommpfritt Boost::graph)
 target_link_libraries(ommpfritt libommpfritt)
 
 if (WIN32)

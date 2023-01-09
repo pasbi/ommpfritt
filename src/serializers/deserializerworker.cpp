@@ -87,6 +87,8 @@ variant_type DeserializerWorker::get(const QString& type)
     return get<Vec2f>();
   } else if (type == "IntegerVector") {
     return get<Vec2i>();
+  } else if (type == "FacesList") {
+    return get<FaceList>();
   } else if (type == "SplineType") {
     return get<SplineType>();
   } else if (type == "Reference") {

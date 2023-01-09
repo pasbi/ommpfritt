@@ -1,21 +1,15 @@
 #include "objects/pathobject.h"
 
-#include "commands/modifypointscommand.h"
 #include "common.h"
-#include "path/path.h"
 #include "path/pathvector.h"
-#include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
-#include "renderers/style.h"
-#include "scene/disjointpathpointsetforest.h"
-#include "scene/mailbox.h"
 #include "scene/scene.h"
 #include <QObject>
 
-#ifdef DRAW_POINT_IDS
-#include "path/pathpoint.h"
-#include "renderers/painter.h"
-#include <QPainter>
+#if DRAW_POINT_IDS
+#  include "path/pathpoint.h"
+#  include "renderers/painter.h"
+#  include <QPainter>
 #endif  // DRAW_POINT_IDS
 
 
@@ -24,10 +18,27 @@ namespace omm
 
 class Style;
 
+PathObject::PathObject(Scene* scene, PathVector path_vector)
+  : PathObject(scene, std::make_unique<PathVector>(std::move(path_vector), this))
+{
+  // TODO handle INTERPOLATION_PROPERTY_KEY
+}
+
+PathObject::PathObject(Scene* scene)
+    : PathObject(scene, std::make_unique<PathVector>(this))
+{
+}
+
+PathObject::PathObject(const PathObject& other)
+  : Object(other), m_path_vector(std::make_unique<PathVector>(*other.m_path_vector, this))
+{
+}
+
 PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
   : Object(scene)
   , m_path_vector(std::move(path_vector))
 {
+  m_path_vector->set_path_object(this);
   static const auto category = QObject::tr("path");
 
   create_property<OptionProperty>(INTERPOLATION_PROPERTY_KEY)
@@ -35,36 +46,6 @@ PathObject::PathObject(Scene* scene, std::unique_ptr<PathVector> path_vector)
       .set_label(QObject::tr("interpolation"))
       .set_category(category);
   PathObject::update();
-
-  if (scene != nullptr) {
-    connect(&scene->mail_box(), &MailBox::transformation_changed, this, [this](const Object& o) {
-      if (&o == this) {
-        geometry().update_joined_points_geometry();
-      }
-    });
-  }
-}
-
-PathObject::PathObject(Scene* scene, const PathVector& path_vector)
-  : PathObject(scene, std::make_unique<PathVector>(path_vector, this))
-{
-}
-
-PathObject::PathObject(Scene* scene)
-  : PathObject(scene, std::make_unique<PathVector>(this))
-{
-  if (const auto* const scene = this->scene(); scene != nullptr) {
-    m_path_vector->share_joined_points(scene->joined_points());
-  }
-}
-
-PathObject::PathObject(const PathObject& other)
-  : Object(other)
-  , m_path_vector(copy_unique_ptr(other.m_path_vector, this))
-{
-  if (const auto*  const scene = this->scene(); scene != nullptr && other.path_vector().joined_points_shared()) {
-    m_path_vector->share_joined_points(scene->joined_points());
-  }
 }
 
 PathObject::~PathObject() = default;
@@ -100,37 +81,41 @@ Flag PathObject::flags() const
   return Flag::None;
 }
 
-const PathVector& PathObject::geometry() const
+const PathVector& PathObject::path_vector() const
 {
   return *m_path_vector;
 }
 
-PathVector& PathObject::geometry()
+PathVector& PathObject::path_vector()
 {
   return *m_path_vector;
 }
 
-PathVector PathObject::compute_path_vector() const
+std::unique_ptr<PathVector> PathObject::compute_geometry() const
 {
-  const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
-
-  PathVector pv{*m_path_vector};
-  for (auto* path : pv.paths()) {
-    path->set_interpolation(interpolation);
-  }
-  return pv;
+  return std::make_unique<PathVector>(*m_path_vector);
 }
 
-#ifdef DRAW_POINT_IDS
+void PathObject::set_face_selected(const Face& face, bool s)
+{
+  Q_UNUSED(face)
+  Q_UNUSED(s)
+}
+
+bool PathObject::is_face_selected(const Face& face) const
+{
+  Q_UNUSED(face)
+  return false;
+}
+
+#if DRAW_POINT_IDS
 void PathObject::draw_object(Painter& renderer, const Style& style, const PainterOptions& options) const
 {
   Object::draw_object(renderer, style, options);
   renderer.painter->save();
   renderer.painter->setPen(Qt::white);
-  for (const auto* point : path_vector().points()) {
-    static constexpr QPointF offset{10.0, 10.0};
-    renderer.painter->drawText(point->geometry().position().to_pointf() + offset, point->debug_id());
-  }
+  path_vector().draw_point_ids(*renderer.painter);
+  path_vector().draw_path_ids(*renderer.painter);
   renderer.painter->restore();
 }
 #endif  // DRAW_POINT_IDS

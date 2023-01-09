@@ -1,48 +1,20 @@
 #include "path/pathvector.h"
 
-#include "commands/modifypointscommand.h"
 #include "common.h"
 #include "geometry/point.h"
-#include "properties/boolproperty.h"
-#include "properties/optionproperty.h"
-#include "renderers/style.h"
-#include "scene/scene.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "objects/pathobject.h"
-#include "path/pathpoint.h"
-#include "path/path.h"
-#include "path/graph.h"
+#include "path/edge.h"
 #include "path/face.h"
-#include "scene/mailbox.h"
+#include "path/facedetector.h"
+#include "path/graph.h"
+#include "path/lib2geomadapter.h"
+#include "path/path.h"
+#include "path/pathpoint.h"
+#include "path/pathvectorisomorphism.h"
 #include "removeif.h"
 #include <QObject>
-
-namespace
-{
-
-constexpr auto JOINED_POINTES_SHARED = "joined_points_shared";
-constexpr auto OWNED_JOINED_POINTS = "owned_joined_points";
-
-using namespace omm;
-
-std::map<PathPoint*, PathPoint*> map_points(const PathVector& from, const PathVector& to)
-{
-  const auto from_paths = from.paths();
-  const auto to_paths = to.paths();
-  assert(from_paths.size() == to_paths.size());
-  std::map<PathPoint*, PathPoint*> map;
-  for (std::size_t i = 0; i < from_paths.size(); ++i) {
-    const auto& from_path = from_paths.at(i);
-    const auto& to_path = to_paths.at(i);
-    assert(from_path->size() == to_path->size());
-    for (std::size_t j = 0; j < from_path->size(); ++j) {
-      map.insert({&from_path->at(j), &to_path->at(j)});
-    }
-  }
-  return map;
-}
-
-}  // namespace
+#include <QPainter>
+#include <QSvgGenerator>
 
 namespace omm
 {
@@ -51,172 +23,119 @@ class Style;
 
 PathVector::PathVector(PathObject* path_object)
   : m_path_object(path_object)
-  , m_owned_joined_points(std::make_unique<DisjointPathPointSetForest>())
 {
-}
-
-bool PathVector::joined_points_shared() const
-{
-  assert((m_shared_joined_points == nullptr) != (m_owned_joined_points.get() == nullptr));
-  return m_owned_joined_points == nullptr;
 }
 
 PathVector::PathVector(const PathVector& other, PathObject* path_object)
   : m_path_object(path_object)
-  , m_owned_joined_points(std::make_unique<DisjointPathPointSetForest>(other.joined_points()))
 {
-  for (const auto* path : other.paths()) {
-    add_path(std::make_unique<Path>(*path, this));
-  }
-  m_owned_joined_points->replace(map_points(other, *this));
-}
-
-PathVector::PathVector(PathVector&& other) noexcept
-{
-  swap(*this, other);
-}
-
-PathVector& PathVector::operator=(const PathVector& other)
-{
-  *this = PathVector{other};
-  return *this;
-}
-
-std::unique_ptr<DisjointPathPointSetForest> PathVector::share_joined_points(DisjointPathPointSetForest& joined_points)
-{
-  assert(!joined_points_shared());
-  m_shared_joined_points = &joined_points;
-  for (const auto& set : m_owned_joined_points->sets()) {
-    m_shared_joined_points->insert(set);
-  }
-  return std::move(m_owned_joined_points);
-}
-
-void PathVector::unshare_joined_points(std::unique_ptr<DisjointPathPointSetForest> joined_points)
-{
-  assert(joined_points_shared());
-  m_shared_joined_points = nullptr;
-  m_owned_joined_points = std::move(joined_points);
-}
-
-PathVector& PathVector::operator=(PathVector&& other) noexcept
-{
-  swap(*this, other);
-  return *this;
-}
-
-void swap(PathVector& a, PathVector& b) noexcept
-{
-  swap(a.m_owned_joined_points, b.m_owned_joined_points);
-  std::swap(a.m_path_object, b.m_path_object);
-  swap(a.m_paths, b.m_paths);
-  for (auto& path : a.m_paths) {
-    path->set_path_vector(&a);
-  }
-  for (auto& path : b.m_paths) {
-    path->set_path_vector(&b);
-  }
-  std::swap(a.m_shared_joined_points, b.m_shared_joined_points);
+  copy_from(other);
 }
 
 PathVector::~PathVector() = default;
 
 void PathVector::serialize(serialization::SerializerWorker& worker) const
 {
-  worker.sub(SEGMENTS_POINTER)->set_value(m_paths, [](const auto& path, auto& worker_i) {
-    if (path->size() == 0) {
-      LWARNING << "Ignoring empty sub-path.";
-    } else {
-      path->serialize(worker_i);
+  using PointIndices = std::map<const PathPoint*, std::size_t>;
+  PointIndices point_indices;
+  std::vector<std::vector<std::size_t>> iss;
+  iss.reserve(m_paths.size());
+  std::map<const Path*, std::size_t> path_indices;
+  for (const auto& path : m_paths) {
+    std::list<std::size_t> is;
+    for (const auto* const point : path->points()) {
+      const auto [it, was_inserted] = point_indices.try_emplace(point, point_indices.size());
+      is.emplace_back(it->second);
     }
-  });
-  const bool shared = joined_points_shared();
-  worker.sub(JOINED_POINTES_SHARED)->set_value(shared);
-  if (!shared) {
-    worker.sub(OWNED_JOINED_POINTS)->set_value(*m_owned_joined_points);
+    iss.emplace_back(is.begin(), is.end());
+    path_indices.emplace(path.get(), path_indices.size());
   }
+
+  std::vector<const PathPoint*> point_indices_vec(point_indices.size());
+  for (const auto& [point, index] : point_indices) {
+    point_indices_vec.at(index) = point;
+  }
+
+  worker.sub("geometries")->set_value(point_indices_vec, [&path_indices](const PathPoint* const point, auto& worker) {
+    point->geometry().serialize(worker, path_indices);
+  });
+
+  worker.sub("paths")->set_value(iss);
 }
 
 void PathVector::deserialize(serialization::DeserializerWorker& worker)
 {
-  m_paths.clear();
-  worker.sub(SEGMENTS_POINTER)->get_items([this](auto& worker_i) {
-    Path& path = *m_paths.emplace_back(std::make_unique<Path>(this));
-    path.deserialize(worker_i);
-  });
-  const bool shared = worker.sub(JOINED_POINTES_SHARED)->get_bool();
-  if (!shared) {
-    m_owned_joined_points = std::make_unique<DisjointPathPointSetForest>();
-    worker.sub(OWNED_JOINED_POINTS)->get(*m_owned_joined_points);
-  }
-}
+  std::vector<std::vector<std::size_t>> iss;
+  worker.sub("paths")->get(iss);
 
-PathPoint& PathVector::point_at_index(std::size_t index) const
-{
-  for (Path* path : paths()) {
-    if (index < path->size()) {
-      return path->at(index);
+  std::map<Path*, std::vector<std::size_t>> point_indices_per_path;
+  std::vector<const Path*> paths;
+  paths.reserve(iss.size());
+  for (const auto& path_point_indices : iss) {
+    auto& path = add_path();
+    point_indices_per_path.emplace(&path, path_point_indices);
+    paths.emplace_back(&path);
+  }
+
+  std::deque<std::shared_ptr<PathPoint>> points;
+  worker.sub("geometries")->get_items([this, &paths, &points](auto& worker) {
+    Point geometry;
+    geometry.deserialize(worker, paths);
+    points.emplace_back(std::make_shared<PathPoint>(geometry, this));
+  });
+
+  for (const auto& [path, point_indices] : point_indices_per_path) {
+    if (point_indices.size() == 1) {
+      path->set_single_point(points.at(point_indices.front()));
     } else {
-      index -= path->size();
+      for (std::size_t i = 1; i < point_indices.size(); ++i) {
+        const auto& a = points.at(point_indices.at(i - 1));
+        const auto& b = points.at(point_indices.at(i));
+        path->add_edge(std::make_unique<Edge>(a, b, path));
+      }
     }
   }
-  throw std::runtime_error{"Index out of bounds."};
 }
 
-QPainterPath PathVector::outline() const
+QPainterPath PathVector::to_painter_path() const
 {
   QPainterPath outline;
-  for (const Path* path : paths()) {
-    const auto points = path->points();
-    if (!points.empty()) {
-      outline.addPath(Path::to_painter_path(util::transform(points, [](const PathPoint* p) {
-        return p->geometry();
-      })));
-    }
+  for (const auto* path : paths()) {
+    outline.addPath(path->to_painter_path());
   }
   return outline;
 }
 
-std::vector<QPainterPath> PathVector::faces() const
+std::set<Face> PathVector::faces() const
 {
-  Graph graph{*this};
-  graph.remove_articulation_edges();
-  const auto faces = graph.compute_faces();
-  std::vector<QPainterPath> qpps;
-  qpps.reserve(faces.size());
-  for (const auto& face : faces) {
-    qpps.emplace_back(Path::to_painter_path(face.points()));
-  }
+  return face_detector::compute_faces_without_outer(Graph(*this));
+}
 
-  for (bool path_changed = true; path_changed;)
-  {
-    path_changed = false;
-    for (auto& q1 : qpps) {
-      for (auto& q2 : qpps) {
-        if (&q1 == &q2) {
-          continue;
-        }
-        if (q1.contains(q2)) {
-          path_changed = true;
-          q1 -= q2;
-        }
-      }
-    }
+std::vector<Edge*> PathVector::edges() const
+{
+  std::list<Edge*> edges;
+  for (const auto& path : m_paths) {
+    const auto pedges = path->edges();
+    edges.insert(edges.end(), pedges.begin(), pedges.end());
   }
-
-  return qpps;
+  return std::vector(edges.begin(), edges.end());
 }
 
 std::size_t PathVector::point_count() const
 {
-  return std::accumulate(cbegin(m_paths), cend(m_paths), 0, [](std::size_t n, auto&& path) {
-    return n + path->size();
+  return std::accumulate(cbegin(m_paths), cend(m_paths), 0, [](std::size_t n, const auto& path) {
+    return n + path->points().size();
   });
 }
 
 std::deque<Path*> PathVector::paths() const
 {
   return util::transform(m_paths, std::mem_fn(&std::unique_ptr<Path>::get));
+}
+
+Path& PathVector::path(std::size_t i) const
+{
+  return *m_paths.at(i);
 }
 
 Path* PathVector::find_path(const PathPoint& point) const
@@ -229,10 +148,15 @@ Path* PathVector::find_path(const PathPoint& point) const
   return nullptr;
 }
 
-Path& PathVector::add_path(std::unique_ptr<Path>&& path)
+Path& PathVector::add_path(std::unique_ptr<Path> path)
 {
   path->set_path_vector(this);
   return *m_paths.emplace_back(std::move(path));
+}
+
+Path& PathVector::add_path()
+{
+  return add_path(std::make_unique<Path>(this));
 }
 
 std::unique_ptr<Path> PathVector::remove_path(const Path &path)
@@ -246,17 +170,27 @@ std::unique_ptr<Path> PathVector::remove_path(const Path &path)
   return extracted_path;
 }
 
-std::deque<PathPoint*> PathVector::points() const
+std::shared_ptr<PathPoint> PathVector::share(const PathPoint& path_point) const
 {
-  std::deque<PathPoint*> points;
+  for (const auto& path : m_paths) {
+    if (const auto& a = path->share(path_point); a != nullptr) {
+      return a;
+    }
+  }
+  return {};
+}
+
+std::set<PathPoint*> PathVector::points() const
+{
+  std::set<PathPoint*> points;
   for (const auto& path : m_paths) {
     const auto& ps = path->points();
-    points.insert(points.end(), ps.begin(), ps.end());
+    points.insert(ps.begin(), ps.end());
   }
   return points;
 }
 
-std::deque<PathPoint*> PathVector::selected_points() const
+std::set<PathPoint*> PathVector::selected_points() const
 {
   return util::remove_if(points(), [](const auto& p) { return !p->is_selected(); });
 }
@@ -268,54 +202,28 @@ void PathVector::deselect_all_points() const
   }
 }
 
-void PathVector::update_joined_points_geometry() const
+void PathVector::draw_point_ids(QPainter& painter) const
 {
-  std::set<PathVector*> updated_path_vectors;
-  for (auto* point : points()) {
-    for (auto* buddy : point->joined_points()) {
-      if (buddy != point && buddy->path_vector() != this) {
-        updated_path_vectors.insert(buddy->path_vector());
-        buddy->set_geometry(point->compute_joined_point_geometry(*buddy));
-      }
-    }
-  }
-  for (auto* path_vector : updated_path_vectors) {
-    path_vector->path_object()->update();
+  for (const auto* point : points()) {
+    static constexpr QPointF offset{10.0, 10.0};
+    painter.drawText(point->geometry().position().to_pointf() + offset, point->debug_id());
   }
 }
 
-void PathVector::join_points_by_position(const std::vector<Vec2f>& positions) const
+void PathVector::draw_path_ids(QPainter& painter) const
 {
-  static constexpr auto eps = 0.1;
-  static constexpr auto eps2 = eps * eps;
-  const auto points = this->points();
-  LINFO << "===";
-  for (const auto pos : positions) {
-    ::transparent_set<PathPoint*> joint;
-    for (auto* point : points) {
-      const auto d2 = (point->geometry().position() - pos).euclidean_norm2();
-      LINFO << "d2: " << d2 << "   " << point->geometry().position().to_string() << " " << pos.to_string();
-      if (d2 < eps2) {
-        joint.insert(point);
-      }
+  std::size_t path_index = 0;
+  for (const auto* const path : paths()) {
+    std::size_t edge_index = 0;
+    for (const auto* edge : path->edges()) {
+      const auto geom_edge = omm_to_geom<InterpolationMode::Bezier>(*edge);
+      const auto label = QString("%1.%2").arg(path_index).arg(edge_index);
+      const auto pos = Vec2f(geom_edge.pointAt(0.5)).to_pointf();
+      painter.drawText(pos, label);
+      edge_index += 1;
     }
-    joined_points().insert(joint);
+    path_index += 1;
   }
-}
-
-bool PathVector::is_valid() const
-{
-  if ((m_shared_joined_points == nullptr) != (!m_owned_joined_points)) {
-    return false;
-  }
-  for (const auto& path : m_paths) {
-    for (auto* point : path->points()) {
-      if (&point->path() != path.get() || point->path_vector() != this) {
-        return false;;
-      }
-    }
-  }
-  return true;
 }
 
 PathObject* PathVector::path_object() const
@@ -323,13 +231,267 @@ PathObject* PathVector::path_object() const
   return m_path_object;
 }
 
-DisjointPathPointSetForest& PathVector::joined_points() const
+std::unique_ptr<PathVector> PathVector::join(const std::deque<PathVector*>& pvs, double eps)
 {
-  if (joined_points_shared()) {
-    return *m_shared_joined_points;
-  } else {
-    return *m_owned_joined_points;
+  auto joined = std::make_unique<PathVector>();
+  std::map<const PathPoint*, PathPoint*> point_mapping;
+  for (const auto& pv : pvs) {
+    auto pv_mapping = joined->copy_from(*pv).points;
+    point_mapping.merge(pv_mapping);
   }
+
+  for (const std::vector<PathPoint*>& correspondences : PathVectorIsomorphism(pvs).correspondences()) {
+    std::set<PathPoint*> close_points;
+    for (std::size_t i = 0; i < correspondences.size(); ++i) {
+      for (std::size_t j = 0; j < i; ++j) {
+
+      }
+    }
+  }
+
+  std::deque<std::pair<const PathPoint*, const PathPoint*>> close_points;
+  const auto eps2 = eps * eps;
+  for (std::size_t i1 = 0; i1 < pvs.size(); ++i1) {
+    for (std::size_t i2 = 0; i2 < i1; ++i2) {
+      for (const auto* const p1 : pvs.at(i1)->points()) {
+        for (const auto* const p2 : pvs.at(i2)->points()) {
+          if ((p1->geometry().position() - p2->geometry().position()).euclidean_norm2() < eps2) {
+            close_points.emplace_back(p1, p2);
+          }
+        }
+      }
+    }
+  }
+
+  for (std::size_t i = 0; i < close_points.size(); ++i) {
+    const auto& [p1, p2] = close_points.at(i);
+    PathPoint*& j1 = point_mapping.at(p1);
+    PathPoint*& j2 = point_mapping.at(p2);
+    auto* joined_point = joined->join({j1, j2});
+    j1 = joined_point;
+    j2 = joined_point;
+  }
+
+  return joined;
+}
+
+PathPoint* PathVector::join(std::set<PathPoint*> ps)
+{
+  if (ps.empty()) {
+    return {};
+  }
+
+  std::shared_ptr<PathPoint> special;
+  const auto replace_maybe = [&ps, &special](std::shared_ptr<PathPoint>& candidate) {
+    if (ps.contains(candidate.get())) {
+      if (!special) {
+        special = candidate;
+      } else {
+        for (const auto& [key, tangent] : candidate->geometry().tangents()) {
+          special->geometry().set_tangent(key, tangent);
+        }
+        candidate = special;
+      }
+    }
+  };
+  for (auto& path : m_paths) {
+    for (auto* edge : path->edges()) {
+      replace_maybe(edge->a());
+      replace_maybe(edge->b());
+    }
+  }
+
+  return special.get();
+}
+
+PathVector::Mapping PathVector::copy_from(const PathVector& other)
+{
+  std::map<const Path*, Path*> paths_map;
+  for (const auto* other_path : other.paths()) {
+    auto& path = add_path();
+    paths_map.try_emplace(other_path, &path);
+  }
+
+  std::map<const omm::PathPoint*, std::shared_ptr<PathPoint>> points_map;
+  for (const auto* const point : other.points()) {
+    auto geometry = point->geometry();
+    geometry.replace_tangents_key(paths_map);
+    points_map.try_emplace(point, std::make_shared<PathPoint>(geometry, this));
+  }
+
+  for (const auto* other_path : other.paths()) {
+    const auto other_edges = other_path->edges();
+    auto& path = *paths_map.at(other_path);
+    if (other_edges.empty()) {
+      if (other_path->last_point()) {
+        path.set_single_point(points_map.at(other_path->last_point().get()));
+      }
+    } else {
+      for (const auto* other_edge : other_edges) {
+        const auto& a = points_map.at(other_edge->a().get());
+        const auto& b = points_map.at(other_edge->b().get());
+        path.add_edge(std::make_unique<Edge>(a, b, &path));
+      }
+    }
+  }
+
+  std::map<const PathPoint*, PathPoint*> points_map_raw;
+  for (const auto& [key, shared_ptr] : points_map) {
+    points_map_raw.try_emplace(key, shared_ptr.get());
+  }
+
+  return {points_map_raw, paths_map};
+}
+
+QString PathVector::to_dot() const
+{
+  QString s;
+  QTextStream ts(&s, QIODevice::WriteOnly);
+  ts << "graph {\n";
+  for (const auto* const edge : edges()) {
+    ts << "\"";
+    ts << edge->a()->debug_id();
+    ts << "\" -- \"";
+    ts << edge->b()->debug_id();
+    ts << "\" [label=\"" << edge->to_string() << "\"];\n";
+  }
+  ts << "}";
+  return s;
+}
+
+void PathVector::to_svg(const QString& filename) const
+{
+  const auto bb = bounding_box();
+  QSvgGenerator svg;
+  svg.setFileName(filename);
+  const double size = std::max(bb.height(), bb.width());
+  const QPointF margin(size / 3.0, size / 3.0);
+  svg.setViewBox(QRectF(bb.topLeft() - margin, bb.bottomRight() + margin));
+  static constexpr auto width = 100;
+  svg.setSize({width, static_cast<int>(width / bb.width() * bb.height())});
+  QPainter painter(&svg);
+
+  static constexpr auto colors = std::array{
+      Qt::red,      Qt::green,       Qt::blue,       Qt::cyan,      Qt::magenta,
+      Qt::yellow,   Qt::gray,        Qt::darkRed,    Qt::darkGreen, Qt::darkBlue,
+      Qt::darkCyan, Qt::darkMagenta, Qt::darkYellow, Qt::darkGray,  Qt::lightGray,
+  };
+
+  std::map<const Path*, Qt::GlobalColor> path_colors;
+  std::size_t path_index = 0;
+  auto pen = painter.pen();
+  auto font = painter.font();
+  font.setPointSizeF(size / 10.0);
+  painter.setFont(font);
+  pen.setCosmetic(true);
+  for (const auto* const path : paths()) {
+    const auto color = colors.at(path_index % colors.size());
+    pen.setColor(color);
+    painter.setPen(pen);
+    painter.drawPath(path->to_painter_path());
+    path_colors.emplace(path, color);
+    path_index += 1;
+  }
+
+  pen.setStyle(Qt::DotLine);
+  for (const auto* const p : points()) {
+    const auto p0 = p->geometry().position().to_pointf();
+    for (const auto& [key, pc] : p->geometry().tangents()) {
+      pen.setColor(path_colors.at(key.path));
+      painter.setPen(pen);
+      const auto pt = p->geometry().tangent_position(key).to_pointf();
+      const auto start = key.direction == Direction::Forward ? pt : p0;
+      const auto end = key.direction == Direction::Forward ? p0 : pt;
+      QPainterPath path;
+      path.moveTo(start);
+      path.lineTo(end);
+      if (!path.isEmpty()) {
+        painter.drawPath(path);
+      }
+    }
+    pen.setColor(Qt::black);
+    pen.setWidthF(size / 100.0);
+    painter.setPen(pen);
+    painter.drawPoint(p0);
+
+    pen.setWidthF(1.0);
+    painter.setPen(pen);
+    painter.drawText(p0, QString("%1").arg(p->debug_id()));
+  }
+}
+
+QRectF PathVector::bounding_box() const
+{
+  static constexpr auto get_geometry = [](const auto* const pp) { return pp->geometry(); };
+  return Point::bounding_box(util::transform<std::list>(points(), get_geometry));
+}
+
+void PathVector::set_path_object(PathObject* path_object)
+{
+  m_path_object = path_object;
+}
+
+QString PathVector::to_string() const
+{
+  return QString("PathVector[%1 with %2 Points in %3 Paths]")
+      .arg(QString::asprintf("%p", static_cast<const void*>(this)))
+      .arg(point_count())
+      .arg(paths().size());
+}
+
+std::ostream& operator<<(std::ostream& os, const PathVector& path_vector)
+{
+  // TODO maybe we can implement some global mechanism that turns `T::to_string` into
+  // `std::ostream& operator<<(std::ostream&, const T&)` for any T.
+  return os << path_vector.to_string().toStdString();
+}
+
+bool operator==(const PathVector& a, const PathVector& b)
+{
+  const auto paths_a = a.paths();
+  const auto paths_b = b.paths();
+
+  if (paths_a.size() != paths_b.size()) {
+    return false;
+  }
+
+  std::map<const omm::Path*, omm::Path*> path_map_a_to_b;
+  for (std::size_t i = 0; i < paths_a.size(); ++i) {
+    [[maybe_unused]] const auto [it, success] = path_map_a_to_b.try_emplace(paths_a.at(i), paths_b.at(i));
+    assert(success);
+  }
+
+  // check if paths of a match paths of b topologically
+  std::map<const PathPoint*, const PathPoint*> map_a_to_b;
+  std::map<const PathPoint*, const PathPoint*> map_b_to_a;
+  const auto point_eq = [&map_a_to_b, &map_b_to_a, &path_map_a_to_b](const PathPoint* const a,
+                                                                     const PathPoint* const b) {
+    if (map_a_to_b.try_emplace(a, b).first->second != b || map_b_to_a.try_emplace(b, a).first->second != a) {
+      return false;  // `a` maps to something other than `b` already or vice versa.
+    }
+    auto a_geometry = a->geometry();
+    a_geometry.replace_tangents_key(path_map_a_to_b);
+    if (a_geometry != b->geometry()) {
+      return false;
+    }
+    return true;
+  };
+
+  const auto path_eq = [&point_eq](const Path* path_a, const Path* path_b) {
+    const auto points_a_i = path_a->points();
+    const auto points_b_i = path_b->points();
+    if (points_a_i.size() != points_b_i.size()) {
+      return false;
+    }
+    return std::equal(points_a_i.begin(), points_a_i.end(), points_b_i.begin(), point_eq);
+  };
+
+  return std::equal(paths_a.begin(), paths_a.end(), paths_b.begin(), path_eq);
+}
+
+bool operator!=(const PathVector& a, const PathVector& b)
+{
+  return !(a == b);
 }
 
 }  // namespace omm

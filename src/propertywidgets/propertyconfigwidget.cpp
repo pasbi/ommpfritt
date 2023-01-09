@@ -9,6 +9,15 @@
 
 namespace omm
 {
+
+void AbstractPropertyConfigWidget::init(const PropertyConfiguration&)
+{
+}
+
+void AbstractPropertyConfigWidget::update(PropertyConfiguration&) const
+{
+}
+
 void AbstractPropertyConfigWidget::hideEvent(QHideEvent* event)
 {
   QWidget::hideEvent(event);

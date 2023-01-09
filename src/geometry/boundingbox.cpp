@@ -26,11 +26,12 @@ double max(const std::set<double>& ds)
 
 std::set<omm::Vec2f> get_all_control_points(const std::set<omm::Point>& points)
 {
-  std::set<omm::Vec2f> control_points;
+  std::set<omm::Vec2f> control_points;  //TODO I think a list would be more appropriate here.
   for (auto&& p : points) {
-    control_points.insert(p.left_position());
-    control_points.insert(p.position());
-    control_points.insert(p.right_position());
+    control_points.emplace(p.position());
+    for (const auto& key : ::get_keys(p.tangents())) {
+      control_points.emplace(p.tangent_position(key));
+    }
   }
   return control_points;
 }

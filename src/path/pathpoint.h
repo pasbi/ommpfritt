@@ -1,30 +1,26 @@
 #pragma once
 
+#include "common.h"
 #include "geometry/point.h"
-#include "transparentset.h"
 #include <set>
 
 namespace omm
 {
 
-// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
-class Path;
-
-// NOLINTNEXTLINE(bugprone-forward-declaration-namespace)
-class PathVector;
+class Path;  // NOLINT(bugprone-forward-declaration-namespace)
+class PathVector;  // NOLINT(bugprone-forward-declaration-namespace)
+class Edge;
 
 class PathPoint
 {
 public:
-  explicit PathPoint(const Point& geometry, Path& path);
-  explicit PathPoint(Path& path);
+  explicit PathPoint(const Point& geometry, const PathVector* path_vector);
   void set_geometry(const Point& point);
   [[nodiscard]] const Point& geometry() const;
-  PathPoint copy(Path& path) const;
-  [[nodiscard]] Path& path() const;
+  [[nodiscard]] Point& geometry();
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PathPoint", "PathPoint");
 
-  void set_selected(bool is_selected, bool update_buddies = true);
+  void set_selected(bool is_selected);
   [[nodiscard]] bool is_selected() const;
 
   // The PathPoint is identified by it's memory address, which hence must not change during its
@@ -36,13 +32,9 @@ public:
   PathPoint& operator=(const PathPoint& other) = delete;
   PathPoint& operator=(PathPoint&& other) = delete;
   ~PathPoint() = default;
+  Point set_interpolation(InterpolationMode mode) const;
 
-  [[nodiscard]] ::transparent_set<PathPoint*> joined_points() const;
-  void join(::transparent_set<PathPoint*> buddies);
-  void disjoin();
-  [[nodiscard]] PathVector* path_vector() const;
-  [[nodiscard]] Point compute_joined_point_geometry(PathPoint& joined) const;
-  [[nodiscard]] bool is_dangling() const;
+  [[nodiscard]] const PathVector* path_vector() const;
 
   /**
    * @brief debug_id returns an string to identify the point uniquely at this point in time
@@ -58,9 +50,14 @@ public:
    */
   [[nodiscard]] std::size_t index() const;
 
+  /**
+   * @brief edges enumerates all edges that touch this point.
+   */
+  std::set<Edge*> edges() const;
+
 private:
+  const PathVector* m_path_vector;
   Point m_geometry;
-  Path& m_path;
   bool m_is_selected = false;
 };
 

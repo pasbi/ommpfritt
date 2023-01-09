@@ -52,6 +52,13 @@ void NumericPropertyWidget<NumericPropertyT>::update_configuration()
   NumericPropertyWidget::update_edit();
 }
 
+template<typename NumericPropertyT>
+NumericMultiValueEdit<typename NumericPropertyWidget<NumericPropertyT>::value_type>*
+NumericPropertyWidget<NumericPropertyT>::spinbox() const
+{
+  return m_spinbox;
+}
+
 template<typename NumericPropertyT> void NumericPropertyWidget<NumericPropertyT>::update_edit()
 {
   QSignalBlocker blocker(m_spinbox);

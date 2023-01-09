@@ -13,6 +13,7 @@ namespace omm
 
 class Point;
 struct PolarCoordinates;
+struct OrientedPosition;
 
 class ObjectTransformation
 {
@@ -59,6 +60,7 @@ public:
   [[nodiscard]] BoundingBox apply(const BoundingBox& bb) const;
   [[nodiscard]] ObjectTransformation apply(const ObjectTransformation& t) const;
   [[nodiscard]] Point apply(const Point& point) const;
+  [[nodiscard]] OrientedPosition apply(const OrientedPosition& op) const;
   [[nodiscard]] ObjectTransformation normalized() const;
   [[nodiscard]] bool contains_nan() const;
   [[nodiscard]] bool is_identity() const;

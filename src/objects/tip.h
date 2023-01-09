@@ -23,7 +23,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Tip");
 
 protected:
-  PathVector compute_path_vector() const override;
+  std::unique_ptr<PathVector> compute_geometry() const override;
 
 private:
   MarkerProperties m_marker_properties;

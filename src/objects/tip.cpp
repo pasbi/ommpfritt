@@ -1,10 +1,9 @@
 #include "objects/tip.h"
 #include "path/path.h"
 #include "path/pathpoint.h"
-#include "path/pathvector.h"
 #include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
-#include "scene/disjointpathpointsetforest.h"
+#include "path/pathvector.h"
 
 namespace
 {
@@ -40,15 +39,16 @@ void Tip::on_property_value_changed(Property* property)
   }
 }
 
-PathVector Tip::compute_path_vector() const
+std::unique_ptr<PathVector> Tip::compute_geometry() const
 {
-  auto points = m_marker_properties.shape(1.0);
-  PathVector pv;
-  auto path = std::make_unique<Path>(std::move(points));
-  const auto path_points = path->points();
-  pv.add_path(std::move(path));
-  pv.joined_points().insert({path_points.front(), path_points.back()});
-  return pv;
+  return std::make_unique<PathVector>();
+//  auto points = m_marker_properties.shape(1.0);
+//  PathVector pv;
+//  auto path = std::make_unique<Path>(std::move(points));
+//  const auto path_points = path->points();
+//  pv.add_path(std::move(path));
+//  pv.joined_points().insert({path_points.front(), path_points.back()});
+//  return pv;
 }
 
 }  // namespace omm

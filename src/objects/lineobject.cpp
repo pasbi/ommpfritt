@@ -2,8 +2,8 @@
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"
 #include "path/path.h"
-#include "path/pathvector.h"
 #include <QObject>
+#include "path/pathvector.h"
 
 namespace omm
 {
@@ -36,17 +36,9 @@ Flag LineObject::flags() const
   return Object::flags() | Flag::Convertible;
 }
 
-PathVector LineObject::compute_path_vector() const
+std::unique_ptr<PathVector> LineObject::compute_geometry() const
 {
-  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
-  const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
-  const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
-  const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
-  const PolarCoordinates b(angle, centered ? length / 2.0 : length);
-  std::vector points{Point(a.to_cartesian()), Point(b.to_cartesian())};
-  PathVector pv;
-  pv.add_path(std::make_unique<Path>(std::move(points)));
-  return pv;
+  return std::make_unique<PathVector>();
 }
 
 void LineObject::on_property_value_changed(Property* property)

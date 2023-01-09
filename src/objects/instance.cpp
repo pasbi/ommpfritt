@@ -2,10 +2,10 @@
 
 #include "commands/propertycommand.h"
 #include "objects/empty.h"
-#include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/referenceproperty.h"
 #include "renderers/painteroptions.h"
+#include "path/pathvector.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tags/scripttag.h"
@@ -158,12 +158,12 @@ void Instance::update()
   Object::update();
 }
 
-PathVector Instance::compute_path_vector() const
+std::unique_ptr<PathVector> Instance::compute_geometry() const
 {
   if (m_reference) {
-    return PathVector{m_reference->path_vector(), nullptr};
+    return std::make_unique<PathVector>(m_reference->geometry());
   } else {
-    return {};
+    return std::make_unique<PathVector>();
   }
 }
 

@@ -1,165 +1,157 @@
 #include "path/face.h"
-#include "common.h"
-#include "geometry/point.h"
+#include "geometry/line.h"
+#include "path/dedge.h"
 #include "path/pathpoint.h"
-#include "path/edge.h"
+#include "path/pathvectorview.h"
+#include <QPainterPath>
 #include <QStringList>
-
-namespace
-{
-
-using namespace omm;
-
-bool same_point(const PathPoint* p1, const PathPoint* p2)
-{
-  return p1 == p2 || (p1 != nullptr && p1->joined_points().contains(p2));
-}
-
-bool align_last_edge(const Edge& second_last, Edge& last)
-{
-  assert(!last.flipped);
-  if (same_point(second_last.end_point(), last.b)) {
-    last.flipped = true;
-    return true;
-  } else {
-    return same_point(second_last.end_point(), last.a);
-  }
-}
-
-bool align_two_edges(Edge& second_last, Edge& last)
-{
-  assert(!last.flipped);
-  assert(!second_last.flipped);
-  if (same_point(second_last.b, last.b)) {
-    last.flipped = true;
-    return true;
-  } else if (same_point(second_last.a, last.a)) {
-    second_last.flipped = true;
-    return true;
-  } else if (same_point(second_last.a, last.b)) {
-    second_last.flipped = true;
-    last.flipped = true;
-    return true;
-  } else {
-    return same_point(second_last.b, last.a);
-  }
-}
-
-template<typename Ts, typename Rs>
-bool equal_at_offset(const Ts& ts, const Rs& rs, const std::size_t offset)
-{
-  if (ts.size() != rs.size()) {
-    return false;
-  }
-
-  for (std::size_t i = 0; i < ts.size(); ++i) {
-    const auto j = (i + offset) % ts.size();
-    if (!same_point(ts.at(i), rs.at(j))) {
-      return false;
-    }
-  }
-  return true;
-}
-
-}  // namespace
 
 namespace omm
 {
 
-std::list<Point> Face::points() const
+Face::Face()
+    : m_path_vector_view(std::make_unique<PathVectorView>())
 {
-  std::list<Point> points;
-  for (const auto& edge : edges()) {
-    if (points.empty()) {
-      points.emplace_back(edge.start_geometry());
-    } else {
-      points.back().set_right_position(edge.start_geometry().right_position());
-    }
-    points.emplace_back(edge.end_geometry());
-  }
-  return points;
 }
 
-std::deque<PathPoint*> Face::path_points() const
+Face::Face(PathVectorView pvv)
+    : m_path_vector_view(std::make_unique<PathVectorView>(std::move(pvv)))
 {
-  std::deque<PathPoint*> points;
-  for (const auto& edge : edges()) {
-    points.emplace_back(edge.start_point());
-  }
-  return points;
+}
+
+Face::Face(const Face& other)
+    : m_path_vector_view(std::make_unique<PathVectorView>(other.path_vector_view()))
+{
+}
+
+Face::Face(Face&& other) noexcept
+    : Face()
+{
+  swap(*this, other);
+}
+
+Face& Face::operator=(Face other)
+{
+  swap(*this, other);
+  return *this;
+}
+
+Face& Face::operator=(Face&& other) noexcept
+{
+  swap(*this, other);
+  return *this;
 }
 
 Face::~Face() = default;
 
-bool Face::add_edge(const Edge& edge)
+void swap(Face& a, Face& b) noexcept
 {
-  assert(!edge.flipped);
-  m_edges.emplace_back(edge);
-  if (m_edges.size() == 2) {
-    return align_two_edges(m_edges[0], m_edges[1]);
-  } else if (m_edges.size() > 2) {
-    return align_last_edge(m_edges[m_edges.size() - 2], m_edges.back());
-  }
-  return true;
-}
-
-const std::deque<Edge>& Face::edges() const
-{
-  return m_edges;
+  swap(a.m_path_vector_view, b.m_path_vector_view);
 }
 
 double Face::compute_aabb_area() const
 {
+  if (path_vector_view().edges().size()) {
+    return 0.0;
+  }
+
   double left = std::numeric_limits<double>::infinity();
   double right = -std::numeric_limits<double>::infinity();
   double top = -std::numeric_limits<double>::infinity();
   double bottom = std::numeric_limits<double>::infinity();
 
-  const auto points = this->points();
-  for (const auto& p : points) {
+  for (const auto* pp : path_vector_view().path_points()) {
+    const auto& p = pp->geometry();
     left = std::min(left, p.position().x);
     right = std::max(right, p.position().x);
     top = std::max(top, p.position().y);
     bottom = std::min(bottom, p.position().y);
   }
 
-  if (points.empty()) {
-    return 0.0;
-  } else {
-    return (right - left) * (top - bottom);
-  }
+  return (right - left) * (top - bottom);
 }
 
 QString Face::to_string() const
 {
-  const auto edges = util::transform<QList>(m_edges, std::mem_fn(&Edge::label));
-  return static_cast<QStringList>(edges).join(", ");
+  return m_path_vector_view->to_string();
 }
 
-bool operator==(const Face& a, const Face& b)
+bool Face::is_valid() const noexcept
 {
-  const auto points_a = a.path_points();
-  const auto points_b = b.path_points();
-  if (points_a.size() != points_b.size()) {
-    return false;
-  }
-  const auto points_b_reversed = std::deque(points_b.rbegin(), points_b.rend());
-  QStringList pa;
-  QStringList pb;
-  for (std::size_t i = 0; i < points_a.size(); ++i) {
-    pa.append(QString{"%1"}.arg(points_a.at(i)->index()));
-    pb.append(QString{"%1"}.arg(points_b.at(i)->index()));
-  }
+  return m_path_vector_view->is_simply_closed();
+}
 
-  for (std::size_t offset = 0; offset < points_a.size(); ++offset) {
-    if (equal_at_offset(points_a, points_b, offset)) {
-      return true;
+PathVectorView& Face::path_vector_view()
+{
+  return *m_path_vector_view;
+}
+
+const PathVectorView& Face::path_vector_view() const
+{
+  return *m_path_vector_view;
+}
+
+double Face::area() const
+{
+  // See Green's Theorem and Leibniz' Sektorformel
+  const auto g_path = m_path_vector_view->to_geom();
+  double sum = 0.0;
+  for (std::size_t i = 0; i < g_path.size(); ++i) {
+    const auto& curve = static_cast<const Geom::BezierCurveN<3>&>(g_path.at(i));
+    const auto& derivative = static_cast<const Geom::BezierCurveN<2>&>(*curve.derivative());
+    const auto x = curve.fragment()[0];
+    const auto y = curve.fragment()[1];
+    const auto dx = derivative.fragment()[0];
+    const auto dy = derivative.fragment()[1];
+    const auto f = y * dx - x * dy;
+    const auto integral = Geom::integral(f);
+    sum += integral.valueAt(1.0) - integral.valueAt(0.0);
+  }
+  return sum / 2.0;
+}
+
+bool Face::operator==(const Face& other) const
+{
+  return *m_path_vector_view == other.path_vector_view();
+}
+
+bool Face::operator!=(const Face& other) const
+{
+  return !(*this == other);
+}
+
+bool Face::operator<(const Face& other) const
+{
+  return *m_path_vector_view < other.path_vector_view();
+}
+
+PolygonLocation polygon_contains(const std::vector<Vec2f>& polygon, const Vec2f& p)
+{
+  // Ray casting
+  bool inside = false;
+  const Line ray{p, p + Vec2(1.0, 0.0)};  // Ray with arbitary direction from p
+  for (std::size_t i = 0; i < polygon.size(); ++i) {
+    const Line line{i == 0 ? polygon.back() : polygon.at(i - 1), polygon.at(i)};
+    static constexpr auto eps = 0.0001;
+    static constexpr auto in01 = [](const double d) { return d >= 0.0 && d < 1.0; };
+    if (std::abs(line.distance(p)) < eps && in01(line.project(p))) {
+      return PolygonLocation::Edge;
     }
-    if (equal_at_offset(points_a, points_b_reversed, offset)) {
-      return true;
+    const auto t = line.intersect(ray);
+    const auto u = ray.intersect(line);
+    if (!std::isfinite(t) || !std::isfinite(u)) {
+      // line is parallel to ray and p is not on line: no intersection.
+    } else if (u >= 0.0 && in01(t)) {
+      // intersection
+      inside = !inside;
     }
   }
-  return false;
+  return inside ? PolygonLocation::Inside : PolygonLocation::Outside;
+}
+
+std::ostream& operator<<(std::ostream& os, const Face& face)
+{
+  return os << face.to_string().toStdString();
 }
 
 }  // namespace omm

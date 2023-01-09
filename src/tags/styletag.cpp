@@ -5,6 +5,7 @@
 #include "objects/object.h"
 #include "properties/referenceproperty.h"
 #include "properties/triggerproperty.h"
+#include "properties/facelistproperty.h"
 #include "renderers/style.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
@@ -22,15 +23,21 @@ StyleTag::StyleTag(Object& owner) : Tag(owner)
   create_property<TriggerProperty>(EDIT_STYLE_PROPERTY_KEY)
       .set_label(QObject::tr("Edit style ..."))
       .set_category(category);
+
+  create_property<FaceListProperty>(FACE_LIST_PROPERTY_KEY)
+      .set_label(QObject::tr("Faces"))
+      .set_category(category);
 }
 
 QString StyleTag::type() const
 {
   return TYPE;
 }
+
 void StyleTag::evaluate()
 {
 }
+
 Flag StyleTag::flags() const
 {
   return Tag::flags();

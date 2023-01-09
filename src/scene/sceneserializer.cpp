@@ -8,7 +8,6 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "scene/stylelist.h"
-#include "scene/disjointpathpointsetforest.h"
 
 #include <QDataStream>
 #include <QFile>
@@ -126,15 +125,15 @@ bool SceneSerialization::load_bin(const QString& filename) const
 
 bool SceneSerialization::save_json(const QString& filename) const
 {
-  std::ofstream ofstream(filename.toStdString());
-  if (!ofstream) {
-    LERROR << "Failed to open ofstream at '" << filename << "'.";
-    return false;
-  }
-
   nlohmann::json json;
   serialization::JSONSerializer serializer{json};
   if (!save(serializer)) {
+    return false;
+  }
+
+  std::ofstream ofstream(filename.toStdString());
+  if (!ofstream) {
+    LERROR << "Failed to open ofstream at '" << filename << "'.";
     return false;
   }
 

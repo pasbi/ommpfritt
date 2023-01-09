@@ -23,6 +23,7 @@ class Property;
 class Scene;
 struct PainterOptions;
 class PathVector;
+struct OrientedPosition;
 
 class Object
     : public PropertyOwner<Kind::Object>
@@ -75,7 +76,7 @@ public:
   bool is_visible(bool viewport) const;
   virtual std::deque<const Style*> find_styles() const;
 
-  virtual Point pos(const Geom::PathVectorTime& t) const;
+  virtual OrientedPosition pos(const Geom::PathVectorTime& t) const;
   virtual bool contains(const Vec2f& point) const;
 
 private:
@@ -85,7 +86,9 @@ private:
    * @note use `Object::geom_paths` or `Object::painter_path` to access the paths.
    * @return the paths.
    */
-  virtual PathVector compute_path_vector() const;
+public:
+  virtual std::unique_ptr<PathVector> compute_geometry() const;
+  virtual std::set<Face> compute_faces() const;
 
 public:
   enum class Interpolation { Natural, Distance };
@@ -95,10 +98,12 @@ public:
   compute_path_vector_time(int path_index, double t, Interpolation = Interpolation::Natural) const;
 
 private:
-  class CachedGeomPathVectorGetter;
-  std::unique_ptr<CachedGeomPathVectorGetter> m_cached_geom_path_vector_getter;
+  std::unique_ptr<CachedGetter<std::unique_ptr<PathVector>, Object>> m_cached_geometry_getter;
+  std::unique_ptr<CachedGetter<std::set<Face>, Object>> m_cached_faces_getter;
+
 public:
-  const PathVector& path_vector() const;
+  const PathVector& geometry() const;
+  const std::set<Face>& faces() const;
 
   TagList tags;
 
@@ -141,7 +146,7 @@ private:
 public:
   void set_object_tree(ObjectTree& object_tree);
   void set_position_on_path(const Object& path, bool align, const Geom::PathVectorTime& t);
-  void set_oriented_position(const Point& op, bool align);
+  void set_oriented_position(const OrientedPosition& op, bool align);
 
   QString to_string() const override;
 
@@ -156,7 +161,7 @@ private:
   static const QBrush m_bounding_box_brush;
 
 protected:
-  static PathVector join(const std::vector<Object*>& objects);
+  static std::unique_ptr<PathVector> join(const std::vector<Object*>& objects);
 };
 
 }  // namespace omm

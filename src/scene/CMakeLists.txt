@@ -3,8 +3,8 @@ target_sources(libommpfritt PRIVATE
   contextes_fwd.h
   cycleguard.cpp
   cycleguard.h
-  disjointpathpointsetforest.cpp
-  disjointpathpointsetforest.h
+  faceselection.cpp
+  faceselection.h
   itemmodeladapter.cpp
   itemmodeladapter.h
   list.cpp

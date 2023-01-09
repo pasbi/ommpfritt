@@ -1,8 +1,14 @@
 target_sources(libommpfritt PRIVATE
+  ccwcomparator.cpp
+  ccwcomparator.h
   edge.cpp
   edge.h
+  dedge.cpp
+  dedge.h
   face.cpp
   face.h
+  facedetector.cpp
+  facedetector.h
   graph.cpp
   graph.h
   lib2geomadapter.cpp
@@ -13,6 +19,10 @@ target_sources(libommpfritt PRIVATE
   path.h
   pathvector.cpp
   pathvector.h
+  pathvectorisomorphism.cpp
+  pathvectorisomorphism.h
+  pathvectorview.cpp
+  pathvectorview.h
   pathview.cpp
   pathview.h
 )

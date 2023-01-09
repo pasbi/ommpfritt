@@ -25,6 +25,11 @@ OptionPropertyWidget::OptionPropertyWidget(Scene& scene, const std::set<Property
   OptionPropertyWidget::update_edit();
 }
 
+OptionsEdit* OptionPropertyWidget::combobox() const
+{
+  return m_options_edit;
+}
+
 void OptionPropertyWidget::update_edit()
 {
   QSignalBlocker blocker(m_options_edit);

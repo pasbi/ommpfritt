@@ -1,13 +1,21 @@
 target_sources(libommpfritt PRIVATE
+  addcommand.h
+  addpointscommand.cpp
+  addpointscommand.h
+  addremovepointscommand.cpp
+  addremovepointscommand.h
+  addremovepointscommandchangeset.cpp
+  addremovepointscommandchangeset.h
   command.cpp
   command.h
-  addcommand.h
   composecommand.cpp
   composecommand.h
   copycommand.cpp
   copycommand.h
   cutpathcommand.cpp
   cutpathcommand.h
+  forwardingportcommand.cpp
+  forwardingportcommand.h
   joinpointscommand.cpp
   joinpointscommand.h
   keyframecommand.cpp
@@ -16,8 +24,6 @@ target_sources(libommpfritt PRIVATE
   modifypointscommand.h
   modifysegmentscommand.cpp
   modifysegmentscommand.h
-  forwardingportcommand.h
-  forwardingportcommand.cpp
   movecommand.cpp
   movecommand.h
   movetagscommand.cpp
@@ -30,10 +36,14 @@ target_sources(libommpfritt PRIVATE
   objectselectioncommand.h
   objectstransformationcommand.cpp
   objectstransformationcommand.h
+  ownedlocatedpath.cpp
+  ownedlocatedpath.h
   propertycommand.cpp
   propertycommand.h
   removecommand.cpp
   removecommand.h
+  removepointscommand.cpp
+  removepointscommand.h
   setinterpolationcommand.cpp
   setinterpolationcommand.h
   subdividepathcommand.cpp

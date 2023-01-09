@@ -1784,10 +1784,6 @@ Remove the selected items anyway?</translation>
         <translation>Ellipse</translation>
     </message>
     <message>
-        <source>show point dialog</source>
-        <translation>Show point dialog</translation>
-    </message>
-    <message>
         <source>Instance</source>
         <translation>Instance</translation>
     </message>

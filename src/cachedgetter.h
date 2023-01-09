@@ -2,6 +2,9 @@
 
 #include <map>
 #include <tuple>
+#include <functional>
+#include <memory>
+#include <utility>
 
 template<typename T, typename Self, typename... Args> class ArgsCachedGetter
 {
@@ -67,3 +70,28 @@ private:
   mutable T m_cache;
   mutable bool m_is_dirty = true;
 };
+
+template<typename Self, typename Compute>
+auto make_simple_cached_getter(const Self& self, const Compute& compute)
+{
+  using R = decltype(std::invoke(std::declval<Compute>(), std::declval<Self>()));
+  class SimpleCachedGetter
+      : public CachedGetter<R, Self>
+  {
+  public:
+    explicit SimpleCachedGetter(const Self& self, const Compute& compute)
+        : CachedGetter<R, Self>(self)
+        , m_compute(compute)
+    {
+    }
+
+    R compute() const override
+    {
+      return std::invoke(m_compute, this->m_self);
+    }
+
+  private:
+    Compute m_compute;
+  };
+  return static_cast<std::unique_ptr<CachedGetter<R, Self>>>(std::make_unique<SimpleCachedGetter>(self, compute));
+}

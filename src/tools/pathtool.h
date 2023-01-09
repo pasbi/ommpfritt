@@ -22,10 +22,11 @@ public:
   [[nodiscard]] QString type() const override;
   void end() override;
   void reset() override;
-  struct Current;
+  void draw(Painter& painter) const override;
+  class PathBuilder;
 
 private:
-  std::unique_ptr<Current> m_current;
+  std::unique_ptr<PathBuilder> m_path_builder;
 };
 
 }  // namespace omm

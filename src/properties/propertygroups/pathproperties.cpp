@@ -1,4 +1,5 @@
 #include "properties/propertygroups/pathproperties.h"
+#include "geometry/orientedposition.h"
 #include "objects/object.h"
 #include "properties/boolproperty.h"
 #include "properties/floatproperty.h"

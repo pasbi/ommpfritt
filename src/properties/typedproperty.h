@@ -68,10 +68,12 @@ public:
   {
     return m_default_value;
   }
+
   virtual void set_default_value(const ValueT& value)
   {
     m_default_value = value;
   }
+
   virtual void reset()
   {
     m_value = m_default_value;

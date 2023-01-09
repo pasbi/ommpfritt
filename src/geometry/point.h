@@ -1,8 +1,14 @@
 #pragma once
 
+#include "geometry/direction.h"
 #include "geometry/polarcoordinates.h"
 #include "geometry/vec2.h"
+#include <QRectF>
 #include <Qt>
+#include <deque>
+#include <list>
+#include <map>
+#include <set>
 
 namespace omm
 {
@@ -13,61 +19,79 @@ class SerializerWorker;
 class DeserializerWorker;
 }  // namespace serialization
 
+class Path;
+
 class Point
 {
 public:
-  explicit Point(const Vec2f& position,
-                 const PolarCoordinates& left_tangent,
-                 const PolarCoordinates& right_tangent);
-  explicit Point(const Vec2f& position, double rotation, double tangent_length = 1.0);
+  struct TangentKey
+  {
+    TangentKey(const Path* const path, Direction direction);
+    TangentKey(const Direction direction);
+    explicit TangentKey();
+    const Path* path;
+    Direction direction;
+
+    void serialize(serialization::SerializerWorker& worker,
+                   const std::map<const Path*, std::size_t>& path_indices) const;
+    void deserialize(serialization::DeserializerWorker& worker, const std::vector<const Path*>& paths);
+
+    QString to_string() const;
+    bool operator<(const TangentKey& other) const noexcept;
+    bool operator==(const TangentKey& other) const noexcept;
+  };
+
+  using TangentsMap = std::map<TangentKey, PolarCoordinates>;
+
   explicit Point(const Vec2f& position);
+  explicit Point(const Vec2f& position, const PolarCoordinates& backward_tangent,
+                 const PolarCoordinates& forward_tangent);
+  explicit Point(const Vec2f& position, const std::map<TangentKey, PolarCoordinates>& tangents);
   Point();
   [[nodiscard]] Vec2f position() const;
   void set_position(const Vec2f& position);
-  [[nodiscard]] Vec2f left_position() const;
-  void set_left_position(const Vec2f& position);
-  [[nodiscard]] Vec2f right_position() const;
-  void set_right_position(const Vec2f& position);
-  [[nodiscard]] PolarCoordinates left_tangent() const;
-  void set_left_tangent(const PolarCoordinates& vector);
-  [[nodiscard]] PolarCoordinates right_tangent() const;
-  void set_right_tangent(const PolarCoordinates& vector);
-  [[nodiscard]] double rotation() const;
+
+  void set_tangent_position(const TangentKey& key, const Vec2f& position);
+  [[nodiscard]] Vec2f tangent_position(const TangentKey& key) const;
+  [[nodiscard]] PolarCoordinates tangent(const TangentKey& key) const;
+  void set_tangent(const TangentKey& key, const PolarCoordinates& vector);
+  TangentsMap& tangents();
+  const TangentsMap& tangents() const;
+  void replace_tangents_key(const std::map<const Path*, Path*>& paths_map);
+  void set_tangents(TangentsMap tangents);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
   friend void swap(Point& a, Point& b);
+  [[nodiscard]] double rotation() const;
   [[nodiscard]] bool has_nan() const;
   [[nodiscard]] bool has_inf() const;
 
   [[nodiscard]] Point rotated(double rad) const;
   [[nodiscard]] Point nibbed() const;
-  [[nodiscard]] Point flipped() const;
 
   static constexpr auto POSITION_POINTER = "position";
-  static constexpr auto LEFT_TANGENT_POINTER = "left";
-  static constexpr auto RIGHT_TANGENT_POINTER = "right";
+  static constexpr auto TANGENTS_POINTER = "tangents";
 
-  void serialize(serialization::SerializerWorker& worker) const;
-  void deserialize(serialization::DeserializerWorker& worker);
+  void serialize(serialization::SerializerWorker& worker, const std::map<const Path*, std::size_t>& path_indices) const;
+  void deserialize(serialization::DeserializerWorker& worker, const std::vector<const Path*> paths);
 
   /**
-   * @brief flattened means adjust the tangents such that the angle between them approaches
-   *  180 degree.
-   * @param t control the amount of the effect.
-   *  t = 0: returns a unmodified copy of the this.
-   *  t = 1: return a copy where the tangents are spread by 180 degree.
-   *  Values outside that range have not been tested, the result of such an operation is a surprise.
-   *  The magnitude of tangents is not modified. The angle bisector is an invariant.
-   * @return the flattened point.
+   * @brief operator == returns true iff this equals `point`. Makes sense only if
+   *   - both points are part of the same PathVector
+   *   - or have no tangents assigned to a Path.
    */
-  [[nodiscard]] Point flattened(double t) const;
-
   bool operator==(const Point& point) const;
+
+  /**
+   * @brief operator != returns true iff this doesn't equal `point`.
+   * Same constrains apply as for @see operator==.
+   */
   bool operator!=(const Point& point) const;
   bool operator<(const Point& point) const;
+  friend bool fuzzy_eq(const Point& a, const Point& b);
 
-  Point offset(double t, const Point* left_neighbor, const Point* right_neighbor) const;
-  static std::vector<Point> offset(double t, const std::vector<Point>& points, bool is_closed);
   [[nodiscard]] QString to_string() const;
+  QRectF bounding_box() const;
+  static QRectF bounding_box(const std::list<Point>& points);
 
   /**
    * @brief When a tangent is at `old_pos` and it is mirror-coupled with its sibling which moves
@@ -83,15 +107,11 @@ public:
                                          const PolarCoordinates& new_other_pos);
 
 private:
-  double get_direction(const Point* left_neighbor, const Point* right_neighbor) const;
   Vec2f m_position;
-  PolarCoordinates m_left_tangent;
-  PolarCoordinates m_right_tangent;
+  TangentsMap m_tangents;
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);
 constexpr Vec2f to_cartesian(const PolarCoordinates& polar);
-
-bool fuzzy_eq(const Point& a, const Point& b);
 
 }  // namespace omm

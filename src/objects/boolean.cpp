@@ -1,7 +1,7 @@
 #include "objects/boolean.h"
-#include "path/pathvector.h"
 #include "properties/optionproperty.h"
 #include "path/lib2geomadapter.h"
+#include "path/pathvector.h"
 #include <2geom/2geom.h>
 #include <2geom/intersection-graph.h>
 #include <2geom/pathvector.h>
@@ -94,28 +94,9 @@ void Boolean::polish()
   listen_to_children_changes();
 }
 
-PathVector Boolean::compute_path_vector() const
+std::unique_ptr<PathVector> Boolean::compute_geometry() const
 {
-  const auto children = tree_children();
-  if (is_active() && children.size() == 2) {
-    static constexpr auto get_path_vector = [](const Object& object) {
-      const auto t = object.transformation();
-      return t.apply(omm_to_geom(object.path_vector()));
-    };
-    Geom::PathIntersectionGraph pig{get_path_vector(*children[0]), get_path_vector(*children[1])};
-    if (pig.valid()) {
-      const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
-      auto path_vector = *geom_to_omm(dispatcher.at(i).compute(pig));
-      path_vector.join_points_by_position(util::transform(pig.intersectionPoints(), [](const auto& p) {
-        return Vec2f{p};
-      }));
-      return path_vector;
-    } else {
-      return {};
-    }
-  } else {
-    return {};
-  }
+  return std::make_unique<PathVector>();
 }
 
 }  // namespace omm

@@ -5,10 +5,11 @@ target_sources(libommpfritt PRIVATE
   cache.h
   cachedgetter.h
   common.h
-  disjointset.h
   dnf.h
   enumnames.cpp
   enumnames.h
+  facelist.cpp
+  facelist.h
   logging.cpp
   logging.h
   maybeowner.h

@@ -1,134 +1,257 @@
 #include "tools/pathtool.h"
 #include "commands/addcommand.h"
-#include "commands/modifypointscommand.h"
+#include "commands/addpointscommand.h"
 #include "commands/joinpointscommand.h"
+#include "commands/modifypointscommand.h"
+#include "commands/ownedlocatedpath.h"
 #include "main/application.h"
 #include "objects/pathobject.h"
-#include "path/pathpoint.h"
+#include "path/edge.h"
 #include "path/path.h"
+#include "path/pathpoint.h"
 #include "path/pathvector.h"
-#include "scene/scene.h"
+#include "renderers/painter.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
-#include "tools/selecttool.h"
+#include "scene/scene.h"
 #include "tools/handles/handle.h"
+#include "tools/selecttool.h"
 #include <QMouseEvent>
-
-namespace omm
-{
-
-struct PathTool::Current
-{
-  PathObject* path_object = nullptr;
-  Path* path = nullptr;
-  PathPoint* point = nullptr;
-  PathPoint* last_point = nullptr;
-
-  void find_tie(const Scene& scene)
-  {
-    path_object = nullptr;
-    path = nullptr;
-    last_point = nullptr;
-    auto path_objects = type_casts<PathObject*>(scene.item_selection<Object>());
-    if (path_objects.size() == 1) {
-      path_object = *path_objects.begin();
-      if (auto sp = path_object->geometry().selected_points(); !sp.empty()) {
-        last_point = sp.front();
-        path = path_object->geometry().find_path(*last_point);
-      }
-    } else {
-      path_object = nullptr;
-    }
-  }
-};
-
-}  // namespace omm
 
 namespace
 {
 
-using namespace omm;
+template<typename T, typename... Ts> void emplace_back(auto& cs, T&& arg, Ts&&... args)
+{
+  cs.emplace_back(std::forward<T>(arg));
+  if constexpr (sizeof...(args) > 0) {
+    emplace_back(cs, std::forward<Ts>(args)...);
+  }
+}
 
-class LeftButtonPressImpl
+template<template<typename...> typename Container, typename... Args> decltype(auto) make(Args&&... args)
+{
+  using T = std::tuple_element_t<0, std::tuple<std::decay_t<Args>...>>;
+  Container<T> cs;
+  if constexpr (requires(Container<T> cs, std::size_t n) { cs.reserve(n); }) {
+    cs.reserve(sizeof...(args));
+  }
+  emplace_back(cs, std::forward<Args>(args)...);
+  return cs;
+}
+
+}  // namespace
+
+namespace omm
+{
+
+class PathTool::PathBuilder
 {
 public:
-  explicit LeftButtonPressImpl(Scene& scene, PathTool::Current& current)
-    : m_scene(scene)
-    , m_current(current)
+  explicit PathBuilder(Scene& scene) : m_scene(scene) {}
+
+  /**
+   * @brief create_first_path_point a new path is created, not connected to any existing paths.
+   * @param pos the geometry of the first point
+   */
+  void create_first_path_point(const Point& pos)
   {
+    assert(is_valid());
+    m_current_path = &current_path_vector().add_path();
+    auto point = std::make_shared<PathPoint>(pos, &current_path_vector());
+    m_current_point = point.get();
+    OwnedLocatedPath olp(m_current_path, 0, std::deque{std::move(point)});
+    m_scene.submit<AddPointsCommand>(std::move(olp), current_path_vector().path_object());
+    assert(is_valid());
   }
 
-  void find_target_point(Tool& tool, const Vec2f& pos)
+  void submit_add_points_command(omm::PathObject& path_object,
+                                 omm::Path& path,
+                                 const std::size_t point_offset,
+                                 std::deque<std::shared_ptr<PathPoint>>&& points)
   {
-    for (auto* handle : tool.handles()) {
-      const auto* point_select_handle = dynamic_cast<PointSelectHandle*>(handle);
-      if (point_select_handle != nullptr && point_select_handle->contains_global(pos)) {
-        m_target_point = &point_select_handle->point();
-        return;
+    OwnedLocatedPath olp(&path, point_offset, std::move(points));
+    auto command = std::make_unique<AddPointsCommand>(std::move(olp), &path_object);
+    const auto new_edges = command->new_edges();
+    m_scene.submit(std::move(command));
+    if (!new_edges.empty()) {
+      m_last_point = new_edges.back()->b().get();
+    }
+  }
+
+  Path* find_most_sensible_path(const PathPoint& p)
+  {
+    const auto paths = p.path_vector()->paths();
+    for (auto* const path : paths) {
+      if (path->last_point().get() == &p || path->first_point().get() == &p) {
+        return path;
+      }
+    }
+    for (auto* const path : paths) {
+      if (path->contains(p)) {
+        return path;
+      }
+    }
+    return nullptr;
+  }
+
+  void add_point(std::shared_ptr<PathPoint>&& b)
+  {
+    assert(b);
+    m_current_point = b.get();
+    if (m_last_point != nullptr && m_current_path == nullptr) {
+      m_current_path = find_most_sensible_path(*m_last_point);
+    }
+    assert(m_current_path != nullptr);
+    if (m_last_point == m_current_path->last_point().get()) {
+      // append
+      submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
+    } else if (auto root = current_path_vector().share(*m_last_point); root != nullptr) {
+      // branch
+      assert(m_last_point != nullptr);
+      m_current_path = &current_path_vector().add_path();
+      submit_add_points_command(*m_current_path_object, *m_current_path, 0, {root, b});
+    } else {
+      // m_last_point has been removed (e.g. by undo), also append.
+      submit_add_points_command(*m_current_path_object, *m_current_path, m_current_path->points().size(), {b});
+    }
+  }
+
+  void add_point(Point point)
+  {
+    ensure_active_path_object();
+    assert(is_valid());
+    point = m_current_path_object->global_transformation(Space::Viewport).inverted().apply(point);
+    if (m_last_point == nullptr) {
+      create_first_path_point(point);
+    } else {
+      add_point(std::make_shared<PathPoint>(point, &current_path_vector()));
+    }
+    assert(is_valid());
+  }
+
+  void find_tie()
+  {
+    assert(is_valid());
+    m_current_point = nullptr;
+    if (const auto selected_paths = m_scene.item_selection<PathObject>(); selected_paths.empty()) {
+      m_current_path_object = nullptr;
+    } else {
+      m_current_path_object = *selected_paths.begin();
+      if (const auto ps = m_current_path_object->path_vector().selected_points(); !ps.empty()) {
+        m_current_point = *ps.begin();
+      }
+    }
+    assert(is_valid());
+  }
+
+  void close_path()
+  {
+    if (const auto selection = current_path_vector().selected_points(); m_last_point != nullptr && !selection.empty()) {
+      if (auto end = current_path_vector().share(**selection.begin()); end) {
+        // it may be that start and end have been removed from the path in the meanwhile (undo)
+        add_point(std::move(end));
       }
     }
   }
 
-  void insert_point_segment(const Point& point, const std::size_t index)
+  PathObject* find_selected_path_object() const
   {
-    std::deque<std::unique_ptr<PathPoint>> points;
-    m_current.point = points.emplace_back(std::make_unique<PathPoint>(point, *m_current.path)).get();
-    m_located_paths.emplace_back(m_current.path, index, std::move(points));
-    if (m_target_point != nullptr) {
-      m_points_to_join.insert({m_current.point, m_target_point});
-    }
-  }
-
-  void add_point(const Point& point)
-  {
-    if (m_current.path == nullptr) {
-      // no path is selected: add the point to a newly created segment
-      auto new_path = std::make_unique<Path>(std::deque{point}, &m_current.path_object->geometry());
-      m_current.point = &new_path->at(0);
-      m_located_paths.emplace_back(std::move(new_path));
-    } else if (m_current.path->size() == 0 || m_current.path->points().back() == m_current.last_point) {
-      // segment is empty or last point of the segmet is selected: append point at end
-      insert_point_segment(point, m_current.path->size());
-    } else if (m_current.path->points().front() == m_current.last_point) {
-      // first point of segment is selected: append point at begin
-      insert_point_segment(point, 0);
+    const auto selection = m_scene.item_selection<Object>();
+    static constexpr auto is_path_object = [](const auto* item) { return item->type() == PathObject::TYPE; };
+    const auto it = std::find_if(selection.begin(), selection.end(), is_path_object);
+    if (it == selection.end()) {
+      return nullptr;
     } else {
-      // other point of segment is selected: add point to a newly created segment and join points
-      auto new_path = std::make_unique<Path>(std::deque{m_current.last_point->geometry(), point},
-                                             &m_current.path_object->geometry());
-      m_current.point = &new_path->at(1);
-      m_points_to_join = {&new_path->at(0), m_current.last_point};
-      m_located_paths.emplace_back(std::move(new_path));
+      return dynamic_cast<PathObject*>(*it);
     }
   }
 
-  void polish()
+  void ensure_active_path_object()
   {
-    PathObject& current_path = *m_current.point->path_vector()->path_object();
-    if (!m_points_to_join.empty()) {
-      start_macro();
-    }
-    m_scene.submit<AddPointsCommand>(current_path, std::move(m_located_paths));
-    if (!m_points_to_join.empty()) {
-      m_scene.submit<JoinPointsCommand>(m_scene, std::deque{m_points_to_join});
-    }
-    current_path.geometry().deselect_all_points();
-    m_current.point->set_selected(true);
-    current_path.update();
-  }
-
-  void ensure_active_path(Scene& scene, PathTool::Current& current)
-  {
-    if (current.path_object == nullptr) {
+    if (m_scene.contains(m_current_path_object) && m_scene.item_selection<Object>().contains(m_current_path_object)) {
+      // everything can stay as it is, we have an existing and selected m_current_path_object.
+      return;
+    } else if (auto* const selected_path_object = find_selected_path_object(); selected_path_object != nullptr) {
+      // There is a path object selected, but it's not m_current_path_object.
+      // Use the selected path object.
+      m_current_path_object = selected_path_object;
+    } else {
+      // There is no path object selected and m_current_path_object doesn't exist currently.
+      // Create a new one.
       start_macro();
       static constexpr auto insert_mode = Application::InsertionMode::Default;
       auto& path_object = Application::instance().insert_object(PathObject::TYPE, insert_mode);
-      current.path_object = dynamic_cast<PathObject*>(&path_object);
-      current.path_object->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
-      scene.set_selection({current.path_object});
+      m_current_path_object = dynamic_cast<PathObject*>(&path_object);
+      m_current_path_object->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
+      m_scene.set_selection({m_current_path_object});
+    }
+    m_current_point = nullptr;
+    m_last_point = nullptr;
+  }
+
+  bool has_active_path_object() const
+  {
+    return m_current_path_object != nullptr;
+  }
+
+  bool has_active_path() const
+  {
+    return m_current_path != nullptr;
+  }
+
+  bool has_active_point() const
+  {
+    return m_current_point != nullptr;
+  }
+
+  bool move_tangents(const Vec2f& delta)
+  {
+    if (m_current_path == nullptr || m_current_point == nullptr) {
+      return false;
+    }
+
+    const auto bwd_key = Point::TangentKey(m_current_path, Direction::Backward);
+    const auto fwd_key = Point::TangentKey(m_current_path, Direction::Forward);
+    const auto lt = PolarCoordinates(m_current_point->geometry().tangent(bwd_key).to_cartesian() - delta);
+    auto& geometry = m_current_point->geometry();
+    geometry.set_tangent(bwd_key, lt);
+    geometry.set_tangent(fwd_key, -lt);
+    m_current_point->set_geometry(geometry);
+    m_current_path_object->update();
+    return true;
+  }
+
+  void release()
+  {
+    m_last_point = m_current_point;
+    m_current_point = nullptr;
+    m_macro.reset();
+  }
+
+  void end()
+  {
+    if (m_current_path_object != nullptr) {
+      m_current_path_object->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
     }
   }
 
+  PathVector& current_path_vector() const
+  {
+    assert(m_current_path_object != nullptr);
+    return m_current_path_object->path_vector();
+  }
+
+  bool is_valid() const
+  {
+    if (!m_current_path_object) {
+      return true;
+    }
+    const auto& paths = m_current_path_object->path_vector().paths();
+    return std::all_of(paths.begin(), paths.end(), [](const Path* p) { return p->is_valid(); });
+  }
+
+private:
   void start_macro()
   {
     if (m_macro == nullptr) {
@@ -136,23 +259,17 @@ public:
     }
   }
 
-private:
+  PathObject* m_current_path_object = nullptr;
+  Path* m_current_path = nullptr;
+  PathPoint* m_last_point = nullptr;
+  PathPoint* m_current_point = nullptr;
   Scene& m_scene;
-  PathTool::Current& m_current;
   std::unique_ptr<Macro> m_macro;
-  PathPoint* m_target_point = nullptr;
-  std::deque<AddPointsCommand::OwnedLocatedPath> m_located_paths;
-  ::transparent_set<PathPoint*> m_points_to_join;
 };
-
-}  // namespace
-
-namespace omm
-{
 
 PathTool::PathTool(Scene& scene)
   : SelectPointsBaseTool(scene)
-  , m_current(std::make_unique<Current>())
+  , m_path_builder(std::make_unique<PathBuilder>(scene))
 {
 }
 
@@ -162,36 +279,25 @@ bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEven
 {
   if (SelectPointsBaseTool::mouse_move(delta, pos, event)) {
     return true;
-  } else if (m_current->path == nullptr || m_current->point ==  nullptr) {
-    return false;
   } else {
-    const auto lt = PolarCoordinates(m_current->point->geometry().left_tangent().to_cartesian() + delta);
-    auto geometry = m_current->point->geometry();
-    geometry.set_left_tangent(lt);
-    geometry.set_right_tangent(-lt);
-    m_current->point->set_geometry(geometry);
-    m_current->path_object->update();
-    return true;
+    return m_path_builder->move_tangents(delta);
   }
 }
 
 bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
   const auto control_modifier = static_cast<bool>(event.modifiers() & Qt::ControlModifier);
-  if (!control_modifier && SelectPointsBaseTool::mouse_press(pos, event, false)) {
+  if (SelectPointsBaseTool::mouse_press(pos, event, false)) {
+    if (control_modifier) {
+      m_path_builder->close_path();
+    } else {
+      m_path_builder->find_tie();
+    }
     return true;
   } else {
-    m_current->find_tie(*scene());
     if (event.button() == Qt::LeftButton) {
-      LeftButtonPressImpl impl{*scene(), *m_current};
-      if (control_modifier) {
-        impl.find_target_point(*this, pos);
-      }
-      impl.ensure_active_path(*scene(), *m_current);
-      const auto transformation = m_current->path_object->global_transformation(Space::Viewport).inverted();
-      const Point point{transformation.apply_to_position(pos)};
-      impl.add_point(point);
-      impl.polish();
+      m_path_builder->add_point(Point{pos});
+      reset();
       return true;
     }
     return false;
@@ -201,7 +307,7 @@ bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 void PathTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
   SelectPointsBaseTool::mouse_release(pos, event);
-  m_current->point = nullptr;
+  m_path_builder->release();
 }
 
 QString PathTool::type() const
@@ -212,15 +318,18 @@ QString PathTool::type() const
 void PathTool::end()
 {
   SelectPointsBaseTool::end();
-  if (m_current->path != nullptr) {
-    m_current->path_object->property(PathObject::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
-  }
+  m_path_builder->end();
 }
 
 void PathTool::reset()
 {
-  m_current->find_tie(*scene());
+//  m_path_builder->find_tie();
   SelectPointsBaseTool::reset();
+}
+
+void PathTool::draw(Painter& painter) const
+{
+  SelectPointsBaseTool::draw(painter);
 }
 
 }  // namespace omm

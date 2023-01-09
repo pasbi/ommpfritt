@@ -12,7 +12,6 @@
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
 #include "scene/scene.h"
-#include "scene/disjointpathpointsetforest.h"
 #include <QObject>
 
 namespace
@@ -92,24 +91,25 @@ void ProceduralPath::update()
   Object::update();
 }
 
-PathVector ProceduralPath::compute_path_vector() const
+std::unique_ptr<PathVector> ProceduralPath::compute_geometry() const
 {
-  PathVector pv;
-  for (const auto& points : m_points) {
-    pv.add_path(std::make_unique<Path>(std::deque(points)));
-  }
+  return std::make_unique<PathVector>();
+//  PathVector pv;
+//  for (const auto& points : m_points) {
+//    pv.add_path(std::make_unique<Path>(std::deque(points)));
+//  }
 
-  try {
-    for (const auto& index_set : m_joined_points) {
-      pv.joined_points().insert(util::transform<::transparent_set>(index_set, [&pv](const int i) {
-        return &pv.point_at_index(i);
-      }));
-    }
-  } catch (const std::runtime_error& e) {
-    LERROR << e.what();
-  }
+//  try {
+//    for (const auto& index_set : m_joined_points) {
+//      pv.joined_points().insert(util::transform<::transparent_set>(index_set, [&pv](const int i) {
+//        return &pv.point_at_index(i);
+//      }));
+//    }
+//  } catch (const std::runtime_error& e) {
+//    LERROR << e.what();
+//  }
 
-  return pv;
+//  return pv;
 }
 
 void ProceduralPath::on_property_value_changed(Property* property)

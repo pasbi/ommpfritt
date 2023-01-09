@@ -13,10 +13,6 @@ target_sources(libommpfritt PRIVATE
   multitabbar.h
   numericedit.cpp
   numericedit.h
-  pointdialog.cpp
-  pointdialog.h
-  pointedit.cpp
-  pointedit.h
   referencelineedit.cpp
   referencelineedit.h
   treeexpandmemory.cpp

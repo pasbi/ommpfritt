@@ -33,13 +33,13 @@
 #include "main/application.h"
 #include "nodesystem/node.h"
 #include "nodesystem/nodemodel.h"
-#include "scene/disjointpathpointsetforest.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
 #include "scene/objecttree.h"
 #include "scene/stylelist.h"
 #include "scene/pointselection.h"
+#include "scene/faceselection.h"
 #include "tools/toolbox.h"
 
 namespace
@@ -50,7 +50,6 @@ constexpr auto STYLES_POINTER = "styles";
 constexpr auto ANIMATOR_POINTER = "animation";
 constexpr auto NAMED_COLORS_POINTER = "colors";
 constexpr auto EXPORT_OPTIONS_POINTER = "export_options";
-constexpr auto JOINED_POINTS_POINTER =  "joined_points";
 
 template<typename PropertyT, typename PropertyOwners>
 std::set<PropertyT*>
@@ -113,6 +112,7 @@ namespace omm
 {
 Scene::Scene()
     : point_selection(std::make_unique<PointSelection>(*this))
+    , face_selection(std::make_unique<FaceSelection>(*this))
     , m_mail_box(new MailBox())
     , m_object_tree(new ObjectTree(make_root(), *this))
     , m_styles(new StyleList(*this))
@@ -121,7 +121,6 @@ Scene::Scene()
     , m_animator(new Animator(*this))
     , m_named_colors(new NamedColors())
     , m_export_options(new ExportOptions())
-    , m_joined_points(new DisjointPathPointSetForest())
 {
   object_tree().root().set_object_tree(object_tree());
   for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND, nodes::Node::KIND}) {
@@ -225,11 +224,6 @@ void Scene::set_export_options(const ExportOptions& export_options)
   }
 }
 
-DisjointPathPointSetForest& Scene::joined_points() const
-{
-  return *m_joined_points;
-}
-
 bool Scene::save_as(const QString& filename)
 {
   return SceneSerialization{*this}.save(filename);
@@ -251,7 +245,6 @@ void Scene::serialize(serialization::SerializerWorker& serializer)
   m_animator->serialize(*serializer.sub(ANIMATOR_POINTER));
   m_named_colors->serialize(*serializer.sub(NAMED_COLORS_POINTER));
   export_options().serialize(*serializer.sub(EXPORT_OPTIONS_POINTER));
-  m_joined_points->serialize(*serializer.sub(JOINED_POINTS_POINTER));
 }
 
 void Scene::deserialize(serialization::DeserializerWorker& deserializer)
@@ -277,7 +270,6 @@ void Scene::deserialize(serialization::DeserializerWorker& deserializer)
   animator().deserialize(*deserializer.sub(ANIMATOR_POINTER));
   named_colors().deserialize(*deserializer.sub(NAMED_COLORS_POINTER));
   m_export_options->deserialize(*deserializer.sub(EXPORT_OPTIONS_POINTER));
-  m_joined_points->deserialize(*deserializer.sub(JOINED_POINTS_POINTER));
 }
 
 void Scene::reset()
@@ -532,19 +524,17 @@ void Scene::set_mode(SceneMode mode)
 
 bool Scene::contains(const AbstractPropertyOwner* apo) const
 {
+  if (apo == nullptr) {
+    return false;
+  }
+  static constexpr auto contains = [](const auto& container, const auto& key) {
+    return end(container) != std::find(begin(container), end(container), key);
+  };
   switch (apo->kind) {
-  case Kind::Tag: {
-    const auto tags = this->tags();
-    // the std::set::find does not allow keys of type `const Tag*`.
-    // NOLINTNEXTLINE(performance-inefficient-algorithm)
-    return tags.end() != std::find(tags.begin(), tags.end(), dynamic_cast<const Tag*>(apo));
-  }
-  case Kind::Node: {
-    const auto nodes = this->collect_nodes();
-    // the std::set::find does not allow keys of type `const Tag*`.
-    // NOLINTNEXTLINE(performance-inefficient-algorithm)
-    return nodes.end() != std::find(nodes.begin(), nodes.end(), dynamic_cast<const nodes::Node*>(apo));
-  }
+  case Kind::Tag:
+    return contains(this->tags(), dynamic_cast<const Tag*>(apo));
+  case Kind::Node:
+    return contains(this->collect_nodes(), dynamic_cast<const nodes::Node*>(apo));
   case Kind::Object:
     return object_tree().contains(dynamic_cast<const Object&>(*apo));
   case Kind::Style:

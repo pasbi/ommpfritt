@@ -1,11 +1,14 @@
 #pragma once
 
 #include "color/color.h"
+#include "path/face.h"
 #include "geometry/vec2.h"
 #include "logging.h"
 #include "splinetype.h"
+#include "facelist.h"
 #include <QString>
 #include <variant>
+#include <deque>
 
 namespace omm
 {
@@ -22,8 +25,8 @@ public:
   {
     return false;
   }
-}
-;
+};
+
 using variant_type = std::variant<bool,
                                   double,
                                   Color,
@@ -34,7 +37,8 @@ using variant_type = std::variant<bool,
                                   TriggerPropertyDummyValueType,
                                   Vec2f,
                                   Vec2i,
-                                  SplineType>;
+                                  SplineType,
+                                  FaceList>;
 
 template<typename T> T null_value();
 

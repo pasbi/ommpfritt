@@ -87,4 +87,49 @@ void PolarCoordinates::deserialize(serialization::DeserializerWorker& worker)
   magnitude = v.y;
 }
 
+PolarCoordinates operator*(const PolarCoordinates& pc, double d)
+{
+  return PolarCoordinates(pc.argument, pc.magnitude * d);
+}
+
+PolarCoordinates operator*(double d, const PolarCoordinates& pc)
+{
+  return pc * d;
+}
+
+PolarCoordinates operator/(const PolarCoordinates& pc, double d)
+{
+  return pc * (1.0 / d);
+}
+
+PolarCoordinates operator+(const PolarCoordinates& pc, double d)
+{
+  return PolarCoordinates(pc.argument + d, pc.magnitude);
+}
+
+PolarCoordinates operator-(const PolarCoordinates& pc, double d)
+{
+  return pc + (-d);
+}
+
+PolarCoordinates& operator+=(PolarCoordinates& pc, double d)
+{
+  return pc = pc + d;
+}
+
+PolarCoordinates& operator-=(PolarCoordinates& pc, double d)
+{
+  return pc = pc - d;
+}
+
+PolarCoordinates& operator*=(PolarCoordinates& pc, double d)
+{
+  return pc = pc * d;
+}
+
+PolarCoordinates& operator/=(PolarCoordinates& pc, double d)
+{
+  return pc = pc / d;
+}
+
 }  // namespace omm
