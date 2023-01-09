@@ -17,20 +17,9 @@ constexpr auto MODE_PROPERTY_KEY = "mode";
 constexpr auto STRATEGY_PROPERTY_KEY = "strategy";
 constexpr auto THRESHOLD_PROPERTY_KEY = "threshold";
 constexpr auto APPLY_PROPERTY_KEY = "apply";
-enum class Mode { Normal, X, Y, Distance };
+enum class Mode { X, Y, Distance };
 enum class MatchStrategy { Any, All };
 using namespace omm;
-
-double normal_distance(const Point& a, const Point& b)
-{
-  return 0.0;
-//  const auto normalize = [](double a, double b) {
-//    return M_180_PI * PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
-//  };
-
-//  return std::min(normalize(a.left_tangent().argument, b.left_tangent().argument),
-//                  normalize(a.right_tangent().argument, b.right_tangent().argument));
-}
 
 omm::Vec2f distance(const PathObject& path_object,
                     const Point& a,
@@ -147,8 +136,6 @@ bool SelectSimilarTool::is_similar(const PathObject& path_object, const Point& a
   const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
   const auto distance = [mode, &path_object, alignment](const Point& a, const Point& b) {
     switch (mode) {
-    case Mode::Normal:
-      return normal_distance(a, b);
     case Mode::X:
       return std::abs(::distance(path_object, a, b, alignment).x);
     case Mode::Y:
@@ -180,7 +167,6 @@ void SelectSimilarTool::update_property_appearance()
   const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
   auto* const threshold_property = dynamic_cast<FloatProperty*>(property(THRESHOLD_PROPERTY_KEY));
   static const std::map<Mode, std::tuple<QString, double>> threshold_config{
-      {Mode::Normal, {"°", 180.0}},  // NOLINT(cppcoreguidelines-avoid-magic-numbers)
       {Mode::X, {"", std::numeric_limits<double>::max()}},
       {Mode::Y, {"", std::numeric_limits<double>::max()}},
       {Mode::Distance, {"", std::numeric_limits<double>::max()}},
