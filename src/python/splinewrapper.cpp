@@ -1,5 +1,5 @@
 #include "python/splinewrapper.h"
-#include "external/pybind11/stl.h"
+#include <pybind11/stl.h>
 #include "geometry/vec2.h"
 
 namespace omm

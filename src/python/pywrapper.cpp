@@ -1,7 +1,7 @@
 #include "aspects/propertyowner.h"
 
-#include "external/pybind11/embed.h"
-#include "external/pybind11/stl.h"
+#include <pybind11/embed.h>
+#include <pybind11/stl.h>
 
 #include "python/objectwrapper.h"
 #include "python/pywrapper.h"

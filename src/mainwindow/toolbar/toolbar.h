@@ -1,6 +1,6 @@
 #pragma once
 
-#include "external/json.hpp"
+#include <nlohmann/json.hpp>
 #include "mainwindow/toolbar/toolbaritemmodel.h"
 #include <QToolBar>
 

@@ -9,7 +9,7 @@
 
 #include "aspects/typed.h"
 #include "common.h"
-#include "external/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 #include "orderedmap.h"
 #include "properties/property.h"
 #include <Qt>

@@ -1,6 +1,6 @@
 #include "serializers/json/jsonserializer.h"
 
-#include "external/json.hpp"
+#include <nlohmann/json.hpp>
 #include "serializers/json/jsonserializerworker.h"
 
 namespace omm::serialization

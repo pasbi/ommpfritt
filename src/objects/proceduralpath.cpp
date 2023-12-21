@@ -1,5 +1,5 @@
 #include "objects/proceduralpath.h"
-#include "external/pybind11/stl.h"
+#include <pybind11/stl.h>
 #include "objects/pathobject.h"
 #include "path/pathpoint.h"
 #include "path/path.h"

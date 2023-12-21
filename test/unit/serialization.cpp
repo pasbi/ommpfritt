@@ -1,5 +1,5 @@
 #include "config.h"
-#include "external/json.hpp"
+#include <nlohmann/json.hpp>
 #include "gtest/gtest.h"
 #include "main/application.h"
 #include "main/options.h"

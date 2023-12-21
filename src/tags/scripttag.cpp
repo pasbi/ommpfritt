@@ -1,5 +1,5 @@
 #include "tags/scripttag.h"
-#include "external/pybind11/embed.h"
+#include <pybind11/embed.h>
 
 #include "common.h"
 #include "properties/boolproperty.h"

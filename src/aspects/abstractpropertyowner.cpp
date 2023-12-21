@@ -3,7 +3,7 @@
 #include <QObject>
 
 #include "animation/track.h"
-#include "external/json.hpp"
+#include <nlohmann/json.hpp>
 #include "properties/referenceproperty.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"

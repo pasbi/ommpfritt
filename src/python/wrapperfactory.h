@@ -1,6 +1,6 @@
 #pragma once
 
-#include "external/pybind11/embed.h"
+#include <pybind11/embed.h>
 #include <QString>
 #include <map>
 

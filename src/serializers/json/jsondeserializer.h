@@ -1,6 +1,6 @@
 #pragma once
 
-#include "external/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 #include "serializers/abstractdeserializer.h"
 
 namespace omm::serialization

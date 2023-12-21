@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "cachedgetter.h"
-#include "external/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 #include "scene/contextes.h"
 #include "scene/cycleguard.h"
 #include "scene/list.h"

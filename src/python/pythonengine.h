@@ -1,7 +1,7 @@
 #pragma once
 
 #include "common.h"
-#include "external/pybind11/embed.h"
+#include <pybind11/embed.h>
 #include <QObject>
 #include <string>
 

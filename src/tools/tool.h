@@ -1,7 +1,7 @@
 #pragma once
 
 #include "aspects/propertyowner.h"
-#include "external/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 #include "geometry/objecttransformation.h"
 #include "tools/handles/handle.h"
 #include <QIcon>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "external/pybind11/embed.h"
-#include "external/pybind11/stl.h"
+#include <pybind11/embed.h>
+#include <pybind11/stl.h>
 
 #include "aspects/propertyowner.h"
 #include "splinetype.h"

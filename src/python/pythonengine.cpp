@@ -1,6 +1,6 @@
 #include "python/pythonengine.h"
-#include "external/pybind11/embed.h"
-#include "external/pybind11/iostream.h"
+#include <pybind11/embed.h>
+#include <pybind11/iostream.h>
 #include "python/scenewrapper.h"
 #include "python/tagwrapper.h"
 #include "scene/scene.h"

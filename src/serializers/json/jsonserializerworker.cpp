@@ -1,6 +1,6 @@
 #include "serializers/json/jsonserializerworker.h"
 
-#include "external/json.hpp"
+#include <nlohmann/json.hpp>
 #include "geometry/polarcoordinates.h"
 #include "serializers/abstractserializer.h"
 #include "serializers/json/common.h"

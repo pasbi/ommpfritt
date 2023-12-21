@@ -1,6 +1,6 @@
 #pragma once
 
-#include "external/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 #include "geometry/boundingbox.h"
 #include "geometry/matrix.h"
 #include "geometry/vec2.h"

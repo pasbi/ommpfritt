@@ -8,7 +8,7 @@
 
 #include "abstractfactory.h"
 #include "common.h"
-#include "external/json.hpp"
+#include <nlohmann/json.hpp>
 #include "logging.h"
 #include "propertyconfiguration.h"
 #include "propertytypeenum.h"

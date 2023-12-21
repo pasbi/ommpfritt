@@ -5,7 +5,7 @@
 #include "aspects/treeelement.h"
 #include "cachedgetter.h"
 #include "common.h"
-#include "external/json_fwd.hpp"
+#include <nlohmann/json_fwd.hpp>
 #include "geometry/objecttransformation.h"
 #include "scene/taglist.h"
 #include <memory>

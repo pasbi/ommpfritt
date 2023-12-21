@@ -1,6 +1,6 @@
 #include "serializers/bin/bindeserializer.h"
 
-#include "external/json.hpp"
+#include <nlohmann/json.hpp>
 #include "serializers/bin/bindeserializerworker.h"
 
 namespace omm::serialization

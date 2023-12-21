@@ -11,7 +11,7 @@
 #include "commands/command.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
-#include "external/json.hpp"
+#include <nlohmann/json.hpp>
 #include "logging.h"
 #include "mainwindow/exportoptions.h"
 #include "objects/empty.h"
