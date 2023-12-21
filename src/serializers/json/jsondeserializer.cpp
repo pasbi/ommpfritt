@@ -1,7 +1,7 @@
 #include "serializers/json/jsondeserializer.h"
 
-#include <nlohmann/json.hpp>
 #include "serializers/json/jsondeserializerworker.h"
+#include <nlohmann/json.hpp>
 
 namespace omm::serialization
 {

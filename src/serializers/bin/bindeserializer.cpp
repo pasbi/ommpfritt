@@ -1,7 +1,7 @@
 #include "serializers/bin/bindeserializer.h"
 
-#include <nlohmann/json.hpp>
 #include "serializers/bin/bindeserializerworker.h"
+#include <nlohmann/json.hpp>
 
 namespace omm::serialization
 {

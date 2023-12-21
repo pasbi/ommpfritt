@@ -1,9 +1,9 @@
 #include "serializers/json/jsonserializerworker.h"
 
-#include <nlohmann/json.hpp>
 #include "geometry/polarcoordinates.h"
 #include "serializers/abstractserializer.h"
 #include "serializers/json/common.h"
+#include <nlohmann/json.hpp>
 
 namespace
 {

@@ -1,12 +1,12 @@
 #pragma once
 
 #include "aspects/propertyowner.h"
-#include <nlohmann/json_fwd.hpp>
 #include "geometry/objecttransformation.h"
 #include "tools/handles/handle.h"
 #include <QIcon>
 #include <QMenu>
 #include <Qt>
+#include <nlohmann/json_fwd.hpp>
 
 class QMouseEvent;
 

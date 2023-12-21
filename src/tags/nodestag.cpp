@@ -1,5 +1,4 @@
 #include "tags/nodestag.h"
-#include <pybind11/embed.h>
 #include "main/application.h"
 #include "managers/nodemanager/nodemanager.h"
 #include "nodesystem/nodecompiler.h"
@@ -7,8 +6,9 @@
 #include "nodesystem/nodes/spynode.h"
 #include "nodesystem/port.h"
 #include "nodesystem/propertyport.h"
-#include "properties/triggerproperty.h"
 #include "objects/object.h"
+#include "properties/triggerproperty.h"
+#include <pybind11/embed.h>
 
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"

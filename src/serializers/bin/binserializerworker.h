@@ -1,7 +1,7 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
 #include "serializers/serializerworker.h"
+#include <nlohmann/json_fwd.hpp>
 
 namespace omm::serialization
 {

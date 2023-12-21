@@ -1,8 +1,8 @@
 #pragma once
 
-#include <pybind11/embed.h>
 #include <QString>
 #include <map>
+#include <pybind11/embed.h>
 
 template<typename GeneralWrappedT, typename GeneralWrapperT> class WrapperFactory
 {

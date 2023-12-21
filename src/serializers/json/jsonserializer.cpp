@@ -1,7 +1,7 @@
 #include "serializers/json/jsonserializer.h"
 
-#include <nlohmann/json.hpp>
 #include "serializers/json/jsonserializerworker.h"
+#include <nlohmann/json.hpp>
 
 namespace omm::serialization
 {
@@ -15,4 +15,4 @@ std::unique_ptr<SerializerWorker> JSONSerializer::worker()
   return std::make_unique<JSONSerializerWorker>(m_json);
 }
 
-}  // namespace omm
+}  // namespace omm::serialization

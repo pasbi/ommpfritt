@@ -8,11 +8,11 @@
 
 #include "abstractfactory.h"
 #include "common.h"
-#include <nlohmann/json.hpp>
 #include "logging.h"
 #include "propertyconfiguration.h"
 #include "propertytypeenum.h"
 #include "variant.h"
+#include <nlohmann/json.hpp>
 
 namespace omm
 {

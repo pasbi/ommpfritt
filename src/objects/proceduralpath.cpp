@@ -1,8 +1,7 @@
 #include "objects/proceduralpath.h"
-#include <pybind11/stl.h>
 #include "objects/pathobject.h"
-#include "path/pathpoint.h"
 #include "path/path.h"
+#include "path/pathpoint.h"
 #include "path/pathvector.h"
 #include "properties/boolproperty.h"
 #include "properties/integerproperty.h"
@@ -11,9 +10,10 @@
 #include "python/pointwrapper.h"
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
-#include "scene/scene.h"
 #include "scene/disjointpathpointsetforest.h"
+#include "scene/scene.h"
 #include <QObject>
+#include <pybind11/stl.h>
 
 namespace
 {

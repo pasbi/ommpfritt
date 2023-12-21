@@ -1,7 +1,6 @@
 #include "serializers/serializerworker.h"
 #include "aspects/propertyowner.h"
 
-
 namespace
 {
 
@@ -10,8 +9,7 @@ template<typename T> void serialize_vec2(omm::serialization::SerializerWorker& w
   worker.set_value(value.to_stdvec());
 }
 
-}  // namepsace
-
+}  // namespace
 
 namespace omm::serialization
 {

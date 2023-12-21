@@ -3,12 +3,12 @@
 #include <QObject>
 
 #include "animation/track.h"
-#include <nlohmann/json.hpp>
 #include "properties/referenceproperty.h"
 #include "scene/mailbox.h"
 #include "scene/scene.h"
-#include "serializers/abstractserializer.h"
 #include "serializers/abstractdeserializer.h"
+#include "serializers/abstractserializer.h"
+#include <nlohmann/json.hpp>
 #include <random>
 
 namespace

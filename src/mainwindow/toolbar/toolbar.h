@@ -1,8 +1,8 @@
 #pragma once
 
-#include <nlohmann/json.hpp>
 #include "mainwindow/toolbar/toolbaritemmodel.h"
 #include <QToolBar>
+#include <nlohmann/json.hpp>
 
 namespace omm
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
 #include <QDialog>
 #include <memory>
+#include <nlohmann/json_fwd.hpp>
 
 namespace Ui
 {

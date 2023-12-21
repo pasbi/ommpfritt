@@ -1,7 +1,7 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
 #include "serializers/deserializerworker.h"
+#include <nlohmann/json_fwd.hpp>
 
 namespace omm::serialization
 {
@@ -29,6 +29,5 @@ protected:
 private:
   const nlohmann::json& m_value;
 };
-
 
 }  // namespace omm::serialization
