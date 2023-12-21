@@ -1,7 +1,7 @@
 #pragma once
 
-#include "external/json_fwd.hpp"
 #include <QStandardItemModel>
+#include <nlohmann/json_fwd.hpp>
 
 class QItemSelection;
 class QToolBar;

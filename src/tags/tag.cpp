@@ -3,10 +3,10 @@
 #include <QObject>
 #include <memory>
 
-#include "external/json.hpp"
 #include "objects/object.h"
 #include "properties/stringproperty.h"
 #include "scene/scene.h"
+#include <nlohmann/json.hpp>
 
 namespace omm
 {

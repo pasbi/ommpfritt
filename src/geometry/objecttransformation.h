@@ -1,12 +1,12 @@
 #pragma once
 
-#include "external/json_fwd.hpp"
 #include "geometry/boundingbox.h"
 #include "geometry/matrix.h"
 #include "geometry/vec2.h"
 #include <2geom/pathvector.h>
 #include <QTransform>
 #include <Qt>
+#include <nlohmann/json_fwd.hpp>
 
 namespace omm
 {

@@ -7,16 +7,16 @@
 #include "renderers/painter.h"
 #include "renderers/painteroptions.h"
 #include "scene/scene.h"
-#include <fmt/format.h>
 #include <QApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QImage>
-#include <QPainter>
 #include <QPaintDevice>
+#include <QPainter>
 #include <QPicture>
 #include <QSvgGenerator>
 #include <QThread>
+#include <fmt/format.h>
 
 namespace omm
 {
@@ -79,11 +79,11 @@ QString Exporter::interpolate_filename(const QString& pattern,
                                        const QString& scene_name,
                                        int frame)
 {
-  const auto args = fmt::make_format_args(fmt::arg("path", scene_path.toStdString()),
-                                          fmt::arg("name", scene_name.toStdString()),
-                                          fmt::arg("frame", frame));
   const auto pattern_s = pattern.toStdString();
-  return QString::fromStdString(fmt::vformat(pattern_s, args));
+  return QString::fromStdString(fmt::format(fmt::runtime(pattern_s),
+                                            fmt::arg("path", scene_path.toStdString()),
+                                            fmt::arg("name", scene_name.toStdString()),
+                                            fmt::arg("frame", frame)));
 }
 
 void Exporter::render(int frame, bool allow_overwrite)

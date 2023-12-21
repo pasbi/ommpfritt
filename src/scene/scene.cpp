@@ -7,11 +7,9 @@
 #include <random>
 #include <variant>
 
-#include "removeif.h"
 #include "commands/command.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
-#include "external/json.hpp"
 #include "logging.h"
 #include "mainwindow/exportoptions.h"
 #include "objects/empty.h"
@@ -20,12 +18,14 @@
 #include "properties/colorproperty.h"
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
+#include "removeif.h"
 #include "renderers/style.h"
 #include "scene/sceneserializer.h"
 #include "tags/nodestag.h"
 #include "tags/tag.h"
 #include "tools/selectobjectstool.h"
 #include "tools/selecttool.h"
+#include <nlohmann/json.hpp>
 
 #include "animation/animator.h"
 #include "color/namedcolors.h"
@@ -38,8 +38,8 @@
 #include "scene/history/macro.h"
 #include "scene/mailbox.h"
 #include "scene/objecttree.h"
-#include "scene/stylelist.h"
 #include "scene/pointselection.h"
+#include "scene/stylelist.h"
 #include "tools/toolbox.h"
 
 namespace
