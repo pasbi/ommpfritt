@@ -1,12 +1,19 @@
 # ommpfritt
 
+*_⚠️⚠️ I do not actively work on this anymore ⚠️⚠️_*
+
+I had hoped that I would have more time for this project at some point. But I've hardly worked on it for more than two years and there's no sign of that changing any time soon.
+The construction sites are huge and the road to the first useful release is simply too long.
+
+I still believe in the concept and I believe that this code is a good basis.
+If anyone would like to take over the project, I would be happy to help. Just write me an e-mail or GitHub message.
+
+
 [![Build-Focal-GCC](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal-gcc.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal-gcc.yml)
 [![Build-Focal-Clang](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal-clang.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-focal-clang.yml)
 [![Build-Bionic](https://github.com/pasbi/ommpfritt/actions/workflows/build-bionic.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-bionic.yml)
 [![Build-win](https://github.com/pasbi/ommpfritt/actions/workflows/build-win.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/build-win.yml)
 [![Style Checker](https://github.com/pasbi/ommpfritt/actions/workflows/stylechecker.yml/badge.svg)](https://github.com/pasbi/ommpfritt/actions/workflows/stylechecker.yml)
-[![Gitter](https://badges.gitter.im/ommpfritt/community.svg)](https://gitter.im/ommpfritt/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Telegram](https://img.shields.io/badge/Telegram-Chat-blue)](https://t.me/omm_dev)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/alerts/)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/context:python)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/context:cpp)
