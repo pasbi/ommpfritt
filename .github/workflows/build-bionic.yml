@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: Create-AppImage-Bionic
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: Ommpfritt-AppImage
       - uses: ncipollo/release-action@v1
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-18.04
     needs: Create-AppImage-Bionic
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: Ommpfritt-AppImage
       - run: chmod +x ommpfritt-*.AppImage
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: Create-AppImage-Bionic
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: Ommpfritt-AppImage
       - run: chmod +x ommpfritt-*.AppImage
